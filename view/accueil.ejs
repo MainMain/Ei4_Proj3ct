@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Développement v0.1</title>
+		<script src="../model/server.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+	<body>
+		<h2>Commandes</h2>
+
+		<p>
+			<input type="button" value="Go gauche !" id="MOVE_LEFT" />
+			<input type="button" value="Go droite !" id="MOVE_RIGHT" />
+			<input type="button" value="Go haut !" id="MOVE_TOP" />
+			<input type="button" value="Go bas !" id="MOVE_BOTTOM" />
+		</p>
+
+		<h2>Infos Perso'</h2>
+		<p id="zone_idSalle"> Nada !</p>
+		<h2>Zone log</h2>
+		<section id="zone_log">
+
+		</section>
+
+		<!-- -------------------- CODE JAVASCRIPT ----------------- -->
+
+		<script>
+			/*********** GESTION DE LA COMMUNICATION CLIENT-SERVEUR **************/
+			var socket = io.connect('http://localhost:8080');
+
+			// Quand le client reçoit un message du serveur
+			socket.on('MESSAGE_SC', function(message) {
+				insereMessage('Message du serveur : ' + message);
+			});
+
+			// Quand le client recoit les nouvelles coordonnées du PERSONNAGE
+			socket.on('MOVE_PERSONNAGE_SC', function(idSallePerso) {
+				if (idSallePerso == -1) {
+					insereMessage('Impossible de changer de salle ');
+				} else {
+					insereMessage('Nouvelle salle du perso : ' + idSallePerso);
+					modifieIdSalle(idSallePerso);
+				}
+			});
+
+			// Intercations avec l'IHM
+			$('#MOVE_LEFT').click(function() {
+				socket.emit('MOVE_PERSONNAGE_CS', 'EST');
+			});
+			$('#MOVE_RIGHT').click(function() {
+				socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
+			});
+			$('#MOVE_TOP').click(function() {
+				socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
+			});
+			$('#MOVE_BOTTOM').click(function() {
+				socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
+			});
+
+			// Ajoute un message dans la page
+			function modifieIdSalle(idSallePerso) {
+				$('#zone_idSalle').text("id salle : " + idSallePerso);
+			}
+
+			function insereMessage(message) {
+				$('#zone_log').prepend(message + "<br>");
+			}
+
+		</script>
+
+	</body>
+</html>
