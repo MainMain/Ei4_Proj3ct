@@ -1,6 +1,6 @@
 //appel aux modules
 var http = require('http');
-var app = express();
+//var app = express();
 var url = require("url");
 var querystring = require('querystring');
 var EventEmitter = require('events').EventEmitter;
@@ -12,8 +12,8 @@ var fs = require('fs');
 //var eventjeu = new EventEmitter();
 
 // Session
-app.use(express.cookieParser());
-app.use(express.session({secret: '1234567890QWERTY'}));
+//app.use(express.cookieParser());
+//app.use(express.session({secret: '1234567890QWERTY'}));
 
 // lancement du serveur
 oCarte.Initialiser(3, 4);
