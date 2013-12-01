@@ -18,7 +18,9 @@
 		</p>
 
 		<h2>Infos Perso'</h2>
-		<p id="zone_idSalle"> Nada !</p>
+		<p id="zone_idSalle">
+			Nada !
+		</p>
 		<h2>Zone log</h2>
 		<section id="zone_log">
 
@@ -27,15 +29,19 @@
 		<!-- -------------------- CODE JAVASCRIPT ----------------- -->
 
 		<script>
-			/*********** GESTION DE LA COMMUNICATION CLIENT-SERVEUR **************/
+			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			var socket = io.connect('http://localhost:8080');
 
-			// Quand le client reçoit un message du serveur
+			/*
+			 * RECEPTION D'UN MESSAGE DU SERVEUR
+			 */
 			socket.on('MESSAGE_SC', function(message) {
 				insereMessage('Message du serveur : ' + message);
 			});
 
-			// Quand le client recoit les nouvelles coordonnées du PERSONNAGE
+			/*
+			 * RECEPTION DU NOUVEL ID SALLE DU PERSONNAGE
+			 */
 			socket.on('MOVE_PERSONNAGE_SC', function(idSallePerso) {
 				if (idSallePerso == -1) {
 					insereMessage('Impossible de changer de salle ');
@@ -45,9 +51,9 @@
 				}
 			});
 
-			// Intercations avec l'IHM
+			/******** EVENEMENTS LORS DE L'APPUI SUR UN BOUTON ************/
 			$('#MOVE_LEFT').click(function() {
-				socket.emit('MOVE_PERSONNAGE_CS', 'EST');
+				socket.emit('MOVE_PERSONNAGE_CS_TEST', 'EST', 'TEST');
 			});
 			$('#MOVE_RIGHT').click(function() {
 				socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
@@ -59,11 +65,17 @@
 				socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 			});
 
-			// Ajoute un message dans la page
+			/******** FONCTIONS MODIFIANT L'IHM ************/
+			/*
+			 * Modifie l'id de la salle
+			 */
 			function modifieIdSalle(idSallePerso) {
 				$('#zone_idSalle').text("id salle : " + idSallePerso);
 			}
 
+			/*
+			 * Insere un message dans la zone "zone log"
+			 */
 			function insereMessage(message) {
 				$('#zone_log').prepend(message + "<br>");
 			}

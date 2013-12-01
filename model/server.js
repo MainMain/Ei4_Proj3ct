@@ -31,19 +31,26 @@ var server = http.createServer(function(req, res) {
 		var myPerso = new oPersonnage('Mainmain');
 		
 		
-		// Quand on client se connecte, on le note dans la console
+		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR **************/
+		/*
+		 * CONNEXION D'UN CLIENT
+		 */
 		io.sockets.on('connection', function(socket) {
 			console.log('SERVER : Un client est connecté !');
 			socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
 			
 			
-			// Quand le serveur reçoit un signal de type "MESSAGE" du client
+			/*
+			 *  RECEPTION D'UN MESSAGE DU CLIENT
+			 */
 			socket.on('MESSAGE_CS', function(message) {
 				console.log('SERVER : Un client me parle ! Il me dit : ' + message);
 			});
+			
 
-			// Quand le serveur reçoit un signal de type "MOVE_PERSONNAGE_CS" du
-			// client
+			/*
+			 * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE
+			 */
 			socket.on('MOVE_PERSONNAGE_CS', function(move) {
 				console.log('SERVER : Déplacement du personnage demandé : ' + move);
 				var ansDeplacementOk = myPerso.deplacement(move);
@@ -58,6 +65,7 @@ var server = http.createServer(function(req, res) {
 						socket.emit('MOVE_PERSONNAGE_SC', "-1");
 					}	
 			});
+			
 		});
 	});
 });
