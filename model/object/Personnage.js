@@ -13,7 +13,7 @@ var Personnage = (function() {
 	Personnage.ptSante = 100;
 	Personnage.ptActions = 20;
 	Personnage.ptDeplacement = 50;
-	Personnage.idSalleEnCours = 7;
+	Personnage.idSalleEnCours = 2;
 	Personnage.armeEquipee = "aucun";
 	Personnage.armureEquipee = "aucune";
 	Personnage.sacADos;
@@ -24,14 +24,14 @@ var Personnage = (function() {
 	// --- METHODES DE CLASSE ---
 	Personnage.build = function(name) {
 		return new Personnage(name);
-		sacADos = new Array();
+		//sacADos = new Array();
 	};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(name) {
 		// --- Attributs d'instance
 		this.name = name;
-		this.idSalleEnCours = 7;
+		this.idSalleEnCours = 2;
 	}
 
 	// --- METHODES D'INSTANCE

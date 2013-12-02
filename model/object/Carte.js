@@ -11,7 +11,7 @@ function Carte() {
 
 // --- ATTRIBUTS DE CLASSE ---
 Carte.matrice; // matrice des id de cases
-Carte.listeCases;
+//Carte.listeCases;
 Carte.largeur;
 Carte.hauteur;
 
@@ -65,7 +65,7 @@ Carte.UpdateSalle = function(idSalle) {
 },
 
 /**
- * Renvoi de l'id de la case d'une coordonnée donnée
+ * RENVOI L'ID DE LA CASE D'UNE COORDONNEE DONNEE
  * 
  * @method GetIdSalleByCoord
  */

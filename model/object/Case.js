@@ -7,30 +7,31 @@ var Case = (function() {
 	'use strict';
 
 	// --- ATTRIBUTS DE CLASSE ---
-	Case.id = 1;
-	Case.nom = "Aucun";
-	Case.probaObjet = 0;
-	Case.probaCache = 0;
-	Case.objetsAuSol = 0;
-	Case.nbrGoules = 0;
+	Case.id;
+	Case.nom;
+	Case.description;
+	Case.probaObjet;
+	Case.probaCache;
+	Case.objetsAuSol;
+	Case.nbrGoules;
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	Personnage.build = function(id, name, probaObjet, probaCache, objetsAuSol,
-			nbrGoules) {
+	Case.build = function(id, name, probaObjet, probaCache, objetsAuSol,nbrGoules) {
+		return new  Case(id, name, probaObjet, probaCache, objetsAuSol,nbrGoules);
+	};
+
+	// --- METHODES DE CLASSE ---
+	function Case(id, name, probaObjet, probaCache, objetsAuSol,nbrGoules) {
 		this.id = id;
-		this.name = name;
+		this.nom = name;
 		this.probaObjet = probaObjet;
 		this.probaCache = probaCache;
 		this.objetsAuSol = objetsAuSol;
 		this.nbrGoules = nbrGoules;
-
-		return new Personnage(name);
-	};
-
-	// --- METHODES DE CLASSE ---
-
+	}
+	
 	// --- METHODES D'INSTANCE
-	Personnage.prototype = {
+	Case.prototype = {
 
 	};
 

@@ -15,6 +15,7 @@
 			<input type="button" value="Go droite !" id="MOVE_RIGHT" />
 			<input type="button" value="Go haut !" id="MOVE_TOP" />
 			<input type="button" value="Go bas !" id="MOVE_BOTTOM" />
+			<input type="button" value="Infos!" id="INFO_CASE" />
 		</p>
 
 		<h2>Infos Perso'</h2>
@@ -51,9 +52,21 @@
 				}
 			});
 
+			/*
+			 * RECEPTION DES INFORMATIONS SUR LA CASE
+			 */
+			socket.on('INFO_CASE_SC', function(currentCase) {
+				insereMessage("CLIENT : reception de la case");
+				if (currentCase != null)
+					insereMessage("CLIENT : nom salle = " + currentCase.nom);
+					else
+				insereMessage("CLIENT : nom salle = " + "ERREUR ! ");	
+			});
+
 			/******** EVENEMENTS LORS DE L'APPUI SUR UN BOUTON ************/
 			$('#MOVE_LEFT').click(function() {
-				socket.emit('MOVE_PERSONNAGE_CS_TEST', 'EST', 'TEST');
+				insereMessage("CLIENT : go gauche");
+				socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 			});
 			$('#MOVE_RIGHT').click(function() {
 				socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
@@ -64,7 +77,9 @@
 			$('#MOVE_BOTTOM').click(function() {
 				socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 			});
-
+			$('#INFO_CASE').click(function() {
+				socket.emit('INFO_CASE_CS');
+			});
 			/******** FONCTIONS MODIFIANT L'IHM ************/
 			/*
 			 * Modifie l'id de la salle

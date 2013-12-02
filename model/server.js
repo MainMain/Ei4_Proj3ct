@@ -8,6 +8,9 @@ var express = require('express');
 var oPersonnage = require('./object/Personnage');
 var oCarte = require('./object/Carte');
 var fs = require('fs');
+//var oCase = require('./object/Case');
+//var oCarte = require('./object/Carte');
+var oCase_BD = require('../persistance/Case_BD');
 
 //var eventjeu = new EventEmitter();
 
@@ -17,6 +20,7 @@ var fs = require('fs');
 
 // lancement du serveur
 oCarte.Initialiser(3, 4);
+oCase_BD.Initialiser();
 
 // Chargement du fichier index.html affiché au client
 var server = http.createServer(function(req, res) {
@@ -50,6 +54,8 @@ var server = http.createServer(function(req, res) {
 
 			/*
 			 * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE
+			 * Renvoi l'id de la salle avec MOVE_PERSONNAGE_SC
+			 * Si erreur : renvoi -1
 			 */
 			socket.on('MOVE_PERSONNAGE_CS', function(move) {
 				console.log('SERVER : Déplacement du personnage demandé : ' + move);
@@ -64,6 +70,17 @@ var server = http.createServer(function(req, res) {
 						console.log('SERVER : DEBUG envoi deplacement impossible');
 						socket.emit('MOVE_PERSONNAGE_SC', "-1");
 					}	
+			});
+				
+			/*
+			 * RECEPTION D'UNE DEMANDE D'INFORMATION SUR UNE CASE
+			 * Renvoi la case avec INFO_CASE_SC
+			 * Si erreur : renvoi NULL
+			 */
+			socket.on('INFO_CASE_CS', function() {
+				console.log('SERVER : Infos case demandées ! id : ' + myPerso.idSalleEnCours);
+				var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
+				socket.emit('INFO_CASE_SC', currentCase);
 			});
 			
 		});
