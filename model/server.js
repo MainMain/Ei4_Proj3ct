@@ -54,8 +54,9 @@ var server = http.createServer(function(req, res) {
 
 			/*
 			 * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE
-			 * Renvoi l'id de la salle avec MOVE_PERSONNAGE_SC
-			 * Si erreur : renvoi -1
+			 * Renvoi la case avec MOVE_PERSONNAGE_SC
+			 * Si erreur : renvoi "ERREUR_MOVE" si impossible de bouger
+			 * Si erreur : renvoi "ERREUR_CASE" si erreur de case
 			 */
 			socket.on('MOVE_PERSONNAGE_CS', function(move) {
 				console.log('SERVER : Déplacement du personnage demandé : ' + move);
@@ -63,12 +64,16 @@ var server = http.createServer(function(req, res) {
 				if (ansDeplacementOk == true)
 					{
 				console.log('SERVER : DEBUG envoi de la nouvelle position');
-				socket.emit('MOVE_PERSONNAGE_SC', myPerso.idSalleEnCours);
+				var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
+				if (currentCase == null)
+					socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_CASE");
+				else
+					socket.emit('MOVE_PERSONNAGE_SC', currentCase);
 					}
 				else
 					{
 						console.log('SERVER : DEBUG envoi deplacement impossible');
-						socket.emit('MOVE_PERSONNAGE_SC', "-1");
+						socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_MOVE");
 					}	
 			});
 				
@@ -80,6 +85,10 @@ var server = http.createServer(function(req, res) {
 			socket.on('INFO_CASE_CS', function() {
 				console.log('SERVER : Infos case demandées ! id : ' + myPerso.idSalleEnCours);
 				var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
+				if (currentCase == null)
+					socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_CASE");
+				else
+					socket.emit('MOVE_PERSONNAGE_SC', currentCase);
 				socket.emit('INFO_CASE_SC', currentCase);
 			});
 			

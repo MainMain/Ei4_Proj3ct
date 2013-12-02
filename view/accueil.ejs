@@ -43,24 +43,25 @@
 			/*
 			 * RECEPTION DU NOUVEL ID SALLE DU PERSONNAGE
 			 */
-			socket.on('MOVE_PERSONNAGE_SC', function(idSallePerso) {
-				if (idSallePerso == -1) {
-					insereMessage('Impossible de changer de salle ');
-				} else {
-					insereMessage('Nouvelle salle du perso : ' + idSallePerso);
-					modifieIdSalle(idSallePerso);
-				}
+			socket.on('MOVE_PERSONNAGE_SC', function(currentCase) {
+				if (currentCase == "ERREUR_CASE")
+				insereMessage("CLIENT : nom salle = " + "ERREUR_CASE");
+				else if (currentCase == "ERREUR_MOVE")
+				insereMessage("CLIENT : nom salle = " + "impossible d'aller par là !");
+				else
+				insereMessage("CLIENT : nom salle = " + currentCase.nom);	
 			});
 
 			/*
 			 * RECEPTION DES INFORMATIONS SUR LA CASE
 			 */
 			socket.on('INFO_CASE_SC', function(currentCase) {
-				insereMessage("CLIENT : reception de la case");
-				if (currentCase != null)
-					insereMessage("CLIENT : nom salle = " + currentCase.nom);
-					else
-				insereMessage("CLIENT : nom salle = " + "ERREUR ! ");	
+				if (currentCase == "ERREUR_CASE")
+				insereMessage("CLIENT : nom salle = " + "ERREUR_CASE");
+				else if (currentCase == "ERREUR_MOVE")
+				insereMessage("CLIENT : nom salle = " + "impossible d'aller par là !");
+				else
+				insereMessage("CLIENT : nom salle = " + currentCase.nom);	
 			});
 
 			/******** EVENEMENTS LORS DE L'APPUI SUR UN BOUTON ************/
