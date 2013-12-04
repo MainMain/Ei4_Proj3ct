@@ -1,7 +1,7 @@
 /**
  * Modélisation d'une case
  * 
- * @class case
+ * @class Case
  */
 var Case = (function() {
 	'use strict';
@@ -14,25 +14,81 @@ var Case = (function() {
 	Case.probaCache;
 	Case.objetsAuSol;
 	Case.nbrGoules;
+	Case.listeItem;
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	Case.build = function(id, name, probaObjet, probaCache, objetsAuSol,nbrGoules) {
-		return new  Case(id, name, probaObjet, probaCache, objetsAuSol,nbrGoules);
+	Case.build = function(id, nom, probaObjet, probaCache, objetsAuSol,
+			nbrGoules) {
+		return new Case(id, nom, probaObjet, probaCache, objetsAuSol,
+				nbrGoules);
 	};
 
 	// --- METHODES DE CLASSE ---
-	function Case(id, name, probaObjet, probaCache, objetsAuSol,nbrGoules) {
+	function Case(id, nom, probaObjet, probaCache, objetsAuSol, nbrGoules,
+			listeItem) {
 		this.id = id;
-		this.nom = name;
+		this.nom = nom;
 		this.probaObjet = probaObjet;
 		this.probaCache = probaCache;
 		this.objetsAuSol = objetsAuSol;
 		this.nbrGoules = nbrGoules;
+		this.listeItem = listeItem;
 	}
-	
+
 	// --- METHODES D'INSTANCE
 	Case.prototype = {
-
+		/**
+		 * FONCTION QUI DETERMINE SI UN OBJET APPARTIENT A LA SALLE return :
+		 * true si objet est dans la salle, sinon false
+		 * 
+		 * @method objetInSalle
+		 */
+		itemInSalle : function(item) {
+			this.logAfficherItems();
+			if (this.listeItem.indexOf(item) != -1){
+				console.log("CASE : L'objet " + item.id + " - " + item.nom + " est bien dans la case ! " + this.nom);
+				return true;
+			} else {
+				console.log("CASE : WARNING : L'objet " + item.id + " - " + item.nom + "n'est pas dans la case ! " + this.nom);
+				return false;
+			}
+		},
+		
+		/**
+		 * FONCTION POUR SUPPRIMER UN OBJET D'UN SALLE
+		 */
+		supprimerItem : function(item)
+		{
+			//console.log("CASE : suppression de l'objet " + item.nom + " de la case " + this.nom);
+			this.logAfficherItems();
+			var index;
+			for (var i=0; i<this.listeItem.length; i++) {
+				  if (this.listeItem[i].id == item.id)
+					  {
+					  index = item.id;
+					  break;
+			}
+				}
+			index = index-1;
+			console.log("CASE : DEBUG index : " + index);
+			this.listeItem.splice(index, 1);
+			//delete this.listeItem[index];
+			
+			//this.logAfficherItems();
+		},
+		
+		/*
+		 * FONCTION POUR AFFICHER DANS LA CONSOLE LA LISTE DES OBJETS DE LA
+		 * SALLE
+		 */
+		logAfficherItems : function()
+		{
+			console.log("CASE : ****** AFFICHAGE OBJET CASE " + this.nom + " *********");
+			for (var i=0; i<this.listeItem.length; i++) {
+			   console.log("CASE : Objet id = " + this.listeItem[i].id + " - " + this.listeItem[i].nom);
+			}
+			console.log("CASE : *********************************");
+		},
 	};
 
 	// On pense à retourner le constructeur (afin de pouvoir construire des
