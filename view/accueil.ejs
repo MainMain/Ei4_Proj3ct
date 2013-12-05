@@ -15,10 +15,15 @@
 			<input type="button" value="Go droite !" id="MOVE_RIGHT" />
 			<input type="button" value="Go haut !" id="MOVE_TOP" />
 			<input type="button" value="Go bas !" id="MOVE_BOTTOM" />
+			<input type="button" value="Infos case!" id="INFO_CASE" />
+			<input type="button" value="Infos perso!" id="INFO_PERSONNAGE" />
+			<input type="button" value="Ramasser l'objet d'id = 2!" id="RAMASSER_OBJET" />
 		</p>
 
 		<h2>Infos Perso'</h2>
-		<p id="zone_idSalle"> Nada !</p>
+		<p id="zone_idSalle">
+			Nada !
+		</p>
 		<h2>Zone log</h2>
 		<section id="zone_log">
 
@@ -27,26 +32,81 @@
 		<!-- -------------------- CODE JAVASCRIPT ----------------- -->
 
 		<script>
-			/*********** GESTION DE LA COMMUNICATION CLIENT-SERVEUR **************/
+			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			var socket = io.connect('http://localhost:8080');
 
-			// Quand le client reçoit un message du serveur
-			socket.on('MESSAGE_SC', function(message) {
-				insereMessage('Message du serveur : ' + message);
-			});
-
-			// Quand le client recoit les nouvelles coordonnées du PERSONNAGE
-			socket.on('MOVE_PERSONNAGE_SC', function(idSallePerso) {
-				if (idSallePerso == -1) {
-					insereMessage('Impossible de changer de salle ');
-				} else {
-					insereMessage('Nouvelle salle du perso : ' + idSallePerso);
-					modifieIdSalle(idSallePerso);
+			/*
+			 * RECEPTION DU NOUVEL ID SALLE DU PERSONNAGE
+			 */
+			socket.on('MOVE_PERSONNAGE_SC', function(currentCase) {
+				if (currentCase == "ERREUR_CASE")
+					insereMessage("CLIENT : nom salle = " + "ERREUR_CASE");
+				else if (currentCase == "ERREUR_MOVE")
+					insereMessage("CLIENT : nom salle = " + "impossible d'aller par là !");
+				else {
+					insereMessage("CLIENT : nom salle = " + currentCase.nom);
+					modifieIdSalle(currentCase.nom, currentCase.id);
 				}
 			});
 
-			// Intercations avec l'IHM
+			/*
+			 * RECEPTION D'UN REPONSE POUR LA DEMANDE DE MODIF
+			 * D'OBJET DANS LA CASE
+			 */
+			socket.on('INV_CASE_SC', function(type, id_item, codeRetour) {
+				if (type == 'RAMASSER') {
+					// erreur
+					if (codeRetour == -3) {
+						insereMessage("Erreur inconnue");
+					}
+					// poids insufisant
+					else if (codeRetour == -1) {
+						insereMessage("Impossible de ramasser l'objet : poids max atteint");
+					}
+					// objet pas dans case
+					else if (codeRetour == -2) {
+						insereMessage("L'objet " + id_item + " n'est plus dans la salle ");
+					}
+					// ramassage ok
+					else {
+						insereMessage("Objet ramassé ! ");
+
+						// modifier l'ihm : inventaire du perso et inventaire de case
+					}
+
+				}
+			});
+
+			/*
+			 * RECEPTION DES INFORMATIONS SUR LA CASE
+			 */
+			socket.on('INFO_CASE_SC', function(currentCase) {
+				if (currentCase == "ERREUR_CASE")
+					insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
+				else {
+					insereMessage("CLIENT :: nom case = " + currentCase.nom);
+					insereMessage("****LISTE DES OBJETS DE LA CASE ****");
+					for (var i = 0; i < currentCase.listeItem.length; i++) {
+						insereMessage(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom);
+					}
+					insereMessage("************************************");
+				}
+			});
+
+			/*
+			 * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
+			 */
+			socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
+				insereMessage("****LISTE DES OBJETS  DU PERSO (" + currentPerso.sacADos.length + ")****");
+				for (var i = 0; i < currentPerso.sacADos.length; i++) {
+					insereMessage(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom);
+				}
+				insereMessage("************************************");
+			});
+
+			/******** EVENEMENTS LORS DE L'APPUI SUR UN BOUTON ************/
 			$('#MOVE_LEFT').click(function() {
+				insereMessage("CLIENT : go gauche");
 				socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 			});
 			$('#MOVE_RIGHT').click(function() {
@@ -58,12 +118,28 @@
 			$('#MOVE_BOTTOM').click(function() {
 				socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 			});
+			$('#INFO_CASE').click(function() {
+				socket.emit('INFO_CASE_CS');
+			});
+			$('#INFO_PERSONNAGE').click(function() {
+				socket.emit('INFO_PERSONNAGE_CS');
+			});
+			$('#RAMASSER_OBJET').click(function() {
+				// exemple : ramsser l'objet d'id 2
+				socket.emit('INV_CASE_CS', "RAMASSER", 2);
+			});
 
-			// Ajoute un message dans la page
-			function modifieIdSalle(idSallePerso) {
-				$('#zone_idSalle').text("id salle : " + idSallePerso);
+			/******** FONCTIONS MODIFIANT L'IHM ************/
+			/*
+			 * Modifie l'id de la salle
+			 */
+			function modifieIdSalle(nomCase, idCase) {
+				$('#zone_idSalle').text("id salle : " + idCase + " - nom salle : " + nomCase);
 			}
 
+			/*
+			 * Insere un message dans la zone "zone log"
+			 */
 			function insereMessage(message) {
 				$('#zone_log').prepend(message + "<br>");
 			}
