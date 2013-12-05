@@ -145,14 +145,14 @@ var server = http.createServer(function (req, res) {
                     		{
                     			console.log("SERVER : Demande de ramassage impossible : poids max atteint"); 
                     			// return au client que l'objet ne peut être ajouté (poids insufisant)
-                    			socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, 0);
+                    			socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -1);
                     		}
             		}
             	// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
             	else
             		{
             			// return que l'objet n'est pas dans la case
-            			socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -1);
+            			socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -2);
             		}
             	}
             });
