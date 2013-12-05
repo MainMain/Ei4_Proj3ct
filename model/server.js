@@ -13,9 +13,9 @@ var fs = require('fs');
 
 // Session
 //app.use(express.cookieParser());
-//app.use(express.session({secret: '1234567890QWERTY'}));
+// app.use(express.session({secret: '1234567890QWERTY'}));
 
-// lancement du serveur
+// lancement du serveur 
 oCarte.Initialiser(3, 4);
 
 // Chargement du fichier index.html affiché au client
