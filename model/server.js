@@ -51,18 +51,18 @@ var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
 
 /*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR **************/
 /*
- * CONNEXION D'UN CLIENT
- */
+* CONNEXION D'UN CLIENT
+*/
 io.sockets.on('connection', function (socket) {
     console.log('SERVER : Un client est connecté !');
     socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
 
     /*
-     * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE
-     * Renvoi la case avec MOVE_PERSONNAGE_SC
-     * Si erreur : renvoi "ERREUR_MOVE" si impossible de bouger
-     * Si erreur : renvoi "ERREUR_CASE" si erreur de case
-     */
+* RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE
+* Renvoi la case avec MOVE_PERSONNAGE_SC
+* Si erreur : renvoi "ERREUR_MOVE" si impossible de bouger
+* Si erreur : renvoi "ERREUR_CASE" si erreur de case
+*/
     socket.on('MOVE_PERSONNAGE_CS', function (move) {
         // log
         console.log('SERVER : Déplacement du personnage demandé : ' + move);
@@ -87,10 +87,10 @@ io.sockets.on('connection', function (socket) {
     });
 
     /*
-     * RECEPTION D'UNE DEMANDE D'INFORMATION SUR UNE CASE
-     * Renvoi la case avec INFO_CASE_SC
-     * Si erreur : renvoi NULL
-     */
+* RECEPTION D'UNE DEMANDE D'INFORMATION SUR UNE CASE
+* Renvoi la case avec INFO_CASE_SC
+* Si erreur : renvoi NULL
+*/
     socket.on('INFO_CASE_CS', function () {
         // log
         console.log('SERVER : Infos case demandées ! id : ' + myPerso.idSalleEnCours);
@@ -107,12 +107,12 @@ io.sockets.on('connection', function (socket) {
 
 
     /*
-     * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN OBJET
-     * return poidsTotal si ok
-     * erreur : -1 si poids insufisant
-     * erreur : -2 si objet n'est pas dans la case
-     * erreur : -3 si autre
-     */
+* RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN OBJET
+* return poidsTotal si ok
+* erreur : -1 si poids insufisant
+* erreur : -2 si objet n'est pas dans la case
+* erreur : -3 si autre
+*/
     socket.on('INV_CASE_CS', function (type, id_item) {
         if (type == "RAMASSER") {
             // récupère la salle en cours
@@ -154,12 +154,12 @@ io.sockets.on('connection', function (socket) {
 
 
     /*
-     * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN OBJET
-     * return poidsTotal si ok
-     * erreur : -1 si poids insufisant
-     * erreur : -2 si objet n'est pas dans la case
-     * erreur : -3 si autre
-     */
+* RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN OBJET
+* return poidsTotal si ok
+* erreur : -1 si poids insufisant
+* erreur : -2 si objet n'est pas dans la case
+* erreur : -3 si autre
+*/
     socket.on('INFO_PERSONNAGE_CS', function () {
         socket.emit('INFO_PERSONNAGE_SC', myPerso);
     });
