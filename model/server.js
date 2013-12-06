@@ -20,7 +20,7 @@ oCarte.Initialiser(3, 4);
 
 // Chargement du fichier index.html affiché au client
 var server = http.createServer(function(req, res) {
-	fs.readFile('./view/accueil.ejs', 'utf-8', function(error, content) {
+	fs.readFile('.	/view/accueil.ejs', 'utf-8', function(error, content) {
 		res.writeHead(200, {
 			"Content-Type" : "text/html"
 		});
