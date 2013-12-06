@@ -29,7 +29,7 @@ oCase_BD.Initialiser();
 var server = http.createServer(function (req, res) {
     console.log("SERVEUR : initialisation du serveur");
 
-    fs.readFile('./view/accueil.ejs', 'utf-8', function (error, content) {
+    fs.readFile('../view/accueil.ejs', 'utf-8', function (error, content) {
         res.writeHead(200, {
             "Content-Type": "text/html"
         });
