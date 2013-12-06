@@ -26,49 +26,6 @@ oCase_BD.Initialiser();
 
 
 // Chargement du fichier index.html affiché au client
-<<<<<<< HEAD
-var server = http.createServer(function(req, res) {
-	fs.readFile('.	/view/accueil.ejs', 'utf-8', function(error, content) {
-		res.writeHead(200, {
-			"Content-Type" : "text/html"
-		});
-		res.end(content);
-
-		// Chargement de socket.io
-		var io = require('socket.io').listen(server, {log : false});
-		var myPerso = new oPersonnage('Mainmain');
-		
-		
-		// Quand on client se connecte, on le note dans la console
-		io.sockets.on('connection', function(socket) {
-			console.log('SERVER : Un client est connecté !');
-			socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
-			
-			
-			// Quand le serveur reçoit un signal de type "MESSAGE" du client
-			socket.on('MESSAGE_CS', function(message) {
-				console.log('SERVER : Un client me parle ! Il me dit : ' + message);
-			});
-
-			// Quand le serveur reçoit un signal de type "MOVE_PERSONNAGE_CS" du
-			// client
-			socket.on('MOVE_PERSONNAGE_CS', function(move) {
-				console.log('SERVER : Déplacement du personnage demandé : ' + move);
-				var ansDeplacementOk = myPerso.deplacement(move);
-				if (ansDeplacementOk == true)
-					{
-				console.log('SERVER : DEBUG envoi de la nouvelle position');
-				socket.emit('MOVE_PERSONNAGE_SC', myPerso.idSalleEnCours);
-					}
-				else
-					{
-						console.log('SERVER : DEBUG envoi deplacement impossible');
-						socket.emit('MOVE_PERSONNAGE_SC', "-1");
-					}	
-			});
-		});
-	});
-=======
 var server = http.createServer(function (req, res) {
     console.log("SERVEUR : initialisation du serveur");
 
@@ -78,7 +35,6 @@ var server = http.createServer(function (req, res) {
         });
         res.end(content);
     });
->>>>>>> 6047fef3004f741d46554c5cfde4e3902d91c3d3
 });
 
 // Chargement de socket.io
@@ -94,18 +50,18 @@ var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
 
 /*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR **************/
 /*
- * CONNEXION D'UN CLIENT
- */
+* CONNEXION D'UN CLIENT
+*/
 io.sockets.on('connection', function (socket) {
     console.log('SERVER : Un client est connecté !');
     socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
 
     /*
-     * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE
-     * Renvoi la case avec MOVE_PERSONNAGE_SC
-     * Si erreur : renvoi "ERREUR_MOVE" si impossible de bouger
-     * Si erreur : renvoi "ERREUR_CASE" si erreur de case
-     */
+* RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE
+* Renvoi la case avec MOVE_PERSONNAGE_SC
+* Si erreur : renvoi "ERREUR_MOVE" si impossible de bouger
+* Si erreur : renvoi "ERREUR_CASE" si erreur de case
+*/
     socket.on('MOVE_PERSONNAGE_CS', function (move) {
         // log
         console.log('SERVER : Déplacement du personnage demandé : ' + move);
@@ -130,10 +86,10 @@ io.sockets.on('connection', function (socket) {
     });
 
     /*
-     * RECEPTION D'UNE DEMANDE D'INFORMATION SUR UNE CASE
-     * Renvoi la case avec INFO_CASE_SC
-     * Si erreur : renvoi NULL
-     */
+* RECEPTION D'UNE DEMANDE D'INFORMATION SUR UNE CASE
+* Renvoi la case avec INFO_CASE_SC
+* Si erreur : renvoi NULL
+*/
     socket.on('INFO_CASE_CS', function () {
         // log
         console.log('SERVER : Infos case demandées ! id : ' + myPerso.idSalleEnCours);
@@ -150,12 +106,12 @@ io.sockets.on('connection', function (socket) {
 
 
     /*
-     * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN OBJET
-     * return poidsTotal si ok
-     * erreur : -1 si poids insufisant
-     * erreur : -2 si objet n'est pas dans la case
-     * erreur : -3 si autre
-     */
+* RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN OBJET
+* return poidsTotal si ok
+* erreur : -1 si poids insufisant
+* erreur : -2 si objet n'est pas dans la case
+* erreur : -3 si autre
+*/
     socket.on('INV_CASE_CS', function (type, id_item) {
         if (type == "RAMASSER") {
             // récupère la salle en cours
@@ -197,12 +153,12 @@ io.sockets.on('connection', function (socket) {
 
 
     /*
-     * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN OBJET
-     * return poidsTotal si ok
-     * erreur : -1 si poids insufisant
-     * erreur : -2 si objet n'est pas dans la case
-     * erreur : -3 si autre
-     */
+* RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN OBJET
+* return poidsTotal si ok
+* erreur : -1 si poids insufisant
+* erreur : -2 si objet n'est pas dans la case
+* erreur : -3 si autre
+*/
     socket.on('INFO_PERSONNAGE_CS', function () {
         socket.emit('INFO_PERSONNAGE_SC', myPerso);
     });
