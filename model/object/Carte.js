@@ -11,7 +11,6 @@ function Carte() {
 
 // --- ATTRIBUTS DE CLASSE ---
 Carte.matrice; // matrice des id de cases
-Carte.listeCases;
 Carte.largeur;
 Carte.hauteur;
 
@@ -36,36 +35,10 @@ Carte.Initialiser = function(largeur, hauteur) {
 		}
 	}
 	;
-	console.log("CARTE : Initialisation liste cases");
-	// listeCases = new Array(largeur * hauteur);
-},
-
-Carte.ActualiserSalle = function(idSalle) {
-	// chercher infos dans la BD
 },
 
 /**
- * Actualise la salle en cours Doit être déclenchée quand le serveur relève un
- * ... ... changement faite par un autre joueur
- * 
- * @method ActualiserSalle
- */
-Carte.ActualiserSalle = function(idSalle) {
-	// chercher infos dans la BD
-},
-
-/**
- * Actualise la salle en cours Doit être déclenchée quand le serveur relève un
- * ... ... changement faite par le joueur en cours
- * 
- * @method UpdateSalle
- */
-Carte.UpdateSalle = function(idSalle) {
-	// écrire infos dans la BD
-},
-
-/**
- * Renvoi de l'id de la case d'une coordonnée donnée
+ * RENVOI L'ID DE LA CASE D'UNE COORDONNEE DONNEE
  * 
  * @method GetIdSalleByCoord
  */

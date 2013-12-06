@@ -9,35 +9,56 @@ var Personnage = (function() {
 	'use strict';
 
 	// --- ATTRIBUTS DE CLASSE ---
-	Personnage.id = 1;
-	Personnage.ptSante = 100;
-	Personnage.ptActions = 20;
-	Personnage.ptDeplacement = 50;
-	Personnage.idSalleEnCours = 7;
-	Personnage.armeEquipee = "aucun";
-	Personnage.armureEquipee = "aucune";
+	Personnage.id;
+	Personnage.ptSante;
+	Personnage.ptSanteMax ;
+	Personnage.ptActions;
+	Personnage.ptActionsMax;
+	Personnage.ptDeplacement;
+	Personnage.ptDeplacementMax;
+	Personnage.poidsMax;
+	Personnage.idSalleEnCours;
+	Personnage.idArmeEquipee;
+	Personnage.idArmureEquipee;
 	Personnage.sacADos;
 
 	// --- ENUMERATIONS DE CLASSE ---
 	Personnage.DIRECTIONS = [ 'NORD', 'SUD', 'EST', 'OUEST' ];
 
 	// --- METHODES DE CLASSE ---
-	Personnage.build = function(name) {
+	Personnage.build = function(ptSante, ptSanteMax, ptActions, ptActionsMax,
+			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours,
+			armeEquipee, armureEquipee, sacADos) {
 		return new Personnage(name);
-		sacADos = new Array();
+
 	};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	function Personnage(name) {
+	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
+			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours,
+			armeEquipee, armureEquipee, sacADos) {
 		// --- Attributs d'instance
-		this.name = name;
-		this.idSalleEnCours = 7;
+		this.id = id;
+		this.ptSante = ptSante;
+		this.ptSanteMax = ptSanteMax;
+		this.ptActions = ptActions;
+		this.ptActionsMax = ptActionsMax;
+		this.ptDeplacement = ptDeplacement;
+		this.ptDeplacementMax = ptDeplacementMax;
+		this.poidsMax = poidsMax;
+		this.idSalleEnCours = idSalleEnCours;
+		this.idArmeEquipee = armeEquipee;
+		this.idArmureEquipee = armureEquipee;
+		this.sacADos = sacADos;
+		console.log("PERSONNAGE : Nouveau personnage crée ");
 	}
 
 	// --- METHODES D'INSTANCE
 	Personnage.prototype = {
+		
 		/**
-		 * Un personnage peut se déplacer
+		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE return : id de la salle si ok
+		 * erreur : -1 si déplacement impossible (pas de case dans la direction)
 		 * 
 		 * @method deplacement
 		 */
@@ -69,13 +90,48 @@ var Personnage = (function() {
 		},
 
 		/**
-		 * Un Personnage peut ramasser un objet
+		 * FONCTION RAMASSER UN OBJET return : 1 si ok si trop de poids : renvoi
+		 * item
 		 * 
-		 * @method ramasser
+		 * @method ajouterAuSac
 		 */
-		ramasser : function(objet) {
+		ajouterAuSac : function(item) {
+			//this.logAfficherSacADos();
+			this.sacADos.push(item);
+			//this.logAfficherSacADos();
+			console.log("PERSONNAGE : ajout de l'item " + item.nom + " au personnage ");
 		},
 
+		/**
+		 * FONCTION QUI RENVOI LE POIDS DU SAC A DOS
+		 * item
+		 * 
+		 * @method getPoidsSac
+		 */
+		getPoidsSac : function() {
+			var poids = 0;
+			console.log("PERSONNAGE : DEBUG : nombre d'objets dans sac " + this.sacADos.length);
+			// calcule le poids du sac + poids item
+			var i = 0;
+			for (i=0;i<this.length;i++){
+			    poids = poids + curItem.poids;
+			}
+			console.log("PERSONNAGE : Calcul du poids total du sac : " + poids);
+			return poids;
+		},
+		
+		/*
+		 * FONCTION POUR AFFICHER DANS LA CONSOLE LA LISTE DES OBJETS DE DU SAC
+		 */
+		logAfficherSacADos : function()
+		{
+			console.log("PERSONNAGE : ****** AFFICHAGE OBJET PERSONNAGE :  " + this.sacADos.length-1 + " *********");
+			for (var i=0; i<this.sacADos.length; i++) {
+				   console.log("PERSONNAGE : Objet id = " + this.sacADos[i].id + " - " + this.sacADos[i].nom);
+				}
+			console.log("PERSONNAGE : *********************************");
+		},
+		
 		/**
 		 * Retourne la sante du personnage
 		 * 
