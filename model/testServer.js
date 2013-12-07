@@ -1,10 +1,11 @@
 //appel aux modules
 var http = require('http');
-//var app = express();
+var path = require('path');
 var url = require("url");
 var querystring = require('querystring');
 var EventEmitter = require('events').EventEmitter;
 var express = require('express');
+var app = express();
 var oPersonnage = require('./object/Personnage');
 var oCarte = require('./object/Carte');
 var fs = require('fs');
@@ -21,19 +22,45 @@ var oItem_BD = require('../persistance/Item_BD');
 
 // lancement du serveur
 oItem_BD.Initialiser();
-oCarte.Initialiser(3, 4);
+oCarte.Initialiser(3, 4);	
 oCase_BD.Initialiser();
 
 // Chargement du fichier index.html affiché au client
-var server = http.createServer(function (req, res) {
+var server = http.createServer(function (request, response)
+{
     console.log("SERVEUR : initialisation du serveur");
-
-    fs.readFile('../view/index.ejs', 'utf-8', function (error, content) {
-        res.writeHead(200, {
-            "Content-Type": "text/html"
-        });
-        res.end(content);
-    });
+	
+	var myPath = url.parse(request.url).pathname;
+    myPath = path.join('../view', myPath);
+    var fullPath = path.join(process.cwd(), myPath);
+	
+	fs.exists(fullPath,function(exists)
+	{  
+        if(!exists)
+		{
+			response.writeHeader(404, {"Content-Type": "text/plain"});    
+            response.write("404 Not Found\n");    
+            response.end();  
+        }  
+        else
+		{
+			fs.readFile(fullPath, "binary", function(err, file)
+			{    
+                if(err)
+				{    
+					response.writeHeader(500, {"Content-Type": "text/plain"});
+                    response.write(err + "\n");
+                    response.end();    
+                }    
+                else
+				{
+					response.writeHeader(200);    
+                    response.write(file, "binary");    
+                    response.end();  
+                }
+            });
+        }
+	});
 });
 
 // Chargement de socket.io
@@ -89,7 +116,8 @@ io.sockets.on('connection', function (socket) {
 * Renvoi la case avec INFO_CASE_SC
 * Si erreur : renvoi NULL
 */
-    socket.on('INFO_CASE_CS', function () {
+    socket.on('INFO_CASE_CS', function ()
+	{	
         // log
         console.log('SERVER : Infos case demandées ! id : ' + myPerso.idSalleEnCours);
         // récupère la salle en cours

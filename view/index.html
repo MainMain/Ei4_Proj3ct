@@ -1,0 +1,109 @@
+<html>
+	<head>
+		<title>Accueil</title>
+		
+		<meta charset="utf-8" />
+		<link href="/style.css" rel="stylesheet" type="text/css" media="screen" />
+		
+		<!-- Script nécessaires pour le serveur -->
+		<script src="../model/server.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		
+		<!-- Script nécessaires pour le Header -->
+		<script src="/Scripts/jQuery_Base.js" type="text/javascript"></script>
+		<script src="/Scripts/animation.js" type="text/javascript"></script>
+		<script src="/Scripts/headerCode.js" type="text/javascript"></script>
+		
+	</head>
+	<body>
+		<div id="container">
+			<ul id="nav">
+				<li><a href="index.html">Acceuil</a></li>
+				<li><a href="jeu.html">Jeu</a></li>
+				<li><a href="classement.html">Classement</a></li>
+				<li><a href="contact.html">Contact</a></li>
+			</ul>
+			<div id="cadreLogin">
+				<br>
+				<table id="formLogin" align=center>
+					<tr>
+						<td id="login">Login: <input type="text" id="login"></td>
+						<td id="login">Mot de passe: <input type="password" id="password"></td>
+						<td id="login"><input type="submit" value="Connexion" id="CONNEXION"></td>
+						<td id="login"><input type="submit" value="Inscription" id="INSCRIPTION"></td>
+					</tr>
+				</table>
+			</div>
+			<br>
+			<h2 align=center>Zone log</h2>
+			<section id="zone_log">
+
+			</section>
+		</div>
+		
+		<script>
+		var socket = io.connect('http://localhost:8080');
+
+		/*
+		 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
+		 */
+		socket.on('CONNEXION_SC', function(reponseConnexion) {
+			if(reponseConnexion == 'CONNEXION_OK')
+			{
+				insereMessage("Bienvenue " + $("#login").val() + " !");
+			}
+			else
+			{
+				insereMessage("Oops ! Mauvais login ou mot de passe");
+			}
+		});
+
+		/*
+		 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
+		 */
+		socket.on('INSCRIPTION_SC', function(reponseInscription) {
+			if(reponseInscription == 'INSCRIPTION_OK')
+			{
+				insereMessage("Bienvenue dans notre communauté !!");
+			}
+			else
+			{
+				insereMessage("Désolé ! Ce pseudo existe déjà.");
+			}
+		});
+		
+		$('#CONNEXION').click(function() {
+			var username = $("#login").val();
+			var password = $("#password").val();
+			if(username != '' && password != '')
+			{
+				socket.emit('CONNEXION_CS', username, password);
+			}
+			else
+			{
+				insereMessage("Veuillez entrer un login et un mot de passe !");
+			}
+		});
+		
+		$('#INSCRIPTION').click(function()
+		{
+			var username = $("#login").val();
+			var password = $("#password").val();
+			if(username != '' && password != '')
+			{
+				socket.emit('INSCRIPTION_CS', username, password);
+			}
+			else
+			{
+				insereMessage("Veuillez entrer un login et un mot de passe !");
+			}
+		});
+
+		function insereMessage(message)
+		{
+			$('#zone_log').prepend(message + "<br>");
+		}
+		</script>
+	</body>
+</html>
