@@ -60,10 +60,12 @@ function initialize() {
 	 */
 	socket.on('MOVE_PERSONNAGE_SC', function(currentCase) {
 		if (currentCase == "ERREUR_CASE")
+			{
 			//insereMessage("CLIENT : nom salle = " + "ERREUR_CASE");
 			txtSalle = new createjs.Text("CLIENT : nom salle = " + "ERREUR_CASE", "12px Arial", "#ff0000");
 			txtSalle.y=200;
 			stage.addChild(txtSalle);
+			}
 		else if (currentCase == "ERREUR_MOVE")
 		{
 			//insereMessage("CLIENT : nom salle = " + "impossible d'aller par là !");

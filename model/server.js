@@ -1,10 +1,10 @@
 //appel aux modules
 var http = require('http');
-//var app = express();
 var url = require("url");
 var querystring = require('querystring');
 var EventEmitter = require('events').EventEmitter;
 var express = require('express');
+//var app = express();
 var oPersonnage = require('./object/Personnage');
 var oCarte = require('./object/Carte');
 var fs = require('fs');
@@ -31,7 +31,7 @@ oCase_BD.Initialiser();
 var server = http.createServer(function (req, res) {
     console.log("SERVEUR : initialisation du serveur");
 
-    fs.readFile('../view/game.js', 'utf-8', function (error, content) {
+    fs.readFile('../view/game.ejs', 'utf-8', function (error, content) {
         res.writeHead(200, {
             "Content-Type": "text/html"
         });
@@ -39,6 +39,7 @@ var server = http.createServer(function (req, res) {
     });
 });
 //Chargement de socket.io
+server.listen(8080);
 var io = require('socket.io').listen(server, {
     log: false
 });
@@ -243,4 +244,4 @@ server.on('close', function () { // On écoute l'évènement close
 
 console.log("SERVEUR : Script lancé ! sur http://127.0.0.1:8080");
 
-server.listen(8080);
+
