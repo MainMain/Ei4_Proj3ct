@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Développement v0.1</title>
+		<script src="../model/server.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+	</head>
+	<body>
+		<h2>Commandes</h2>
+
+		<p>
+			<input type="button" value="Go gauche !" id="MOVE_LEFT" />
+			<input type="button" value="Go droite !" id="MOVE_RIGHT" />
+			<input type="button" value="Go haut !" id="MOVE_TOP" />
+			<input type="button" value="Go bas !" id="MOVE_BOTTOM" />
+			<input type="button" value="Infos!" id="INFO_CASE" />
+		</p>
+
+		<h2>Infos Perso'</h2>
+		<p id="zone_idSalle">
+			Nada !
+		</p>
+		<h2>Zone log</h2>
+		<section id="zone_log">
+
+		</section>
+
+		<!-- -------------------- CODE JAVASCRIPT ----------------- -->
+
+		<script>
+			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+			var socket = io.connect('http://localhost:8080');
+
+			/*
+			 * RECEPTION D'UN MESSAGE DU SERVEUR
+			 */
+			socket.on('MESSAGE_SC', function(message) {
+				insereMessage('Message du serveur : ' + message);
+			});
+
+			/*
+			 * RECEPTION DU NOUVEL ID SALLE DU PERSONNAGE
+			 */
+			socket.on('MOVE_PERSONNAGE_SC', function(idSallePerso) {
+				if (idSallePerso == -1) {
+					insereMessage('Impossible de changer de salle ');
+				} else {
+					insereMessage('Nouvelle salle du perso : ' + idSallePerso);
+					modifieIdSalle(idSallePerso);
+				}
+			});
+
+			/*
+			 * RECEPTION DES INFORMATIONS SUR LA CASE
+			 */
+			socket.on('INFO_CASE_SC', function(currentCase) {
+				insereMessage("CLIENT : reception de la case");
+				if (currentCase != null)
+					insereMessage("CLIENT : nom salle = " + currentCase.nom);
+					else
+				insereMessage("CLIENT : nom salle = " + "ERREUR ! ");	
+			});
+
+			/******** EVENEMENTS LORS DE L'APPUI SUR UN BOUTON ************/
+			$('#MOVE_LEFT').click(function() {
+				socket.emit('MOVE_PERSONNAGE_CS', 'EST');
+			});
+			$('#MOVE_RIGHT').click(function() {
+				socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
+			});
+			$('#MOVE_TOP').click(function() {
+				socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
+			});
+			$('#MOVE_BOTTOM').click(function() {
+				socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
+			});
+			$('#INFO_CASE').click(function() {
+				socket.emit('INFO_CASE_CS');
+			});
+			/******** FONCTIONS MODIFIANT L'IHM ************/
+			/*
+			 * Modifie l'id de la salle
+			 */
+			function modifieIdSalle(idSallePerso) {
+				$('#zone_idSalle').text("id salle : " + idSallePerso);
+			}
+
+			/*
+			 * Insere un message dans la zone "zone log"
+			 */
+			function insereMessage(message) {
+				$('#zone_log').prepend(message + "<br>");
+				
+			}
+
+		</script>
+
+	</body>
+</html>

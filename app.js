@@ -1,49 +1,50 @@
 //appel aux modules
-var http = require('http');
+//var http = require('http');
 var url = require("url");
 var querystring = require('querystring');
-var EventEmitter = require('events').EventEmitter;
-var express = require('express');
-//var app = express();
-var oPersonnage = require('./object/Personnage');
-var oCarte = require('./object/Carte');
-var fs = require('fs');
-var oCase_BD = require('../persistance/Case_BD');
-var oItem_BD = require('../persistance/Item_BD');
+var express = require('express')
+, routes = require('./routes')
+//, user = require('./routes/user')
+, http = require('http')
+, path = require('path');
+var app = express();
+var server = http.createServer(app);
 
-
-//var eventjeu = new EventEmitter();
-
-// Session
-//app.use(express.cookieParser());
-// app.use(express.session({secret: '1234567890QWERTY'}));
-
-// lancement du serveur
-oItem_BD.Initialiser();
-
-oCarte.Initialiser(3, 4);
-oCase_BD.Initialiser();
+var oPersonnage = require('./model/object/Personnage');
+var oCarte = require('./model/object/Carte');
+var oCase_BD = require('./persistance/Case_BD');
+var oItem_BD = require('./persistance/Item_BD');
 
 
 /*
- * LANCEMENT DU SERVEUR ET ENVOI DE LA PAGE D'ACCUEIL
+ * CONFIGURATION DU SERVEUR
  */
-var server = http.createServer(function (req, res) {
-    console.log("SERVEUR : initialisation du serveur");
+app.set('port', process.env.PORT || 8080);
+app.set('views', __dirname + '/view');
+app.set('view engine', 'ejs');
+app.use(express.favicon());
+app.use(express.logger('dev'));
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(app.router);
+app.use(express.static(path.join(__dirname, '/')));
 
-    fs.readFile('../view/game.ejs', 'utf-8', function (error, content) {
-        res.writeHead(200, {
-            "Content-Type": "text/html"
-        });
-        res.end(content);
-    });
+app.get('/', routes.index);
+app.get('/jeu', routes.jeu);
+
+server.listen(app.get('port'), function(){
+	  console.log("Express server listening on port " + app.get('port'));
 });
+
 //Chargement de socket.io
-server.listen(8080);
 var io = require('socket.io').listen(server, {
     log: false
 });
 
+// lancement du serveur
+oItem_BD.Initialiser();
+oCarte.Initialiser(3, 4);
+oCase_BD.Initialiser();
 
 /*
  * INITIALISATION DU PERSONNAGE
@@ -238,7 +239,7 @@ io.sockets.on('connection', function (socket) {
 
 
 //server.listen(8080);
-server.on('close', function () { // On écoute l'évènement close
+app.on('close', function () { // On écoute l'évènement close
     console.log('Bye bye !');
 });
 
