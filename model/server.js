@@ -31,7 +31,7 @@ oCase_BD.Initialiser();
 var server = http.createServer(function (req, res) {
     console.log("SERVEUR : initialisation du serveur");
 
-    fs.readFile('../view/accueil.ejs', 'utf-8', function (error, content) {
+    fs.readFile('../view/game.ejs', 'utf-8', function (error, content) {
         res.writeHead(200, {
             "Content-Type": "text/html"
         });
@@ -240,12 +240,6 @@ io.sockets.on('connection', function (socket) {
 server.on('close', function () { // On écoute l'évènement close
     console.log('Bye bye !');
 });
-
-
-
-
-
-
 
 console.log("SERVEUR : Script lancé ! sur http://127.0.0.1:8080");
 
