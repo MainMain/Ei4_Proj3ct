@@ -21,23 +21,23 @@ Item_BD.listeItems;
  */
 Item_BD.Initialiser = function() {
 	console.log("ITEM_BD : initialisation liste item");
-	var item1 = new oItem(0, "Epée a", "aaaaa", 3, null);
-	var item2 = new oItem(1, "Epée b", "bbbbb", 4, null);
-	var item3 = new oItem(2, "Epée c", "ccccc", 2, null);
-	var item4 = new oItem(3, "Epée d", "ddddd", 3, null);
-	var item5 = new oItem(4, "Epée e", "eeeeeee", 30, null);
-	var item6 = new oItem(5, "Epée f", "fffff", 4, null);
-	var item7 = new oItem(6, "Epée g", "ggggg", 5, null);
-	var item8 = new oItem(7, "Epée h", "hhhhh", 1, null);
-	var item9 = new oItem(8, "Epée i", "iiiii", 1, null);
-	var item10 = new oItem(9, "Epée j", "jjjjj", 5, null);
-	var item11 = new oItem(10, "Epée k", "kkkkk", 7, null);
-	var item12 = new oItem(11, "Epée l", "lllll", 7, null);
-	var item13 = new oItem(12, "Epée m", "mmmmm", 7, null);
-	var item14 = new oItem(13, "Epée n", "nnnnn", 5, null);
-	var item15 = new oItem(14, "Epée o", "ooooo", 7, null);
-	var item16 = new oItem(15, "Epée p", "ppppp", 3, null);
-	var item17 = new oItem(16, "Epée q", "qqqqq", 1, null);
+	var item1 = new oItem(0, 	"Item a",		"aaaaa", 	3, 	0, null);
+	var item2 = new oItem(1, 	"Arme b",		"bbbbb", 	4, 	1, null);
+	var item3 = new oItem(2, 	"Armure  c", 	"ccccc", 	2, 	2, null);
+	var item4 = new oItem(3, 	"Arme d", 		"ddddd", 	1, 	1, null);
+	var item5 = new oItem(4, 	"Item  e", 		"eeeeeee", 	30,	0, null);
+	var item6 = new oItem(5, 	"ODD f", 		"fffff", 	4,	4, null);
+	var item7 = new oItem(6, 	"Arme g", 		"ggggg", 	5, 	1, null);
+	var item8 = new oItem(7, 	"Item h", 		"hhhhh", 	1, 	0, null);
+	var item9 = new oItem(8, 	"Armure i", 	"iiiii", 	1, 	2, null);
+	var item10 = new oItem(9, 	"Item j", 		"jjjjj", 	5, 	0, null);
+	var item11 = new oItem(10, 	"Arme k", 		"kkkkk", 	7, 	1, null);
+	var item12 = new oItem(11, 	"ODD l", 		"lllll", 	7, 	4, null);
+	var item13 = new oItem(12, 	"Item m", 		"mmmmm", 	7, 	0, null);
+	var item14 = new oItem(13, 	"Arme n", 		"nnnnn", 	5, 	1, null);
+	var item15 = new oItem(14, 	"Armure o", 	"ooooo", 	7, 	2, null);
+	var item16 = new oItem(15, 	"Item p", 		"ppppp", 	3, 	0, null);
+	var item17 = new oItem(16, 	"Item q", 		"qqqqq", 	1, 	0, null);
 	this.listeItems = new Array(item1, item2, item3, item4, item5, item6,
 			item7, item8, item9, item10, item11, item12, item13, item14, item15, item16, item17);
 	 

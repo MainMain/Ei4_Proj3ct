@@ -58,35 +58,51 @@ Case_BD.GetCaseById = function(idCase)
 		return null;
 },
 
-/*
- * SUPPRIME UN OBJET D'UNE CASE
- * return : true
- * erreur : null
- */
-Case_BD.SupprObjet = function(id_case, id_item)
-{
-	this.listeCases[id_case].supprimerItem(id_item);
-},
 
 /**
- * ACTUALISE LA SALLE EN COURS DOIT ÊTRE DÉCLENCHÉE QUAND LE SERVEUR RELÈVE UN
+ * ACTUALISE LA CASE EN COURS.  DOIT ÊTRE DÉCLENCHÉE QUAND LE SERVEUR RELÈVE UN
  * ... ... CHANGEMENT FAITE PAR UN AUTRE JOUEUR
  * 
- * @method ActualiserSalle
+ * @method ActualiserCase
  */
-Case_BD.ActualiserSalle = function(idSalle) {
+Case_BD.ActualiserCase = function(idCase) {
 	// chercher infos dans la BD
 },
 
+
 /**
- * ACTUALISE LA SALLE EN COURS DOIT ÊTRE DÉCLENCHÉE QUAND LE SERVEUR RELÈVE UN
+ * UPDATE EN BD LA CASE EN COURS. DOIT ÊTRE DÉCLENCHÉE QUAND LE SERVEUR RELÈVE UN
  * ... ... CHANGEMENT FAITE PAR LE JOUEUR EN COURS
  * 
- * @method UpdateSalle
+ * @method UpdateCase
  */
-Case_BD.UpdateSalle = function(idSalle) {
+Case_BD.UpdateCase = function(idCase) {
 	// écrire infos dans la BD
 },
+
+
+
+/*  *** TRASH ***
+ * 
+ *
+ * AJOUTER UN ITEM A UNE CASE
+ *
+Case_BD.AjouterItem = function(id_case, item)
+{
+	this.listeCases[id_case].ajouterItem(id_item);
+	UpdateSalle(id_case);
+},
+
+/*
+ * SUPPRIME UN ITEM D'UNE CASE
+ *
+Case_BD.SupprObjet = function(id_case, item)
+{
+	this.listeCases[id_case].supprimerItem(item);
+	UpdateSalle(id_case);
+},
+
+*/
 
 
 module.exports = Case_BD;

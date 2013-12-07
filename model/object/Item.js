@@ -11,6 +11,8 @@ var Item = (function() {
 	Item.nom;
 	Item.description;
 	Item.poids;
+	// type : 0 : objet, 1 : arme, 2 : armure, 3 : ODD
+	Item.type;
 	Item.imageName;
 
 
@@ -21,11 +23,12 @@ var Item = (function() {
 	};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	function Item(id, nom, description, poids, imageName) {
+	function Item(id, nom, description, poids, type, imageName) {
 		this.id = id;
 		this.nom = nom;
 		this.description = description;
 		this.poids = poids;
+		this.type = type; 
 		this.imageName = imageName;
 	}
 
