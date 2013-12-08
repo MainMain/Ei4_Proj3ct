@@ -22,7 +22,7 @@ var oItem_BD = require('../persistance/Item_BD');
 
 // lancement du serveur
 oItem_BD.Initialiser();
-oCarte.Initialiser(3, 4);	
+oCarte.Initialiser(3, 4);
 oCase_BD.Initialiser();
 
 // Chargement du fichier index.html affiché au client
@@ -35,28 +35,28 @@ var server = http.createServer(function (request, response)
     var fullPath = path.join(process.cwd(), myPath);
 	
 	fs.exists(fullPath,function(exists)
-	{  
+	{
         if(!exists)
 		{
-			response.writeHeader(404, {"Content-Type": "text/plain"});    
-            response.write("404 Not Found\n");    
-            response.end();  
-        }  
+			response.writeHeader(404, {"Content-Type": "text/plain"});
+            response.write("404 Not Found\n");
+            response.end();
+        }
         else
 		{
 			fs.readFile(fullPath, "binary", function(err, file)
 			{    
                 if(err)
-				{    
+				{
 					response.writeHeader(500, {"Content-Type": "text/plain"});
                     response.write(err + "\n");
-                    response.end();    
-                }    
+                    response.end();
+                }
                 else
 				{
-					response.writeHeader(200);    
-                    response.write(file, "binary");    
-                    response.end();  
+					response.writeHeader(200);
+                    response.write(file, "binary");
+                    response.end();
                 }
             });
         }

@@ -9,5 +9,15 @@ exports.index = function(req, res){
 
 
 exports.jeu = function(req, res){
-	  res.render('game', { title: 'Express' });
+	  res.render('jeu', { title: 'Express' });
+};
+
+
+exports.classement = function(req, res){
+	  res.render('classement', { title: 'Express' });
+};
+
+
+exports.contact = function(req, res){
+	  res.render('contact', { title: 'Express' });
 };

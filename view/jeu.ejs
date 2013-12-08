@@ -4,49 +4,48 @@
 		<meta charset="utf-8" />
 		<title>Jeu</title>
 		
-		<link href="/style.css" rel="stylesheet" type="text/css" media="screen" />
-		
+		<link href="/view/style.css" rel="stylesheet" type="text/css" media="screen" />
+			
 		<script src="../model/server.js"></script>
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+
+		<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.2.0.min.js"></script>
+		
+		
+		<script>
+			var createjs = window;
+		</script>
+		
+		<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
+		<script type="text/javascript" src="/view/Button.js"></script>
+		<script type="text/javascript" src="/view/flo.js"></script>
+		
+		<!-- Script nécessaires pour le Header -->
+		<script src="/view/Scripts/jQuery_Base.js" type="text/javascript"></script>
+		<script src="/view/Scripts/animation.js" type="text/javascript"></script>
+		<script src="/view/Scripts/headerCode.js" type="text/javascript"></script>
 	</head>
 	<body>
 		<div id="container">
 			<ul id="nav">
-				<li><a href="index.html">Acceuil</a></li>
-				<li><a href="jeu.html">Jeu</a></li>
-				<li><a href="classement.html">Classement</a></li>
-				<li><a href="contact.html">Contact</a></li>
+				<li><a href="/">Acceuil</a></li>
+				<li><a href="jeu">Jeu</a></li>
+				<li><a href="classement">Classement</a></li>
+				<li><a href="contact">Contact</a></li>
 			</ul>
+			
 			<table align=center id="containerJeuRegles">
 				<tr>
-				<td align=center id="afficherJeu">Jeu</td>
-				<td align=center id="afficherRegles">Règles</td>
+					<td align=center id="afficherJeu">Jeu</td>
+					<td align=center id="afficherRegles">Règles</td>
 				</tr>
 			</table>
-			<br><br>
+			<br>
 			<div id="airDeJeu" align=center>
-				<h2>Commandes</h2>
-				<br>
-				<p>
-					<input type="button" value="Go gauche !" id="MOVE_LEFT" />
-					<input type="button" value="Go droite !" id="MOVE_RIGHT" />
-					<input type="button" value="Go haut !" id="MOVE_TOP" />
-					<input type="button" value="Go bas !" id="MOVE_BOTTOM" />
-					<input type="button" value="Infos case!" id="INFO_CASE" />
-					<input type="button" value="Infos perso!" id="INFO_PERSONNAGE" />
-					<input type="button" value="Ramasser l'objet d'id = 2!" id="RAMASSER_OBJET" />
-				</p>
-				<br>
-				<h2>Infos Perso'</h2>
-				<p id="zone_idSalle">
-					Nada !
-				</p>
-				<br>
-				<h2>Zone log</h2>
-				<section id="zone_log">
-
-				</section>
+				<canvas id="myCanvas" width="700" height="500" style="border:1px solid #FFFFFF;">
+					
+				</canvas>
 			</div>
 			<div id="reglesDuJeu" align=center>
 				<h2>Règles du jeu</h2>

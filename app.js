@@ -31,6 +31,8 @@ app.use(express.static(path.join(__dirname, '/')));
 
 app.get('/', routes.index);
 app.get('/jeu', routes.jeu);
+app.get('/classement', routes.classement);
+app.get('/contact', routes.contact);
 
 server.listen(app.get('port'), function(){
 	  console.log("Express server listening on port " + app.get('port'));
@@ -231,6 +233,30 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('INFO_PERSONNAGE_CS', function () {
         socket.emit('INFO_PERSONNAGE_SC', myPerso);
+    });
+
+
+    /*
+	* RECEPTION D'UNE DEMANDE DE CONNEXION
+	* Renvoi "CONNEXION_OK"
+	* Si erreur : renvoi "ERREUR_CONNEXION"
+	*/
+    socket.on('CONNEXION_CS', function (username, password) {
+        // log
+        console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
+		socket.emit('CONNEXION_SC', "CONNEXION_OK");
+    });
+
+
+    /*
+	* RECEPTION D'UNE DEMANDE D'INSCRIPTION
+	* Renvoi "INSCRIPTION_OK"
+	* Si erreur : renvoi "ERREUR_INSCRIPTION"
+	*/
+    socket.on('INSCRIPTION_CS', function (username, password) {
+        // log
+        console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password);
+		socket.emit('INSCRIPTION_SC', "INSCRIPTION_OK");
     });
 
 });

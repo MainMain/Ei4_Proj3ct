@@ -2,32 +2,45 @@
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>Jeu</title>
+		<title>Accueil</title>
 		
-		<link href="/style.css" rel="stylesheet" type="text/css" media="screen" />
+		<link href="/view/style.css" rel="stylesheet" type="text/css" media="screen" />
 		
+		<!-- Script nécessaires pour le serveur -->
 		<script src="../model/server.js"></script>
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+		
+		<!-- Script nécessaires pour le Header -->
+		<script src="/view/Scripts/jQuery_Base.js" type="text/javascript"></script>
+		<script src="/view/Scripts/animation.js" type="text/javascript"></script>
+		<script src="/view/Scripts/headerCode.js" type="text/javascript"></script>
+		
 	</head>
 	<body>
 		<div id="container">
 			<ul id="nav">
-				<li><a href="index.html">Acceuil</a></li>
-				<li><a href="jeu.html">Jeu</a></li>
-				<li><a href="classement.html">Classement</a></li>
-				<li><a href="contact.html">Contact</a></li>
+				<li><a href="/">Acceuil</a></li>
+				<li><a href="jeu">Jeu</a></li>
+				<li><a href="classement">Classement</a></li>
+				<li><a href="contact">Contact</a></li>
 			</ul>
 			
-			<table align=center id="containerJeuRegles">
-				<tr>
-				<td align=center id="afficherJeu">Jeu</td>
-				<td align=center id="afficherRegles">Règles</td>
-				</tr>
-			</table>
+			<div id="cadreLogin">
+				<br>
+				<table id="formLogin" align=center>
+					<tr>
+						<td id="loginTab">Login: <input type="text" id="login"></td>
+						<td id="loginTab">Mot de passe: <input type="password" id="password"></td>
+						<td id="loginTab"><input type="submit" value="Connexion" id="CONNEXION"></td>
+						<td id="loginTab"><input type="submit" value="Inscription" id="INSCRIPTION"></td>
+					</tr>
+				</table>
+			</div>
+			<br>
 			<div id="airDeJeu" align=center>
 				<h2>Commandes</h2>
-
+				<br>
 				<p>
 					<input type="button" value="Go gauche !" id="MOVE_LEFT" />
 					<input type="button" value="Go droite !" id="MOVE_RIGHT" />
@@ -41,22 +54,16 @@
 					<input type="button" value="Sequiper de l'arme d'id = 3" id="EQUIPER_OBJET_3" />
 					<input type="button" value="Se desequiper de l'arme" id="DESEQUIPER_ARME" />
 				</p>
-
+				<br>
 				<h2>Infos Perso'</h2>
 				<p id="zone_idSalle">
 					Nada !
 				</p>
+				<br>
 				<h2>Zone log</h2>
 				<section id="zone_log">
 
 				</section>
-			</div>
-			<div id="reglesDuJeu" align=center>
-				<h2>Règles du jeu</h2>
-				<p>
-				
-				
-				<p>
 			</div>
 		</div>
 
@@ -64,7 +71,35 @@
 
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost');
+			var socket = io.connect('http://localhost:8080');
+
+			/*
+			 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
+			 */
+			socket.on('CONNEXION_SC', function(reponseConnexion) {
+				if(reponseConnexion == 'CONNEXION_OK')
+				{
+					insereMessage("Bienvenue " + $("#login").val() + " !");
+				}
+				else
+				{
+					insereMessage("Oops ! Mauvais login ou mot de passe");
+				}
+			});
+
+			/*
+			 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
+			 */
+			socket.on('INSCRIPTION_SC', function(reponseInscription) {
+				if(reponseInscription == 'INSCRIPTION_OK')
+				{
+					insereMessage("Bienvenue dans notre communauté !!");
+				}
+				else
+				{
+					insereMessage("Désolé ! Ce pseudo existe déjà.");
+				}
+			});
 
 			/*
 			 * RECEPTION DE LA REPONSE DE DEPLACEMENT DU PERSONNAGE
@@ -228,6 +263,33 @@
 			$('#DESEQUIPER_ARME').click(function() {
 				socket.emit('INV_PERSONNAGE_CS', "DESEQUIPER", 3);
 			});
+		
+			$('#CONNEXION').click(function() {
+				var username = $("#login").val();
+				var password = $("#password").val();
+				if(username != '' && password != '')
+				{
+					socket.emit('CONNEXION_CS', username, password);
+				}
+				else
+				{
+					insereMessage("Veuillez entrer un login et un mot de passe !");
+				}
+			});
+			
+			$('#INSCRIPTION').click(function()
+			{
+				var username = $("#login").val();
+				var password = $("#password").val();
+				if(username != '' && password != '')
+				{
+					socket.emit('INSCRIPTION_CS', username, password);
+				}
+				else
+				{
+					insereMessage("Veuillez entrer un login et un mot de passe !");
+				}
+			});
 
 
 			/******** FONCTIONS MODIFIANT L'IHM ************/
@@ -244,25 +306,6 @@
 			function insereMessage(message) {
 				$('#zone_log').prepend(message + "<br>");
 			}
-			
-			/******** FONCTIONS MODIFIANT LA PAGE ************/
-			
-			$('#afficherJeu').click(function()
-			{
-				$('#reglesDuJeu').hide(100, function()
-				{
-				$('#airDeJeu').show(100);
-				});
-			});
-			
-			$('#afficherRegles').click(function()
-			{
-				$('#airDeJeu').hide(100, function()
-				{
-				$('#reglesDuJeu').show(100);
-				});
-			});
-
 		</script>
 
 	</body>
