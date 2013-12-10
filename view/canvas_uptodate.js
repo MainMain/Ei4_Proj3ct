@@ -13,7 +13,7 @@ function initialize() {
 	var context = canvasElement.getContext("2d");
 	
 	//**********Déclaration des labels*******
-	var demandeDeplacement, txtSalle, txtObjet, txtCase, txtObjetCase, txtPerso, txtListeObjet; 
+	var demandeDeplacement, txtSalle, txtObjet, txtCase, txtObjetCase, txtPerso, txtListeObjet, txtObjetPerso; 
 	
 	demandeDeplacement = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
 	demandeDeplacement.lineHeight = 15;
@@ -36,7 +36,7 @@ function initialize() {
 	txtCase = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
 	txtCase.lineHeight = 15;
 	txtCase.textBaseline = "top";
-	txtCase.x = 400;
+	txtCase.x = 600;
 	txtCase.y = 170;
 	
 	txtObjetCase = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
@@ -44,6 +44,14 @@ function initialize() {
 	txtObjetCase.textBaseline = "top";
 	txtObjetCase.x = txtCase.x;
 	txtObjetCase.y = txtCase.y + 20;
+	
+	txtObjetPerso = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
+	txtObjetPerso.lineHeight = 15;
+	txtObjetPerso.textBaseline = "top";
+	txtObjetPerso.x = 10;
+	txtObjetPerso.y = txtObjet.y + 20;
+	
+	
 	
 	//**********Création des boutons*********
 	var BtnInfoCase = stage.addChild(new Button("Info Case", "#A9A9A9"));
@@ -54,6 +62,10 @@ function initialize() {
 	
 	
 	var BtnInfoPerso = stage.addChild(new Button("Info Perso", "#A9A9A9"));
+	BtnInfoPerso.addEventListener('click', function(event) {
+		alert("click");
+		socket.emit('INFO_PERSONNAGE_CS');
+		});	
 	BtnInfoPerso.y = BtnInfoCase.y + 60;
 	
 	var BtnRamasseObjet = stage.addChild(new Button("Ramasser Objet", "#A9A9A9"));
@@ -63,7 +75,7 @@ function initialize() {
 		socket.emit('INV_CASE_CS', "RAMASSER", 1);
 		});
 	
-	BtnRamasseObjet.x = BtnInfoPerso.x = BtnInfoCase.x = 300;
+	BtnRamasseObjet.x = BtnInfoPerso.x = BtnInfoCase.x = 600;
 	
 	var BtnHaut = stage.addChild(new Button("H", "#A9A9A9"));
 	BtnHaut.y = 20;
@@ -125,6 +137,7 @@ function initialize() {
 			txtSalle.text="";
 			txtSalle.text=("CLIENT : nom salle = " + currentCase.nom + "");
 			modifieIdSalle(currentCase.nom, currentCase.id);
+			socket.emit('INFO_PERSONNAGE_CS');
 		}
 		stage.update();
 	});
@@ -203,11 +216,17 @@ function initialize() {
 	 * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
 	 */
 	socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-		insereMessage("****LISTE DES OBJETS  DU PERSO (" + currentPerso.sacADos.length + ")****");
+	txtObjetPerso.text="";
+	txtObjetPerso.text=("****LISTE DES OBJETS  DU PERSO (" + currentPerso.sacADos.length + ")****");
 		for (var i = 0; i < currentPerso.sacADos.length; i++) {
 			//insereMessage(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom);
-			txtPerso=new createjs.Text(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom, "12px Arial", "#ffffff");
-			txtPerso.y=280+i*10;
+			txtPerso = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
+			txtPerso.lineHeight = 15;
+			txtPerso.textBaseline = "top";
+			txtPerso.x = txtObjetPerso.x;
+			txtPerso.y = txtObjetPerso.y + (i+1)*20;
+			txtPerso.text=(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom + "");
+			stage.update();
 		}
 		//insereMessage("************************************");
 	});
