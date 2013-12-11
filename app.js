@@ -31,8 +31,10 @@ app.use(express.static(path.join(__dirname, '/')));
 
 app.get('/', routes.index);
 app.get('/jeu', routes.jeu);
+app.get('/regles', routes.regles);
+app.get('/chat-equipe', routes.chat-equipe);
 app.get('/classement', routes.classement);
-app.get('/contact', routes.contact);
+app.get('/chat-general', routes.chat-general);
 
 server.listen(app.get('port'), function(){
 	  console.log("Express server listening on port " + app.get('port'));

@@ -1,27 +1,102 @@
 <!DOCTYPE html>
-<html>
+<!-- Consider specifying the language of your content by adding the `lang` attribute to <html> -->
+<!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
-		<meta charset="utf-8" />
-		<title>Développement v0.1</title>
-		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 
-		<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.2.0.min.js"></script>
-		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		
-		
-		<script>
-			var createjs = window;
-		</script>
-		
-				<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
-		<script type="text/javascript" src="/view/Button.js"></script>
-		<script type="text/javascript" src="/view/flo.js"></script>
+	<meta charset="utf-8">
+
+	<!-- Always force latest IE rendering engine & Chrome Frame -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<!-- Put your title here! -->
+	<title>Accueil</title>
+
+	<meta name="description" content="">
+
+	 <!-- Mobile viewport optimized: h5bp.com/viewport -->
+	<meta name="viewport" content="width=device-width">
+
+	<link href="style.css" rel="stylesheet">
+
+	<!-- Load Open Sans and Merriweather from Google Fonts
+		For optimal performance, customize it to load the styles you need:
+		http://goo.gl/QufgJ
+	-->
+	<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
+
+	<!-- All JavaScript at the bottom, except for Modernizr
+		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
+		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+	<script src="js/modernizr-2.6.1.min.js"></script>
 </head>
 
 <body>
-<canvas id="myCanvas" width="700" height="500" style="border:1px solid #000000;">
-	
-</canvas>
 
+	<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
+	<!--[if lt IE 8]>
+		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
+	<![endif]-->
+
+	<header id="master-header" class="clearfix" role="banner">
+
+		<hgroup>
+			<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
+			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
+		</hgroup>
+
+	</header> <!-- #master-header -->
+
+<div id="main" class="row clearfix">
+
+	<!-- Main navigation -->
+	<nav class="main-navigation clearfix span12" role="navigation">
+		<h3 class="assistive-text">Menu principal</h3>
+		<ul>
+			<li class="span2"><a href="/">Accueil</a></li>
+			<li class="span2 current">
+				<a href="jeu">Jeu</a>
+				<ul class="sub-menu">
+					<li><a href="regles">Règles</a></li>
+					<li><a href="chat-equipe">Chat</a></li>
+				</ul>
+			</li>
+			<li class="span2"><a href="classement">Classement</a></li>
+			<li class="span2"><a href="chat-general">Chat</a></li>
+		</ul>
+	</nav> <!-- #main-navigation -->
+
+	<!-- Login form -->
+	<form name="Login" class="loginform" method=post>
+		Connectez vous : <input type="text" name="PseudoLogin" placeholder="Entrez votre Pseudo" value="">
+		Mot de passe : <input type="password" name="PasswordLogin" placeholder="Entrez votre Mot de passe" value="">
+		<input type="submit" name="LoginSubscribe" value="Encore vivant ?!">
+	</form>
+
+<div id="content" role="main" class="span12">
+
+	<h1 class="entry-title" align=center>
+		Plateau de jeu
+	</h1>
+	
+	<!-- Canvas -->
+	
+	<!-- #Canvas -->
+</div> <!-- #content -->
+
+</div> <!-- #main -->
+
+	<footer id="footer">
+	
+	</footer> <!-- #footer -->
+
+	<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>
+
+	<!-- Load custom scripts -->
+	<script src="js/script.js"></script>
 </body>
 </html>

@@ -9,7 +9,7 @@ exports.index = function(req, res){
 
 
 exports.jeu = function(req, res){
-	  res.render('jeu', { title: 'Express' });
+	  res.render('game', { title: 'Express' });
 };
 
 
@@ -18,6 +18,16 @@ exports.classement = function(req, res){
 };
 
 
-exports.contact = function(req, res){
-	  res.render('contact', { title: 'Express' });
+exports.chat-equipe = function(req, res){
+	  res.render('chat-equipe', { title: 'Express' });
+};
+
+
+exports.chat-general = function(req, res){
+	  res.render('chat-equipe', { title: 'Express' });
+};
+
+
+exports.regles = function(req, res){
+	  res.render('regles', { title: 'Express' });
 };
