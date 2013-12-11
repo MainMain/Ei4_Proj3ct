@@ -142,6 +142,7 @@
 		if(reponseConnexion == 1)
 		{
 			$("#LoginForm").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
+			$("#SubscribeForm").html('<img src="/view/images/zombie.jpg"/>');
 		}
 		else
 		{
@@ -172,6 +173,7 @@
 
 		// Hide any previous response text
 		$("#LoginForm").hide();
+		$("#SubscribeForm").hide(100);
 		
 		socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
 	});

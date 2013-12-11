@@ -56,7 +56,7 @@
 		<h3 class="assistive-text">Menu principal</h3>
 		<ul>
 			<li class="span2"><a href="/">Accueil</a></li>
-			<li class="span2">
+			<li class="span2 current">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">
 					<li><a href="regles">Règles</a></li>
@@ -74,16 +74,37 @@
 		Mot de passe : <input type="password" name="PasswordLogin" placeholder="Entrez votre Mot de passe" value="">
 		<input type="submit" name="LoginSubscribe" value="Encore vivant ?!">
 	</form>
-
 <div id="content" role="main" class="span12">
 
 	<h1 class="entry-title" align=center>
-		Chat de l'équipe
+		Règles du jeu
 	</h1>
 	
-	<!-- Classement -->
-	
-	<!-- #Classement -->
+	<!-- Règles -->
+	<p>
+		- Le personnage dispose d'un quota de points d'actions par jour (non cumulable).<br>
+		- Certaines actions coûtent des points d'actions au joueur.<br>
+		- Certaines actions coûtent des points d'actions au joueur.<br> 
+		- Le personnage se déplace de cases en cases sans utiliser de points d'actions, mais points de déplacement.<br>
+		- Chaque case est différente. Une description sera affichée afin que le joueur s'imagine la salle <br>
+			(nombre de meubles, description visuelle, probabilité d'être découvert quand il est caché, probabilité de découvrir un objet). <br>
+		- Le personnage dispose d'une barre de vie. Si elle tombe à zéro...<br>
+		- Le personnage peut avoir plusieurs objets sur lui (mais en nombre limité par leurs poids).<br>
+		- Le personnage peut attaquer d'autres joueurs de l'équipe adverse.<br>
+		- Le personnage peut se mettre en "fouille". Dès lors, il à une probabilité de trouver un objet toutes les heures. <br>
+			La probabilité varie en fonction de la salle. Le joueur peut se déconnecter tout en restant en "fouille".<br>
+		- Chaque équipe dispose d'une salle "de repos", où le joueur est intouchable.<br>
+		- Les personnages  ne peuvent aller dans les salles de repos adverses.<br>
+		- Chaque jour, des goules apparaissent aléatoirement dans les salles (sauf salles de repos).<br>
+		- Plus le temps passe, plus les goules seront nombreux.<br>
+		- Un joueur peut se cacher dans une salle. La probabilité qu'il soit découvert lors d'une fouille dépend des objets de la salle.<br>
+		- Les statistiques du joueur ne seront pas affichées, ainsi que son pseudo (mais visibilité dans l'équipe).<br>
+		- Le joueur peut s'équiper d'une arme d'attaque pour augmenter ses points de dégâts.<br>
+		- Le joueur peut s'équiper d'une armure pour augmenter ses points de défense.<br>
+		- Si un joueur se cache dans une salle occupé par des goules, il a une probabilité de se faire attaquer avant de se cacher et une autre probabilité (plus faible) que sa cache rate.<br>
+		- Les déplacements dans une case peuvent être limités à cause du nombre important de goules.<br>
+	<p>
+	<!-- #Règles -->
 </div> <!-- #content -->
 
 </div> <!-- #main -->
