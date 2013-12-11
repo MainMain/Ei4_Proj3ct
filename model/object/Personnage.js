@@ -17,6 +17,8 @@ var Personnage = (function() {
 	Personnage.ptDeplacement;
 	Personnage.ptDeplacementMax;
 	Personnage.poidsMax;
+	Personnage.goulesMax;
+	Personnage.competence;
 	Personnage.idSalleEnCours;
 	Personnage.armeEquipee;
 	Personnage.armureEquipee;

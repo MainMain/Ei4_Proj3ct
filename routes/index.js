@@ -18,12 +18,12 @@ exports.classement = function(req, res){
 };
 
 
-exports.chat-equipe = function(req, res){
+exports.chatEquipe = function(req, res){
 	  res.render('chat-equipe', { title: 'Express' });
 };
 
 
-exports.chat-general = function(req, res){
+exports.chatGeneral = function(req, res){
 	  res.render('chat-equipe', { title: 'Express' });
 };
 
