@@ -20,6 +20,18 @@
 	<meta name="viewport" content="width=device-width">
 
 	<link href="/view/style.css" rel="stylesheet">
+	
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.2.0.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	
+	<script>
+		var createjs = window;
+	</script>
+
+	<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
+	<script type="text/javascript" src="/view/Button.js"></script>
+	<script type="text/javascript" src="/view/canvas_uptodate.js"></script>
 
 	<!-- Load Open Sans and Merriweather from Google Fonts
 		For optimal performance, customize it to load the styles you need:
@@ -83,7 +95,10 @@
 	
 	<!-- Canvas -->
 	
-	<!-- #Canvas -->
+	<canvas id="myCanvas" width="1024" height="640" style="border:1px solid #000000;">
+	
+	/canvas>
+
 </div> <!-- #content -->
 
 </div> <!-- #main -->
