@@ -34,6 +34,7 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
 	
 },
 
+
 /**
  * Ajoute un Utilisateur dans la base de donnée
  * 
@@ -62,3 +63,6 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
 
  
  module.exports = Utilisateur_BD;
+
+
+

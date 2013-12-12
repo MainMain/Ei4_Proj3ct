@@ -78,6 +78,7 @@ Item_BD.listeItems;
  */
 Item_BD.Initialiser = function() {
 	console.log("ITEM_BD : initialisation liste item");
+	// id, nom, description, poids, type, imageName
 	var item1 = new oItem(0, 	"Item a",		"aaaaa", 	3, 	0, null);
 	var item2 = new oItem(1, 	"Arme b",		"bbbbb", 	4, 	1, null);
 	var item3 = new oItem(2, 	"Armure  c", 	"ccccc", 	2, 	2, null);

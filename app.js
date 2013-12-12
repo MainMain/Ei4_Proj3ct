@@ -14,6 +14,7 @@ var oPersonnage = require('./model/object/Personnage');
 var oCarte = require('./model/object/Carte');
 var oCase_BD = require('./persistance/Case_BD');
 var oItem_BD = require('./persistance/Item_BD');
+var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 
 
 /*
@@ -29,7 +30,9 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '/')));
 
-// sessions
+/*
+ * CONFIGURATION DES SESSIONS
+ */
 // Allow parsing cookies from request headers
 app.use(express.cookieParser());
 // Session management
@@ -57,12 +60,14 @@ function requireLogin (req, res, next) {
   
 app.get('/', routes.index);
 app.get('/jeu', routes.jeu);
+app.get('/regles', routes.regles);
+app.get('/chat-equipe', routes.chatEquipe);
 app.get('/classement', routes.classement);
-app.get('/contact', routes.contact);
+app.get('/chat-general', routes.chatGeneral);
 app.get('/session-test', [requireLogin], function (req, res, next) {
 	  res.render('index');
 });
-	  
+
 server.listen(app.get('port'), function(){
 	  console.log("Express server listening on port " + app.get('port'));
 });
@@ -266,23 +271,48 @@ io.sockets.on('connection', function (socket) {
 
 
     /*
-	 * RECEPTION D'UNE DEMANDE DE CONNEXION Renvoi "CONNEXION_OK" Si erreur :
-	 * renvoi "ERREUR_CONNEXION"
+	 * RECEPTION D'UNE DEMANDE DE CONNEXION Renvoi "CONNEXION_OK" 
+	 * return : 1 si login / mdp ok
+	 * Si couple inconnu : renvoi 0
+	 * si erreur : renvoi -1
 	 */
     socket.on('CONNEXION_CS', function (username, password) {
         // log
         console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
-		socket.emit('CONNEXION_SC', "CONNEXION_OK");
+        // demande au serveur
+        var reponse = oUtilisateur_BD.Connexion(username, password);
+        // si couple ok
+        if (reponse == true)
+        	{
+        		socket.emit('CONNEXION_SC', 1);
+        	}
+        else
+        	{
+        		socket.emit('CONNEXION_SC', 0);
+        	}
+        socket.emit('CONNEXION_SC', -1);
     });
 
 
     /*
-	 * RECEPTION D'UNE DEMANDE D'INSCRIPTION Renvoi "INSCRIPTION_OK" Si erreur :
-	 * renvoi "ERREUR_INSCRIPTION"
+	 * RECEPTION D'UNE DEMANDE D'INSCRIPTION 
+	 * Renvoi 1
+	 * Si erreur : renvoi 0
 	 */
-    socket.on('INSCRIPTION_CS', function (username, password) {
+    socket.on('INSCRIPTION_CS', function (username, password, email) {
         // log
         console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password);
+        var reponse = oUtilisateur_BD.Inscription(username, password, email);
+     // si couple ok
+        if (reponse == true)
+        	{
+        		socket.emit('CONNEXION_SC', 1);
+        	}
+        else
+        	{
+        		socket.emit('CONNEXION_SC', 0);
+        	}
+        
 		socket.emit('INSCRIPTION_SC', "INSCRIPTION_OK");
     });
 

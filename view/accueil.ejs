@@ -1,312 +1,201 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8" />
-		<title>Accueil</title>
-		
-		<link href="/view/style.css" rel="stylesheet" type="text/css" media="screen" />
+<!-- Consider specifying the language of your content by adding the `lang` attribute to <html> -->
+<!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+
+	<meta charset="utf-8">
+
+	<!-- Always force latest IE rendering engine & Chrome Frame -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<!-- Put your title here! -->
+	<title>Accueil</title>
+
+	<meta name="description" content="">
+
+	 <!-- Mobile viewport optimized: h5bp.com/viewport -->
+	<meta name="viewport" content="width=device-width">
+
+	<link href="/view/style.css" rel="stylesheet">
+
+	<!-- Load Open Sans and Merriweather from Google Fonts
+		For optimal performance, customize it to load the styles you need:
+		http://goo.gl/QufgJ
+	-->
+	<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
+
+	<!-- All JavaScript at the bottom, except for Modernizr
+		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
+		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+	<script src="/view/js/modernizr-2.6.1.min.js"></script>
+</head>
+
+<body>
+
+	<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
+	<!--[if lt IE 8]>
+		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
+	<![endif]-->
+
+	<header id="master-header" class="clearfix" role="banner">
+
+		<hgroup>
+			<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
+			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
+		</hgroup>
+
+	</header> <!-- #master-header -->
+
+<div id="main" class="row clearfix">
+
+	<!-- Main navigation -->
+	<nav class="main-navigation clearfix span12" role="navigation">
+		<h3 class="assistive-text">Menu principal</h3>
+		<ul>
+			<li class="current span2"><a href="/">Accueil</a></li>
+			<li class="span2">
+				<a href="jeu">Jeu</a>
+				<ul class="sub-menu">
+					<li><a href="regles">Règles</a></li>
+					<li><a href="chat-equipe">Chat</a></li>
+				</ul>
+			</li>
+			<li class="span2"><a href="classement">Classement</a></li>
+			<li class="span2"><a href="chat-general">Chat</a></li>
+		</ul>
+	</nav> <!-- #main-navigation -->
+
+	<!-- Login form -->
+	<div id="LoginForm" class="loginform">
+		Connectez vous : <input type="text" id="PseudoLogin" placeholder="Entrez votre Pseudo" value="" required="">
+		Mot de passe : <input type="password" id="PasswordLogin" placeholder="Entrez votre Mot de passe" value="" required="">
+		<input type="submit" id="SubmitLogin" value="Encore vivant ?!">
+	</div>
+<div id="content" role="main" class="span7">
+
+	<article class="post hentry">
+
+		<header class="entry-header">
+			<h1 class="entry-title">
+				Première news
+			</h1>
+
+			<!-- .<a href="#" title="Post Heading"><img src="images/200x200.gif" alt="Post thumbnail" class="thumbnail" /></a> -->
+		</header> <!-- .entry-header -->
+
+		<div class="entry-content">
+			<p>
+				Bienvenue sur notre site ! Ici vous trouverez les principales news apportées à notre jeu !
+			</p>
+		</div> <!-- .entry-content -->
+
+		<footer class="entry-meta">
+			Posté le <time class="entry-date" datetime="11-12-2013" pubdate>11 Décembre 2013</time>
+			par <span class="author vcard">Admin</span>
+
+			<span class="edit-link"><a href="#" title="Edit entry">Edit &#9997;</a></span>
+		</footer>
+
+	</article> <!-- .post.hentry -->
+
+</div> <!-- #content -->
+
+<div id="sidebar" role="complementary" class="span4">
+
+	<!-- Subscription form -->
+	<div id="SubscribeForm" class="subscribeform">
+		<h2 align=center>Venez creuser votre tombe !</h2>
+		<input type="text" id="PseudoSubscribe" placeholder="Pseudo" value="" required="">
+		<input type="password" id="PasswordSubscribe" placeholder="Mot de passe" value="" required="">
+		<input type="email" id="EmailSubscribe" placeholder="E-mail" value="" required="">
+		<input type="submit" id="SubmitSubscribe" value="Inscription">
+	</div>
+
+</div> <!-- #sidebar -->
+
+</div> <!-- #main -->
+
+	<footer id="footer">
+	
+	</footer> <!-- #footer -->
+	<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>
 		
 		<!-- Script nécessaires pour le serveur -->
 		<script src="../model/server.js"></script>
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
+	
+	<script>
+
+	/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+	var socket = io.connect('http://localhost:8080');
+
+	/*
+	 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
+	 */
+	socket.on('CONNEXION_SC', function(reponseConnexion) {
+		if(reponseConnexion == 1)
+		{
+			$("#LoginForm").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
+			$("#SubscribeForm").html('<img src="/view/images/zombie.jpg"/>');
+		}
+		else
+		{
+			$("#LoginForm").show();
+		}
+	});
+
+	/*
+	 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
+	 */
+	socket.on('INSCRIPTION_SC', function(reponseInscription) {
+		if(reponseConnexion == 1)
+		{
+			$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() + " !<br>Veuillez vous connectez !");
+		}
+		else
+		{
+			$("#SubscribeForm").show();
+		}
+	});
+
+	// Contact form
+	$("#SubmitLogin").click(function(e)
+	{
+		// Setup any needed variables
+		var input_Pseudo   = $('#PseudoLogin').val();
+		var input_Password = $('#PasswordLogin').val();
+
+		// Hide any previous response text
+		$("#LoginForm").hide();
+		$("#SubscribeForm").hide(100);
 		
-		<!-- Script nécessaires pour le Header -->
-		<script src="/view/Scripts/jQuery_Base.js" type="text/javascript"></script>
-		<script src="/view/Scripts/animation.js" type="text/javascript"></script>
-		<script src="/view/Scripts/headerCode.js" type="text/javascript"></script>
+		socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
+	});
+
+	// Contact form
+	$("#SubmitSubscribe").click(function(e)
+	{
+		// Setup any needed variables
+		var input_Pseudo   = $('#PseudoSubscribe').val();
+		var input_Password = $('#PasswordSubscribe').val();
+		var input_Email = $('#EmailSubscribe').val();
+
+		// Hide any previous response text
+		$("#SubscribeForm").hide();
+
+		// Change response text to 'loading...'
+		$("#SubscribeForm").html('Chargement...').show();
 		
-	</head>
-	<body>
-		<div id="container">
-			<ul id="nav">
-				<li><a href="/">Acceuil</a></li>
-				<li><a href="jeu">Jeu</a></li>
-				<li><a href="classement">Classement</a></li>
-				<li><a href="contact">Contact</a></li>
-			</ul>
-			
-			<div id="cadreLogin">
-				<br>
-				<table id="formLogin" align=center>
-					<tr>
-						<td id="loginTab">Login: <input type="text" id="login"></td>
-						<td id="loginTab">Mot de passe: <input type="password" id="password"></td>
-						<td id="loginTab"><input type="submit" value="Connexion" id="CONNEXION"></td>
-						<td id="loginTab"><input type="submit" value="Inscription" id="INSCRIPTION"></td>
-					</tr>
-				</table>
-			</div>
-			<br>
-			<div id="airDeJeu" align=center>
-				<h2>Commandes</h2>
-				<br>
-				<p>
-					<input type="button" value="Go gauche !" id="MOVE_LEFT" />
-					<input type="button" value="Go droite !" id="MOVE_RIGHT" />
-					<input type="button" value="Go haut !" id="MOVE_TOP" />
-					<input type="button" value="Go bas !" id="MOVE_BOTTOM" />
-					<input type="button" value="Infos case!" id="INFO_CASE" />
-					<input type="button" value="Infos perso!" id="INFO_PERSONNAGE" />
-					<input type="button" value="Ramasser l'objet d'id = 2!" id="RAMASSER_OBJET" />
-					<input type="button" value="Déposer l'objet d'id = 9" id="DEPOSER_OBJET" />
-					<input type="button" value="Sequiper de l'arme d'id = 1" id="EQUIPER_OBJET_1" />
-					<input type="button" value="Sequiper de l'arme d'id = 3" id="EQUIPER_OBJET_3" />
-					<input type="button" value="Se desequiper de l'arme" id="DESEQUIPER_ARME" />
-				</p>
-				<br>
-				<h2>Infos Perso'</h2>
-				<p id="zone_idSalle">
-					Nada !
-				</p>
-				<br>
-				<h2>Zone log</h2>
-				<section id="zone_log">
-
-				</section>
-			</div>
-		</div>
-
-		<!-- -------------------- CODE JAVASCRIPT ----------------- -->
-
-		<script>
-			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:8080');
-
-			/*
-			 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
-			 */
-			socket.on('CONNEXION_SC', function(reponseConnexion) {
-				if(reponseConnexion == 'CONNEXION_OK')
-				{
-					insereMessage("Bienvenue " + $("#login").val() + " !");
-				}
-				else
-				{
-					insereMessage("Oops ! Mauvais login ou mot de passe");
-				}
-			});
-
-			/*
-			 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
-			 */
-			socket.on('INSCRIPTION_SC', function(reponseInscription) {
-				if(reponseInscription == 'INSCRIPTION_OK')
-				{
-					insereMessage("Bienvenue dans notre communauté !!");
-				}
-				else
-				{
-					insereMessage("Désolé ! Ce pseudo existe déjà.");
-				}
-			});
-
-			/*
-			 * RECEPTION DE LA REPONSE DE DEPLACEMENT DU PERSONNAGE
-			 */
-			socket.on('MOVE_PERSONNAGE_SC', function(currentCase) {
-				if (currentCase == "ERREUR_CASE")
-					insereMessage("CLIENT : nom salle = " + "ERREUR_CASE");
-				else if (currentCase == "ERREUR_MOVE")
-					insereMessage("CLIENT : nom salle = " + "impossible d'aller par là !");
-				else {
-					insereMessage("CLIENT : nom salle = " + currentCase.nom);
-					modifieIdSalle(currentCase.nom, currentCase.id);
-				}
-			});
-
-			/**************************************************************************************
-			 * RECEPTION DE LA REPONSE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM
-			 * Retours (voir server.js) :
-			 * return 1 si ok
-			 * erreur : 0 si objet n'est pas dans le sac
-			 * erreur : -1 si il y a déja une arme d'équipée
-			 * erreur : -2  si il y a déja une armure d'équipée
-			 * erreur : -3 si item n'est ni arme ni armure
-			 */
-			socket.on('INV_PERSONNAGE_SC', function(type, id_item, codeRetour) {
-				if (codeRetour == 0) {
-					insereMessage("L'item " + id_item + " n'est plus dans le sac ");
-					// quitte la fonction
-					return; 
-				}
-				if (type == "EQUIPER") {
-					switch(codeRetour) {
-						case 0 : insereMessage("Equipement de l'item " + idtem + " raté : Item pas dans sac !");
-							break;
-						case 1 : insereMessage("Equipement de l'item " + idtem + " ok !");
-							break;
-						case -1 : insereMessage("Equipement de l'item " + idtem + " raté : arme déja équipée");
-							break;
-						case -2 : insereMessage("Equipement de l'item " + idtem + " raté : armure déja équipée");
-							break;
-						case -3 : insereMessage("Equipement de l'item " + idtem + " raté : armure déja équipée");
-							break;
-					}
-				} else if (type == "DEQUIPER") 
-				{
-					if (codeRetour == -4) 
-					insereMessage("Impossible de se déséquiper de l'item " + id_item + " vous ne vous en êtes pas équipé");
-					else
-					insereMessage("Item " + id_item + "équipé !");
-				}
-
-				// RAFRAICHISSEMENT DE LA CASE ET DU PERSO
-			});
-
-			/**************************************************************************************
-			 * RECEPTION D'UNE REPONSE POUR LA DEMANDE DE MODIF
-			 * D'OBJET DANS LA CASE
-			 */
-			socket.on('INV_CASE_SC', function(type, id_item, codeRetour) {
-				if (type == 'RAMASSER') {
-					// erreur
-					if (codeRetour == -3) {
-						insereMessage("Erreur inconnue");
-					}
-					// poids insufisant
-					else if (codeRetour == -1) {
-						insereMessage("Impossible de ramasser l'objet : poids max atteint");
-					}
-					// objet pas dans case (! pas normal)
-					else if (codeRetour == -2) {
-						insereMessage("L'item " + id_item + " n'est plus dans la salle ");
-					}
-					// ramassage ok
-					else {
-						insereMessage("Item ramassé ! Poids total du sac : " + codeRetour);
-
-						// modifier l'ihm : inventaire du perso et inventaire de case
-					}
-				}
-				if (type == 'DEPOSER') {
-					// erreur
-					if (codeRetour == -3) {
-						insereMessage("Erreur inconnue");
-					}
-					// objet pas dans sac (! pas normal)
-					else if (codeRetour == -2) {
-						insereMessage("L'item " + id_item + " n'est plus dans le sac ");
-					}
-					// dépôt ok
-					else {
-						insereMessage("Item déposé ! Poids total du sac : " + codeRetour);
-
-						// modifier l'ihm : inventaire du perso et inventaire de case
-					}
-				}
-
-				// RAFRAICHISSEMENT DE LA CASE ET DU PERSO
-			});
-
-			/**************************************************************************************
-			 * RECEPTION DES INFORMATIONS SUR LA CASE
-			 */
-			socket.on('INFO_CASE_SC', function(currentCase) {
-				if (currentCase == "ERREUR_CASE")
-					insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
-				else {
-					insereMessage("CLIENT :: nom case = " + currentCase.nom);
-					insereMessage("****LISTE DES OBJETS DE LA CASE ****");
-					for (var i = 0; i < currentCase.listeItem.length; i++) {
-						insereMessage(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom);
-					}
-					insereMessage("************************************");
-				}
-			});
-
-			/**************************************************************************************
-			 * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
-			 */
-			socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-				insereMessage("****LISTE DES OBJETS  DU PERSO (" + currentPerso.sacADos.length + ")****");
-				for (var i = 0; i < currentPerso.sacADos.length; i++) {
-					insereMessage(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom);
-				}
-				insereMessage("************************************");
-			});
-
-			/******** EVENEMENTS LORS DE L'APPUI SUR UN BOUTON ************/
-			$('#MOVE_LEFT').click(function() {
-				insereMessage("CLIENT : go gauche");
-				socket.emit('MOVE_PERSONNAGE_CS', 'EST');
-			});
-			$('#MOVE_RIGHT').click(function() {
-				socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
-			});
-			$('#MOVE_TOP').click(function() {
-				socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
-			});
-			$('#MOVE_BOTTOM').click(function() {
-				socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
-			});
-			$('#INFO_CASE').click(function() {
-				socket.emit('INFO_CASE_CS');
-			});
-			$('#INFO_PERSONNAGE').click(function() {
-				socket.emit('INFO_PERSONNAGE_CS');
-			});
-			$('#RAMASSER_OBJET').click(function() {
-				// exemple : ramsser l'objet d'id 1
-				socket.emit('INV_CASE_CS', "RAMASSER", 1);
-			});
-			$('#DEPOSER_OBJET').click(function() {
-				// exemple : déposer l'objet d'id 9
-				socket.emit('INV_CASE_CS', "DEPOSER", 9);
-			});
-			$('#EQUIPER_OBJET_1').click(function() {
-				socket.emit('INV_PERSONNAGE_CS', "EQUIPER", 1);
-			});
-			$('#EQUIPER_OBJET_3').click(function() {
-				socket.emit('INV_PERSONNAGE_CS', "EQUIPER", 3);
-			});
-			$('#DESEQUIPER_ARME').click(function() {
-				socket.emit('INV_PERSONNAGE_CS', "DESEQUIPER", 3);
-			});
-		
-			$('#CONNEXION').click(function() {
-				var username = $("#login").val();
-				var password = $("#password").val();
-				if(username != '' && password != '')
-				{
-					socket.emit('CONNEXION_CS', username, password);
-				}
-				else
-				{
-					insereMessage("Veuillez entrer un login et un mot de passe !");
-				}
-			});
-			
-			$('#INSCRIPTION').click(function()
-			{
-				var username = $("#login").val();
-				var password = $("#password").val();
-				if(username != '' && password != '')
-				{
-					socket.emit('INSCRIPTION_CS', username, password);
-				}
-				else
-				{
-					insereMessage("Veuillez entrer un login et un mot de passe !");
-				}
-			});
-
-
-			/******** FONCTIONS MODIFIANT L'IHM ************/
-			/*
-			 * Modifie l'id de la salle
-			 */
-			function modifieIdSalle(nomCase, idCase) {
-				$('#zone_idSalle').text("id salle : " + idCase + " - nom salle : " + nomCase);
-			}
-
-			/*
-			 * Insere un message dans la zone "zone log"
-			 */
-			function insereMessage(message) {
-				$('#zone_log').prepend(message + "<br>");
-			}
-		</script>
-
-	</body>
+		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, input_Email);
+	});
+	
+	</script>
+	
+</body>
 </html>
