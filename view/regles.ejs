@@ -19,7 +19,7 @@
 	 <!-- Mobile viewport optimized: h5bp.com/viewport -->
 	<meta name="viewport" content="width=device-width">
 
-	<link href="/view/style.css" rel="stylesheet">
+	<link href="/public/stylesheets/style.css" rel="stylesheet">
 
 	<!-- Load Open Sans and Merriweather from Google Fonts
 		For optimal performance, customize it to load the styles you need:
@@ -116,5 +116,77 @@
 	<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>
+		
+		<!-- Script nécessaires pour le serveur -->
+		<script src="../model/server.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+	
+	<script>
+
+	/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+	var socket = io.connect('http://localhost:8080');
+
+	/*
+	 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
+	 */
+	socket.on('CONNEXION_SC', function(reponseConnexion) {
+		if(reponseConnexion == 1)
+		{
+			$("#LoginForm").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
+			$("#SubscribeForm").html('<img src="/view/images/zombie.jpg"/>');
+		}
+		else
+		{
+			$("#LoginForm").show();
+		}
+	});
+
+	/*
+	 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
+	 */
+	socket.on('INSCRIPTION_SC', function(reponseInscription) {
+		if(reponseConnexion == 1)
+		{
+			$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() + " !<br>Veuillez vous connectez !");
+		}
+		else
+		{
+			$("#SubscribeForm").show();
+		}
+	});
+
+	// Contact form
+	$("#SubmitLogin").click(function(e)
+	{
+		// Setup any needed variables
+		var input_Pseudo   = $('#PseudoLogin').val();
+		var input_Password = $('#PasswordLogin').val();
+
+		// Hide any previous response text
+		$("#LoginForm").hide();
+		$("#SubscribeForm").hide(100);
+		
+		socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
+	});
+
+	// Contact form
+	$("#SubmitSubscribe").click(function(e)
+	{
+		// Setup any needed variables
+		var input_Pseudo   = $('#PseudoSubscribe').val();
+		var input_Password = $('#PasswordSubscribe').val();
+		var input_Email = $('#EmailSubscribe').val();
+
+		// Hide any previous response text
+		$("#SubscribeForm").hide();
+
+		// Change response text to 'loading...'
+		$("#SubscribeForm").html('Chargement...').show();
+		
+		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, input_Email);
+	});
+	
+	</script>
 </body>
 </html>
