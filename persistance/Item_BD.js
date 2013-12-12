@@ -1,11 +1,14 @@
 // includes
 var oItem = require('../model/object/Item');
+var oDatabase = require('../model/database');
 
 /**
  * ITEM : COMMUNICATION SERVEUR <-> BD
  * 
  * @class Item_BD
  */
+ 
+	
 function Item_BD() {
 	if (false === (this instanceof Item_BD)) {
 		return new Item_BD();
@@ -24,8 +27,11 @@ function Item_BD() {
  * 
  * @method SetItem
  */
-Item_BD.SetItem = function(itemToSave) {
-	// envoi un personnage à rajouter (ou modifier si son id existe déja)
+ 
+Item_BD.DestroyItem = function(itemToDestroy) {
+	// envoi un item à rajouter (ou modifier si son id existe déja)
+	var id = itemToDestroy.id;
+	
 },
 
 
@@ -35,7 +41,11 @@ Item_BD.SetItem = function(itemToSave) {
  * @method GetItem
  */
 Item_BD.GetItem = function(idItem) {
-	// renvoi un personnage selon l'id passé en paramètre
+	// renvoi un item selon l'id passé en paramètre
+},
+
+Item_BD.NewItem = function(idItem) {
+
 },
 
 

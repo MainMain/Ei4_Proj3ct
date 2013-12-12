@@ -1,3 +1,8 @@
+// includes
+var oDatabase = require('../model/database');
+var mongoose = require('mongoose');
+
+
 /**
  * UTILISATEUR : COMMUNICATION SERVEUR <-> BD
  * 
@@ -28,3 +33,32 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave) {
 Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
 	
 },
+
+/**
+ * Ajoute un Utilisateur dans la base de donnée
+ * 
+ * @method Inscription
+ */
+ 
+ Utilisateur_BD.Inscription = function(pseudoU,emailU,passU){
+ 
+ 
+ 
+	var Utilisateurmodel = mongoose.model('Utilisateur');
+	
+	var NewUser = new Utilisateurmodel();
+	
+	NewUser.pseudo = pseudoU;
+	NewUser.pass = passU;
+	NewUser.email = emailU;
+	
+	NewUser.save(function (err) {
+		if (err) { throw err; }
+		console.log('tu es dans la base maintenant Motherfuker !');
+	
+	});
+	
+ },
+
+ 
+ module.exports = Utilisateur_BD;
