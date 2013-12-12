@@ -1,7 +1,8 @@
 // includes
 var oItem = require('../model/object/Item');
+
 /**
- * MODELISATION DE LA BD CONTENANT TOUS LES ITEMS
+ * ITEM : COMMUNICATION SERVEUR <-> BD
  * 
  * @class Item_BD
  */
@@ -11,6 +12,52 @@ function Item_BD() {
 	}
 };
 
+// **** EXEMPLE CREATION ITEM ****	
+
+// var item1 = new oItem(0, 	"Item a",		"aaaaa", 	3, 	0, 	10, "epee.jpg");
+
+// ******************************
+
+
+/**
+ * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
+ * 
+ * @method SetItem
+ */
+Item_BD.SetItem = function(itemToSave) {
+	// envoi un personnage à rajouter (ou modifier si son id existe déja)
+},
+
+
+/**
+ * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
+ * 
+ * @method GetItem
+ */
+Item_BD.GetItem = function(idItem) {
+	// renvoi un personnage selon l'id passé en paramètre
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//********************************* TO TRASH SOON ***********************
 //--- ATTRIBUTS DE CLASSE ---
 Item_BD.listeItems;
 
@@ -58,7 +105,6 @@ Item_BD.GetItemById = function(id_item)
 		console.log("ITEM_BD : WARNING -> return null");
 		return null;
 		}
-
 },
 
 

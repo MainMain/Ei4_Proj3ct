@@ -1,8 +1,9 @@
 // includes
 var oCase = require('../model/object/Case');
 var oItem_BD = require('../persistance/Item_BD');
+
 /**
- * MODELISATION DE LA BD CONTENANT TOUTES LES CASES
+ * CASE : COMMUNICATION SERVEUR <-> BD
  * 
  * @class Case_BD
  */
@@ -12,8 +13,69 @@ function Case_BD() {
 	}
 };
 
+
+// **** EXEMPLE CREATION CASE ****
+
+// var array1 = [oItem_BD.GetItemById(1), oItem_BD.GetItemById(2),
+// oItem_BD.GetItemById(3), oItem_BD.GetItemById(4), oItem_BD.GetItemById(14), oItem_BD.GetItemById(15), oItem_BD.GetItemById(16)];
+// var case1 = new oCase(0, "E11", "Une mini salle", 20, 50, 40, array1);
+
+// ******************************************************
+
+
+
+/**
+ * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
+ * 
+ * @method SetCase
+ */
+Case_BD.SetCase = function(caseToSave) {
+	// envoi une case à rajouter (ou modifier si son id existe déja)
+	
+	// ! une case contient une liste d'item, des objets qu'il faudrat créer
+	// voir constructeur dans Item_BD
+},
+
+
+/**
+ * RENVOI UNE CASE AVEC SON ID PASSE EN PARAMETRE
+ * 
+ * @method GetCase
+ */
+Case_BD.GetCase = function(idCase) {
+	
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+//***************************************** TO TRASH SOON *****************************
 //--- ATTRIBUTS DE CLASSE ---
 Case_BD.listeCases;
+
+
+
+/*
+ * RENVOI LA CASE SUIVANT L'ID PASSE EN PARAMATRE
+ * return : case
+ * erreur : null
+ */
+Case_BD.GetCaseById = function(idCase)
+{
+	if (idCase < 12)
+		return this.listeCases[idCase];
+	else
+		return null;
+},
 
 /**
  * CREE UNE LISTE DE CASE
@@ -44,42 +106,6 @@ Case_BD.Initialiser = function() {
 	
 	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9, case10, case11);
 },
-
-/*
- * RENVOI LA CASE SUIVANT L'ID PASSE EN PARAMATRE
- * return : case
- * erreur : null
- */
-Case_BD.GetCaseById = function(idCase)
-{
-	if (idCase < 12)
-		return this.listeCases[idCase];
-	else
-		return null;
-},
-
-
-/**
- * ACTUALISE LA CASE EN COURS.  DOIT ÊTRE DÉCLENCHÉE QUAND LE SERVEUR RELÈVE UN
- * ... ... CHANGEMENT FAITE PAR UN AUTRE JOUEUR
- * 
- * @method ActualiserCase
- */
-Case_BD.ActualiserCase = function(idCase) {
-	// chercher infos dans la BD
-},
-
-
-/**
- * UPDATE EN BD LA CASE EN COURS. DOIT ÊTRE DÉCLENCHÉE QUAND LE SERVEUR RELÈVE UN
- * ... ... CHANGEMENT FAITE PAR LE JOUEUR EN COURS
- * 
- * @method UpdateCase
- */
-Case_BD.UpdateCase = function(idCase) {
-	// écrire infos dans la BD
-},
-
 
 
 /*  *** TRASH ***

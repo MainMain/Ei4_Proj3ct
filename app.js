@@ -4,7 +4,7 @@ var url = require("url");
 var querystring = require('querystring');
 var express = require('express')
 , routes = require('./routes')
-//, user = require('./routes/user')
+// , user = require('./routes/user')
 , http = require('http')
 , path = require('path');
 var app = express();
@@ -14,6 +14,7 @@ var oPersonnage = require('./model/object/Personnage');
 var oCarte = require('./model/object/Carte');
 var oCase_BD = require('./persistance/Case_BD');
 var oItem_BD = require('./persistance/Item_BD');
+var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 
 
 /*
@@ -29,16 +30,49 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '/')));
 
+/*
+ * CONFIGURATION DES SESSIONS
+ */
+// Allow parsing cookies from request headers
+app.use(express.cookieParser());
+// Session management
+app.use(express.session({
+  // Private crypting key
+  "secret": "some private string",
+  // Internal session data storage engine, this is the default engine embedded
+	// with connect.
+  // Much more can be found as external modules (Redis, Mongo, Mysql,
+	// file...). look at "npm search connect session store"
+  "store":  new express.session.MemoryStore({ reapInterval: 60000 * 10 })
+}));
+
+/** Middleware for limited access */
+function requireLogin (req, res, next) {
+  if (req.session.username) {
+    // User is authenticated, let him in
+    next();
+  } else {
+    // Otherwise, we redirect him to login form
+    res.redirect("/");
+  }
+};
+  
+  
 app.get('/', routes.index);
 app.get('/jeu', routes.jeu);
+app.get('/regles', routes.regles);
+app.get('/chat-equipe', routes.chatEquipe);
 app.get('/classement', routes.classement);
-app.get('/contact', routes.contact);
+app.get('/chat-general', routes.chatGeneral);
+app.get('/session-test', [requireLogin], function (req, res, next) {
+	  res.render('index');
+});
 
 server.listen(app.get('port'), function(){
 	  console.log("Express server listening on port " + app.get('port'));
 });
 
-//Chargement de socket.io
+// Chargement de socket.io
 var io = require('socket.io').listen(server, {
     log: false
 });
@@ -56,7 +90,10 @@ var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
     15, 100, 0, null, null, sacADos);
 
 
-/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR **************/
+/**
+ * ********* EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR
+ * *************
+ */
 /*
  * CONNEXION D'UN CLIENT
  */
@@ -64,12 +101,11 @@ io.sockets.on('connection', function (socket) {
     console.log('SERVER : Un client est connecté !');
     socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
 
-    /*****************************************************************************************************
-     * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE
-     * Renvoi la case avec MOVE_PERSONNAGE_SC
-     * Si erreur : renvoi "ERREUR_MOVE" si impossible de bouger
-     * Si erreur : renvoi "ERREUR_CASE" si erreur de case
-     */
+    /***************************************************************************
+	 * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
+	 * la case avec MOVE_PERSONNAGE_SC Si erreur : renvoi "ERREUR_MOVE" si
+	 * impossible de bouger Si erreur : renvoi "ERREUR_CASE" si erreur de case
+	 */
     socket.on('MOVE_PERSONNAGE_CS', function (move) {
         // log
         console.log('SERVER : Déplacement du personnage demandé : ' + move);
@@ -92,15 +128,13 @@ io.sockets.on('connection', function (socket) {
             socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_MOVE");
         }
     });
-    /*****************************************************************************************************
-     * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM
-     * return 1 si ok
-     * erreur : 0 si objet n'est pas dans le sac
-     * erreur : -1 si il y a déja une arme d'équipée
-     * erreur : -2  si il y a déja une armure d'équipée
-     * erreur : -3 si item n'est ni arme ni armure
-     * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
-     */
+    /***************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM return
+	 * 1 si ok erreur : 0 si objet n'est pas dans le sac erreur : -1 si il y a
+	 * déja une arme d'équipée erreur : -2 si il y a déja une armure d'équipée
+	 * erreur : -3 si item n'est ni arme ni armure erreur : -4 si l'item a
+	 * dequiper n'est pas équipé au préalable
+	 */
     
     socket.on('INV_PERSONNAGE_CS', function(type, id_item)
     		{
@@ -115,7 +149,7 @@ io.sockets.on('connection', function (socket) {
     	        // si c'est une demande pour s'équiper
     	        if (type == "EQUIPER")
     	        	{
-    	        		// on équipe le perso 
+    	        		// on équipe le perso
     	        		var reponse = myPerso.sEquiperDunItem(currentItem);
     	        		// et selon le message renvoyé
     	        		switch(reponse)
@@ -139,13 +173,11 @@ io.sockets.on('connection', function (socket) {
     	        		socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, 1);
     	        	}
     		});
-    /*****************************************************************************************************
-     * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM
-     * return poidsTotal si ok
-     * erreur : -1 si poids insufisant
-     * erreur : -2 si objet n'est pas dans la case / le sac
-     * erreur : -3 si autre
-     */
+    /***************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM return
+	 * poidsTotal si ok erreur : -1 si poids insufisant erreur : -2 si objet
+	 * n'est pas dans la case / le sac erreur : -3 si autre
+	 */
     socket.on('INV_CASE_CS', function (type, id_item) {
     	// récupère la case en cours
         var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
@@ -177,11 +209,13 @@ io.sockets.on('connection', function (socket) {
                 else 
                 {
                     console.log("SERVER : Demande de ramassage impossible : poids max atteint");
-                    // return au client que l'objet ne peut être ajouté (poids insufisant)
+                    // return au client que l'objet ne peut être ajouté (poids
+					// insufisant)
                     socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -1);
                 }
             }
-            // si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
+            // si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour
+			// !)
             else {
                 // return que l'objet n'est pas dans la case
                 socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -2);
@@ -205,7 +239,8 @@ io.sockets.on('connection', function (socket) {
             	// return au client
             	 socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, myPerso.getPoidsSac());
             }
-            // si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour !)
+            // si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour
+			// !)
             else
             	{
             		 // return que l'item n'est pas dans le sac
@@ -213,11 +248,10 @@ io.sockets.on('connection', function (socket) {
             	}
         }
     });
-    /*****************************************************************************************************
-     * RECEPTION D'UNE DEMANDE D'INFOS SUR UNE CASE
-     * Renvoi la case avec INFO_CASE_SC
-     * Si erreur : renvoi NULL
-     */
+    /***************************************************************************
+	 * RECEPTION D'UNE DEMANDE D'INFOS SUR UNE CASE Renvoi la case avec
+	 * INFO_CASE_SC Si erreur : renvoi NULL
+	 */
     socket.on('INFO_CASE_CS', function () {
         // récupère la salle en cours
         var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
@@ -228,34 +262,57 @@ io.sockets.on('connection', function (socket) {
             socket.emit('INFO_CASE_SC', currentCase);
     });
 
-    /*****************************************************************************************************
-     * RECEPTION D'UNE DEMANDE D'INFO SUR LE PERSONNAGE
-     */
+    /***************************************************************************
+	 * RECEPTION D'UNE DEMANDE D'INFO SUR LE PERSONNAGE
+	 */
     socket.on('INFO_PERSONNAGE_CS', function () {
         socket.emit('INFO_PERSONNAGE_SC', myPerso);
     });
 
 
     /*
-	* RECEPTION D'UNE DEMANDE DE CONNEXION
-	* Renvoi "CONNEXION_OK"
-	* Si erreur : renvoi "ERREUR_CONNEXION"
-	*/
+	 * RECEPTION D'UNE DEMANDE DE CONNEXION Renvoi "CONNEXION_OK" 
+	 * return : 1 si login / mdp ok
+	 * Si couple inconnu : renvoi 0
+	 * si erreur : renvoi -1
+	 */
     socket.on('CONNEXION_CS', function (username, password) {
         // log
         console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
-		socket.emit('CONNEXION_SC', "CONNEXION_OK");
+        // demande au serveur
+        var reponse = oUtilisateur_BD.Connexion(username, password);
+        // si couple ok
+        if (reponse == true)
+        	{
+        		socket.emit('CONNEXION_SC', 1);
+        	}
+        else
+        	{
+        		socket.emit('CONNEXION_SC', 0);
+        	}
+        socket.emit('CONNEXION_SC', -1);
     });
 
 
     /*
-	* RECEPTION D'UNE DEMANDE D'INSCRIPTION
-	* Renvoi "INSCRIPTION_OK"
-	* Si erreur : renvoi "ERREUR_INSCRIPTION"
-	*/
-    socket.on('INSCRIPTION_CS', function (username, password) {
+	 * RECEPTION D'UNE DEMANDE D'INSCRIPTION 
+	 * Renvoi 1
+	 * Si erreur : renvoi 0
+	 */
+    socket.on('INSCRIPTION_CS', function (username, password, email) {
         // log
         console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password);
+        var reponse = oUtilisateur_BD.Inscription(username, password, email);
+     // si couple ok
+        if (reponse == true)
+        	{
+        		socket.emit('CONNEXION_SC', 1);
+        	}
+        else
+        	{
+        		socket.emit('CONNEXION_SC', 0);
+        	}
+        
 		socket.emit('INSCRIPTION_SC', "INSCRIPTION_OK");
     });
 
@@ -264,7 +321,7 @@ io.sockets.on('connection', function (socket) {
 
 
 
-//server.listen(8080);
+// server.listen(8080);
 app.on('close', function () { // On écoute l'évènement close
     console.log('Bye bye !');
 });
