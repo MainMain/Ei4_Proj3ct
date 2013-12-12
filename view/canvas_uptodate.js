@@ -14,26 +14,9 @@ function initialize() {
     stage = new createjs.Stage(canvasElement);
 	context = canvasElement.getContext("2d");
 	
-	/*var arme=[
-	  		{id: "0", path: "public/spritesheets/armes/0.png"},
-			{id: "1", path :"public/spritesheets/armes/1.png"},
-			{id: "2", path: "public/spritesheets/armes/2.png"},
-			{id: "3", path :"public/spritesheets/armes/3.png"}
-	 	 ];
-	*/
 	var background = new createjs.Bitmap("public/Background.jpg");
     background.image.onload = setImg(background,0,0);
-    stage.update();
-	var arme0 = new createjs.Bitmap("public/spritesheets/armes/0.png");
-	var arme1 = new createjs.Bitmap("public/spritesheets/armes/1.png");
-	var arme2 = new createjs.Bitmap("public/spritesheets/armes/2.png");
-	var arme3 = new createjs.Bitmap("public/spritesheets/armes/3.png");
-	var arme4 = new createjs.Bitmap("public/spritesheets/armes/4.png");
-	var arme5 = new createjs.Bitmap("public/spritesheets/armes/5.png");
-	var arme6 = new createjs.Bitmap("public/spritesheets/armes/6.png");
-	var arme7 = new createjs.Bitmap("public/spritesheets/armes/7.png");
-	var arme8 = new createjs.Bitmap("public/spritesheets/armes/8.png");
-   
+    stage.update();   
 	
 	//**********Déclaration des labels*******
 	var demandeDeplacement, txtSalle, txtObjet, txtCase, txtObjetCase, 
@@ -273,20 +256,6 @@ function initialize() {
 			//insereMessage("****LISTE DES OBJETS DE LA CASE ****");
 			txtObjetCase.text="****LISTE DES OBJETS DE LA CASE ****";
 			labelObjetCase.text="Objets de la case :";
-			for(var x=0; x<9; x++){
-				/*var lien="public/spritesheets/armes/"+x".png";
-				var arme = new createjs.Bitmap(lien);
-				arme.image.onload = setImg(arme,200,50+(x+1)*10);*/
-			}
-			arme0.image.onload = setImg(arme0,200,50);
-			arme1.image.onload = setImg(arme1,200+30,50);
-			arme2.image.onload = setImg(arme2,200+60,50);
-			arme3.image.onload = setImg(arme3,200+90,50);
-			arme4.image.onload = setImg(arme4,200+120,50);
-			arme5.image.onload = setImg(arme5,200+150,50);
-			arme6.image.onload = setImg(arme6,200+180,50);
-			arme7.image.onload = setImg(arme7,200+210,50);
-			arme8.image.onload = setImg(arme8,200+240,50);
 			
 			for (var i = 0; i < currentCase.listeItem.length; i++) {
 				txtListeObjet = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
@@ -297,6 +266,8 @@ function initialize() {
 				//insereMessage(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom);
 				txtListeObjet.text="";
 				txtListeObjet.text=(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom +"");
+				var arme = new createjs.Bitmap(currentCase.listeItem[i].imageName);
+				arme.image.onload = setImg(arme,200+(i+1)*30,50);
 				stage.update();
 			}
 			//insereMessage("************************************");
