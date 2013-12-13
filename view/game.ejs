@@ -20,6 +20,45 @@
 	<meta name="viewport" content="width=device-width">
 
 	<link href="/public/stylesheets/style.css" rel="stylesheet">
+	
+	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.2.0.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+	
+	<script>
+		var createjs = window;
+	</script>
+
+		<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
+        <script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
+        <script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
+        <script type="text/javascript" src="../src/easeljs/utils/UID.js"></script>
+        <script type="text/javascript" src="../src/easeljs/utils/Ticker.js"></script>
+        <script type="text/javascript" src="../src/easeljs/geom/Matrix2D.js"></script>
+        <script type="text/javascript" src="../src/easeljs/geom/Point.js"></script>
+        <script type="text/javascript" src="../src/easeljs/geom/Rectangle.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/Shadow.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/SpriteSheet.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/Graphics.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/DisplayObject.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/Container.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/Stage.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/Bitmap.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/Sprite.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/BitmapAnimation.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/BitmapText.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/Shape.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/Text.js"></script>
+        <script type="text/javascript" src="../src/easeljs/display/DOMElement.js"></script>
+        <script type="text/javascript" src="../src/easeljs/events/MouseEvent.js"></script>
+        <script type="text/javascript" src="../src/easeljs/filters/Filter.js"></script>
+        <script type="text/javascript" src="../src/easeljs/ui/ButtonHelper.js"></script>
+        <script type="text/javascript" src="../src/easeljs/ui/Touch.js"></script>
+        <script type="text/javascript" src="../src/easeljs/utils/SpriteSheetUtils.js"></script>
+        <script type="text/javascript" src="../src/easeljs/utils/SpriteSheetBuilder.js"></script>
+	<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
+	<script type="text/javascript" src="/view/Button.js"></script>
+	<script type="text/javascript" src="/view/canvas_uptodate.js"></script>
 
 	<!-- Load Open Sans and Merriweather from Google Fonts
 		For optimal performance, customize it to load the styles you need:
@@ -56,14 +95,14 @@
 		<h3 class="assistive-text">Menu principal</h3>
 		<ul>
 			<li class="span2"><a href="/">Accueil</a></li>
-			<li class="span2">
+			<li class="span2 current">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">
 					<li><a href="regles">Règles</a></li>
 					<li><a href="chat-equipe">Chat</a></li>
 				</ul>
 			</li>
-			<li class="span2 current"><a href="classement">Classement</a></li>
+			<li class="span2"><a href="classement">Classement</a></li>
 			<li class="span2"><a href="chat-general">Chat</a></li>
 		</ul>
 	</nav> <!-- #main-navigation -->
@@ -78,12 +117,15 @@
 <div id="content" role="main" class="span12">
 
 	<h1 class="entry-title" align=center>
-		Classement des joueurs
+		Plateau de jeu
 	</h1>
 	
-	<!-- Classement -->
+	<!-- Canvas -->
 	
-	<!-- #Classement -->
+	<canvas id="myCanvas" width="1024" height="640" style="border:1px solid #000000;">
+	
+	</canvas>
+
 </div> <!-- #content -->
 
 </div> <!-- #main -->
