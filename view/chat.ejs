@@ -69,12 +69,11 @@
 	</nav> <!-- #main-navigation -->
 
 	<!-- Login form -->
-	<form name="Login" class="loginform" method=post>
-		Connectez vous : <input type="text" name="PseudoLogin" placeholder="Entrez votre Pseudo" value="">
-		Mot de passe : <input type="password" name="PasswordLogin" placeholder="Entrez votre Mot de passe" value="">
-		<input type="submit" name="LoginSubscribe" value="Encore vivant ?!">
-	</form>
-
+	<div id="LoginForm" class="loginform">
+		Connectez vous : <input type="text" id="PseudoLogin" placeholder="Entrez votre Pseudo" value="" required="">
+		Mot de passe : <input type="password" id="PasswordLogin" placeholder="Entrez votre Mot de passe" value="" required="">
+		<input type="submit" id="SubmitLogin" value="Encore vivant ?!">
+	</div>
 <div id="content" role="main" class="span12">
 
 	<h1 class="entry-title" align=center>
@@ -121,20 +120,6 @@
 		}
 	});
 
-	/*
-	 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
-	 */
-	socket.on('INSCRIPTION_SC', function(reponseInscription) {
-		if(reponseConnexion == 1)
-		{
-			$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() + " !<br>Veuillez vous connectez !");
-		}
-		else
-		{
-			$("#SubscribeForm").show();
-		}
-	});
-
 	// Contact form
 	$("#SubmitLogin").click(function(e)
 	{
@@ -147,23 +132,6 @@
 		$("#SubscribeForm").hide(100);
 		
 		socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
-	});
-
-	// Contact form
-	$("#SubmitSubscribe").click(function(e)
-	{
-		// Setup any needed variables
-		var input_Pseudo   = $('#PseudoSubscribe').val();
-		var input_Password = $('#PasswordSubscribe').val();
-		var input_Email = $('#EmailSubscribe').val();
-
-		// Hide any previous response text
-		$("#SubscribeForm").hide();
-
-		// Change response text to 'loading...'
-		$("#SubscribeForm").html('Chargement...').show();
-		
-		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, input_Email);
 	});
 	
 	</script>
