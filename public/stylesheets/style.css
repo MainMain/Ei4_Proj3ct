@@ -12,6 +12,9 @@
 	Copyright (c) 2009-2012, Jayj.dk
 	All rights reserved.
 */
+@font-face { 	font-family: "JackLantern BB"; 	src: url('../font/JackLanternBB.ttf'); }
+@font-face { 	font-family: "Infected"; 	src: url('../font/Infected.ttf'); }
+
 .clearfix {
   *zoom: 1;
 }
