@@ -126,17 +126,18 @@
 	<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>
 		
 		<!-- Script nécessaires pour le serveur -->
-		<script src="../model/server.js"></script>
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 	
 	<script>
 
-	/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+	/*********** EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 	var socket = io.connect('http://localhost:8080');
 
 	/*
 	 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
+	 * Recoit 1 si ok
+	 * Recoit 0 si couple inexistant
 	 */
 	socket.on('CONNEXION_SC', function(reponseConnexion) {
 		if(reponseConnexion == 1)
@@ -152,11 +153,31 @@
 
 	/*
 	 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
+	 * Recoit 1 : ok
+	 * Recoit 0 : erreur interne
+	 * Recoit -1 : pseudo deja pris
+	 * Recoit -2 : email deja pris
 	 */
 	socket.on('INSCRIPTION_SC', function(reponseInscription) {
-		if(reponseConnexion == 1)
+		if(reponseInscription == 1)
 		{
-			$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() + " !<br>Veuillez vous connectez !");
+			$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() +
+			 " !<br> Votre compte est crée, vous pouvez désormais vous connecter !");
+		}
+		else if(reponseInscription == 0)
+		{
+			$("#SubscribeForm").show();
+			$("#SubscribeForm").html('Erreur interne ! ');
+		}
+		else if(reponseInscription == -1)
+		{
+			$("#SubscribeForm").show();
+			$("#SubscribeForm").html('Pseudo déja utilisé !');
+		}
+		else if(reponseInscription == -2)
+		{
+			$("#SubscribeForm").show();
+			$("#SubscribeForm").html('Email déja utilisé !');
 		}
 		else
 		{
