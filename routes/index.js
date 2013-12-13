@@ -31,3 +31,9 @@ exports.chatGeneral = function(req, res){
 exports.regles = function(req, res){
 	  res.render('regles', { title: 'Express' });
 };
+
+exports.sessiontest = function(req, res){
+
+	  res.render('session-test', { title: 'Express' });
+};
+

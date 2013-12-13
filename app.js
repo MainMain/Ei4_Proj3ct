@@ -61,26 +61,35 @@ function requireLogin(req, res, next) {
 };
 
 
+/*
+ * CONFIGURATION DES ROUTES
+ */
 app.get('/', routes.index);
 app.get('/jeu', routes.jeu);
 app.get('/regles', routes.regles);
 app.get('/chat-equipe', routes.chatEquipe);
 app.get('/classement', routes.classement);
 app.get('/chat-general', routes.chatGeneral);
-app.get('/session-test', [requireLogin], function (req, res, next) {
-    res.render('index');
-});
+app.get('/session-test', routes.sessiontest);
 
+/*
+ * LANCEMENT DU SERVEUR
+ */
 server.listen(app.get('port'), function () {
     console.log("Express server listening on port " + app.get('port'));
 });
 
-// Chargement de socket.io
+/*
+ * CHARGEMENT DE SOCKET.IO
+ */
 var io = require('socket.io').listen(server, {
     log: false
 });
 
-// lancement du serveur
+/*
+ * INITIALISATION DE LA BD 
+ * Comme il n'y a pas de BD pour le moment, on en simule une...
+ */
 oItem_BD.Initialiser();
 oCarte.Initialiser(3, 4);
 oCase_BD.Initialiser();
