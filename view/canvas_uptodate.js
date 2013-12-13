@@ -213,7 +213,7 @@ function initialize() {
 	BtnEquiper.x=BtnRamasseObjet.x+200;
 	BtnEquiper.addEventListener('click', function(event) {
 		//alert("click");
-		socket.emit('INV_PERSONNAGE_CS');
+		socket.emit('INV_PERSONNAGE_CS', "EQUIPER", 1);
 		});
 	
 	var BtnDesequiper = stage.addChild(new Button("Desequiper Objet", "#A9A9A9"));
