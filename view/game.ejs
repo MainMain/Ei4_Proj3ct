@@ -3,211 +3,218 @@
 <!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js ie8"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<head>
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+	<!--<![endif]-->
+	<head>
 
-	<meta charset="utf-8">
+		<meta charset="utf-8">
 
-	<!-- Always force latest IE rendering engine & Chrome Frame -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<!-- Always force latest IE rendering engine & Chrome Frame -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<!-- Put your title here! -->
-	<title>Accueil</title>
+		<!-- Put your title here! -->
+		<title>Accueil</title>
 
-	<meta name="description" content="">
+		<meta name="description" content="">
 
-	 <!-- Mobile viewport optimized: h5bp.com/viewport -->
-	<meta name="viewport" content="width=device-width">
+		<!-- Mobile viewport optimized: h5bp.com/viewport -->
+		<meta name="viewport" content="width=device-width">
 
-	<link href="/public/stylesheets/style.css" rel="stylesheet">
-	
-	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-	<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.2.0.min.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-	
-	<script>
-		var createjs = window;
-	</script>
+		<link href="/public/stylesheets/style.css" rel="stylesheet">
+
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.2.0.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script>
+			var createjs = window;
+		</script>
 
 		<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
-        <script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
-        <script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
-        <script type="text/javascript" src="../src/easeljs/utils/UID.js"></script>
-        <script type="text/javascript" src="../src/easeljs/utils/Ticker.js"></script>
-        <script type="text/javascript" src="../src/easeljs/geom/Matrix2D.js"></script>
-        <script type="text/javascript" src="../src/easeljs/geom/Point.js"></script>
-        <script type="text/javascript" src="../src/easeljs/geom/Rectangle.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/Shadow.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/SpriteSheet.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/Graphics.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/DisplayObject.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/Container.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/Stage.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/Bitmap.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/Sprite.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/BitmapAnimation.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/BitmapText.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/Shape.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/Text.js"></script>
-        <script type="text/javascript" src="../src/easeljs/display/DOMElement.js"></script>
-        <script type="text/javascript" src="../src/easeljs/events/MouseEvent.js"></script>
-        <script type="text/javascript" src="../src/easeljs/filters/Filter.js"></script>
-        <script type="text/javascript" src="../src/easeljs/ui/ButtonHelper.js"></script>
-        <script type="text/javascript" src="../src/easeljs/ui/Touch.js"></script>
-        <script type="text/javascript" src="../src/easeljs/utils/SpriteSheetUtils.js"></script>
-        <script type="text/javascript" src="../src/easeljs/utils/SpriteSheetBuilder.js"></script>
-	<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
-	<script type="text/javascript" src="/view/Button.js"></script>
-	<script type="text/javascript" src="/view/canvas_uptodate.js"></script>
+		<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
+		<script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
+		<script type="text/javascript" src="../src/easeljs/utils/UID.js"></script>
+		<script type="text/javascript" src="../src/easeljs/utils/Ticker.js"></script>
+		<script type="text/javascript" src="../src/easeljs/geom/Matrix2D.js"></script>
+		<script type="text/javascript" src="../src/easeljs/geom/Point.js"></script>
+		<script type="text/javascript" src="../src/easeljs/geom/Rectangle.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/Shadow.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/SpriteSheet.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/Graphics.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/DisplayObject.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/Container.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/Stage.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/Bitmap.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/Sprite.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/BitmapAnimation.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/BitmapText.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/Shape.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/Text.js"></script>
+		<script type="text/javascript" src="../src/easeljs/display/DOMElement.js"></script>
+		<script type="text/javascript" src="../src/easeljs/events/MouseEvent.js"></script>
+		<script type="text/javascript" src="../src/easeljs/filters/Filter.js"></script>
+		<script type="text/javascript" src="../src/easeljs/ui/ButtonHelper.js"></script>
+		<script type="text/javascript" src="../src/easeljs/ui/Touch.js"></script>
+		<script type="text/javascript" src="../src/easeljs/utils/SpriteSheetUtils.js"></script>
+		<script type="text/javascript" src="../src/easeljs/utils/SpriteSheetBuilder.js"></script>
+		<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
+		<script type="text/javascript" src="/view/Button.js"></script>
+		<script type="text/javascript" src="/view/canvas_uptodate.js"></script>
 
-	<!-- Load Open Sans and Merriweather from Google Fonts
+		<!-- Load Open Sans and Merriweather from Google Fonts
 		For optimal performance, customize it to load the styles you need:
 		http://goo.gl/QufgJ
-	-->
-	<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
+		-->
+		<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
 
-	<!-- All JavaScript at the bottom, except for Modernizr
+		<!-- All JavaScript at the bottom, except for Modernizr
 		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
 		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-	<script src="/view/js/modernizr-2.6.1.min.js"></script>
-</head>
+		<script src="/view/js/modernizr-2.6.1.min.js"></script>
+	</head>
 
-<body>
+	<body>
 
-	<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
-	<!--[if lt IE 8]>
+		<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
+		<!--[if lt IE 8]>
 		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
-	<![endif]-->
+		<![endif]-->
 
-	<header id="master-header" class="clearfix" role="banner">
+		<header id="master-header" class="clearfix" role="banner">
 
-		<hgroup>
-			<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
-			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
-		</hgroup>
+			<hgroup>
+				<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
+				<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
+			</hgroup>
 
-	</header> <!-- #master-header -->
+		</header>
+		<!-- #master-header -->
 
-<div id="main" class="row clearfix">
+		<div id="main" class="row clearfix">
 
-	<!-- Main navigation -->
-	<nav class="main-navigation clearfix span12" role="navigation">
-		<h3 class="assistive-text">Menu principal</h3>
-		<ul>
-			<li class="span2"><a href="/">Accueil</a></li>
-			<li class="span2 current">
-				<a href="jeu">Jeu</a>
-				<ul class="sub-menu">
-					<li><a href="regles">Règles</a></li>
-					<li><a href="chat-equipe">Chat</a></li>
+			<!-- Main navigation -->
+			<nav class="main-navigation clearfix span12" role="navigation">
+				<h3 class="assistive-text">Menu principal</h3>
+				<ul>
+					<li class="span2">
+						<a href="/">Accueil</a>
+					</li>
+					<li class="span2 current">
+						<a href="jeu">Jeu</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="regles">Règles</a>
+							</li>
+							<li>
+								<a href="chat-equipe">Chat</a>
+							</li>
+						</ul>
+					</li>
+					<li class="span2">
+						<a href="classement">Classement</a>
+					</li>
+					<li class="span2">
+						<a href="chat-general">Chat</a>
+					</li>
 				</ul>
-			</li>
-			<li class="span2"><a href="classement">Classement</a></li>
-			<li class="span2"><a href="chat-general">Chat</a></li>
-		</ul>
-	</nav> <!-- #main-navigation -->
+			</nav>
+			<!-- #main-navigation -->
 
-	<!-- Login form -->
-	<form name="Login" class="loginform" method=post>
-		Connectez vous : <input type="text" name="PseudoLogin" placeholder="Entrez votre Pseudo" value="">
-		Mot de passe : <input type="password" name="PasswordLogin" placeholder="Entrez votre Mot de passe" value="">
-		<input type="submit" name="LoginSubscribe" value="Encore vivant ?!">
-	</form>
+			<!-- Login form -->
+			<form name="Login" class="loginform" method=post>
+				Connectez vous :
+				<input type="text" name="PseudoLogin" placeholder="Entrez votre Pseudo" value="">
+				Mot de passe :
+				<input type="password" name="PasswordLogin" placeholder="Entrez votre Mot de passe" value="">
+				<input type="submit" name="LoginSubscribe" value="Encore vivant ?!">
+			</form>
 
-<div id="content" role="main" class="span12">
+			<div id="content" role="main" class="span12">
 
-	<h1 class="entry-title" align=center>
-		Plateau de jeu
-	</h1>
-	
-	<!-- Canvas -->
-	
-	<canvas id="myCanvas" width="1024" height="640" style="border:1px solid #000000;">
-	
-	</canvas>
+				<h1 class="entry-title" align=center> Plateau de jeu </h1>
 
-</div> <!-- #content -->
+				<!-- Canvas -->
 
-</div> <!-- #main -->
+				<canvas id="myCanvas" width="1024" height="640" style="border:1px solid #000000;">
 
-	<footer id="footer">
-	
-	</footer> <!-- #footer -->
+				</canvas>
 
-	<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>
-		
+			</div>
+			<!-- #content -->
+
+		</div>
+		<!-- #main -->
+
+		<footer id="footer">
+
+		</footer>
+		<!-- #footer -->
+
+		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script>
+			window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')
+		</script>
+
 		<!-- Script nécessaires pour le serveur -->
-		<script src="../model/server.js"></script>
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-	
-	<script>
 
-	/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-	var socket = io.connect('http://localhost:8080');
 
-	/*
-	 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
-	 */
-	socket.on('CONNEXION_SC', function(reponseConnexion) {
-		if(reponseConnexion == 1)
-		{
-			$("#LoginForm").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
-			$("#SubscribeForm").html('<img src="/view/images/zombie.jpg"/>');
-		}
-		else
-		{
-			$("#LoginForm").show();
-		}
-	});
+		<script>
+			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+			var socket = io.connect('http://localhost:8080');
 
-	/*
-	 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
-	 */
-	socket.on('INSCRIPTION_SC', function(reponseInscription) {
-		if(reponseConnexion == 1)
-		{
-			$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() + " !<br>Veuillez vous connectez !");
-		}
-		else
-		{
-			$("#SubscribeForm").show();
-		}
-	});
+			/*
+			 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
+			 */
+			socket.on('CONNEXION_SC', function(reponseConnexion) {
+				if (reponseConnexion == 1) {
+					$("#LoginForm").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
+					$("#SubscribeForm").html('<img src="/view/images/zombie.jpg"/>');
+				} else {
+					$("#LoginForm").show();
+				}
+			});
 
-	// Contact form
-	$("#SubmitLogin").click(function(e)
-	{
-		// Setup any needed variables
-		var input_Pseudo   = $('#PseudoLogin').val();
-		var input_Password = $('#PasswordLogin').val();
+			/*
+			 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
+			 */
+			socket.on('INSCRIPTION_SC', function(reponseInscription) {
+				if (reponseConnexion == 1) {
+					$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() + " !<br>Veuillez vous connectez !");
+				} else {
+					$("#SubscribeForm").show();
+				}
+			});
 
-		// Hide any previous response text
-		$("#LoginForm").hide();
-		$("#SubscribeForm").hide(100);
-		
-		socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
-	});
+			// Contact form
+			$("#SubmitLogin").click(function(e) {
+				// Setup any needed variables
+				var input_Pseudo = $('#PseudoLogin').val();
+				var input_Password = $('#PasswordLogin').val();
 
-	// Contact form
-	$("#SubmitSubscribe").click(function(e)
-	{
-		// Setup any needed variables
-		var input_Pseudo   = $('#PseudoSubscribe').val();
-		var input_Password = $('#PasswordSubscribe').val();
-		var input_Email = $('#EmailSubscribe').val();
+				// Hide any previous response text
+				$("#LoginForm").hide();
+				$("#SubscribeForm").hide(100);
 
-		// Hide any previous response text
-		$("#SubscribeForm").hide();
+				socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
+			});
 
-		// Change response text to 'loading...'
-		$("#SubscribeForm").html('Chargement...').show();
-		
-		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, input_Email);
-	});
-	
-	</script>
-</body>
+			// Contact form
+			$("#SubmitSubscribe").click(function(e) {
+				// Setup any needed variables
+				var input_Pseudo = $('#PseudoSubscribe').val();
+				var input_Password = $('#PasswordSubscribe').val();
+				var input_Email = $('#EmailSubscribe').val();
+
+				// Hide any previous response text
+				$("#SubscribeForm").hide();
+
+				// Change response text to 'loading...'
+				$("#SubscribeForm").html('Chargement...').show();
+
+				socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, input_Email);
+			});
+
+		</script>
+	</body>
 </html>

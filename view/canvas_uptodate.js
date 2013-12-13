@@ -7,12 +7,25 @@ var dragStarted;        // indicates whether we are currently in a drag operatio
 var offset;
 
 onload = initialize;	
+var listeItemsCase;
+var listeItemsPerso;
 
 function initialize() {
 
+	// ******* ATTRIBUTS *************************
+	// Création de la liste des items de case
+	this.listeItemsCase = new Array();
+	this.listeItemsPerso = new Array();
+	
+	// ******************************************
 	//**********Connexion au serveur*********
 	
 	var socket = io.connect('http://localhost:8080');
+	
+	
+	
+
+	
 	
 	//**********Récupération du canvas et création contexte**********
 	canvasElement = document.getElementById("myCanvas");
@@ -27,7 +40,23 @@ function initialize() {
     // application du background
 	var background = new createjs.Bitmap("public/Background.jpg");
     background.image.onload = setImg(background,0,0);
+    stage.addChild(background);
     stage.update();   
+	
+    // creation des conteneurs
+	var contInvCase = new createjs.Container(); 
+	contInvCase.x = 200;
+	contInvCase.y = 50;
+	contInvCase.height = 200;
+	contInvCase.width = 200;
+	stage.addChild(contInvCase);
+	
+	var contInvPerso = new createjs.Container(); 
+	contInvPerso.x = 500;
+	contInvPerso.y = 500;
+	contInvPerso.height = 200;
+	contInvPerso.width = 200;
+	stage.addChild(contInvPerso);
 	
     // Teste la présence de HTML5 et de drag & drop
     if (Modernizr.draganddrop) {
@@ -231,6 +260,10 @@ function initialize() {
 	BtnGauche.y = BtnDroite.y = 60;
 	
 	 
+	// AFFICHAGE DE L'IVENTAIRE DE CASE ET PERSO
+	socket.emit('INFO_PERSONNAGE_CS');
+	socket.emit('INFO_CASE_CS');
+	
 	
 	/*
 	 * RECEPTION DU NOUVEL ID SALLE DU PERSONNAGE
@@ -254,7 +287,7 @@ function initialize() {
 			socket.emit('INFO_CASE_CS');
 			txtSalle.text="";
 			txtSalle.text=("CLIENT : nom salle = " + currentCase.nom + "");
-			modifieIdSalle(currentCase.nom, currentCase.id);
+			//modifieIdSalle(currentCase.nom, currentCase.id);
 			socket.emit('INFO_PERSONNAGE_CS');
 		}
 		stage.update();
@@ -315,6 +348,8 @@ function initialize() {
 
 	/*
 	 * RECEPTION DES INFORMATIONS SUR LA CASE
+	 * 
+	 * @method Reception
 	 */
 	socket.on('INFO_CASE_SC', function(currentCase) {
 		if (currentCase == "ERREUR_CASE")
@@ -332,8 +367,12 @@ function initialize() {
 			txtObjetCase.text="****LISTE DES OBJETS DE LA CASE ****";
 			labelObjetCase.text="Objets de la case :";
 			
+			// CLear de la liste des items de case
+			listeItemsCase = new Array();
+			contInvCase.removeAllChildren();
+			// parcours de la liste des items de la case
 			for (var i = 0; i < currentCase.listeItem.length; i++) {
-				txtListeObjet = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
+				/*txtListeObjet = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
 				txtListeObjet.lineHeight = 15;
 				txtListeObjet.textBaseline = "top";
 				txtListeObjet.x = txtObjetCase.x;
@@ -341,9 +380,31 @@ function initialize() {
 				//insereMessage(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom);
 				txtListeObjet.text="";
 				txtListeObjet.text=(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom +"");
-				var arme = new createjs.Bitmap(currentCase.listeItem[i].imageName);
-				arme.image.onload = setImg(arme,200+(i+1)*30,50);
-				// à creuser :   bitmap.name = "bmp_"+i;
+				*/
+				
+				// mise de l'item dans une variable
+				var item = currentCase.listeItem[i];
+				
+				// Ajout de l'item à la liste
+				listeItemsCase.push(item);
+				
+				// Ajout de l'image à l'ihm
+				var imgItem = new createjs.Bitmap(item.imageName);
+				
+				// ajout d'un texte quand l'user passera la souris dessus
+				imgItem.name = i;
+				
+				// Ajout de l'évenement a l'image
+				imgItem.addEventListener('mouseover', function(event) {
+					var currentItem = listeItemsCase[event.target.name];
+					alert("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nDescription : " + currentItem.description);
+				});	
+				//imgItem.image.onload = setImg(imgItem,200+(i+1)*30,50);
+				imgItem.x = i * 30;
+				contInvCase.addChild(imgItem);
+				
+				
+				// Update l'ihm
 				stage.update();
 			}
 			//insereMessage("************************************");
@@ -358,7 +419,7 @@ function initialize() {
 	txtObjetPerso.text="";
 	txtObjetPerso.text=("****LISTE DES OBJETS  DU PERSO (" + currentPerso.sacADos.length + ")****");
 	labelInventaire.text="Inventaire du perso :";
-		for (var i = 0; i < currentPerso.sacADos.length; i++) {
+		/*for (var i = 0; i < currentPerso.sacADos.length; i++) {
 			//insereMessage(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom);
 			txtPerso = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
 			txtPerso.lineHeight = 15;
@@ -368,6 +429,42 @@ function initialize() {
 			txtPerso.text=(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom + "");
 			var item = new createjs.Bitmap(currentPerso.sacADos[i].imageName);
 			item.image.onload = setImg(item,10+(i+1)*30,400);
+			stage.update();
+		}*/
+	// CLear de la liste des items de case
+		listeItemsPerso = new Array();
+	
+		for (var i = 0; i < currentPerso.sacADos.length; i++) {
+			/*txtListeObjet = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
+			txtListeObjet.lineHeight = 15;
+			txtListeObjet.textBaseline = "top";
+			txtListeObjet.x = txtObjetCase.x;
+			txtListeObjet.y = txtObjetCase.y + (i+1)*20;
+			//insereMessage(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom);
+			txtListeObjet.text="";
+			txtListeObjet.text=(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom +"");
+			*/
+			
+			// mise de l'item dans une variable
+			var item = currentPerso.sacADos[i];
+			
+			// Ajout de l'item à la liste
+			listeItemsPerso.push(item);
+			
+			// Ajout de l'image à l'ihm
+			var imgItem = new createjs.Bitmap(item.imageName);
+			
+			// ajout d'un texte quand l'user passera la souris dessus
+			imgItem.name = i;
+			
+			// Ajout de l'évenement a l'image
+			imgItem.addEventListener('mouseover', function(event) {
+				var currentItem = listeItemsPerso[event.target.name];
+				alert("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nDescription : " + currentItem.description);
+			});	
+			imgItem.image.onload = setImg(imgItem,10+(i+1)*30,400);
+			
+			// Update l'ihm
 			stage.update();
 		}
 		//insereMessage("************************************");

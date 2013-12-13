@@ -262,6 +262,7 @@ io.sockets.on('connection', function (socket) {
             socket.emit('INFO_CASE_SC', currentCase);
     });
 
+    
     /***************************************************************************
 	 * RECEPTION D'UNE DEMANDE D'INFO SUR LE PERSONNAGE
 	 */
