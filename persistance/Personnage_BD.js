@@ -1,4 +1,7 @@
 // includes
+var oDatabase = require('../model/database');
+var mongoose = require('mongoose');
+
 /**
  * PERSONNAGES : COMMUNICATION SERVEUR <-> BD
  * 
@@ -36,3 +39,16 @@ Personnage_BD.SetPersonnage = function(personnageToSave) {
 Personnage_BD.GetPersonnage = function(idPersonnage) {
 	// renvoi un personnage selon l'id passé en paramètre
 },
+
+/**
+ *CREER UN PERSONNAGE A LA CREATION DE L'UTILISATEUR
+ *
+ *@method Creation
+ */
+ 
+ Personnage_BD.Creation = function(){
+	
+ 
+ },
+ 
+  module.exports = Personnage_BD;

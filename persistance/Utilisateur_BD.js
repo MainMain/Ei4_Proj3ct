@@ -1,7 +1,7 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-
+var oPresonnage = require(Personnage_BD);
 
 /**
  * UTILISATEUR : COMMUNICATION SERVEUR <-> BD
@@ -44,21 +44,41 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
  Utilisateur_BD.Inscription = function(pseudoU,emailU,passU){
  
  
- 
-	var Utilisateurmodel = mongoose.model('Utilisateur');
-	
+	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
 	var NewUser = new Utilisateurmodel();
 	
-	NewUser.pseudo = pseudoU;
-	NewUser.pass = passU;
-	NewUser.email = emailU;
-	
-	NewUser.save(function (err) {
+	var query = Utilisateurmodel.find({pseudo : pseudoU});
+	query.limit(1);
+	query.exec(function (err,quser){
 		if (err) { throw err; }
-		console.log('tu es dans la base maintenant Motherfuker !');
-	
+		
+		var user = quser[0];
+		
+	if (user.pseudo != pseudoU && user.email != emailU){
+			NewUser.pseudo = pseudoU;
+			NewUser.pass = passU;
+			NewUser.email = emailU;
+			
+			NewUser.save(function (err) {
+				if (err) { throw err; }
+				console.log('tu es dans la base maintenant Motherfuker !');
+			
+			});
+		}
 	});
 	
+	var PersonnageModel = mongoose.model('Personnage');
+	var NewPerso = new PersonnageModel();
+	
+	NewPerso = oPersonnage_BD.Creation();
+	NewUser.personnage = NewPerso._Id;
+	
+		
+		
+
+	
+	
+		
  },
 
  

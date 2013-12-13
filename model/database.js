@@ -10,7 +10,7 @@ function database() {
 };
 
 // --- ATTRIBUTS DE CLASSE ---
-database.UtilisateurModel;
+
 
 
 
@@ -28,14 +28,33 @@ database.Initialiser = function() {
 	if (err) { throw err; }
 	});
 
-	var UtilisateurSchema = new mongoose.Schema({
+	var UtilisateurSchema = new mongoose.Schema({		//creation de la structure d'un utilisateur
 		pseudo : String,
 		pass : String,
 		email : String,
+		presonnage : Schema.Types.ObjectId,
 	});
 	
-	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);
-
+	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
+	
+	var PersonnageSchema = new mongoose.Schema({
+		ptSante : Number,
+		ptSanteMax : Number,
+		ptAction : Number,
+		ptActionMax : Number,
+		ptDeplacement : Number,
+		ptDeplacementMax : Number,
+		poidsMax : Number,
+		gouleLimite : Number,
+		idSalleEnCours : Schema.Types.ObjectId,
+		competence : String,
+		idArmeEquipee : Schema.Types.ObjectId,
+		idArmureEquipee : Schema.Types.ObjectId,
+		sacADos : Array,
+	
+	});
+	
+	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
 },
 
 
