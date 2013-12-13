@@ -1,6 +1,11 @@
 var canvasElement;
-var stage;
+var stage, output;
 var context;
+
+var mouseTarget;        // the display object currently under the mouse, or being dragged
+var dragStarted;        // indicates whether we are currently in a drag operation
+var offset;
+
 onload = initialize;	
 
 function initialize() {
@@ -12,16 +17,95 @@ function initialize() {
 	//**********Récupération du canvas et création contexte**********
 	canvasElement = document.getElementById("myCanvas");
     stage = new createjs.Stage(canvasElement);
+    // enabled mouse over / out events
+    stage.enableMouseOver(20);
 	context = canvasElement.getContext("2d");
 	
+	// enable touch interactions if supported on the current device:
+    createjs.Touch.enable(stage);
+	
+    // application du background
 	var background = new createjs.Bitmap("public/Background.jpg");
     background.image.onload = setImg(background,0,0);
     stage.update();   
 	
+    // Teste la présence de HTML5 et de drag & drop
+    if (Modernizr.draganddrop) {
+    	  //alert("Browser supports HTML5 DnD.");
+    	} else {
+    	  alert("! Vous devez passez en HTML5 !");
+    	}
+    
+    // Mouse over & mouse out :
+    /*BtnInfoCase.addEventListener('mouseover', function(event){
+		console.log("mouseover");
+	},false);
+	BtnInfoCase.addEventListener('mouseout', function(event){
+		console.log("out");
+	},false);*/
+    
+    // Exemple de drag & drop
+    
+    	// keep tracking the mouse even when it leaves the canvas
+    stage.mouseMoveOutside = true; 
+    
+    var container = new createjs.Container();
+    stage.addChild(container);
+    
+    var circle = new createjs.Shape();
+	circle.graphics.beginFill("white").drawCircle(400, 400, 50);
+    
+	container.addChild(circle);
+	circle.cursor = "pointer";
+	
+	circle.on('mousedown', function(evt) {
+		circle.cursor = "pointer";
+        this.parent.addChild(this);
+        this.offset = {x:this.x-evt.stageX, y:this.y-evt.stageY};
+	});
+	
+	circle.on("pressmove", function(evt) {
+		circle.cursor = "pointer";
+        this.x = evt.stageX+ this.offset.x;
+        this.y = evt.stageY+ this.offset.y;
+        // indicate that the stage should be updated on the next tick:
+        stage.update();
+	});
+	
+	/*circle.on("rollover", function(evt) {
+		circle.cursor = "pointer";
+        this.scaleX = this.scaleY = this.scale*1.2;
+        stage.update();
+	});
+	
+	circle.on("rollout", function(evt) {
+        this.scaleX = this.scaleY = this.scale;
+        stage.update();
+	});*/
+	
+	/*var dragger = new createjs.Container();
+	dragger.x = dragger.y = 100;
+	dragger.addChild(circle);
+	stage.addChild(dragger);
+	stage.update();
+	
+	dragger.addEventListener("mousedown", handlePress);
+	
+	 function handlePress(event) {
+	     // A mouse press happened.
+	     // Listen for mouse move while the mouse is down:
+	     event.addEventListener("mousemove", handleMove);
+	 }
+	 function handleMove(event) {
+	     // Check out the DragAndDrop example in GitHub for more
+	 }
+	createjs.Ticker.addListener(stage);
+	stage.update();*/
+    
 	//**********Déclaration des labels*******
 	var demandeDeplacement, txtSalle, txtObjet, txtCase, txtObjetCase, 
 	txtPerso, txtListeObjet, txtObjetPerso, txtInventaire, txtDeposer,
-	txtObjetEquipe, labelObjetCase;
+	txtObjetEquipe, labelObjetCase, labelInventaire;
 	
 	labelObjetCase = stage.addChild(new createjs.Text("", "18px monospace", "#fff"));
 	labelObjetCase.lineHeight = 15;
@@ -29,6 +113,11 @@ function initialize() {
 	labelObjetCase.x = 200;
 	labelObjetCase.y = 20;
 	
+	labelInventaire = stage.addChild(new createjs.Text("", "18px monospace", "#fff"));
+	labelInventaire.lineHeight = 15;
+	labelInventaire.textBaseline = "top";
+	labelInventaire.x = 30;
+	labelInventaire.y = 370;
 	
 	demandeDeplacement = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
 	demandeDeplacement.lineHeight = 15;
@@ -85,6 +174,18 @@ function initialize() {
 	BtnInfoCase.addEventListener('click', function(event) {
 		socket.emit('INFO_CASE_CS');
 		});
+
+	function func()
+	{  // not needed since item is already global, 
+	   // I am assuming this is here just because it's sample code?
+	   // var item = document.getElementById("button"); 
+	   item.setAttribute("style", "background-color:blue;")
+	}
+
+	function func1()
+	{  
+	   item.setAttribute("style", "background-color:green;")
+	}
 	
 	
 	var BtnInfoPerso = stage.addChild(new Button("Info Perso", "#A9A9A9"));
@@ -219,6 +320,7 @@ function initialize() {
 				// modifier l'ihm : inventaire du perso et inventaire de case
 			}
 		}
+			stage.update();
 		if (type == 'DEPOSER') {
 			// erreur
 			if (codeRetour == -3) {
@@ -268,6 +370,7 @@ function initialize() {
 				txtListeObjet.text=(" Objet id = " + currentCase.listeItem[i].id + " - " + currentCase.listeItem[i].nom +"");
 				var arme = new createjs.Bitmap(currentCase.listeItem[i].imageName);
 				arme.image.onload = setImg(arme,200+(i+1)*30,50);
+				// à creuser :   bitmap.name = "bmp_"+i;
 				stage.update();
 			}
 			//insereMessage("************************************");
@@ -281,6 +384,7 @@ function initialize() {
 	socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	txtObjetPerso.text="";
 	txtObjetPerso.text=("****LISTE DES OBJETS  DU PERSO (" + currentPerso.sacADos.length + ")****");
+	labelInventaire.text="Inventaire du perso :";
 		for (var i = 0; i < currentPerso.sacADos.length; i++) {
 			//insereMessage(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom);
 			txtPerso = stage.addChild(new createjs.Text("", "14px monospace", "#fff"));
@@ -289,6 +393,8 @@ function initialize() {
 			txtPerso.x = txtObjetPerso.x;
 			txtPerso.y = txtObjetPerso.y + (i+1)*20;
 			txtPerso.text=(" Objet id = " + currentPerso.sacADos[i].id + " - " + currentPerso.sacADos[i].nom + "");
+			var item = new createjs.Bitmap(currentPerso.sacADos[i].imageName);
+			item.image.onload = setImg(item,10+(i+1)*30,400);
 			stage.update();
 		}
 		//insereMessage("************************************");
