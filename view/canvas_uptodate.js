@@ -49,6 +49,12 @@ function initialize() {
     	// keep tracking the mouse even when it leaves the canvas
     stage.mouseMoveOutside = true; 
     
+    var DragText = stage.addChild(new createjs.Text("", "18px monospace", "#fff"));
+	DragText.lineHeight = 15;
+	DragText.textBaseline = "top";
+	DragText.x = 30;
+	DragText.y = 500;
+    
     var container = new createjs.Container();
     stage.addChild(container);
     
@@ -58,50 +64,30 @@ function initialize() {
 	container.addChild(circle);
 	circle.cursor = "pointer";
 	
-	circle.on('mousedown', function(evt) {
+	container.addEventListener('mouseover', function(event){
+		DragText.text=("Voici une description de l'objet survolé :");
+		stage.update();
+	},false);
+	
+	container.addEventListener('mouseout', function(event){
+		DragText.text="";
+		stage.update();
+	},false);
+	
+	container.on('mousedown', function(evt) {
 		circle.cursor = "pointer";
         this.parent.addChild(this);
         this.offset = {x:this.x-evt.stageX, y:this.y-evt.stageY};
 	});
 	
-	circle.on("pressmove", function(evt) {
+	container.on("pressmove", function(evt) {
 		circle.cursor = "pointer";
         this.x = evt.stageX+ this.offset.x;
         this.y = evt.stageY+ this.offset.y;
         // indicate that the stage should be updated on the next tick:
         stage.update();
 	});
-	
-	/*circle.on("rollover", function(evt) {
-		circle.cursor = "pointer";
-        this.scaleX = this.scaleY = this.scale*1.2;
-        stage.update();
-	});
-	
-	circle.on("rollout", function(evt) {
-        this.scaleX = this.scaleY = this.scale;
-        stage.update();
-	});*/
-	
-	/*var dragger = new createjs.Container();
-	dragger.x = dragger.y = 100;
-	dragger.addChild(circle);
-	stage.addChild(dragger);
-	stage.update();
-	
-	dragger.addEventListener("mousedown", handlePress);
-	
-	 function handlePress(event) {
-	     // A mouse press happened.
-	     // Listen for mouse move while the mouse is down:
-	     event.addEventListener("mousemove", handleMove);
-	 }
-	 function handleMove(event) {
-	     // Check out the DragAndDrop example in GitHub for more
-	 }
-	createjs.Ticker.addListener(stage);
-	stage.update();*/
-    
+	    
 	//**********Déclaration des labels*******
 	var demandeDeplacement, txtSalle, txtObjet, txtCase, txtObjetCase, 
 	txtPerso, txtListeObjet, txtObjetPerso, txtInventaire, txtDeposer,
@@ -173,20 +159,7 @@ function initialize() {
 	BtnInfoCase.x=800;
 	BtnInfoCase.addEventListener('click', function(event) {
 		socket.emit('INFO_CASE_CS');
-		});
-
-	function func()
-	{  // not needed since item is already global, 
-	   // I am assuming this is here just because it's sample code?
-	   // var item = document.getElementById("button"); 
-	   item.setAttribute("style", "background-color:blue;")
-	}
-
-	function func1()
-	{  
-	   item.setAttribute("style", "background-color:green;")
-	}
-	
+		});	
 	
 	var BtnInfoPerso = stage.addChild(new Button("Info Perso", "#A9A9A9"));
 	BtnInfoPerso.y = BtnInfoCase.y;
