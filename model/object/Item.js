@@ -19,17 +19,18 @@ var Item = (function() {
 
 	// --- METHODES DE CLASSE ---
 	
-	Item.build = function(id, nom, description, poids, imageName) {
-		return new Item(id, nom, description, poids, imageName);
+	Item.build = function(id, nom, description, poids, type, valeur, imageName) {
+		return new Item(id, nom, description, poids, type, valeur, imageName);
 	};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	function Item(id, nom, description, poids, type, imageName) {
+	function Item(id, nom, description, poids, type, valeur, imageName) {
 		this.id = id;
 		this.nom = nom;
 		this.description = description;
 		this.poids = poids;
 		this.type = type; 
+		this.valeur = valeur;
 		this.imageName = imageName;
 	}
 
