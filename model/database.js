@@ -32,7 +32,7 @@ database.Initialiser = function() {
 		pseudo : String,
 		pass : String,
 		email : String,
-		presonnage : Schema.Types.ObjectId,
+		presonnage : String,
 	});
 	
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
@@ -46,10 +46,10 @@ database.Initialiser = function() {
 		ptDeplacementMax : Number,
 		poidsMax : Number,
 		gouleLimite : Number,
-		idSalleEnCours : Schema.Types.ObjectId,
+		//idSalleEnCours : Schema.Types.ObjectId,
 		competence : String,
-		idArmeEquipee : Schema.Types.ObjectId,
-		idArmureEquipee : Schema.Types.ObjectId,
+		//idArmeEquipee : Schema.Types.ObjectId,
+		//idArmureEquipee : Schema.Types.ObjectId,
 		sacADos : Array,
 	
 	});

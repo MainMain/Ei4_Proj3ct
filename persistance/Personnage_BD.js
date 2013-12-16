@@ -46,9 +46,31 @@ Personnage_BD.GetPersonnage = function(idPersonnage) {
  *@method Creation
  */
  
- Personnage_BD.Creation = function(){
+ Personnage_BD.Creation = function(vie,action,deplacement,poids,goule,competence){
 	
- 
+	var PersonnageModel = mongoose.model('Personnage'); 
+	var Perso = new PersonnageModel();
+	
+	
+	Perso.ptSanteMax = vie;
+	Perso.ptSante = vie;
+	Perso.ptAction = action;	
+	Perso.ptActionMax =action;
+	Perso.ptDeplacement = deplacement;
+	Perso.ptDeplacementMax = deplacement;	
+	Perso.poidsMax = poids;
+	Perso.gouleLimite = goule;
+	Perso.competence = competence;
+	Perso.sacADos = new Array(); 
+	
+	Perso.save(function (err) {
+		if (err) { throw err; }
+		console.log('come on  !');
+			
+	});
+	
+	return Perso;
+	
  },
  
   module.exports = Personnage_BD;
