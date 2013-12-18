@@ -1,9 +1,9 @@
 (function() {
 
-var Button = function(label, color) {
+var ButtonMove = function(label, color) {
   this.initialize(label, color);
 };
-var p = Button.prototype = new createjs.Container(); // inherit from Container
+var p = ButtonMove.prototype = new createjs.Container(); // inherit from Container
 
 p.label;
 p.background;
@@ -20,10 +20,7 @@ p.initialize = function(label, color) {
 	text.textBaseline = "top";
 	text.textAlign = "center";
 	
-	/*var width = text.getMeasuredWidth()+20;
-	var height = text.getMeasuredHeight()+10;*/
-	
-	var width = 140;
+	var width = text.getMeasuredWidth()+20;
 	var height = text.getMeasuredHeight()+20;
 	
 	this.background = new createjs.Shape();
@@ -36,12 +33,12 @@ p.initialize = function(label, color) {
 };
 
 /*p.onClick = function() {
-	alert("You clicked on a button: ");
+	alert("You clicked on a ButtonMoveMoveMove: ");
 };*/
 
 p.onTick = function() {
 	this.alpha = Math.cos(this.count++*0.1)*0.4+0.6;
 };
 
-window.Button = Button;
+window.ButtonMove = ButtonMove;
 }());
