@@ -21,7 +21,7 @@ var oPersonnage_BD = require('./persistance/Personnage_BD');
 /*
  * CONFIGURATION DU SERVEUR
  */
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 8081);
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
 
@@ -188,7 +188,7 @@ server.listen(app.get('port'), function () {
  * CHARGEMENT DE SOCKET.IO
  */
 var io = require('socket.io').listen(server, {
-    log: false
+    log: true
 });
 
 /*
