@@ -55,25 +55,23 @@
 	<nav class="main-navigation clearfix span12" role="navigation">
 		<h3 class="assistive-text">Menu principal</h3>
 		<ul>
-			<li class="span2"><a href="/">Accueil</a></li>
+			<li class="current span2"><a href="/">Accueil</a></li>
+			<li class="span2"><a href="regles">But du jeu</a></li>
 			<li class="span2">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">
-					<li><a href="regles">Règles</a></li>
 					<li><a href="chat-equipe">Chat</a></li>
 				</ul>
 			</li>
 			<li class="span2"><a href="classement">Classement</a></li>
-			<li class="current span2"><a href="chat-general">Chat</a></li>
+			<li class="span2"><a href="chat-general">Chat</a></li>
 		</ul>
 	</nav> <!-- #main-navigation -->
-
-	<!-- Login form -->
-	<div id="LoginForm" class="loginform">
-		Connectez vous : <input type="text" id="PseudoLogin" placeholder="Entrez votre Pseudo" value="" required="">
-		Mot de passe : <input type="password" id="PasswordLogin" placeholder="Entrez votre Mot de passe" value="" required="">
-		<input type="submit" id="SubmitLogin" value="Encore vivant ?!">
+	
+	<div id="LogoutForm" class="logoutform">
+		<input type="submit" id="SubmitLogout" value="Retourner chez les vivants ?" align=right>
 	</div>
+
 <div id="content" role="main" class="span12">
 
 	<h1 class="entry-title" align=center>
@@ -96,44 +94,29 @@
 	<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>
 		
 		<!-- Script nécessaires pour le serveur -->
-		
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
-	
-	<script>
 
-	/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-	var socket = io.connect('http://localhost:8080');
 
-	/*
-	 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
-	 */
-	socket.on('CONNEXION_SC', function(reponseConnexion) {
-		if(reponseConnexion == 1)
-		{
-			$("#LoginForm").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
-			$("#SubscribeForm").html('<img src="/view/images/zombie.jpg"/>');
-		}
-		else
-		{
-			$("#LoginForm").show();
-		}
-	});
+		<script>
+			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+			var socket = io.connect('http://localhost:8080');
+			
+			/*
+			 * RECEPTION DES INFORMATIONS SUR LA DECONNEXION
+			 */
+			socket.on('DECONNEXION_SC', function(reponseDeconnexion) {
+				if (reponseDeconnexion == 1) {
+					$("#LogoutForm").hide();
+				} else {
+					$("#LogoutForm").html("Erreur interne !");
+				}
+			});
 
-	// Contact form
-	$("#SubmitLogin").click(function(e)
-	{
-		// Setup any needed variables
-		var input_Pseudo   = $('#PseudoLogin').val();
-		var input_Password = $('#PasswordLogin').val();
+			$("#SubmitLogout").click(function(e) {
+				socket.emit('DECONNEXION_CS');
+			});
 
-		// Hide any previous response text
-		$("#LoginForm").hide();
-		$("#SubscribeForm").hide(100);
-		
-		socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
-	});
-	
-	</script>
+		</script>
 </body>
 </html>
