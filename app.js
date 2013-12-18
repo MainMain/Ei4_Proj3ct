@@ -5,7 +5,7 @@ var querystring = require('querystring');
 var express = require('express'),
     routes = require('./routes'),
     http = require('http'),
-    hash = require('./pass').hash,
+    //hash = require('./pass').hash,
     path = require('path');
 var app = express();
 var server = http.createServer(app);
@@ -261,12 +261,11 @@ io.sockets.on('connection', function (socket) {
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM return
      * 1 si ok erreur : 0 si objet n'est pas dans le sac
-     *  erreur : -1 si il y a déja une arme d'équipée 
+     * erreur : -1 si il y a déja une arme d'équipée 
      * erreur : -2 si il y a déja une armure d'équipée
      * erreur : -3 si item n'est ni arme ni armure 
      * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
      */
-
     socket.on('INV_PERSONNAGE_CS', function (type, id_item) {
     	socket.get('session_personnage', function (error, myPerso) {
         // recupere l'currentItem
@@ -328,7 +327,6 @@ io.sockets.on('connection', function (socket) {
             var currentItem = oItem_BD.GetItemById(id_item);
 
             if (type == "RAMASSER") {
-
 
                 // log
                 console.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
@@ -436,28 +434,23 @@ io.sockets.on('connection', function (socket) {
         //socket.emit('CONNEXION_CS', 1); // utilisé pour tester ihm
         // log
         console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
-		/*
+		
         // demande à la base de données
-        // la réponse = id du user, ou 0 si pas de user
+        //la réponse = id du user, ou 0 si pas de user
         var reponse = oUtilisateur_BD.Connexion(username, password);
 		
+        
         // si couple ok
-        if (reponse != 0) {
+        if (reponse == 1) {
             socket.emit('CONNEXION_SC', 1);
-            // Session : Retien l'id de l'user dans une variable de session
-           // socket.set('session_user_id', reponse);
-            // Session : met le personnage correspondant dans une variable de session
-           // socket.set('session_personnage', oPersonnage_BD.GetPersonnageByIdUser(reponse));
-            console.log("-----" + reponse + " -- " +oPersonnage_BD.GetPersonnageByIdUser(reponse).id);
-            // Session : met l'utilisateur correspondant dans une variable de session
-            //socket.set('session_user', GetUtilisateur.GetUtilisateur(reponse));
+           // console.log("-----" + reponse + " -- " +oPersonnage_BD.GetPersonnageByIdUser(reponse).id);
             // log
             console.log("SERVEUR : Connexion de l'utilisateur " + reponse);
         } else {
             socket.emit('CONNEXION_SC', 0);
         }
         socket.emit('CONNEXION_SC', -1);
-		*/
+		/*
 		
 		if(username == "John" && password == "azerty")
 		{
@@ -466,37 +459,45 @@ io.sockets.on('connection', function (socket) {
 		else
 		{
             socket.emit('CONNEXION_SC', -1);
-		}
+		}/*
     });
 
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE D'INSCRIPTION
      * Renvoi 1 si ok
-     * Si erreur : renvoi 0
+     * si erreur : -1 pseudo deja pris
+     * Si erreur : -2 email deja pris
      */
     socket.on('INSCRIPTION_CS', function (username, password, email) {
         //socket.emit('INSCRIPTION_SC', 1); // utilisé pour tester ihm
         // log
-        console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password);
-        /*
+        console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password + " : " + email);
+        
 		var reponse = oUtilisateur_BD.Inscription(username, password, email);
-        // si 1: : ok
-        if (reponse == 1) {
-            socket.emit('INSCRIPTION_SC', 1);
-        }
-        // si -1 : pseudo deja pris
-        else if (reponse == -1) {
+		/* codes retour : 
+		 * si ok : return user
+		 * si -1 : pseudo deja pris
+		 * si -2 : email deja pris
+		 */
+		 // si -1 : pseudo deja pris
+        if (reponse == -1) {
             socket.emit('INSCRIPTION_SC', -1);
         }
         // si -2 : email deja pris
-        else  if (reponse == -2) {
-        	socket.emit('INSCRIPTION_SC', -2);
+        else if (reponse == -2) {
+            socket.emit('INSCRIPTION_SC', -2);
         }
+        // sinon, c'est un utilisateur, donc 
         else
-        	socket.emit('INSCRIPTION_SC', 2);
-        */
-		
+        {
+        	console.log("SERVEUR : INSCRIPTION OK");
+        	// créer le personnage
+        	var myPerso = new oPersonnage(reponse.idPersonnage, 0, 0, 0, 0, 0, 0, 0, 0, null, null, null);
+        	oPersonnage_BD.SetPersonnage(myPerso);
+        	socket.emit('INSCRIPTION_SC', 1);
+        }
+/*/// TESTS
 		if(username == "John")
 		{
         	socket.emit('INSCRIPTION_SC', -1);
@@ -509,7 +510,7 @@ io.sockets.on('connection', function (socket) {
 		{
 			socket.emit('INSCRIPTION_SC', 1);
 		}
-
+*/
     });
 
     //});
@@ -517,14 +518,14 @@ io.sockets.on('connection', function (socket) {
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE SI UN UTILISATEUR EST CONNECTE
      */
-    socket.on('USER_CONNECTED_CS', function () {
+    /*socket.on('USER_CONNECTED_CS', function () {
         socket.get('session_user_id', function (error, id) {
             if (id == null)
                 socket.emit('USER_CONNECTED_CS', false);
             else
                 socket.emit('USER_CONNECTED_CS', true);
         });
-    });
+    });*/
 });
 
 

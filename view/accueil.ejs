@@ -75,6 +75,7 @@
 	</div>
 	
 	<div id="LogoutForm" class="logoutform">
+		<div></div>
 		<input type="submit" id="SubmitLogout" value="Retourner chez les vivants ?" align=right>
 	</div>
 
@@ -151,7 +152,7 @@
 		{
 			$("#subscribtionAlert").removeClass("*").show();
 			$("#subscribtionAlert").html('<img src="/view/images/zombie.jpg"/>');
-			$("#LogoutForm").html('Bonjour ' + $('#PseudoLogin').val() + ' !<input type="submit" id="SubmitLogout" value="Retourner chez les vivants ?" align=right>');
+			$("#LogoutForm>div").html('Bonjour ' + $('#PseudoLogin').val() + ' !');
 			$("#LoginForm").hide();
 			$("#SubscribeForm").hide();
 			$("#loginAlert").hide();
