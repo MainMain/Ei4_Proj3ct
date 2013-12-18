@@ -56,10 +56,10 @@
 		<h3 class="assistive-text">Menu principal</h3>
 		<ul>
 			<li class="current span2"><a href="/">Accueil</a></li>
+			<li class="span2"><a href="regles">But du jeu</a></li>
 			<li class="span2">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">
-					<li><a href="regles">Règles</a></li>
 					<li><a href="chat-equipe">Chat</a></li>
 				</ul>
 			</li>
@@ -88,8 +88,6 @@
 			<h1 class="entry-title">
 				Première news
 			</h1>
-
-			<!-- .<a href="#" title="Post Heading"><img src="images/200x200.gif" alt="Post thumbnail" class="thumbnail" /></a> -->
 		</header> <!-- .entry-header -->
 
 		<div class="entry-content">
@@ -101,8 +99,6 @@
 		<footer class="entry-meta">
 			Posté le <time class="entry-date" datetime="11-12-2013" pubdate>11 Décembre 2013</time>
 			par <span class="author vcard">Admin</span>
-
-			<span class="edit-link"><a href="#" title="Edit entry">Edit &#9997;</a></span>
 		</footer>
 
 	</article> <!-- .post.hentry -->
@@ -153,18 +149,18 @@
 	socket.on('CONNEXION_SC', function(reponseConnexion) {
 		if(reponseConnexion == 1)
 		{
-			$("#loginAlert").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
-			$("#loginAlert").removeClass("*").addClass("alert alert-success").show();
 			$("#subscribtionAlert").removeClass("*").show();
 			$("#subscribtionAlert").html('<img src="/view/images/zombie.jpg"/>');
+			$("#LogoutForm").html('Bonjour ' + $('#PseudoLogin').val() + ' !<input type="submit" id="SubmitLogout" value="Retourner chez les vivants ?" align=right>');
 			$("#LoginForm").hide();
 			$("#SubscribeForm").hide();
+			$("#loginAlert").hide();
 			$("#LogoutForm").show();
 		}
 		else
 		{
 			$("#loginAlert").html('Le couple Pseudo/Mot de passe n\'existe pas !');
-			$("#loginAlert").removeClass("*").addClass("alert alert-warning").show();
+			$("#loginAlert").removeClass("*").addClass("alert alert-error").show();
 		}
 	});
 
@@ -203,6 +199,26 @@
 			$("#subscribtionAlert").removeClass("*").addClass("alert alert-warning").show();
 		}
 	});
+			
+	/*
+	 * RECEPTION DES INFORMATIONS SUR LA DECONNEXION
+	 */
+	socket.on('DECONNEXION_SC', function(reponseDeconnexion) {
+		if (reponseDeconnexion == 1) {
+			$("#LoginForm").show();
+			$("#LogoutForm").hide();
+			$("#SubscribeForm").show();
+		}
+		else
+		{
+			$("#LogoutForm").html("Erreur interne !");
+		}
+	});
+
+	$("#SubmitLogout").click(function(e)
+	{
+		socket.emit('DECONNEXION_CS');
+	});
 
 	// Login form
 	$("#SubmitLogin").click(function(e)
@@ -218,9 +234,9 @@
 	$("#SubmitSubscribe").click(function(e)
 	{
 		// Setup any needed variables
-		input_Pseudo   = $('#PseudoSubscribe').val();
+		input_Pseudo       = $('#PseudoSubscribe').val();
 		var input_Password = $('#PasswordSubscribe').val();
-		input_Email = $('#EmailSubscribe').val();
+		input_Email        = $('#EmailSubscribe').val();
 
 		// Change response text to 'loading...'
 		$("#subscribtionAlert").html('Chargement...').show();

@@ -413,6 +413,20 @@ io.sockets.on('connection', function (socket) {
 
 
     /***************************************************************************
+     * RECEPTION D'UNE DEMANDE DE DECONNEXION
+     * return : 1 si ok
+     * Si erreur : renvoi 0
+     */
+    socket.on('DECONNEXION_CS', function ()
+	{
+		// log
+        console.log('SERVER : Demande Deconnexion !');
+		
+		socket.emit('DECONNEXION_SC', 1);
+    });
+
+
+    /***************************************************************************
      * RECEPTION D'UNE DEMANDE DE CONNEXION Renvoi "CONNEXION_OK"
      * return : 1 si login / mdp ok
      * Si couple inconnu : renvoi 0
