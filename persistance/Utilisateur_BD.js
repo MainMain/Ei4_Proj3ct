@@ -1,13 +1,11 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-<<<<<<< HEAD
-
 var oPersonnageDB = require('./Personnage_BD');
 
-=======
-var oPresonnage = require('./Personnage_BD');
->>>>>>> d352c7b509c28e43141f17d671624d59336b92ee
+
+
+
 
 /**
  * UTILISATEUR : COMMUNICATION SERVEUR <-> BD
@@ -167,38 +165,3 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
 
  
  module.exports = Utilisateur_BD;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
