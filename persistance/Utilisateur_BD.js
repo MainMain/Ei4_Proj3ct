@@ -61,7 +61,7 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
  */
 
  
-Utilisateur_BD.Inscription = function(pseudoU,emailU,passU, callbackInscription)
+Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscription)
 {
  	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
 	
