@@ -61,91 +61,108 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
  */
 
  
- Utilisateur_BD.Inscription = function(pseudoU,emailU,passU){
- 
+Utilisateur_BD.Inscription = function(pseudoU,emailU,passU, callbackInscription)
+{
+ 	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
 	
-	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
-	
-	var NewUser = new Utilisateurmodel();
 	var userExiste = true;
 	var mailExiste = true;
 	
+	var sauvegarde = 0;
 	
+	var NewUser = new Utilisateurmodel();
 	
-	var queryU = Utilisateurmodel.find({pseudo : pseudoU});
-	queryU.limit(1);
+	NewUser.pseudo = pseudoU;
+	NewUser.pass = passU;
+	NewUser.email = emailU;
+	NewUser.nbrMeurtres = 0;
+	NewUser.nbrMeurtresCumule = 0;
+	NewUser.nbrFoisTue = 0;
+	NewUser.nbrFoisTueCumule = 0;
+	NewUser.numEquipe = 0;
 	
-	queryU.exec(function (err, testuseru) {
-	if (err)  throw err; 
+	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)
+	{
+		if (err)
+		{
+			throw err;
+		}		
 
-	if(testuseru[0])
-		userExiste = true;
-	else
-		userExiste = false;
-	
-	
-	queryU = Utilisateurmodel.find({email : emailU});
-	queryU.limit(1);
-	queryU.exec(function (err, testuseru) {
-	if (err)  throw err; 
-	
-	if(testuseru[0])
-		mailExiste = true;
-	else
-		mailExiste = false;
-	
-
-	if (userExiste)	
-		return -1;
-	else if(mailExiste)
-		return -2;
-	else
-	{	
-		NewUser.pseudo = pseudoU;
-		NewUser.pass = passU;
-		NewUser.email = emailU;
-		NewUser.nbrMeurtres = 0;
-		NewUser.nbrMeurtresCumule = 0;
-		NewUser.nbrFoisTue = 0;
-		NewUser.nbrFoisTueCumule = 0;
-		NewUser.numEquipe = 0;
+		if(typeof testuseru[0] === "undefined")
+		{
+			userExiste = false;
+		}
+		else
+		{
+			userExiste = true;
+		}
 		
-		
-		
-		NewUser.save(function (err) {
-			if (err) { throw err; }
-			console.log('tu es dans la base maintenant Motherfuker !');
+		Utilisateurmodel.find({email: emailU}, function (err, testusere)
+		{
+			if (err)
+			{
+				throw err;
+			}
 			
-			});
+			if(typeof testusere[0] === "undefined")
+			{
+				mailExiste = false;
+			}
+			else
+			{
+				mailExiste = true;
+			}
+			
+			if (userExiste)
+			{
+				sauvegarde = -1;
+			}
+			
+			if(mailExiste)
+			{
+				sauvegarde = -2;
+			}
+			
+			if(sauvegarde == -1 || sauvegarde == -2)
+			{
+				callbackInscription(sauvegarde);
+			}
+			else
+			{
+				NewUser.save(function (err)
+				{
+					if (err)
+					{
+						throw err;
+					}
+					console.log('Tu es dans la base maintenant !');
 		
-	var PersonnageModel = mongoose.model('Personnage');
-	var NewPerso = new PersonnageModel();
-	
-	NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
-	console.log(NewPerso._id );
-	NewUser.presonnage = NewPerso._id;
-	
-	NewUser.save(function (err) {
-		if (err) { throw err; }
-		console.log('fini boy <3 !');
+					var PersonnageModel = mongoose.model('Personnage');
+					var NewPerso = new PersonnageModel();
+					
+					NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
+					console.log(NewPerso._id);
+					NewUser.presonnage = NewPerso._id;
+		
+					NewUser.save(function (err)
+					{
+						if (err)
+						{
+							throw err;
+						}
+						console.log('Fini boy <3 !');
+						
+						callbackInscription(new oUtilisateur(
+							NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
+							NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
+							NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
+							NewUser.numEquipe,NewUser.personnage));
+					});
+				});
+			}
 		});
-	
-	}
-	
-	
-		});
-	
-
 	});
-		
-		return oUtilisateur(
-		NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-		NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-		NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-		NewUser.numEquipe,NewUser.personnage);
- },
- 
- 
+},
  
  /**
  *	Renvoi 1 si le pseudo n'existe pas, 2 si le mot de passe ne coresspond pas au pseudo et 0 si tout est en règle 
@@ -155,34 +172,33 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
  * @method Connexion
  */
  
- Utilisateur_BD.Connexion = function (pseudoU,passU){
- 
+ Utilisateur_BD.Connexion = function (pseudoU, passU, callbackConnexion)
+ {
 	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
 	
 	var NewUser = new Utilisateurmodel();
 	
-	var queryU = Utilisateurmodel.find({pseudo : pseudoU});
-	
-	var etat = 0;
-	
-	queryU.exec(function (err, testuseru) {
-	if (err)  throw err;
-	
-	console.log(testuseru[0]);
-	if (testuseru[0] && testuseru[0].pass === passU)
-		etat = 1;
-	else
-		etat = -1;
+	Utilisateurmodel.find({pseudo : pseudoU}, function(err, user)
+	{
+		if (err)
+		{
+			throw err;
+		}
 		
-	
-	console.log(etat);
-		
-	return etat;
+		if(typeof user[0] === "undefined")
+		{
+			callbackConnexion(-1);
+		}
+		else if(user[0].pass != passU)
+		{
+			callbackConnexion(-1);
+		}
+		else
+		{
+			callbackConnexion(1);
+		}
 	});
-	
-	
- 
- },
+},
  
  
  
