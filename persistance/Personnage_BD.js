@@ -1,4 +1,6 @@
 // includes
+var oItem_BD = require('./Item_BD');
+var oPersonnage = require('../model/Object/Personnage');
 /**
  * PERSONNAGES : COMMUNICATION SERVEUR <-> BD
  * 
@@ -19,7 +21,7 @@ function Personnage_BD() {
 
 
 /**
- * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
+ * ENVOIE UN PERSONNAGE POUR METTRE A JOUR CES PROPRIETES
  * 
  * @method SetPersonnage
  */
@@ -29,10 +31,30 @@ Personnage_BD.SetPersonnage = function(personnageToSave) {
 
 
 /**
- * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
+ * ENVOIE UN ID DE USER ET RETOURNE LE PERSO CORRESPONDANT
  * 
- * @method GetPersonnage
+ * @method GetPersonnageByIdUser
  */
-Personnage_BD.GetPersonnage = function(idPersonnage) {
+Personnage_BD.GetPersonnageByIdUser = function(idUtilisateur) {
+	// renvoi un personnage selon l'id passé en paramètre
+	
+	
+	/// *** POUR TESTER COTE SERVEUR ****
+	var sacADos = [oItem_BD.GetItemById(9), oItem_BD.GetItemById(10), oItem_BD.GetItemById(11)];
+	var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
+	    15, 100, 0, null, null, sacADos);
+	console.log("PERSONNAGE_BD : Renvoi du personnage - Demande par id user");
+	return myPerso;
+	////////////////////////////////////
+},
+
+/**
+ * ENVOIE UN ID DE PERSONNAGE ET RETOURNE LE PERSO
+ * 
+ * @method GetPersonnageByIdPerso
+ */
+Personnage_BD.GetPersonnageByIdPerso = function(idPersonnage) {
 	// renvoi un personnage selon l'id passé en paramètre
 },
+
+module.exports = Personnage_BD;

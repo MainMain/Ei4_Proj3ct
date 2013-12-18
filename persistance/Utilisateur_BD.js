@@ -1,6 +1,8 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
+var oItem_BD = require('./Item_BD');
+var oPersonnage = require('../model/Object/Personnage');
 
 /**
  * UTILISATEUR : COMMUNICATION SERVEUR <-> BD
@@ -60,11 +62,13 @@ Utilisateur_BD.Inscription = function(pseudoU, emailU, passU) {
 
 /*
  * DEMANDE DE CONNEXION D'UN UTILISATEUR
- * Renvoi true si ok
- * Renvoi false si couple inexistant
+ * Renvoi id du user si ok
+ * Renvoi 0 si couple inexistant
  */
 Utilisateur_BD.Connexion = function(pseudoU, passU) {
-	// renvoi true si couple ok, false sinon
+	//***** POUR TESTS COTE SERVEUR
+	return 56456756456;
+	///////////////////////////
 },
 
 module.exports = Utilisateur_BD;
