@@ -33,20 +33,20 @@ app.use(app.router);
 app.use(express.static(path.join(__dirname, '/')));
 
 //middleware
-app.use(express.bodyParser());
+/*app.use(express.bodyParser());
 app.use(express.cookieParser('shhhh, very secret'));
 app.use(express.session());
-
+*//*
 //Session-persisted message middleware
-app.use(function(req, res, next){
-  var err = req.session.error
-    , msg = req.session.success;
-  delete req.session.error;
-  delete req.session.success;
-  res.locals.message = '';
-  if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
-  if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
-  next();
+app.use(function (req, res, next) {
+    var err = req.session.error,
+        msg = req.session.success;
+    delete req.session.error;
+    delete req.session.success;
+    res.locals.message = '';
+    if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
+    if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
+    next();
 });
 /*
 //dummy database
@@ -224,88 +224,88 @@ io.sockets.on('connection', function (socket) {
     console.log('SERVER : Un client est connecté !');
     //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
 
-    
-    
-    
+
+
+
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
      * la case avec MOVE_PERSONNAGE_SC Si erreur : renvoi "ERREUR_MOVE" si
      * impossible de bouger Si erreur : renvoi "ERREUR_CASE" si erreur de case
      */
     socket.on('MOVE_PERSONNAGE_CS', function (move) {
-    	socket.get('session_personnage', function (error, myPerso) {
-    		
-        // log
-        console.log('SERVER : Déplacement du personnage demandé : ' + move);
-        // déplacement du personnage
-        var ansDeplacementOk = myPerso.deplacement(move);
-        // si le déplacement a réussi
-        if (ansDeplacementOk == true) {
-            console.log('SERVER : DEBUG envoi de la nouvelle position');
-            // récupère la salle en cours
-            var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
-            console.log("-------- DEBUG "+ myPerso.id + " -- " + currentCase);
-            // renvoi la salle ou erreur
-            if (currentCase == null)
-                socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_CASE");
-            else
-                socket.emit('MOVE_PERSONNAGE_SC', currentCase);
-        }
-        // si le déplacement a raté
-        else {
-            console.log('SERVER : DEBUG envoi deplacement impossible');
-            socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_MOVE");
-        }
-    });
+        socket.get('session_personnage', function (error, myPerso) {
+
+            // log
+            console.log('SERVER : Déplacement du personnage demandé : ' + move);
+            // déplacement du personnage
+            var ansDeplacementOk = myPerso.deplacement(move);
+            // si le déplacement a réussi
+            if (ansDeplacementOk == true) {
+                console.log('SERVER : DEBUG envoi de la nouvelle position');
+                // récupère la salle en cours
+                var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
+                console.log("-------- DEBUG " + myPerso.id + " -- " + currentCase);
+                // renvoi la salle ou erreur
+                if (currentCase == null)
+                    socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_CASE");
+                else
+                    socket.emit('MOVE_PERSONNAGE_SC', currentCase);
+            }
+            // si le déplacement a raté
+            else {
+                console.log('SERVER : DEBUG envoi deplacement impossible');
+                socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_MOVE");
+            }
+        });
     });
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM return
      * 1 si ok erreur : 0 si objet n'est pas dans le sac
-     * erreur : -1 si il y a déja une arme d'équipée 
+     * erreur : -1 si il y a déja une arme d'équipée
      * erreur : -2 si il y a déja une armure d'équipée
-     * erreur : -3 si item n'est ni arme ni armure 
+     * erreur : -3 si item n'est ni arme ni armure
      * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
      */
     socket.on('INV_PERSONNAGE_CS', function (type, id_item) {
-    	socket.get('session_personnage', function (error, myPerso) {
-        // recupere l'currentItem
-        var currentItem = oItem_BD.GetItemById(id_item);
+        socket.get('session_personnage', function (error, myPerso) {
+            // recupere l'currentItem
+            var currentItem = oItem_BD.GetItemById(id_item);
 
-        // check si currentItem est bien dans le sac
-        var existItemInSac = myPerso.existItemInSac(currentItem);
-        if (existItemInSac == false)
-            socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, 0);
+            // check si currentItem est bien dans le sac
+            var existItemInSac = myPerso.existItemInSac(currentItem);
+            if (existItemInSac == false)
+                socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, 0);
 
-        // si c'est une demande pour s'équiper
-        if (type == "EQUIPER") {
-            // on équipe le perso
-            var reponse = myPerso.sEquiperDunItem(currentItem);
-            // et selon le message renvoyé
-            switch (reponse) {
-            case 1:
-                socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, 1);
-                break;
-            case -1:
-                socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -1);
-                break;
-            case -2:
-                socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -2);
-                break;
-            case -3:
-                socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -3);
-                break;
-            default:
-                break;
+            // si c'est une demande pour s'équiper
+            if (type == "EQUIPER") {
+                // on équipe le perso
+                var reponse = myPerso.sEquiperDunItem(currentItem);
+                // et selon le message renvoyé
+                switch (reponse) {
+                case 1:
+                    socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, 1);
+                    break;
+                case -1:
+                    socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -1);
+                    break;
+                case -2:
+                    socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -2);
+                    break;
+                case -3:
+                    socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -3);
+                    break;
+                default:
+                    break;
+                }
+            } else if (type == "DEQUIPER") {
+                // si le perso n'est pas équipe d'un item de cet idem
+                if (myPerso.armeEquipee.id != currentItem.id || myPerso.armureEquipee.id != currentItem.id) {
+                    socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -4);
+                }
+                var reponse = myPerso.sDesequiperDunItem(currentItem);
+                socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, 1);
             }
-        } else if (type == "DEQUIPER") {
-            // si le perso n'est pas équipe d'un item de cet idem
-            if (myPerso.armeEquipee.id != currentItem.id || myPerso.armureEquipee.id != currentItem.id) {
-                socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -4);
-            }
-            var reponse = myPerso.sDesequiperDunItem(currentItem);
-            socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, 1);
-        }
-    });
+        });
     });
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM return
@@ -314,12 +314,11 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('INV_CASE_CS', function (type, id_item) {
         socket.get('session_personnage', function (error, myPerso) {
-        	// si pas de session
-        	if (myPerso == null)
-        		{
-        			console.log("WARNING - PAS DE SESSION !");
-        			return;
-        		}
+            // si pas de session
+            if (myPerso == null) {
+                console.log("WARNING - PAS DE SESSION !");
+                return;
+            }
             // récupère la case en cours
             var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
 
@@ -388,25 +387,25 @@ io.sockets.on('connection', function (socket) {
      * INFO_CASE_SC Si erreur : renvoi NULL
      */
     socket.on('INFO_CASE_CS', function () {
-    	socket.get('session_personnage', function (error, myPerso) {
-        // récupère la salle en cours
-        var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
-        // return selon la valeur de retour
-        if (currentCase == null)
-            socket.emit('INFO_CASE_SC', "ERREUR_CASE");
-        else
-            socket.emit('INFO_CASE_SC', currentCase);
+        socket.get('session_personnage', function (error, myPerso) {
+            // récupère la salle en cours
+            var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
+            // return selon la valeur de retour
+            if (currentCase == null)
+                socket.emit('INFO_CASE_SC', "ERREUR_CASE");
+            else
+                socket.emit('INFO_CASE_SC', currentCase);
+        });
     });
-});
 
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE D'INFO SUR LE PERSONNAGE
      */
     socket.on('INFO_PERSONNAGE_CS', function () {
-    	socket.get('session_personnage', function (error, myPerso) {
-        socket.emit('INFO_PERSONNAGE_SC', myPerso);
-    });
+        socket.get('session_personnage', function (error, myPerso) {
+            socket.emit('INFO_PERSONNAGE_SC', myPerso);
+        });
     });
 
 
@@ -415,12 +414,11 @@ io.sockets.on('connection', function (socket) {
      * return : 1 si ok
      * Si erreur : renvoi 0
      */
-    socket.on('DECONNEXION_CS', function ()
-	{
-		// log
+    socket.on('DECONNEXION_CS', function () {
+        // log
         console.log('SERVER : Demande Deconnexion !');
-		
-		socket.emit('DECONNEXION_SC', 1);
+
+        socket.emit('DECONNEXION_SC', 1);
     });
 
 
@@ -434,23 +432,24 @@ io.sockets.on('connection', function (socket) {
         //socket.emit('CONNEXION_CS', 1); // utilisé pour tester ihm
         // log
         console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
-		
+
         // demande à la base de données
         //la réponse = id du user, ou 0 si pas de user
         var reponse = oUtilisateur_BD.Connexion(username, password);
-		
-        
+
+
         // si couple ok
         if (reponse == 1) {
             socket.emit('CONNEXION_SC', 1);
-           // console.log("-----" + reponse + " -- " +oPersonnage_BD.GetPersonnageByIdUser(reponse).id);
+            // console.log("-----" + reponse + " -- " +oPersonnage_BD.GetPersonnageByIdUser(reponse).id);
             // log
             console.log("SERVEUR : Connexion de l'utilisateur " + reponse);
         } else {
             socket.emit('CONNEXION_SC', 0);
         }
         socket.emit('CONNEXION_SC', -1);
-		/*
+
+        /*
 		
 		if(username == "John" && password == "azerty")
 		{
@@ -459,7 +458,7 @@ io.sockets.on('connection', function (socket) {
 		else
 		{
             socket.emit('CONNEXION_SC', -1);
-		}/*
+		}*/
     });
 
 
@@ -473,14 +472,15 @@ io.sockets.on('connection', function (socket) {
         //socket.emit('INSCRIPTION_SC', 1); // utilisé pour tester ihm
         // log
         console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password + " : " + email);
-        
-		var reponse = oUtilisateur_BD.Inscription(username, password, email);
-		/* codes retour : 
-		 * si ok : return user
-		 * si -1 : pseudo deja pris
-		 * si -2 : email deja pris
-		 */
-		 // si -1 : pseudo deja pris
+/*
+        var reponse = oUtilisateur_BD.Inscription(username, password, email);
+        /* codes retour : 
+         * si ok : return user
+         * si -1 : pseudo deja pris
+         * si -2 : email deja pris
+         */
+		 /*
+        // si -1 : pseudo deja pris
         if (reponse == -1) {
             socket.emit('INSCRIPTION_SC', -1);
         }
@@ -489,15 +489,15 @@ io.sockets.on('connection', function (socket) {
             socket.emit('INSCRIPTION_SC', -2);
         }
         // sinon, c'est un utilisateur, donc 
-        else
-        {
-        	console.log("SERVEUR : INSCRIPTION OK");
-        	// créer le personnage
-        	var myPerso = new oPersonnage(reponse.idPersonnage, 0, 0, 0, 0, 0, 0, 0, 0, null, null, null);
-        	oPersonnage_BD.SetPersonnage(myPerso);
-        	socket.emit('INSCRIPTION_SC', 1);
+        else {
+            console.log("SERVEUR : INSCRIPTION OK");
+            // créer le personnage
+            var myPerso = new oPersonnage(reponse.idPersonnage, 0, 0, 0, 0, 0, 0, 0, 0, null, null, null);
+            oPersonnage_BD.SetPersonnage(myPerso);
+            socket.emit('INSCRIPTION_SC', 1);
         }
-/*/// TESTS
+		**/
+        /*/// TESTS
 		if(username == "John")
 		{
         	socket.emit('INSCRIPTION_SC', -1);

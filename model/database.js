@@ -33,6 +33,11 @@ database.Initialiser = function() {
 		pass : String,
 		email : String,
 		presonnage : String,
+		nbrMeurtres : Number,
+		nbrMeurtresCumule : Number,
+		nbrFoisTue : Number,
+		nbrFoisTueCumule : Number,
+		numEquipe : Number,
 	});
 	
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 

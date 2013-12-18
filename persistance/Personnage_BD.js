@@ -3,7 +3,7 @@ var oItem_BD = require('./Item_BD');
 var oPersonnage = require('../model/Object/Personnage');
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-var oPersonnage = require('../model/object/Personnage');
+
 
 /**
  * PERSONNAGES : COMMUNICATION SERVEUR <-> BD

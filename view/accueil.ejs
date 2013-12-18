@@ -234,6 +234,7 @@
 	// Subscribe form
 	$("#SubmitSubscribe").click(function(e)
 	{
+	alert("coucou");
 		// Setup any needed variables
 		input_Pseudo       = $('#PseudoSubscribe').val();
 		var input_Password = $('#PasswordSubscribe').val();
@@ -241,8 +242,9 @@
 
 		// Change response text to 'loading...'
 		$("#subscribtionAlert").html('Chargement...').show();
-		
-		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, input_Email);
+		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, 
+		input_Email);
+	alert("coucou");
 	});
 	
 	</script>
