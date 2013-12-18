@@ -16,11 +16,14 @@ p.initialize = function(label, color) {
 	this.label = label;
 	if (!color) { color = "#CCC"; }
 	
-	var text = new createjs.Text(label, "20px Arial", "#000");
+	var text = new createjs.Text(label, "14px Arial", "#000");
 	text.textBaseline = "top";
 	text.textAlign = "center";
 	
-	var width = text.getMeasuredWidth()+30;
+	/*var width = text.getMeasuredWidth()+20;
+	var height = text.getMeasuredHeight()+10;*/
+	
+	var width = 140;
 	var height = text.getMeasuredHeight()+20;
 	
 	this.background = new createjs.Shape();
