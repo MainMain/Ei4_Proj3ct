@@ -16,6 +16,10 @@ var oCase_BD = require('./persistance/Case_BD');
 var oItem_BD = require('./persistance/Item_BD');
 var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 var oPersonnage_BD = require('./persistance/Personnage_BD');
+var oDatabase = require('./model/database');
+
+//Initialisation de la base de données
+oDatabase.Initialiser();
 
 
 /*
@@ -428,39 +432,27 @@ io.sockets.on('connection', function (socket) {
      * Si couple inconnu : renvoi 0
      * si erreur : renvoi -1
      */
-    socket.on('CONNEXION_CS', function (username, password) {
-        //socket.emit('CONNEXION_CS', 1); // utilisé pour tester ihm
+    socket.on('CONNEXION_CS', function (username, password)
+	{
         // log
         console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
-
-        // demande à la base de données
-        //la réponse = id du user, ou 0 si pas de user
-        var reponse = oUtilisateur_BD.Connexion(username, password);
-
-
-        // si couple ok
-        if (reponse == 1) {
-            socket.emit('CONNEXION_SC', 1);
-            // console.log("-----" + reponse + " -- " +oPersonnage_BD.GetPersonnageByIdUser(reponse).id);
-            // log
-            console.log("SERVEUR : Connexion de l'utilisateur " + reponse);
-        } else {
-            socket.emit('CONNEXION_SC', 0);
-        }
-        socket.emit('CONNEXION_SC', -1);
-
-        /*
 		
-		if(username == "John" && password == "azerty")
+		oUtilisateur_BD.Connexion(username, password, callbackConnexion);
+    });
+	
+	callbackConnexion = function(reponse)
+	{
+		console.log("SERVEUR : Reponse connexion : " + reponse);
+		
+        if (reponse == 1 || reponse == -1)
 		{
-            socket.emit('CONNEXION_SC', 1);
-		}
+            socket.emit('CONNEXION_SC', reponse);
+        }
 		else
 		{
-            socket.emit('CONNEXION_SC', -1);
-		}*/
-    });
-
+			socket.emit('CONNEXION_SC', 0);
+		}
+	}
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE D'INSCRIPTION
@@ -468,50 +460,32 @@ io.sockets.on('connection', function (socket) {
      * si erreur : -1 pseudo deja pris
      * Si erreur : -2 email deja pris
      */
-    socket.on('INSCRIPTION_CS', function (username, password, email) {
-        //socket.emit('INSCRIPTION_SC', 1); // utilisé pour tester ihm
-        // log
+    socket.on('INSCRIPTION_CS', function (username, password, email)
+	{
+        //Log
         console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password + " : " + email);
-/*
-        var reponse = oUtilisateur_BD.Inscription(username, password, email);
-        /* codes retour : 
-         * si ok : return user
-         * si -1 : pseudo deja pris
-         * si -2 : email deja pris
-         */
-		 /*
-        // si -1 : pseudo deja pris
-        if (reponse == -1) {
-            socket.emit('INSCRIPTION_SC', -1);
-        }
-        // si -2 : email deja pris
-        else if (reponse == -2) {
-            socket.emit('INSCRIPTION_SC', -2);
+		
+        oUtilisateur_BD.Inscription(username, password, email, callbackInscription);
+    });
+	
+	callbackInscription = function(reponse)
+	{
+		console.log("SERVEUR : Reponse inscription : " + reponse);
+		//si problème
+        if (reponse == -1 || reponse == -2)
+		{
+            socket.emit('INSCRIPTION_SC', reponse);
         }
         // sinon, c'est un utilisateur, donc 
-        else {
+        else
+		{
             console.log("SERVEUR : INSCRIPTION OK");
             // créer le personnage
             var myPerso = new oPersonnage(reponse.idPersonnage, 0, 0, 0, 0, 0, 0, 0, 0, null, null, null);
             oPersonnage_BD.SetPersonnage(myPerso);
             socket.emit('INSCRIPTION_SC', 1);
         }
-		**/
-        /*/// TESTS
-		if(username == "John")
-		{
-        	socket.emit('INSCRIPTION_SC', -1);
-		}
-		else if(email == "test@gmail.com")
-		{
-        	socket.emit('INSCRIPTION_SC', -2);
-		}
-		else
-		{
-			socket.emit('INSCRIPTION_SC', 1);
-		}
-*/
-    });
+	}
 
     //});
 

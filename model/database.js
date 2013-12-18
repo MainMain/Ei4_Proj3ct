@@ -1,3 +1,5 @@
+var mongoose = require('mongoose');
+
 /**
  * Modélisation d'une base de donnée
  * 
@@ -23,7 +25,6 @@ function database() {
  * @method Initialiser
  */
 database.Initialiser = function() {
-	var mongoose = require('mongoose');
 	mongoose.connect('mongodb://localhost/DevV1', function(err) {
 	if (err) { throw err; }
 	});
@@ -60,6 +61,8 @@ database.Initialiser = function() {
 	});
 	
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
+	
+	console.log("Initialisation Database");
 },
 
 
