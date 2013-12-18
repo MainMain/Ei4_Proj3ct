@@ -1,10 +1,7 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-<<<<<<< HEAD
 var oPresonnage = require('./Personnage_BD');
-=======
->>>>>>> 00262bf13d52fde0963dc5a147accb9564d64140
 
 /**
  * UTILISATEUR : COMMUNICATION SERVEUR <-> BD
@@ -189,7 +186,7 @@ Utilisateur_BD.Inscription = function(pseudoU, emailU, passU) {
  * DEMANDE DE CONNEXION D'UN UTILISATEUR
  * Renvoi true si ok
  * Renvoi false si couple inexistant
- */
+ *
 Utilisateur_BD.Connexion = function(pseudoU, passU) {
 	// renvoi true si couple ok, false sinon
 },

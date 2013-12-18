@@ -310,7 +310,8 @@ io.sockets.on('connection', function (socket) {
     	//socket.emit('INSCRIPTION_SC', 1); // utilisé pour tester ihm
          // log
         console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password);
-        var reponse = oUtilisateur_BD.Inscription(username, password, email);
+        /*
+		var reponse = oUtilisateur_BD.Inscription(username, password, email);
         // si 1: : ok
         if (reponse == 1) {
         	socket.emit('INSCRIPTION_SC', 1);
@@ -325,7 +326,20 @@ io.sockets.on('connection', function (socket) {
         }
         else
         	socket.emit('INSCRIPTION_SC', 2);
-        
+        */
+		
+		if(username == "John")
+		{
+        	socket.emit('INSCRIPTION_SC', -1);
+		}
+		else if(email == "test@gmail.com")
+		{
+        	socket.emit('INSCRIPTION_SC', -2);
+		}
+		else
+		{
+			socket.emit('INSCRIPTION_SC', 1);
+		}
     });
 
 });

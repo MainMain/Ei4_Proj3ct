@@ -104,9 +104,10 @@
 </div> <!-- #content -->
 
 <div id="sidebar" role="complementary" class="span4">
-
+	<div id="subscribtionAlert">
+	</div>
 	<!-- Subscription form -->
-	<div id="SubscribeForm" class="subscribeform">
+	<div id="SubscribeForm" name="SubscribeForm" class="subscribeform">
 		<h2 align=center>Venez creuser votre tombe !</h2>
 		<input type="text" id="PseudoSubscribe" placeholder="Pseudo" value="" required="">
 		<input type="password" id="PasswordSubscribe" placeholder="Mot de passe" value="" required="">
@@ -133,7 +134,10 @@
 
 	/*********** EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 	var socket = io.connect('http://localhost:8080');
-
+	
+	var input_Pseudo = "";
+	var input_Email  = "";
+	
 	/*
 	 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
 	 * Recoit 1 si ok
@@ -161,23 +165,32 @@
 	socket.on('INSCRIPTION_SC', function(reponseInscription) {
 		if(reponseInscription == 1)
 		{
-			$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() +
+			$("#subscribtionAlert").hide();
+			$("#subscribtionAlert").html('Bienvenue ' + input_Pseudo +
 			 " !<br> Votre compte est crée, vous pouvez désormais vous connecter !");
+			$("#subscribtionAlert").removeClass("*").addClass("alert alert-success").show();
+			$("#SubscribeForm").hide();
 		}
 		else if(reponseInscription == 0)
 		{
+			$("#subscribtionAlert").hide();
+			$("#subscribtionAlert").html('Erreur interne');
+			$("#subscribtionAlert").removeClass("*").addClass("alert alert-error").show();
 			$("#SubscribeForm").show();
-			$("#SubscribeForm").html('Erreur interne ! ');
 		}
 		else if(reponseInscription == -1)
 		{
+			$("#subscribtionAlert").hide();
+			$("#subscribtionAlert").html('Pseudo déja utilisé !');
+			$("#subscribtionAlert").removeClass("*").addClass("alert alert-warning").show();
 			$("#SubscribeForm").show();
-			$("#SubscribeForm").html('Pseudo déja utilisé !');
 		}
 		else if(reponseInscription == -2)
 		{
+			$("#subscribtionAlert").hide();
+			$("#subscribtionAlert").html('Email déja utilisé !');
+			$("#subscribtionAlert").removeClass("*").addClass("alert alert-warning").show();
 			$("#SubscribeForm").show();
-			$("#SubscribeForm").html('Email déja utilisé !');
 		}
 		else
 		{
@@ -189,7 +202,7 @@
 	$("#SubmitLogin").click(function(e)
 	{
 		// Setup any needed variables
-		var input_Pseudo   = $('#PseudoLogin').val();
+		input_Pseudo   = $('#PseudoLogin').val();
 		var input_Password = $('#PasswordLogin').val();
 
 		// Hide any previous response text
@@ -203,17 +216,19 @@
 	$("#SubmitSubscribe").click(function(e)
 	{
 		// Setup any needed variables
-		var input_Pseudo   = $('#PseudoSubscribe').val();
+		input_Pseudo   = $('#PseudoSubscribe').val();
 		var input_Password = $('#PasswordSubscribe').val();
-		var input_Email = $('#EmailSubscribe').val();
+		input_Email = $('#EmailSubscribe').val();
 
 		// Hide any previous response text
 		$("#SubscribeForm").hide();
 
 		// Change response text to 'loading...'
-		$("#SubscribeForm").html('Chargement...').show();
+		$("#subscribtionAlert").html('Chargement...').show();
 		
 		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, input_Email);
+		
+		e.preventDefault();
 	});
 	
 	</script>
