@@ -48,7 +48,7 @@ app.use(function(req, res, next){
   if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
   next();
 });
-
+/*
 //dummy database
 var users = {
   tj: { name: 'tj' }
@@ -260,10 +260,11 @@ io.sockets.on('connection', function (socket) {
     });
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM return
-     * 1 si ok erreur : 0 si objet n'est pas dans le sac erreur : -1 si il y a
-     * déja une arme d'équipée erreur : -2 si il y a déja une armure d'équipée
-     * erreur : -3 si item n'est ni arme ni armure erreur : -4 si l'item a
-     * dequiper n'est pas équipé au préalable
+     * 1 si ok erreur : 0 si objet n'est pas dans le sac
+     *  erreur : -1 si il y a déja une arme d'équipée 
+     * erreur : -2 si il y a déja une armure d'équipée
+     * erreur : -3 si item n'est ni arme ni armure 
+     * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
      */
 
     socket.on('INV_PERSONNAGE_CS', function (type, id_item) {
