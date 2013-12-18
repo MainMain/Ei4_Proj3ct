@@ -31,7 +31,7 @@ var Personnage = (function() {
 	Personnage.build = function(ptSante, ptSanteMax, ptActions, ptActionsMax,
 			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours,
 			armeEquipee, armureEquipee, sacADos) {
-		return new Personnage(name);
+		return new Personnage();
 
 	};
 
@@ -92,7 +92,8 @@ var Personnage = (function() {
 		},
 
 		/**
-		 * FONCTION RAMASSER UN OBJET return : 1 si ok si trop de poids : renvoi
+		 * FONCTION RAMASSER UN OBJET 
+		 * return : 1 si ok si trop de poids : renvoi
 		 * item
 		 * 
 		 * @method ajouterAuSac
