@@ -67,12 +67,18 @@
 			<li class="span2"><a href="chat-general">Chat</a></li>
 		</ul>
 	</nav> <!-- #main-navigation -->
-
 	<!-- Login form -->
 	<div id="LoginForm" class="loginform">
 		Connectez vous : <input type="text" id="PseudoLogin" placeholder="Entrez votre Pseudo" value="" required="">
 		Mot de passe : <input type="password" id="PasswordLogin" placeholder="Entrez votre Mot de passe" value="" required="">
 		<input type="submit" id="SubmitLogin" value="Encore vivant ?!">
+	</div>
+	
+	<div id="LogoutForm" class="logoutform">
+		<input type="submit" id="SubmitLogout" value="Retourner chez les vivants ?" align=right>
+	</div>
+
+	<div id="loginAlert" class="loginAlert">
 	</div>
 <div id="content" role="main" class="span7">
 
@@ -104,9 +110,10 @@
 </div> <!-- #content -->
 
 <div id="sidebar" role="complementary" class="span4">
-
+	<div id="subscribtionAlert">
+	</div>
 	<!-- Subscription form -->
-	<div id="SubscribeForm" class="subscribeform">
+	<div id="SubscribeForm" name="SubscribeForm" class="subscribeform">
 		<h2 align=center>Venez creuser votre tombe !</h2>
 		<input type="text" id="PseudoSubscribe" placeholder="Pseudo" value="" required="">
 		<input type="password" id="PasswordSubscribe" placeholder="Mot de passe" value="" required="">
@@ -133,7 +140,11 @@
 
 	/*********** EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 	var socket = io.connect('http://localhost:8080');
-
+	
+	var input_Pseudo = "";
+	var input_Email  = "";
+	
+	$('#LogoutForm').hide();
 	/*
 	 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
 	 * Recoit 1 si ok
@@ -142,12 +153,18 @@
 	socket.on('CONNEXION_SC', function(reponseConnexion) {
 		if(reponseConnexion == 1)
 		{
-			$("#LoginForm").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
-			$("#SubscribeForm").html('<img src="/view/images/zombie.jpg"/>');
+			$("#loginAlert").html('Bienvenue ' + $('#PseudoLogin').val() + " !");
+			$("#loginAlert").removeClass("*").addClass("alert alert-success").show();
+			$("#subscribtionAlert").removeClass("*").show();
+			$("#subscribtionAlert").html('<img src="/view/images/zombie.jpg"/>');
+			$("#LoginForm").hide();
+			$("#SubscribeForm").hide();
+			$("#LogoutForm").show();
 		}
 		else
 		{
-			$("#LoginForm").show();
+			$("#loginAlert").html('Le couple Pseudo/Mot de passe n\'existe pas !');
+			$("#loginAlert").removeClass("*").addClass("alert alert-warning").show();
 		}
 	});
 
@@ -161,57 +178,52 @@
 	socket.on('INSCRIPTION_SC', function(reponseInscription) {
 		if(reponseInscription == 1)
 		{
-			$("#SubscribeForm").html('Bienvenue ' + $('#PseudoSubscribe').val() +
+			$("#subscribtionAlert").hide();
+			$("#subscribtionAlert").html('Bienvenue ' + input_Pseudo +
 			 " !<br> Votre compte est crée, vous pouvez désormais vous connecter !");
+			$("#subscribtionAlert").removeClass("*").addClass("alert alert-success").show();
+			$("#SubscribeForm").hide();
 		}
 		else if(reponseInscription == 0)
 		{
-			$("#SubscribeForm").show();
-			$("#SubscribeForm").html('Erreur interne ! ');
+			$("#subscribtionAlert").hide();
+			$("#subscribtionAlert").html('Erreur interne');
+			$("#subscribtionAlert").removeClass("*").addClass("alert alert-error").show();
 		}
 		else if(reponseInscription == -1)
 		{
-			$("#SubscribeForm").show();
-			$("#SubscribeForm").html('Pseudo déja utilisé !');
+			$("#subscribtionAlert").hide();
+			$("#subscribtionAlert").html('Pseudo déja utilisé !');
+			$("#subscribtionAlert").removeClass("*").addClass("alert alert-warning").show();
 		}
 		else if(reponseInscription == -2)
 		{
-			$("#SubscribeForm").show();
-			$("#SubscribeForm").html('Email déja utilisé !');
-		}
-		else
-		{
-			$("#SubscribeForm").show();
+			$("#subscribtionAlert").hide();
+			$("#subscribtionAlert").html('Email déja utilisé !');
+			$("#subscribtionAlert").removeClass("*").addClass("alert alert-warning").show();
 		}
 	});
 
-	// Contact form
+	// Login form
 	$("#SubmitLogin").click(function(e)
 	{
 		// Setup any needed variables
-		var input_Pseudo   = $('#PseudoLogin').val();
+		input_Pseudo   = $('#PseudoLogin').val();
 		var input_Password = $('#PasswordLogin').val();
-
-		// Hide any previous response text
-		$("#LoginForm").hide();
-		$("#SubscribeForm").hide(100);
 		
 		socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
 	});
 
-	// Contact form
+	// Subscribe form
 	$("#SubmitSubscribe").click(function(e)
 	{
 		// Setup any needed variables
-		var input_Pseudo   = $('#PseudoSubscribe').val();
+		input_Pseudo   = $('#PseudoSubscribe').val();
 		var input_Password = $('#PasswordSubscribe').val();
-		var input_Email = $('#EmailSubscribe').val();
-
-		// Hide any previous response text
-		$("#SubscribeForm").hide();
+		input_Email = $('#EmailSubscribe').val();
 
 		// Change response text to 'loading...'
-		$("#SubscribeForm").html('Chargement...').show();
+		$("#subscribtionAlert").html('Chargement...').show();
 		
 		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, input_Email);
 	});

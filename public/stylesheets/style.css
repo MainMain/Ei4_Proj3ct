@@ -884,6 +884,10 @@ input[type="search"] {
   background: #ffffff url(../images/search.png) no-repeat 8px center;
   padding-left: 22px;
 }
+.loginAlert
+{
+  margin-top: 70px;
+}
 /*
  * Formulaire de Login
  */
@@ -918,6 +922,36 @@ input[type="search"] {
   margin: auto 15px;
   padding: 6px 0px;
   font-size: 20px;
+}
+/*
+ * Formulaire de Logout
+ */
+.logoutform {
+  min-height: 20px;
+  padding: 15px;
+  background-color: #f5f5f5;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-top: 70px;
+  margin-bottom: 25px;
+  font-size: 20px;
+}
+.logoutform:before,
+.logoutform:after {
+  display: table;
+  content: "";
+}
+.logoutform:after {
+  clear: both;
+}
+
+.logoutform input[type="submit"]{
+  width: 30%;
+  margin: auto 15px;
+  padding: 6px 6px;
+  font-family: "JackLantern BB";
+  font-size: 20px;
+  color: #FF0000;
+  float:right;
 }
 /*
  * Formulaire d'Inscription
