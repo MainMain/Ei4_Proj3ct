@@ -10,7 +10,7 @@ var server = http.createServer(function(req, res) {
 server.listen(8080);
 
 oDatabase.Initialiser();
-oUtilisateurDB.Inscription("joe","unmaiil@gmail.com","password1",10,20,5,20,10,"mage");	
+oUtilisateurDB.Inscription("joe","unmaiil@gmail.com","password1",10,20,5,20,10,"");	
  
 
 etat = oUtilisateurDB.Connexion("joe","password");

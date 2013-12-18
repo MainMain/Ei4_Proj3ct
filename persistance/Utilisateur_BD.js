@@ -1,10 +1,9 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-<<<<<<< HEAD
-var oPresonnage = require('./Personnage_BD');
-=======
->>>>>>> 00262bf13d52fde0963dc5a147accb9564d64140
+
+var oPersonnageDB = require('./Personnage_BD');
+
 
 /**
  * UTILISATEUR : COMMUNICATION SERVEUR <-> BD
@@ -45,7 +44,7 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
  */
 
  
- Utilisateur_BD.Inscription = function(pseudoU,emailU,passU,vie,action,deplacement,poids,goule,competence){
+ Utilisateur_BD.Inscription = function(pseudoU,emailU,passU){
  
 	
 	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
@@ -100,7 +99,7 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
 	var PersonnageModel = mongoose.model('Personnage');
 	var NewPerso = new PersonnageModel();
 	
-	NewPerso = oPresonnage.Creation(vie,action,deplacement,poids,goule,competence);
+	NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
 	console.log(NewPerso._id );
 	NewUser.presonnage = NewPerso._id;
 	
@@ -117,7 +116,7 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
 
 	});
 		
-		
+		return NewUser.presonnage;
  },
  
  
@@ -164,36 +163,4 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
 
  
  module.exports = Utilisateur_BD;
-/*
 
-Utilisateur_BD.Inscription = function(pseudoU, emailU, passU) {
-	var Utilisateurmodel = mongoose.model('Utilisateur');
-
-	var NewUser = new Utilisateurmodel();
-
-	NewUser.pseudo = pseudoU;
-	NewUser.pass = passU;
-	NewUser.email = emailU;
-
-	NewUser.save(function(err) {
-		if (err) {
-			throw err;
-		}
-		console.log('tu es dans la base maintenant Motherfuker !');
-	});
->>>>>>> 00262bf13d52fde0963dc5a147accb9564d64140
-
-},
-
-/*
- * DEMANDE DE CONNEXION D'UN UTILISATEUR
- * Renvoi true si ok
- * Renvoi false si couple inexistant
- */
-Utilisateur_BD.Connexion = function(pseudoU, passU) {
-	// renvoi true si couple ok, false sinon
-},
-
-module.exports = Utilisateur_BD;
-
-*/
