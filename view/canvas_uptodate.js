@@ -283,8 +283,8 @@ function initialize() {
 	txtObjet = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtObjet.lineHeight = _LineHeight;
 	txtObjet.textBaseline = _TextBaseline;
-	txtObjet.x = 10;
-	txtObjet.y = 190;
+	txtObjet.x = txtSalle.x;
+	txtObjet.y = txtSalle.y -20;
 	
 	txtCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtCase.lineHeight = _LineHeight;
@@ -325,7 +325,7 @@ function initialize() {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
 		//alert("Go Up !");
 		//console.log("Haut");
-		demandeDeplacement.text = "Demande d'aller vers le haut";
+		//demandeDeplacement.text = "Demande d'aller vers le haut";
 		});
 		
 	var BtnBas = stage.addChild(new ButtonMove("B", ColorBtn));
@@ -333,7 +333,7 @@ function initialize() {
 	BtnBas.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 		//alert("Go Down !");
-		demandeDeplacement.text = "Demande d'aller vers le bas";
+		//demandeDeplacement.text = "Demande d'aller vers le bas";
 		});
 	
 	var BtnGauche = stage.addChild(new ButtonMove("G", ColorBtn));
@@ -341,7 +341,7 @@ function initialize() {
 	BtnGauche.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
 		//alert("Go Left !");
-		demandeDeplacement.text = "Demande d'aller vers la gauche";
+		//demandeDeplacement.text = "Demande d'aller vers la gauche";
 		});
 	
 	var BtnDroite = stage.addChild(new ButtonMove("D", ColorBtn));
@@ -349,7 +349,7 @@ function initialize() {
 	BtnDroite.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 		//alert("Go Right !");
-		demandeDeplacement.text = "Demande d'aller vers la droite";
+		//demandeDeplacement.text = "Demande d'aller vers la droite";
 		});
 	
 	BtnHaut.x = BtnBas.x = 40;
