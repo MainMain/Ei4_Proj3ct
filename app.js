@@ -287,10 +287,10 @@ io.sockets.on('connection', function (socket) {
     	socket.emit('CONNEXION_CS', 1); // utilisé pour tester ihm
         // log
         console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
-
+		/*
         // demande à la base de données
         var reponse = oUtilisateur_BD.Connexion(username, password);
-
+		
         // si couple ok
         if (reponse == true) {
             socket.emit('CONNEXION_SC', 1);
@@ -298,6 +298,16 @@ io.sockets.on('connection', function (socket) {
             socket.emit('CONNEXION_SC', 0);
         }
         socket.emit('CONNEXION_SC', -1);
+		*/
+		
+		if(username == "John" && password == "azerty")
+		{
+            socket.emit('CONNEXION_SC', 1);
+		}
+		else
+		{
+            socket.emit('CONNEXION_SC', -1);
+		}
     });
 
 
