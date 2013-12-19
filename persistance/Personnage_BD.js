@@ -90,12 +90,10 @@ Personnage_BD.Creation = function(vie, action, deplacement, poids, goule,
 		if (err) {
 			throw err;
 		}
-		console.log('come on  !');
+		console.log('BASE DE DONNEES : Creation de personnage réussie !');
 
 	});
-
 	return Perso;
-
 },
 
 module.exports = Personnage_BD;

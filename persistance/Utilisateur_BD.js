@@ -128,36 +128,28 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
 				callbackInscription(sauvegarde);
 			}
 			else
-			{
+			{		
+				var PersonnageModel = mongoose.model('Personnage');
+				var NewPerso = new PersonnageModel();
+				
+				NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
+				
+				console.log('BASE DE DONNEES : ID du perso cree' + NewPerso._id);
+				NewUser.presonnage = NewPerso._id;
+				
 				NewUser.save(function (err)
 				{
 					if (err)
 					{
 						throw err;
 					}
-					console.log('Tu es dans la base maintenant !');
-		
-					var PersonnageModel = mongoose.model('Personnage');
-					var NewPerso = new PersonnageModel();
-					
-					NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
-					console.log(NewPerso._id);
-					NewUser.presonnage = NewPerso._id;
-		
-					NewUser.save(function (err)
-					{
-						if (err)
-						{
-							throw err;
-						}
-						console.log('Fini boy <3 !');
+					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
 						
-						callbackInscription(new oUtilisateur(
-							NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-							NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-							NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-							NewUser.numEquipe,NewUser.personnage));
-					});
+					callbackInscription(new oUtilisateur(
+						NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
+						NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
+						NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
+						NewUser.numEquipe,NewUser.personnage));
 				});
 			}
 		});
