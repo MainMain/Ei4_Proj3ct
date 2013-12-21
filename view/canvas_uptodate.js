@@ -9,6 +9,9 @@ var offset;
 onload = initialize;	
 var listeItemsCase;
 var listeItemsPerso;
+var SelectedItemCase=-1;
+var SelectedItemPerso=-1;
+var SelectedItemEquip=-1;
 
 function initialize() {
 
@@ -39,7 +42,8 @@ function initialize() {
 	var OrdBtn=110;
 	
 	// Couleur des boutons
-	var ColorBtn="#A9A9A9";
+	var ColorBtn="#9F0000";
+	var ColorPad="#313131";
 	
 	// Police des labels
 	var PoliceLabel="14px monospace";
@@ -94,6 +98,46 @@ function initialize() {
 	var _labelArmureX = _labelItemPersoX;
 	var _labelArmureY = _labelArmeY + 35;
 	
+	// Placement label Description Item
+	var _labelDescribeItemX = 500;
+	var _labelDescribeItemY = 600;
+	
+	// Placement label Nombre d'Aliés
+	var _labelNbAliesX = 270;
+	var _labelNbAliesY = _labelItemCaseY;
+	
+	// Placement label Nombre d'Ennemis
+	var _labelNbEnnemisX = _labelNbAliesX;
+	var _labelNbEnnemisY = _labelNbAliesY + 20;
+	
+	// Placement label Nombre de Goules
+	var _labelNbGoulesX = _labelNbAliesX;
+	var _labelNbGoulesY = _labelNbAliesY + 40;
+	
+	// Placement label Probabilité de Cache
+	var _labelProbaCacheX = _labelNbAliesX;
+	var _labelProbaCacheY = _labelNbAliesY + 60;
+	
+	// Placement label Probabilité de Fouille
+	var _labelProbaFouilleX = _labelNbAliesX;
+	var _labelProbaFouilleY = _labelNbAliesY + 80;
+	
+	// Placement Conteneur ArmeEquip
+	var _ContArmeX = _ContItemCaseX + 120;
+	var _ContArmeY = _labelArmeY;
+	
+	// Dimension Conteneur ArmeEquip
+	var _ContArmeH = 200;
+	var _ContArmeW = 200;
+	
+	// Placement Conteneur ArmureEquip
+	var _ContArmureX = _ContItemCaseX + 135;
+	var _ContArmureY = _labelArmureY;
+	
+	// Dimension Conteneur ArmureEquip
+	var _ContArmureH = 200;
+	var _ContArmureW = 200;
+	
 	// label.lineHeight
 	var _LineHeight = 15;
 	
@@ -118,14 +162,10 @@ function initialize() {
     // application du background
 	var background = new createjs.Bitmap("public/Background.jpg");
     background.image.onload = setImg(background,0,0);
-    /*stage.addChild(background);
-    stage.update();   */
-    
+  
     // insertion de la map
     var map = new createjs.Bitmap("public/images/map.png");
     map.image.onload = setImg(map, 170, 130);
-    /*stage.addChild(map);
-    stage.update(); */
 	
     // creation des conteneurs
 	var contInvCase = new createjs.Container(); 
@@ -142,90 +182,48 @@ function initialize() {
 	contInvPerso.width = _ContItemPersoW;
 	stage.addChild(contInvPerso);
 	
+	var contArme = new createjs.Container(); 
+	contArme.x = _ContArmeX;
+	contArme.y = _ContArmeY;
+	contArme.height = _ContArmeH;
+	contArme.width = _ContArmeW;
+	stage.addChild(contArme);
+	
+	var contArmure = new createjs.Container(); 
+	contArmure.x = _ContArmureX;
+	contArmure.y = _ContArmureY;
+	contArmure.height = _ContArmureH;
+	contArmure.width = _ContArmureW;
+	stage.addChild(contArmure);
+	
+	
     // Teste la présence de HTML5 et de drag & drop
-    if (Modernizr.draganddrop) {
+    /*if (Modernizr.draganddrop) {
     	
     	} else {
     	  alert("! Vous devez passez en HTML5 !");
-    	}
+    	}*/
     
-    // ******************************************
-    // Exemple de Mouse Over & Mouse Out
-    // ******************************************
-
-    /*BtnInfoCase.addEventListener('mouseover', function(event){
-		console.log("mouseover");
-	},false);
-	BtnInfoCase.addEventListener('mouseout', function(event){
-		console.log("out");
-	},false);*/
     
-    // ******************************************
-    // Exemple de drag & drop
-    // ******************************************
-    
-    	// keep tracking the mouse even when it leaves the canvas
-    stage.mouseMoveOutside = true; 
-    
-    /*var DragText = stage.addChild(new createjs.Text("", "18px monospace", ColorLabel));
-	DragText.lineHeight = _LineHeight;
-	DragText.textBaseline = _TextBaseline;
-	DragText.x = 30;
-	DragText.y = 500;
-    
-    var container = new createjs.Container();
-    stage.addChild(container);
-    
-    var circle = new createjs.Shape();
-	circle.graphics.beginFill("white").drawCircle(400, 400, 50);
-    
-	container.addChild(circle);
-	circle.cursor = "pointer";
-	
-	container.addEventListener('mouseover', function(event){
-		DragText.text=("Voici une description de l'objet survolé :");
-		stage.update();
-	},false);
-	
-	container.addEventListener('mouseout', function(event){
-		DragText.text="";
-		stage.update();
-	},false);
-	
-	container.on('mousedown', function(evt) {
-		circle.cursor = "pointer";
-        this.parent.addChild(this);
-        this.offset = {x:this.x-evt.stageX, y:this.y-evt.stageY};
-	});
-	
-	container.on("pressmove", function(evt) {
-		circle.cursor = "pointer";
-        this.x = evt.stageX+ this.offset.x;
-        this.y = evt.stageY+ this.offset.y;
-        // indicate that the stage should be updated on the next tick:
-        stage.update();
-	});*/
-    
-    /*var shape = new createjs.Shape();
-    shape.alphs = 0.5;
-    shape.graphics.beginFill("#FFFFFF").drawRect(0, 0, canvasElement.width, 110);
-    stage.addChild(shape);
-    stage.update();*/
-
-	
     // ******************************************
 	//********** Déclaration des labels *******
     // ******************************************
     
-	var demandeDeplacement, txtSalle, txtObjet, txtCase, txtObjetCase, 
-	txtPerso, txtListeObjet, txtObjetPerso, txtInventaire, txtDeposer,
-	txtObjetEquipe, labelObjetCase, labelInventaire;
+	var txtSalle, txtObjet, txtCase, txtObjetEquipe, 
+	labelObjetCase,	labelInventaire, labelDescribeItem,
+	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille;
 	
 	labelObjetCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelObjetCase.lineHeight = _LineHeight;
 	labelObjetCase.textBaseline = _TextBaseline;
 	labelObjetCase.x = _labelItemCaseX;
 	labelObjetCase.y = _labelItemCaseY;
+	
+	labelDescribeItem = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelDescribeItem.lineHeight = _LineHeight;
+	labelDescribeItem.textBaseline = _TextBaseline;
+	labelDescribeItem.x = _labelDescribeItemX;
+	labelDescribeItem.y = _labelDescribeItemY;
 	
 	labelInventaire = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelInventaire.lineHeight = _LineHeight;
@@ -252,27 +250,56 @@ function initialize() {
 	labelPtsVie.textBaseline = _TextBaseline;
 	labelPtsVie.x = _labelPtsVX;
 	labelPtsVie.y = _labelPtsVY;
-	labelPtsVie.text="Points de vie :							5/10";
+	labelPtsVie.text="Points de vie :							?/?";
 	
 	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsAction.lineHeight = _LineHeight;
 	labelPtsAction.textBaseline = _TextBaseline;
 	labelPtsAction.x = _labelPtsAX;
 	labelPtsAction.y = _labelPtsAY;
-	labelPtsAction.text="Points d'action :	 			2/5";
+	labelPtsAction.text="Points d'action :	 			?/?";
 	
 	labelPtsMove = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsMove.lineHeight = _LineHeight;
 	labelPtsMove.textBaseline = _TextBaseline;
 	labelPtsMove.x = _labelPtsMX;
 	labelPtsMove.y = _labelPtsMY;
-	labelPtsMove.text="Points de mouvement : 3/8";
+	labelPtsMove.text="Points de mouvement : ?/?";
 	
-	demandeDeplacement = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	demandeDeplacement.lineHeight = _LineHeight;
-	demandeDeplacement.textBaseline = _TextBaseline;
-	demandeDeplacement.x = 10;
-	demandeDeplacement.y = 150;
+	labelNbAlies = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelNbAlies.lineHeight = _LineHeight;
+	labelNbAlies.textBaseline = _TextBaseline;
+	labelNbAlies.x = _labelNbAliesX;
+	labelNbAlies.y = _labelNbAliesY;
+	labelNbAlies.text="Aliés dans la salle : ?";
+	
+	labelNbEnnemis = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelNbEnnemis.lineHeight = _LineHeight;
+	labelNbEnnemis.textBaseline = _TextBaseline;
+	labelNbEnnemis.x = _labelNbEnnemisX;
+	labelNbEnnemis.y = _labelNbEnnemisY;
+	labelNbEnnemis.text="Ennemis dans la salle : ?";
+	
+	labelNbGoules = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelNbGoules.lineHeight = _LineHeight;
+	labelNbGoules.textBaseline = _TextBaseline;
+	labelNbGoules.x = _labelNbGoulesX;
+	labelNbGoules.y = _labelNbGoulesY;
+	labelNbGoules.text="Goules dans la salle : ?";
+	
+	labelProbaCache = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelProbaCache.lineHeight = _LineHeight;
+	labelProbaCache.textBaseline = _TextBaseline;
+	labelProbaCache.x = _labelProbaCacheX;
+	labelProbaCache.y = _labelProbaCacheY;
+	labelProbaCache.text="Proba de Cache : ? %";
+	
+	labelProbaFouille = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelProbaFouille.lineHeight = _LineHeight;
+	labelProbaFouille.textBaseline = _TextBaseline;
+	labelProbaFouille.x = _labelProbaFouilleX;
+	labelProbaFouille.y = _labelProbaFouilleY;
+	labelProbaFouille.text="Proba de Trouver item : ? %";
 	
 	txtSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtSalle.lineHeight = _LineHeight;
@@ -292,74 +319,46 @@ function initialize() {
 	txtCase.x = 400;
 	txtCase.y = 190;
 	
-	txtObjetCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	txtObjetCase.lineHeight = _LineHeight;
-	txtObjetCase.textBaseline = _TextBaseline;
-	txtObjetCase.x = txtCase.x;
-	txtObjetCase.y = txtCase.y + 20;
-	
 	txtObjetEquipe = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtObjetEquipe.lineHeight = _LineHeight;
 	txtObjetEquipe.textBaseline = _TextBaseline;
 	txtObjetEquipe.x = 10;
-	txtObjetEquipe.y = txtObjet.y + 40;
-	
-	txtObjetPerso = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	txtObjetPerso.lineHeight = _LineHeight;
-	txtObjetPerso.textBaseline = _TextBaseline;
-	txtObjetPerso.x = 10;
-	txtObjetPerso.y = txtObjet.y + 40;
-	
-	txtInventaire = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	txtInventaire.lineHeight = _LineHeight;
-	txtInventaire.textBaseline = _TextBaseline;
-	txtInventaire.x = 700;
-	txtInventaire.y = txtObjet.y + 20;
+	txtObjetEquipe.y = txtSalle.y - 40;
 	
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
-	var BtnHaut = stage.addChild(new ButtonMove("H", ColorBtn));
+	var BtnHaut = stage.addChild(new ButtonMove("H", ColorPad));
 	BtnHaut.y = 10;
 	BtnHaut.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
-		//alert("Go Up !");
-		//console.log("Haut");
-		//demandeDeplacement.text = "Demande d'aller vers le haut";
 		});
 		
-	var BtnBas = stage.addChild(new ButtonMove("B", ColorBtn));
+	var BtnBas = stage.addChild(new ButtonMove("B", ColorPad));
 	BtnBas.y = BtnHaut.y + 60;
 	BtnBas.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
-		//alert("Go Down !");
-		//demandeDeplacement.text = "Demande d'aller vers le bas";
 		});
 	
-	var BtnGauche = stage.addChild(new ButtonMove("G", ColorBtn));
-	BtnGauche.x = 10;
+	var BtnGauche = stage.addChild(new ButtonMove("G", ColorPad));
+	BtnGauche.x = 20;
 	BtnGauche.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
-		//alert("Go Left !");
-		//demandeDeplacement.text = "Demande d'aller vers la gauche";
 		});
 	
-	var BtnDroite = stage.addChild(new ButtonMove("D", ColorBtn));
+	var BtnDroite = stage.addChild(new ButtonMove("D", ColorPad));
 	BtnDroite.x = BtnGauche.x + 60;
 	BtnDroite.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
-		//alert("Go Right !");
-		//demandeDeplacement.text = "Demande d'aller vers la droite";
 		});
 	
-	BtnHaut.x = BtnBas.x = 40;
+	BtnHaut.x = BtnBas.x = 50;
 	BtnGauche.y = BtnDroite.y = 40;
 	
 	// ******************************************
-	// ************ Boutons d'action ***********
+	// ************ Boutons d'action ************
 	// ******************************************
-	
-	var BtnEvents = stage.addChild(new Button("Événements passés", ColorBtn));
+	var BtnEvents = stage.addChild(new Button("Historique", ColorBtn));
 	BtnEvents.y = OrdBtn;
 	/*BtnEvents.addEventListener('click', function(event) {
 		
@@ -375,26 +374,54 @@ function initialize() {
 	BtnRamasseObjet.y = BtnUtiliser.y + H;
 	BtnRamasseObjet.addEventListener('click', function(event) {
 		// exemple : ramsser l'objet d'id 1
-		socket.emit('INV_CASE_CS', "RAMASSER", 1);
+		if(SelectedItemCase==-1)
+			{
+				alert("Selectionner Item avant de Ramasser")
+			}
+		else
+			{
+				socket.emit('INV_CASE_CS', "RAMASSER", SelectedItemCase);
+				SelectedItemCase=-1;
+			}	
 		});
 	
 	var BtnDeposer = stage.addChild(new Button("Déposer Item", ColorBtn));
 	BtnDeposer.y = BtnRamasseObjet.y + H;
-	/*BtnDeposer.addEventListener('click', function(event) {
-		
-		});	*/
+	BtnDeposer.addEventListener('click', function(event) {
+		if(SelectedItemPerso==-1)
+		{
+			alert("Selectionner Item avant de Déposer")
+		}
+		else
+		{
+			socket.emit('INV_CASE_CS', "DEPOSER", SelectedItemPerso);
+			SelectedItemPerso=-1;
+		}	
+		});
 	
 	var BtnEquiper = stage.addChild(new Button("Équiper Item", ColorBtn));
 	BtnEquiper.y = BtnDeposer.y + H;
 	BtnEquiper.addEventListener('click', function(event) {
-		//alert("click");
-		socket.emit('INV_PERSONNAGE_CS', "EQUIPER", 1);
+		alert("click button");
+		if(SelectedItemPerso==-1)
+		{
+			alert("Selectionner Item avant de s'équiper");
+		}
+		else
+		{
+			// Bugg dans la demande au serveur au bout de plusieurs fois
+			
+			alert("Demande serveur (avant)");
+			socket.emit('INV_PERSONNAGE_CS', "EQUIPER", SelectedItemPerso);
+			alert("Demande serveur (apres)");
+		}
+		
 		});
 	
 	var BtnDesequiper = stage.addChild(new Button("Déséquiper Item", ColorBtn));
 	BtnDesequiper.y = BtnEquiper.y + H;
 	BtnDesequiper.addEventListener('click', function(event) {
-		socket.emit('INV_PERSONNAGE_CS', "DESEQUIPER", 3);
+		socket.emit('INV_PERSONNAGE_CS', "DESEQUIPER", SelectedItemEquip);
 		});
 	
 	var BtnAttaquer = stage.addChild(new Button("Attaquer...", ColorBtn));
@@ -420,6 +447,7 @@ function initialize() {
 	/*BtnDefendre.addEventListener('click', function(event) {
 		
 		});	*/
+	
 	stage.update();
 
 	BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = BtnFouiller.x = BtnCacher.x = BtnDefendre.x = AbsBtn;
@@ -443,22 +471,19 @@ function initialize() {
 	socket.on('MOVE_PERSONNAGE_SC', function(currentCase) {
 		if (currentCase == "ERREUR_CASE")
 			{
-			//insereMessage("CLIENT : nom salle = " + "ERREUR_CASE");
 			txtSalle.text="";
 			txtSalle.text=("CLIENT : nom salle = " + "ERREUR_CASE");
 			}
 		else if (currentCase == "ERREUR_MOVE")
 		{
-			//insereMessage("CLIENT : nom salle = " + "impossible d'aller par là !");
 			txtSalle.text="";
-			txtSalle.text=("CLIENT : nom salle = " + "impossible d'aller par là !");
+			txtSalle.text=("Impossible d'aller par là !");
 
 		}
 		else {
-			//insereMessage("CLIENT : nom salle = " + currentCase.nom);
 			socket.emit('INFO_CASE_CS');
 			txtSalle.text="";
-			txtSalle.text=("CLIENT : nom salle = " + currentCase.nom + "");
+			txtSalle.text=("Déplacement en salle " + currentCase.nom + "");
 			//modifieIdSalle(currentCase.nom, currentCase.id);
 			socket.emit('INFO_PERSONNAGE_CS');
 		}
@@ -473,29 +498,25 @@ function initialize() {
 		if (type == 'RAMASSER') {
 			// erreur
 			if (codeRetour == -3) {
-				//insereMessage("Erreur inconnue");
 				txtObjet.text="";
 				txtObjet.text=("Erreur inconnue");
 			}
 			// poids insufisant
 			else if (codeRetour == -1) {
-				//insereMessage("Impossible de ramasser l'objet : poids max atteint");
 				txtObjet.text="";
 				txtObjet.text=("Impossible de ramasser l'objet : poids max atteint !");
 			}
 			// objet pas dans case
 			else if (codeRetour == -2) {
-				//insereMessage("L'objet " + id_item + " n'est plus dans la salle ");
 				txtObjet.text="";
 				txtObjet.text=("L'objet " + id_item + " n'est plus dans la salle !");
 			}
 			// ramassage ok
 			else {
-				//insereMessage("Objet ramassé ! ");
 				txtObjet.text="";
-				txtObjet.text=("Item ramassé ! Poids total du sac : " + codeRetour);;
-				
-				// modifier l'ihm : inventaire du perso et inventaire de case
+				txtObjet.text=("Item ramassé ! Sac : " + codeRetour +" kg");
+				socket.emit('INFO_PERSONNAGE_CS');
+				socket.emit('INFO_CASE_CS');
 			}
 		}
 			stage.update();
@@ -507,12 +528,14 @@ function initialize() {
 			// objet pas dans sac (! pas normal)
 			else if (codeRetour == -2) {
 				txtObjet.text=("L'item " + id_item + " n'est plus dans le sac ");
+				
 			}
 			// dépôt ok
 			else {
-				txtObjet.text=("Item déposé ! Poids total du sac : " + codeRetour);
-
-				// modifier l'ihm : inventaire du perso et inventaire de case
+				txtObjet.text=("Item déposé ! Sac : " + codeRetour + " kg");
+				socket.emit('INFO_PERSONNAGE_CS');
+				socket.emit('INFO_CASE_CS');
+				stage.update();
 			}
 		}
 			stage.update();
@@ -552,11 +575,26 @@ function initialize() {
 				// ajout d'un texte quand l'user passera la souris dessus
 				imgItem.name = i;
 				
+				imgItem.cursor = "pointer";
+				
 				// Ajout de l'évenement a l'image
 				imgItem.addEventListener('mouseover', function(event) {
 					var currentItem = listeItemsCase[event.target.name];
-					alert("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nDescription : " + currentItem.description);
-				});	
+					labelDescribeItem.text=("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nDescription : " + currentItem.description);
+					stage.update();
+					},false);
+					
+				imgItem.addEventListener('mouseout', function(event){
+					labelDescribeItem.text="";
+					stage.update();
+					},false);
+				
+				imgItem.addEventListener("click", function(event){
+					var currentItem = listeItemsCase[event.target.name];
+					SelectedItemCase=currentItem.id;
+					stage.update();
+					});
+				 
 				
 				//Placement de l'image et ajout au conteneur
 				//imgItem.image.onload = setImg(imgItem,200+(i+1)*30,50);
@@ -566,7 +604,6 @@ function initialize() {
 				// Update l'ihm
 				stage.update();
 			}
-			//insereMessage("************************************");
 		}
 		stage.update();
 	});
@@ -580,6 +617,7 @@ function initialize() {
 	
 		// CLear de la liste des items de case
 			listeItemsPerso = new Array();
+			contInvPerso.removeAllChildren();
 		
 			for (var i = 0; i < currentPerso.sacADos.length; i++) {
 				
@@ -594,12 +632,26 @@ function initialize() {
 				
 				// ajout d'un texte quand l'user passera la souris dessus
 				imgItem.name = i;
+				imgItem.cursor = "pointer";
 				
 				// Ajout de l'évenement a l'image
 				imgItem.addEventListener('mouseover', function(event) {
 					var currentItem = listeItemsPerso[event.target.name];
-					alert("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nDescription : " + currentItem.description);
-				});	
+					labelDescribeItem.text=("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nDescription : " + currentItem.description);
+					stage.update();
+					},false);
+					
+				imgItem.addEventListener('mouseout', function(event){
+					labelDescribeItem.text="";
+					stage.update();
+					},false);
+				
+				imgItem.addEventListener("click", function(event){
+					var currentItem = listeItemsPerso[event.target.name];
+					SelectedItemPerso=currentItem.id;
+					stage.update();
+					});
+				
 				//imgItem.image.onload = setImg(imgItem,10+(i+1)*SpaceItem,400);
 				imgItem.x = i * SpaceItem;
 				contInvPerso.addChild(imgItem);
@@ -607,7 +659,6 @@ function initialize() {
 				// Update l'ihm
 				stage.update();
 			}
-			//insereMessage("************************************");
 		});
 	
 	/**************************************************************************************
@@ -619,11 +670,12 @@ function initialize() {
 	 * erreur : -2  si il y a déja une armure d'équipée
 	 * erreur : -3 si item n'est ni arme ni armure
 	 */
-	socket.on('INV_PERSONNAGE_SC', function(type, id_item, codeRetour) {
-		alert("retour ok");
+	socket.on('INV_PERSONNAGE_SC', function(type, currentItem, codeRetour) {
+		alert("retour button ok");
+
 		if (codeRetour == 0) {
 			txtObjetEquipe.text="";
-			txtObjetEquipe.tetx=("L'item " + id_item + " n'est plus dans le sac ");
+			txtObjetEquipe.tetx=("L'item " + currentItem.id + " n'est plus dans le sac ");
 			// quitte la fonction
 			return; 
 		}
@@ -631,37 +683,80 @@ function initialize() {
 			switch(codeRetour) {
 				case 0 : 
 					txtObjetEquipe.text="";
-					txtObjetEquipe.tetx=("Equipement de l'item " + idtem + " raté : Item pas dans sac !");
+					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " raté : Item pas dans sac !");
+					alert("Equipement de l'item " + currentItem.id + " raté : Item pas dans sac !");
 					break;
 				case 1 : 
 					txtObjetEquipe.text="";
-					txtObjetEquipe.tetx=("Equipement de l'item " + idtem + " ok !");
+					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " ok !");
+					
+					var imgItem = new createjs.Bitmap(currentItem.imageName);
+					
+					// Si le type de l'item est : ARME
+					if(SelectedItemType==1)
+						{
+						// Dessin de l'arme équipée
+						contArme.removeAllChildren();
+						contArme.addChild(imgItem);
+						contArme.addEventListener("click", function(event){
+							SelectedItemEquip = currentItem;
+							stage.update();
+							});
+						}
+					// Si le type de l'item est : ARMURE
+					else if(SelectedItemType==2)
+						{
+						// Dessin de l'armure équipée
+						contArmure.removeAllChildren();
+						contArmure.addChild(imgItem);
+						contArmure.addEventListener("click", function(event){
+							SelectedItemEquip = currentItem;
+							stage.update();
+							});
+						}
+					stage.update();
 					break;
 				case -1 : 
 					txtObjetEquipe.text="";
-					txtObjetEquipe.tetx=("Equipement de l'item " + idtem + " raté : arme déja équipée");
+					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
+					alert("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
 					break;
 				case -2 : 
 					txtObjetEquipe.text="";
-					txtObjetEquipe.tetx=("Equipement de l'item " + idtem + " raté : armure déja équipée");
+					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
+					alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
 					break;
 				case -3 : 
 					txtObjetEquipe.text="";
-					txtObjetEquipe.tetx=("Equipement de l'item " + idtem + " raté : armure déja équipée");
+					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
+					alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
 					break;
 			}
 		} 
 		else if (type == "DEQUIPER") 
 		{
+			
 			if (codeRetour == -4) 
 			{
 				txtObjetEquipe.text="";
-				txtObjetEquipe.tetx=("Impossible de se déséquiper de l'item " + id_item + " vous ne vous en êtes pas équipé");
+				txtObjetEquipe.tetx=("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
 			}
 			else
 			{
+				// Si déquipe arme
+				if(SelectedItemType==1)
+				{
+					// efface l'arme
+					contArme.removeAllChildren();
+				}
+				// Si déquipe armure
+				else if(SelectedItemType==2)
+				{
+					// efface armure
+					contArmure.removeAllChildren();
+				}
 				txtObjetEquipe.text="";
-				txtObjetEquipe.text=("Item " + id_item + "équipé !");
+				txtObjetEquipe.text=("Item " + currentItem.id + "déséquipé !");
 			}
 		}
 		stage.update();
