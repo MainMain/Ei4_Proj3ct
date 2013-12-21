@@ -23,7 +23,7 @@ p.initialize = function(label, color) {
 	/*var width = text.getMeasuredWidth()+20;
 	var height = text.getMeasuredHeight()+10;*/
 	
-	var width = 140;
+	var width = 130;
 	var height = text.getMeasuredHeight()+20;
 	
 	this.background = new createjs.Shape();
