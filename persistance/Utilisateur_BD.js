@@ -23,32 +23,84 @@ function Utilisateur_BD() {
  * 
  * @method SetUtilisateur
  */
-Utilisateur_BD.SetUtilisateur = function(utilisateurToSave) {
-	
+Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateur) {
+	var Utilisateurmodel = mongoose.model('Utilisateur'); 
+	Utilisateurmodel.find({_id : utilisateurToSave.id},function (err, NewUser)
+	{
+		if (err)
+		{
+			throw (err);
+		}
+		
+		if (typeof NewUser[0] === "undefined")
+		{
+			callbackSetUtilisateur(-1);	
+		}
+		else
+		{
+			NewUser[0].pseudo = Utilisateur.pseudo;
+			NewUser[0].pass = Utilisateur.email;
+			NewUser[0].email = Utilisateur.pass;
+			NewUser[0].presonnage = Utilisateur.idPersonnage;
+			NewUser[0].nbrMeurtres = Utilisateur.nbrMeurtres;
+			NewUser[0].nbrMeurtresCumule = Utilisateur.nbrMeurtresCumule;
+			NewUser[0].nbrFoisTue = Utilisateur.nbrFoisTue;
+			NewUser[0].nbrFoisTueCumule = Utilisateur.nbrFoisTueCumule;
+			NewUser[0].numEquipe = Utilisateur.numEquipe;
+			
+			NewUser.save(function (err)
+					{
+						if (err)
+						{
+							throw err;
+						}
+						console.log('Mis a jour bro !');
+						
+						callbackInscription(new oUtilisateur(
+							NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
+							NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
+							NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
+							NewUser.numEquipe,NewUser.personnage));
+					});
+			
+		}
+		
+		
+	});
 },
 
 /**
  * RENVOIE UN UTILISATEUR AVEC SON ID PASSE EN PARAMETRE
- * 
+ * retourn un utilisateur si ok
+ * retourn -1 l'utilisateur n'est pas trouvé
  * @method GetUtilisateur
  */
-Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
+Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 	
-	var Utilisateurmodel = mongoose.model('Utilisateur'); 
-	var queryU = Utilisateurmodel.find({_id : idUtilisateur});
-	
-	queryU.exec(function (err, NewUser) {
-	if (err)  throw err;
-	
-	return oUtilisateur(
-		NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-		NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-		NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-		NewUser.numEquipe,NewUser.personnage);
+	var Utilisateurmodel = mongoose.model('Utilisateur');
+		console.log("je vais trouvé un user");
+	Utilisateurmodel.find({_id : idUtilisateur},function (err, NewUser)
+	{
+		if (err)  
+		{
+			throw err;
+		}
+		
+		if (typeof NewUser[0] === "undefined")
+		{
+			callbackGetUtilisateur(-1);	
+		}
+		else
+		{
+			console.log("je te renvois un user")
+			callbackGetUtilisateur( new oUtilisateur(
+				NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
+				NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
+				NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
+				NewUser.numEquipe,NewUser.personnage));
+		}
 	});
 	
-
-
 },
 
 /**
