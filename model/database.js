@@ -33,7 +33,7 @@ database.Initialiser = function() {
 		pseudo : String,
 		pass : String,
 		email : String,
-		presonnage : String,
+		personnage : String,
 		nbrMeurtres : Number,
 		nbrMeurtresCumule : Number,
 		nbrFoisTue : Number,
@@ -60,7 +60,31 @@ database.Initialiser = function() {
 	
 	});
 	
-	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
+	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
+
+
+	var ItemSchema = new mongoose.Schema({
+		nom = String,
+		description = String,
+		poids = Number,
+		type = Number,
+		valeur = Number,
+		imageName = String,
+	});
+	
+	ItemModel = mongoose.model('Item',ItemSchema);
+	
+	var ItemBaseSchema = new mongoose.Schema({
+		nom = String,
+		description = String,
+		poids = Number,
+		type = Number,
+		valeur = Number,
+		imageName = String,
+		indice = Number,
+	});
+	
+	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
 	
 	console.log("Initialisation Database");
 },

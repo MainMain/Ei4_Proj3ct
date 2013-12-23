@@ -66,9 +66,9 @@ Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
 			persosave(function (err)
 			{
 				if (err)
-						{
-							throw err;
-						}
+				{
+					throw err;
+				}
 				callbackSetPersonnage(new oPersonnage(
 					perso._id,perso.ptSante,perso.ptSanteMax,
 					perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
