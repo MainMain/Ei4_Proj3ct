@@ -59,9 +59,8 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
  * Renvoi -2 si email deja pris
  * @method Inscription
  */
-
  
-Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscription)
+Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callbackInscription)
 {
  	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
 	
@@ -125,7 +124,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
 			
 			if(sauvegarde == -1 || sauvegarde == -2)
 			{
-				callbackInscription(sauvegarde);
+				callbackInscription(sauvegarde, req, res);
 			}
 			else
 			{		
@@ -145,11 +144,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
 					}
 					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
 						
-					callbackInscription(new oUtilisateur(
-						NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-						NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-						NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-						NewUser.numEquipe,NewUser.personnage));
+					callbackInscription(1, req, res);
 				});
 			}
 		});
@@ -164,7 +159,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
  * @method Connexion
  */
  
- Utilisateur_BD.Connexion = function (pseudoU, passU, callbackConnexion)
+ Utilisateur_BD.Connexion = function (pseudoU, passU, req, res, callbackConnexion)
  {
 	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
 	
@@ -179,15 +174,15 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
 		
 		if(typeof user[0] === "undefined")
 		{
-			callbackConnexion(-1);
+			callbackConnexion(-1, req, res);
 		}
 		else if(user[0].pass != passU)
 		{
-			callbackConnexion(-1);
+			callbackConnexion(-1, req, res);
 		}
 		else
 		{
-			callbackConnexion(1);
+			callbackConnexion(1, req, res);
 		}
 	});
 },

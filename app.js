@@ -5,7 +5,6 @@ var querystring = require('querystring');
 var express = require('express'),
     routes = require('./routes'),
     http = require('http'),
-    //hash = require('./pass').hash,
     path = require('path');
 var app = express();
 var server = http.createServer(app);
@@ -18,9 +17,10 @@ var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 var oPersonnage_BD = require('./persistance/Personnage_BD');
 var oDatabase = require('./model/database');
 
+var usersOnline = new Array();
+
 //Initialisation de la base de données
 oDatabase.Initialiser();
-
 
 /*
  * CONFIGURATION DU SERVEUR
@@ -32,6 +32,8 @@ app.set('view engine', 'ejs');
 app.use(express.favicon());
 app.use(express.logger('dev'));
 app.use(express.bodyParser());
+app.use(express.cookieParser());
+app.use(express.session({secret: "testDeMainMain"}));
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '/')));
@@ -170,16 +172,126 @@ function requireLogin(req, res, next) {
 };
 */
 
+var optionAccueil = {"username": null, "errorLogin": null, "InfoInscription": null, "usernameInscription": null}
+
+function restrict(req, res, next)
+{
+	if (req.session.username)
+	{
+		next();
+	}
+	else
+	{
+		optionAccueil.errorLogin = 'Veuillez vous connectez !';
+		res.render('accueil', optionAccueil);
+		optionAccueil.errorLogin = null;
+	}
+}
 /*
  * CONFIGURATION DES ROUTES
  */
-app.get('/', routes.index);
-app.get('/jeu', routes.jeu);
-app.get('/regles', routes.regles);
-app.get('/chat-equipe', routes.chatEquipe);
-app.get('/classement', routes.classement);
-app.get('/chat-general', routes.chatGeneral);
-app.get('/session-test', routes.sessiontest);
+app.get('/', function fonctionIndex(req, res)
+{
+	optionAccueil.username = req.session.username;
+	res.render('accueil', optionAccueil);
+});
+
+app.get('/jeu', restrict, function fonctionIndex(req, res)
+{
+	optionAccueil.username = req.session.username;
+	res.render('game', options);
+});
+
+app.get('/regles', function fonctionIndex(req, res)
+{
+	res.render('regles');
+});
+
+app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
+{
+	var options = { "username": req.session.username, "errorLogin": null };
+	res.render('chat-equipe', options);
+});
+
+app.get('/classement', restrict, function fonctionIndex(req, res)
+{
+	var options = { "username": req.session.username, "errorLogin": null };
+	res.render('classement', options);
+});
+
+app.get('/chat-general', restrict, function fonctionIndex(req, res)
+{
+	var options = { "username": req.session.username, "errorLogin": null, "users": usersOnline, "countUser": req.session.views };
+	res.render('chat', options);
+});
+
+app.post("/", function (req, res)
+{
+	var b = req.body;
+	oUtilisateur_BD.Connexion(b.username, b.password, req, res, callbackConnexion);
+});
+
+callbackConnexion = function(reponseConnexion, req, res)
+{
+	var b = req.body;
+	// Si bon couple
+	if (reponseConnexion == 1)
+	{
+		req.session.username = b.username;
+		
+		optionAccueil.username = req.session.username;
+		
+		usersOnline.push(b.username);
+		
+		res.render("accueil", optionAccueil);
+	}
+	else if(reponseConnexion == -1)
+	{
+		optionAccueil.errorLogin = "Couple Login/Mot de passe incorrect";
+		res.render("accueil", optionAccueil);
+	}
+	else
+	{
+		optionAccueil.errorLogin = "Erreur Interne";
+		res.render("accueil", optionAccueil);
+	}
+	optionAccueil.username = null;
+	optionAccueil.errorLogin = null;
+}
+
+app.put("/", function (req, res)
+{
+	var b = req.body;
+	oUtilisateur_BD.Inscription(b.username, b.password, b.email, req, res, callbackInscription);
+});
+	
+callbackInscription = function(reponseInscription, req, res)
+{
+	var b = req.body;
+	if (reponseInscription == -1)
+	{
+		optionAccueil.InfoInscription = "Login";
+		res.render("accueil", optionAccueil);
+	}
+	else if(reponseInscription == -2)
+	{
+		optionAccueil.InfoInscription = "Email";
+		res.render("accueil", optionAccueil);
+	}
+	else
+	{
+		optionAccueil.usernameInscription = b.username;
+		res.render("accueil", optionAccueil);
+	}
+	optionAccueil.usernameInscription = null;
+	optionAccueil.InfoInscription = null;
+}
+app.delete("/", function (req, res)
+{
+	usersOnline.splice(usersOnline.indexOf(req.session.username), 1);
+	req.session.destroy();
+	res.render('accueil', optionAccueil);
+});
 
 /*
  * LANCEMENT DU SERVEUR
@@ -211,7 +323,6 @@ var sacADos = [oItem_BD.GetItemById(9), oItem_BD.GetItemById(10), oItem_BD.GetIt
 var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
     15, 100, 0, null, null, sacADos);
 */
-
 /**
  * ********* EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR
  * *************
@@ -219,17 +330,14 @@ var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
 /*
  * CONNEXION D'UN CLIENT
  */
-io.sockets.on('connection', function (socket) {
-    /// test sessions
+io.sockets.on('connection', function (socket)
+{
+    //test sessions
     socket.emit('MESSAGE_TEST', 'Vous êtes bien connecté !');
     socket.broadcast.emit('MESSAGE_TEST', 'Un autre client vient de se connecter !');
 
-    ////
     console.log('SERVER : Un client est connecté !');
     //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
-
-
-
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
@@ -260,6 +368,7 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_MOVE");
 		}
     });
+	
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM return
      * 1 si ok erreur : 0 si objet n'est pas dans le sac
@@ -382,6 +491,7 @@ io.sockets.on('connection', function (socket) {
 			}
 		}
     });
+	
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE D'INFOS SUR UNE CASE Renvoi la case avec
      * INFO_CASE_SC Si erreur : renvoi NULL
@@ -426,6 +536,7 @@ io.sockets.on('connection', function (socket) {
      * Si couple inconnu : renvoi 0
      * si erreur : renvoi -1
      */
+	 /*
     socket.on('CONNEXION_CS', function (username, password)
 	{
         // log
@@ -447,13 +558,14 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('CONNEXION_SC', 0);
 		}
 	}
-
+	*/
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE D'INSCRIPTION
      * Renvoi 1 si ok
      * si erreur : -1 pseudo deja pris
      * Si erreur : -2 email deja pris
      */
+	/*
     socket.on('INSCRIPTION_CS', function (username, password, email)
 	{
         //Log
@@ -480,6 +592,7 @@ io.sockets.on('connection', function (socket) {
             socket.emit('INSCRIPTION_SC', 1);
         }
 	}
+	*/
 
     //});
 
