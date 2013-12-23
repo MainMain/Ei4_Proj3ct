@@ -32,6 +32,8 @@ Item_BD.DestroyItem = function(itemToDestroy) {
 	// envoi un item à rajouter (ou modifier si son id existe déja)
 	var id = itemToDestroy.id;
 	
+	
+	
 },
 
 

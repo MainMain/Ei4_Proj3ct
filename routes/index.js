@@ -24,7 +24,7 @@ exports.chatEquipe = function(req, res){
 
 
 exports.chatGeneral = function(req, res){
-	  res.render('chat-equipe', { title: 'Express' });
+	  res.render('chat', { title: 'Express' });
 };
 
 

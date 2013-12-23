@@ -29,6 +29,7 @@ database.Initialiser = function() {
 	if (err) { throw err; }
 	});
 
+	/***** CREATION DU SCHEMA "UTILISATEUR" ****/
 	var UtilisateurSchema = new mongoose.Schema({		//creation de la structure d'un utilisateur
 		pseudo : String,
 		pass : String,
@@ -40,9 +41,9 @@ database.Initialiser = function() {
 		nbrFoisTueCumule : Number,
 		numEquipe : Number,
 	});
-	
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
 	
+	/***** CREATION DU SCHEMA "PERSONNAGE" ****/
 	var PersonnageSchema = new mongoose.Schema({
 		ptSante : Number,
 		ptSanteMax : Number,
@@ -57,12 +58,28 @@ database.Initialiser = function() {
 		idArmeEquipee : String,
 		idArmureEquipee : String,
 		sacADos : Array,
-	
 	});
+	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
 	
+	
+	
+
+	
+	/***** CREATION DU SCHEMA "CASE" ****/
+	var CaseSchema = new mongoose.Schema({
+		nom : String,
+		description : String,
+		probaObjet : Number,
+		probaCache : Number,
+		itemsAuSol : Array,
+		nbrGoules : Number,
+	});
+	CaseModel = mongoose.model('Case',CaseSchema); 
+	
+
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
 
-
+/***** CREATION DU SCHEMA "ITEM" ****/
 	var ItemSchema = new mongoose.Schema({
 		nom = String,
 		description = String,
@@ -85,6 +102,7 @@ database.Initialiser = function() {
 	});
 	
 	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
+
 	
 	console.log("Initialisation Database");
 },
