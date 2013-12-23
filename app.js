@@ -15,17 +15,17 @@ var oCase_BD = require('./persistance/Case_BD');
 var oItem_BD = require('./persistance/Item_BD');
 var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 var oPersonnage_BD = require('./persistance/Personnage_BD');
-var oDatabase = require('./model/database');
+//var oDatabase = require('./model/database');
 
 var usersOnline = new Array();
 
 //Initialisation de la base de données
-oDatabase.Initialiser();
+//oDatabase.Initialiser();
 
 /*
  * CONFIGURATION DU SERVEUR
  */
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 8081);
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
 
@@ -318,11 +318,11 @@ oCase_BD.Initialiser();
 /*
  * INITIALISATION DU PERSONNAGE
  */
-/*
+
 var sacADos = [oItem_BD.GetItemById(9), oItem_BD.GetItemById(10), oItem_BD.GetItemById(11)];
 var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
     15, 100, 0, null, null, sacADos);
-*/
+
 /**
  * ********* EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR
  * *************
@@ -370,8 +370,8 @@ io.sockets.on('connection', function (socket)
     });
 	
     /***************************************************************************
-     * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM return
-     * 1 si ok erreur : 0 si objet n'est pas dans le sac
+     * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM return 1 si ok
+     * erreur : 0 si objet n'est pas dans le sac
      * erreur : -1 si il y a déja une arme d'équipée
      * erreur : -2 si il y a déja une armure d'équipée
      * erreur : -3 si item n'est ni arme ni armure
@@ -385,7 +385,7 @@ io.sockets.on('connection', function (socket)
 		// check si currentItem est bien dans le sac
 		var existItemInSac = myPerso.existItemInSac(currentItem);
 		if (existItemInSac == false)
-			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, 0);
+			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, 0);
 
 		// si c'est une demande pour s'équiper
 		if (type == "EQUIPER") {
@@ -394,16 +394,16 @@ io.sockets.on('connection', function (socket)
 			// et selon le message renvoyé
 			switch (reponse) {
 			case 1:
-				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, 1);
+				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, 1);
 				break;
 			case -1:
-				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -1);
+				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -1);
 				break;
 			case -2:
-				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -2);
+				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -2);
 				break;
 			case -3:
-				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -3);
+				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -3);
 				break;
 			default:
 				break;
