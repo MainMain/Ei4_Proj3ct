@@ -32,8 +32,47 @@ function Personnage_BD() {
  * 
  * @method SetPersonnage
  */
-Personnage_BD.SetPersonnage = function(personnageToSave) {
-	// envoi un personnage à rajouter (ou modifier si son id existe déja)
+Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
+	
+	var PersonnageModel = mongoose.model('Personnage');
+	
+	PersonnageModel.find({_id : personnageToSave.id}, function(err,perso)
+	{
+		if (err)  
+		{
+			throw err;
+		}
+		
+		if (typeof perso[0] === "undefined")
+		{
+			callbackSetPersonnage(-1)
+		}
+		else
+		{
+			perso.ptSante = personnageToSave.ptSante
+			perso.ptSanteMax = personnageToSave.ptSanteMax
+			perso.Action = personnageToSave.ptActions
+			perso.ActionMax = personnageToSave.ptActionsMax
+			perso.ptDeplacement = personnageToSave.ptDeplacement
+			perso.ptDeplacementMax = personnageToSave.ptDeplacementMax
+			perso.poidsMax = personnageToSave.poidsMax
+			perso.gouleLimite = personnageToSave.goulesMax
+			perso.competence = personnageToSave.competence
+			perso.idSalleEnCours = personnageToSave.idSalleEnCours
+			perso.idArmeEquipee = personnageToSave.armeEquipee
+			perso.idArmureEquipee = personnageToSave.armureEquipee
+			perso.sacADos = personnageToSave.sacADos
+		
+			callbackSetPersonnage(new oPersonnage(
+				perso._id,perso.ptSante,perso.ptSanteMax,
+				perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
+				perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
+				perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
+				perso.idArmureEquipee,perso.sacADos));
+		}
+			
+	});
+	
 },
 
 /**
@@ -118,35 +157,35 @@ Personnage_BD.GetPersonnageByIdPerso = function(idPersonnage,callbackGetPersonna
 	var PersonnageModel = mongoose.model('Personnage');
 	
 	PersonnageModel.find({_id : idPersonnage}, function(err,perso)
-			{
-				if (err)  
-				{
-					throw err;
-				}
-				
-				if (typeof perso[0] === "undefined")
-				{
-					callbackGetPersonnageByIdPerso(-1)
-				}
-				else
-				{
-					callbackGetPersonnageByIdPerso(new oPersonnage(
-						perso._id,perso.ptSante,perso.ptSanteMax,
-						perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
-						perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
-						perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
-						perso.idArmureEquipee,perso.sacADos));
-				}
+	{
+		if (err)  
+		{
+			throw err;
+		}
+		
+		if (typeof perso[0] === "undefined")
+		{
+			callbackGetPersonnageByIdPerso(-1)
+		}
+		else
+		{
+			callbackGetPersonnageByIdPerso(new oPersonnage(
+				perso._id,perso.ptSante,perso.ptSanteMax,
+				perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
+				perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
+				perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
+				perso.idArmureEquipee,perso.sacADos));
+		}
 			
-			});
+	});
 	
 },
 
 
 /**
  * CREER UN PERSONNAGE A LA CREATION DE L'UTILISATEUR
- * retourne 1 si le perso est bien créer
- * retourne -1 si le perso est pas créer
+ * retourn le personage si le perso est bien créer
+ * 
  * @method Creation
  */
 

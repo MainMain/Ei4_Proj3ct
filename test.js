@@ -10,20 +10,19 @@ server.listen(8080);
 
 oDatabase.Initialiser();
 
-//oUtilisateurDB.Inscription("aze","aze","aze",callbackInscription);	
+	
 
-//callbackInscription = function(reponse)
-	//{
-		//console.log(reponse+"\n\n");
-		//id = reponse.id;
-		
-	//}
+callbackInscription = function(reponse)
+	{
+		console.log(reponse  + "\n\n");
+		console.log(reponse.pass  );
+	}
+	
+	oUtilisateurDB.Inscription("aze","aze","aze",callbackInscription);
 	
 	
 	
-	
-	
-callbackGetUtilisateur = function(reponse)
+/*callbackGetUtilisateur = function(reponse)
 {
 			console.log(reponse.pass);
 			console.log("DIS MOI UN TRUC !!!!");
@@ -34,7 +33,7 @@ oUtilisateurDB.GetUtilisateur(id,callbackGetUtilisateur);
 
 	
 
-
+*/
 	
  
 

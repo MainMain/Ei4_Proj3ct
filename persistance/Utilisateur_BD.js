@@ -20,9 +20,11 @@ function Utilisateur_BD() {
 
 /**
  * ENVOI UN UTILISATEUR POUR METTRE A JOUR CES PROPRIETES
- * 
+ * retourn -1 si l'utilisateur n'est pas trouvé
+ * retourn le nouvel utilisateur si tout est ok
  * @method SetUtilisateur
  */
+ 
 Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateur) {
 	var Utilisateurmodel = mongoose.model('Utilisateur'); 
 	Utilisateurmodel.find({_id : utilisateurToSave.id},function (err, NewUser)
@@ -54,7 +56,7 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 						{
 							throw err;
 						}
-						console.log('Mis a jour bro !');
+						console.log('Mis a jour de l\'utilisateur!');
 						
 						callbackInscription(new oUtilisateur(
 							NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
@@ -78,7 +80,7 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 	
 	var Utilisateurmodel = mongoose.model('Utilisateur');
-		console.log("je vais trouvé un user");
+		
 	Utilisateurmodel.find({_id : idUtilisateur},function (err, NewUser)
 	{
 		if (err)  
@@ -92,7 +94,7 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 		}
 		else
 		{
-			console.log("je te renvois un user")
+			console.log("Appelle du callBack avec un utilisateur")
 			callbackGetUtilisateur( new oUtilisateur(
 				NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
 				NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
@@ -186,7 +188,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
 				
 				NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
 				
-				console.log('BASE DE DONNEES : ID du perso cree' + NewPerso._id);
+				console.log('BASE DE DONNEES : ID du perso cree ' + NewPerso._id);
 				NewUser.presonnage = NewPerso._id;
 				
 				NewUser.save(function (err)
