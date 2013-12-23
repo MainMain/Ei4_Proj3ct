@@ -16,10 +16,10 @@ var oCase_BD = require('./persistance/Case_BD');
 var oItem_BD = require('./persistance/Item_BD');
 var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 var oPersonnage_BD = require('./persistance/Personnage_BD');
-//var oDatabase = require('./model/database');
+var oDatabase = require('./model/database');
 
 //Initialisation de la base de données
-//oDatabase.Initialiser();
+oDatabase.Initialiser();
 
 
 /*
@@ -35,6 +35,10 @@ app.use(express.bodyParser());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '/')));
+// sessions
+app.use(express.cookieParser());
+app.use(express.session({secret: 'some secret key'}));
+
 
 //middleware
 /*app.use(express.bodyParser());
@@ -192,7 +196,7 @@ server.listen(app.get('port'), function () {
  * CHARGEMENT DE SOCKET.IO
  */
 var io = require('socket.io').listen(server, {
-    log: true
+    log: false
 });
 
 /*
@@ -233,35 +237,50 @@ io.sockets.on('connection', function (socket) {
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
-     * la case avec MOVE_PERSONNAGE_SC Si erreur : renvoi "ERREUR_MOVE" si
-     * impossible de bouger Si erreur : renvoi "ERREUR_CASE" si erreur de case
+     * la case avec MOVE_PERSONNAGE_SC 
+     * return : currentCase si ok
+     * erreur : renvoi 0 si erreur de case
+     * erreur : renvoi -1 si impossible de bouger 
+     * erreur : -3 si aucun de Pts Mouvement
      */
     socket.on('MOVE_PERSONNAGE_CS', function (move)
 	{
+		console.log("*******************************************************");
 		// log
 		console.log('SERVER : Déplacement du personnage demandé : ' + move);
 		// déplacement du personnage
 		var ansDeplacementOk = myPerso.deplacement(move);
 		// si le déplacement a réussi
-		if (ansDeplacementOk == true) {
+		if (ansDeplacementOk == 1) 
+		{
 			console.log('SERVER : DEBUG envoi de la nouvelle position');
 			// récupère la salle en cours
 			var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
 			console.log("-------- DEBUG " + myPerso.id + " -- " + currentCase);
 			// renvoi la salle ou erreur
 			if (currentCase == null)
-				socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_CASE");
+				socket.emit('MOVE_PERSONNAGE_SC', 0);
 			else
 				socket.emit('MOVE_PERSONNAGE_SC', currentCase);
 		}
 		// si le déplacement a raté
-		else {
+		else if (ansDeplacementOk == -1)
+		{
 			console.log('SERVER : DEBUG envoi deplacement impossible');
-			socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_MOVE");
+			socket.emit('MOVE_PERSONNAGE_SC', -1);
 		}
+		// plus de pts de mouvement
+		else if (ansDeplacementOk == -2)
+		{
+			console.log('SERVER : DEBUG envoi deplacement impossible');
+			socket.emit('MOVE_PERSONNAGE_SC', -2);
+		}
+		console.log("*******************************************************");
     });
     /***************************************************************************
-     * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM return 1 si ok
+     * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM 
+     * return 1 si arme équipée / déséquipée
+     * return 2 si armure équipée / déséquipée
      * erreur : 0 si objet n'est pas dans le sac
      * erreur : -1 si il y a déja une arme d'équipée
      * erreur : -2 si il y a déja une armure d'équipée
@@ -270,9 +289,14 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('INV_PERSONNAGE_CS', function (type, id_item)
 	{
+		console.log("*******************************************************");
 		// recupere l'currentItem
 		var currentItem = oItem_BD.GetItemById(id_item);
-
+		if (currentItem == null)
+			{
+				console.log("SERVEUR : id item : " + id_item);
+				return;
+			}
 		// check si currentItem est bien dans le sac
 		var existItemInSac = myPerso.existItemInSac(currentItem);
 		if (existItemInSac == false)
@@ -280,34 +304,54 @@ io.sockets.on('connection', function (socket) {
 
 		// si c'est une demande pour s'équiper
 		if (type == "EQUIPER") {
+			console.log("SERVEUR : Tentative d'équipement de l'item " + currentItem.nom + " de type " + currentItem.type);
 			// on équipe le perso
+			 /* return 1 si ok
+			 * erreur : -1 si déja une arme équipée
+			 * erreur : -2 si déja une arme équipée
+			 * erreur : -3 si ni une arme, ni une armure
+			 */
 			var reponse = myPerso.sEquiperDunItem(currentItem);
+			console.log("SERVEUR : code retour : " + reponse);
 			// et selon le message renvoyé
 			switch (reponse) {
 			case 1:
+				console.log("SERVEUR : equipement ok");
 				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, 1);
 				break;
 			case -1:
+				console.log("SERVEUR : deja une arme equipee");
 				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -1);
 				break;
 			case -2:
+				console.log("SERVEUR : deja une armure equipee");
 				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -2);
 				break;
 			case -3:
+				console.log("SERVEUR : item non equipable");
 				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -3);
 				break;
 			default:
+				console.log("SERVEUR :equipement - SWITCH DEFAULT");
 				break;
 			}
-		} else if (type == "DEQUIPER") {
+		} else if (type == "DESEQUIPER") 
+		{
+			console.log("SERVEUR : demande de déséquipement de l'item " + currentItem.id +" - " + currentItem.nom);
+			//console.log("SERVEUR : arme equipee item: " + myPerso.armeEquipee.id + " - " + myPerso.armeEquipee.nom);
 			// si le perso n'est pas équipe d'un item de cet idem
-			if (myPerso.armeEquipee.id != currentItem.id || myPerso.armureEquipee.id != currentItem.id) {
-				socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem.id, -4);
-			}
+			if (currentItem.type == 1 && (myPerso.armeEquipee == null || myPerso.armeEquipee.id != currentItem.id))
+				socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, -4);
+			if (currentItem.type == 2 && (myPerso.armureEquipee == null || myPerso.armureEquipee.id != currentItem.id))
+				socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, -4);
+			
 			var reponse = myPerso.sDesequiperDunItem(currentItem);
-			socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, 1);
+			socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, currentItem.type);
 		}
+		console.log("*******************************************************");
     });
+    
+    
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM return
      * poidsTotal si ok erreur : -1 si poids insufisant erreur : -2 si objet
@@ -315,6 +359,7 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
+		console.log("*******************************************************");
 		// si pas de session
 		if (myPerso == null) {
 			console.log("WARNING - PAS DE SESSION !");
@@ -381,6 +426,7 @@ io.sockets.on('connection', function (socket) {
 				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, -2);
 			}
 		}
+		console.log("*******************************************************");
     });
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE D'INFOS SUR UNE CASE Renvoi la case avec
@@ -388,6 +434,7 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('INFO_CASE_CS', function ()
 	{
+		console.log("*******************************************************");
 		// récupère la salle en cours
 		var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
 		// return selon la valeur de retour
@@ -395,6 +442,7 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
 		else
 			socket.emit('INFO_CASE_SC', currentCase);
+		console.log("*******************************************************");
     });
 
 
@@ -413,10 +461,12 @@ io.sockets.on('connection', function (socket) {
      * Si erreur : renvoi 0
      */
     socket.on('DECONNEXION_CS', function () {
+    	console.log("*******************************************************");
         // log
         console.log('SERVER : Demande Deconnexion !');
 
         socket.emit('DECONNEXION_SC', 1);
+        console.log("*******************************************************");
     });
 
 
@@ -428,14 +478,52 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('CONNEXION_CS', function (username, password)
 	{
+		console.log("*******************************************************");
         // log
         console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
 		
 		oUtilisateur_BD.Connexion(username, password, callbackConnexion);
+		console.log("*******************************************************");
     });
+    
+	/**************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR UTILISER UN ITEM
+	 * return 1 si ok
+	 * erreur : 0 si objet n'est pas dans le sac
+	 * erreur : -1 si objet pas utilisable
+	 */
+    socket.on('PERSONNAGE_USE_CS', function (id_item)
+    {
+    	console.log("*******************************************************");
+    	// recupere l'currentItem
+    	var currentItem = oItem_BD.GetItemById(id_item);
+
+    	// check si currentItem est bien dans le sac
+  		var existItemInSac = myPerso.existItemInSac(currentItem);
+  		if (existItemInSac == false)
+  		socket.emit('PERSONNAGE_USE_CS', currentItem, 0);
+
+    	// le personnage tente d'utiliser l'item
+    	var reponse =myPerso.utiliser(currentItem);
+    		
+    	// et selon le message renvoyé
+    	switch (reponse) {
+    	case 1:
+    		console.log("SERVEUR : utilisation de l'item ok");
+    		socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, 1);
+    		break;
+    	case -1:
+    		console.log("SERVEUR : impossible d'utiliser cet item !");
+    		socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, -1);
+    		break;
+    	}
+    	console.log("*******************************************************");
+    });
+    
 	
 	callbackConnexion = function(reponse)
 	{
+		console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		console.log("SERVEUR : Reponse connexion : " + reponse);
 		
         if (reponse == 1 || reponse == -1)
@@ -446,7 +534,8 @@ io.sockets.on('connection', function (socket) {
 		{
 			socket.emit('CONNEXION_SC', 0);
 		}
-	}
+        console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+	},
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE D'INSCRIPTION
@@ -456,14 +545,17 @@ io.sockets.on('connection', function (socket) {
      */
     socket.on('INSCRIPTION_CS', function (username, password, email)
 	{
+		console.log("*******************************************************");
         //Log
         console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password + " : " + email);
 		
         oUtilisateur_BD.Inscription(username, password, email, callbackInscription);
+        console.log("*******************************************************");
     });
 	
 	callbackInscription = function(reponse)
 	{
+		console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		console.log("SERVEUR : Reponse inscription : " + reponse);
 		//si problème
         if (reponse == -1 || reponse == -2)
@@ -479,6 +571,7 @@ io.sockets.on('connection', function (socket) {
             oPersonnage_BD.SetPersonnage(myPerso);
             socket.emit('INSCRIPTION_SC', 1);
         }
+        console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	}
 
     //});

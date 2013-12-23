@@ -1,5 +1,5 @@
 var oCarte = require('./Carte');
-
+var oPersonnage_BD = require('../../persistance/Personnage_BD');
 /**
  * Modélisation d'un personnage
  * 
@@ -59,41 +59,51 @@ var Personnage = (function() {
 	Personnage.prototype = {
 
 		/**
-		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE return : id de la salle si ok
-		 * erreur : -1 si déplacement impossible (pas de case dans la direction)
+		 * ECRITURE
+		 * 
+		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE return : 1 si ok erreur : -1
+		 * si déplacement impossible (pas de case dans la direction) erreur : -2
+		 * si pas de pts mouvement
 		 * 
 		 * @method deplacement
 		 */
 		deplacement : function(direction) {
+			// si pu de pts de mouvement, on peut s'arreter là
+			if (this.ptDeplacement == 0)
+				return -2;
 			// Vérification de la direction demandée
 			if (typeof direction !== 'string'
 					&& Personnage.DIRECTIONS.indexOf(direction.toUpperCase()) === -1) {
 				throw 'Direction argument invalid!';
+				return -1;
 			}
-			// Affiche sur le log
-			console.log('PERSONNAGE : Deplacement de : ' + this.name
-					+ ' vers : ' + direction);
-			// Décrémente les points de déplacement
-			this.ptDeplacement--;
-			// change l'id de la salle
+			// recupere l'id de la salle
 			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours,
 					direction);
-			// vérifie l'id de la salle, s'il est correct ( = existe une salle
-			// dans la direction donné)
-			if (ansIdSalle >= 0) {
-				this.idSalleEnCours = ansIdSalle;
+			if (ansIdSalle == -1) {
+				console.log("PERSONNAGE : Déplacement impossible ! ");
+				return -1;
+			} else {
+				// Affiche sur le log
+				console.log('PERSONNAGE : Deplacement vers : ' + direction);
 				console.log('PERSONNAGE : Déplacement ok - '
 						+ this.idSalleEnCours);
-				return true;
-			} else {
-				console.log("PERSONNAGE : Déplacement impossible ! ");
-				return false;
+				// Décrémente les points de déplacement
+				this.ptDeplacement--;
+				// si c'est un id valide, on modifie l'id de salle du perso
+				this.idSalleEnCours = ansIdSalle;
+
+				// maj dans la BD
+				oPersonnage_BD.SetPersonnage(this);
+				
+				return 1;
 			}
 		},
 
 		/**
-		 * FONCTION RAMASSER UN OBJET 
-		 * return : 1 si ok si trop de poids : renvoi
+		 * ECRITURE
+		 * 
+		 * FONCTION RAMASSER UN OBJET return : 1 si ok si trop de poids : renvoi
 		 * item
 		 * 
 		 * @method ajouterAuSac
@@ -102,9 +112,13 @@ var Personnage = (function() {
 			this.sacADos.push(item);
 			console.log("PERSONNAGE : ajout de l'item " + item.nom
 					+ " au personnage " + this.id);
+			// maj dans la BD
+			oPersonnage_BD.SetPersonnage(this);
 		},
 
 		/**
+		 * ECRITURE
+		 * 
 		 * FONCTION DEPOSER UN OBJET
 		 * 
 		 * @method supprimerDuSac
@@ -120,13 +134,17 @@ var Personnage = (function() {
 					break;
 				}
 			}
-			//index = index - 1;
+			// index = index - 1;
 			console.log("CASE : DEBUG index : " + index);
 			this.sacADos.splice(i, 1);
 			this.logAfficherSacADos();
+			// maj dans la BD
+			oPersonnage_BD.SetPersonnage(this);
 		},
 
 		/*
+		 * LECTURE
+		 * 
 		 * FONCTION POUR AFFICHER DANS LA CONSOLE LA LISTE DES OBJETS DE DU SAC
 		 */
 		logAfficherSacADos : function() {
@@ -140,6 +158,8 @@ var Personnage = (function() {
 		},
 
 		/**
+		 * LECTURE
+		 * 
 		 * FONCTION POUR REVOYER SI UN ITEM EST BIEN DANS LE SAC return :true si
 		 * objet est dans la salle, sinon false
 		 * 
@@ -147,11 +167,11 @@ var Personnage = (function() {
 		 */
 		existItemInSac : function(item) {
 			if (this.sacADos.indexOf(item) != -1) {
-				console.log("CASE : L'item (" + item.id + " - " + item.nom
+				console.log("PERSONNAGE : L'item (" + item.id + " - " + item.nom
 						+ ") est bien dans le sac  du perso " + this.id);
 				return true;
 			} else {
-				console.log("CASE : WARNING : L'item (" + item.id + " - "
+				console.log("PERSONNAGE : WARNING : L'item (" + item.id + " - "
 						+ item.nom + ") n'est pas dans le sac du perso  "
 						+ this.id);
 				return false;
@@ -159,42 +179,81 @@ var Personnage = (function() {
 		},
 
 		/**
-		 * FONCTION POUR S'EQUIPER D'UN ITEM
-		 * return 1 si ok
-		 * erreur : -1 si déja une arme équipée
-		 * erreur : -2 si déja une arme équipée
-		 * erreur : -3 si ni une arme, ni une armure
+		 * ECRITURE
+		 * 
+		 * FONCTION POUR S'EQUIPER D'UN ITEM return 1 si ok erreur : -1 si déja
+		 * une arme équipée erreur : -2 si déja une armure équipée erreur : -3
+		 * si ni une arme, ni une armure
 		 */
-		sEquiperDunItem : function(item) 
-		{
-			 if (item.type == 1)
-				{
-					if (this.armeEquipee != null)
-						return -1;
-					else
-						this.armeEquipee ==item;
-				}
-				
-			else if (item.type == 2)
-				{
-					if (this.armureEquipee != null)
-						return -2;
-					else
-						this.armureEquipee == item;
-				}
-			else 
+		sEquiperDunItem : function(item) {
+			var codeRetour = 1;
+			// si type arme
+			console.log("---- " + this.armeEquipee);
+			if (item.type == 1) {
+				// si déja une arme équipée
+				if (this.armeEquipee != null)
+					return -1;
+				// pas d'arme équipée
+				else
+					this.armeEquipee = item;
+			}
+			// si type armure
+			else if (item.type == 2) {
+				// si armure déja équipée
+				if (this.armureEquipee != null)
+					return -2;
+				// pas d'armure équipée
+				else
+					this.armureEquipee = item;
+			} else {
 				return -3;
+			}
+			// maj dans la BD
+			oPersonnage_BD.SetPersonnage(this);
+			return codeRetour;
 		},
 		/**
-		 * FONCTION POUR SE DEQUIPER D'UN ITEM
+		 * ECRITURE FONCTION POUR SE DEQUIPER D'UN ITEM
 		 * 
 		 */
-		sDesequiperDunItem : function(item) 
-		{
-			if (item.type == 1) this.armeEquipee = null;
-			else if (item.type == 2) this.armureEquipee = null;
+		sDesequiperDunItem : function(item) {
+			console.log("PERSONNAGE : Déséquipement !");
+			if (item.type == 1)
+				this.armeEquipee = null;
+			else if (item.type == 2)
+				this.armureEquipee = null;
+			// maj dans la BD
+			oPersonnage_BD.SetPersonnage(this);
 		},
+
 		/**
+		 * FONCTION POUR UTILISER UN ITEM
+		 * 
+		 * @method utiliser
+		 */
+		utiliser : function(item) {
+			if (item.type < 4 || item.type > 6)
+				return -1;
+			switch (item.type) {
+			case 4:
+				this.ptSante += item.valeur;
+				break;
+			case 5:
+				this.ptActions += item.valeur;
+				break;
+			case 6:
+				this.ptDeplacement += item.valeur;
+				break;
+			}
+			// maj dans la BD
+			oPersonnage_BD.SetPersonnage(this);
+			return 1;
+
+		},
+
+		/**
+		 * LECTURE
+		 * 
 		 * FONCTION QUI RENVOI LE POIDS DU SAC A DOS
 		 * 
 		 * @method getPoidsSac
@@ -208,8 +267,8 @@ var Personnage = (function() {
 			for (i = 0; i < this.sacADos.length; i++) {
 				poids = poids + this.sacADos[i].poids;
 			}
-			//if (armeEquipee != null) poids += armeEquipee.poids;
-			//if (armureEquipee != null) poids += armeEquipee.poids;
+			// if (armeEquipee != null) poids += armeEquipee.poids;
+			// if (armureEquipee != null) poids += armeEquipee.poids;
 			console.log("PERSONNAGE : Calcul du poids total du sac : " + poids);
 			return poids;
 		},
