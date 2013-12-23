@@ -49,26 +49,33 @@ Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
 		}
 		else
 		{
-			perso.ptSante = personnageToSave.ptSante
-			perso.ptSanteMax = personnageToSave.ptSanteMax
-			perso.Action = personnageToSave.ptActions
-			perso.ActionMax = personnageToSave.ptActionsMax
-			perso.ptDeplacement = personnageToSave.ptDeplacement
-			perso.ptDeplacementMax = personnageToSave.ptDeplacementMax
-			perso.poidsMax = personnageToSave.poidsMax
-			perso.gouleLimite = personnageToSave.goulesMax
-			perso.competence = personnageToSave.competence
-			perso.idSalleEnCours = personnageToSave.idSalleEnCours
-			perso.idArmeEquipee = personnageToSave.armeEquipee
-			perso.idArmureEquipee = personnageToSave.armureEquipee
-			perso.sacADos = personnageToSave.sacADos
-		
-			callbackSetPersonnage(new oPersonnage(
-				perso._id,perso.ptSante,perso.ptSanteMax,
-				perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
-				perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
-				perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
-				perso.idArmureEquipee,perso.sacADos));
+			perso.ptSante = personnageToSave.ptSante;
+			perso.ptSanteMax = personnageToSave.ptSanteMax;
+			perso.Action = personnageToSave.ptActions;
+			perso.ActionMax = personnageToSave.ptActionsMax;
+			perso.ptDeplacement = personnageToSave.ptDeplacement;
+			perso.ptDeplacementMax = personnageToSave.ptDeplacementMax;
+			perso.poidsMax = personnageToSave.poidsMax;
+			perso.gouleLimite = personnageToSave.goulesMax;
+			perso.competence = personnageToSave.competence;
+			perso.idSalleEnCours = personnageToSave.idSalleEnCours;
+			perso.idArmeEquipee = personnageToSave.armeEquipee;
+			perso.idArmureEquipee = personnageToSave.armureEquipee;
+			perso.sacADos = personnageToSave.sacADos;
+			console.log('Le personnage a bien été modifié');
+			persosave(function (err)
+			{
+				if (err)
+						{
+							throw err;
+						}
+				callbackSetPersonnage(new oPersonnage(
+					perso._id,perso.ptSante,perso.ptSanteMax,
+					perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
+					perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
+					perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
+					perso.idArmureEquipee,perso.sacADos));
+			});
 		}
 			
 	});
