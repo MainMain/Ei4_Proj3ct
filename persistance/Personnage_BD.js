@@ -3,6 +3,8 @@ var oItem_BD = require('./Item_BD');
 var oPersonnage = require('../model/Object/Personnage');
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
+var oUtilisateur_BD = require('./Utilisateur_BD');
+var oUtilisateur = require('../model/object/Utilisateur');
 
 
 /**
@@ -30,41 +32,159 @@ function Personnage_BD() {
  * 
  * @method SetPersonnage
  */
-Personnage_BD.SetPersonnage = function(personnageToSave) {
-	// envoi un personnage à rajouter (ou modifier si son id existe déja)
+Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
+	
+	var PersonnageModel = mongoose.model('Personnage');
+	
+	PersonnageModel.find({_id : personnageToSave.id}, function(err,perso)
+	{
+		if (err)  
+		{
+			throw err;
+		}
+		
+		if (typeof perso[0] === "undefined")
+		{
+			callbackSetPersonnage(-1)
+		}
+		else
+		{
+			perso.ptSante = personnageToSave.ptSante
+			perso.ptSanteMax = personnageToSave.ptSanteMax
+			perso.Action = personnageToSave.ptActions
+			perso.ActionMax = personnageToSave.ptActionsMax
+			perso.ptDeplacement = personnageToSave.ptDeplacement
+			perso.ptDeplacementMax = personnageToSave.ptDeplacementMax
+			perso.poidsMax = personnageToSave.poidsMax
+			perso.gouleLimite = personnageToSave.goulesMax
+			perso.competence = personnageToSave.competence
+			perso.idSalleEnCours = personnageToSave.idSalleEnCours
+			perso.idArmeEquipee = personnageToSave.armeEquipee
+			perso.idArmureEquipee = personnageToSave.armureEquipee
+			perso.sacADos = personnageToSave.sacADos
+		
+			callbackSetPersonnage(new oPersonnage(
+				perso._id,perso.ptSante,perso.ptSanteMax,
+				perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
+				perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
+				perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
+				perso.idArmureEquipee,perso.sacADos));
+		}
+			
+	});
+	
 },
 
 /**
  * ENVOIE UN ID DE USER ET RETOURNE LE PERSO CORRESPONDANT
- * 
+ * retourn -1 si l'utilisateur n'est pas trouvé
+ * retourn -2 si le personnage n'est pas trouvé
+ * retourn un personnage si tout est ok
  * @method GetPersonnageByIdUser
  */
-Personnage_BD.GetPersonnageByIdUser = function(idUtilisateur) {
+Personnage_BD.GetPersonnageByIdUser = function(idUtilisateur,callbackGetPersonnageByIdUser) {
 	// renvoi un personnage selon l'id passé en paramètre
+	
+	
 
 	// / *** POUR TESTER COTE SERVEUR ****
-	var sacADos = [ oItem_BD.GetItemById(9), oItem_BD.GetItemById(10),
-			oItem_BD.GetItemById(11) ];
-	var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10, 15, 100, 0, null,
-			null, sacADos);
-	console.log("PERSONNAGE_BD : Renvoi du personnage - Demande par id user");
-	return myPerso;
+	//var sacADos = [ oItem_BD.GetItemById(9), oItem_BD.GetItemById(10),
+		//	oItem_BD.GetItemById(11) ];
+	//var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10, 15, 100, 0, null,
+		//	null, sacADos);
+	//console.log("PERSONNAGE_BD : Renvoi du personnage - Demande par id user");
+	//return myPerso;
 	// //////////////////////////////////
+	
+	var PersonnageModel = mongoose.model('Personnage');
+	var Utilisateurmodel = mongoose.model('Utilisateur'); 
+	
+	
+	Utilisateurmodel.find({_id : idUtilisateur},function (err, user)
+	{
+		if (err)  
+		{
+		throw err;
+		}
+		if (typeof user[0] === "undefined")
+		{
+			callbackGetPersonnageByIdUser(-1)
+		}
+		else
+		{
+			PersonnageModel.find({_id : user[0].personnage}, function(err,perso)
+			{
+				if (err)  
+				{
+					throw err;
+				}
+				
+				if (typeof perso[0] === "undefined")
+				{
+					callbackGetPersonnageByIdUser(-2)
+				}
+				else
+				{
+					callbackGetPersonnageByIdUser(new oPersonnage(
+						perso._id,perso.ptSante,perso.ptSanteMax,
+						perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
+						perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
+						perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
+						perso.idArmureEquipee,perso.sacADos));
+				}
+			
+			});
+		}
+		
+	
+	});
+	
+	
+	
 },
+
+
 
 /**
  * ENVOIE UN ID DE PERSONNAGE ET RETOURNE LE PERSO
- * 
+ * retourn -1 si le personnage n'est pas trouvé
+ * retourn un personnage si tout est ok
  * @method GetPersonnageByIdPerso
  */
-Personnage_BD.GetPersonnageByIdPerso = function(idPersonnage) {
+Personnage_BD.GetPersonnageByIdPerso = function(idPersonnage,callbackGetPersonnageByIdPerso) {
+	
 	// renvoi un personnage selon l'id passé en paramètre
+	var PersonnageModel = mongoose.model('Personnage');
+	
+	PersonnageModel.find({_id : idPersonnage}, function(err,perso)
+	{
+		if (err)  
+		{
+			throw err;
+		}
+		
+		if (typeof perso[0] === "undefined")
+		{
+			callbackGetPersonnageByIdPerso(-1)
+		}
+		else
+		{
+			callbackGetPersonnageByIdPerso(new oPersonnage(
+				perso._id,perso.ptSante,perso.ptSanteMax,
+				perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
+				perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
+				perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
+				perso.idArmureEquipee,perso.sacADos));
+		}
+			
+	});
+	
 },
 
-module.exports = Personnage_BD;
 
 /**
  * CREER UN PERSONNAGE A LA CREATION DE L'UTILISATEUR
+ * retourn le personage si le perso est bien créer
  * 
  * @method Creation
  */
@@ -85,15 +205,23 @@ Personnage_BD.Creation = function(vie, action, deplacement, poids, goule,
 	Perso.gouleLimite = goule;
 	Perso.competence = competence;
 	Perso.sacADos = new Array();
+	Perso.idSalleEnCours = "";
+	Perso.idArmeEquipee = "";
+	Perso.idArmureEquipee = "";
 
 	Perso.save(function(err) {
 		if (err) {
 			throw err;
 		}
+
+
+
+
 		console.log('BASE DE DONNEES : Creation de personnage réussie !');
 
 	});
 	return Perso;
 },
+
 
 module.exports = Personnage_BD;

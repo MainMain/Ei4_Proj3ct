@@ -53,10 +53,10 @@ database.Initialiser = function() {
 		ptDeplacementMax : Number,
 		poidsMax : Number,
 		gouleLimite : Number,
-		//idSalleEnCours : Schema.Types.ObjectId,
 		competence : String,
-		//idArmeEquipee : Schema.Types.ObjectId,
-		//idArmureEquipee : Schema.Types.ObjectId,
+		idSalleEnCours : String,
+		idArmeEquipee : String,
+		idArmureEquipee : String,
 		sacADos : Array,
 	});
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
