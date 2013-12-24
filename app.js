@@ -25,7 +25,7 @@ oDatabase.Initialiser();
 /*
  * CONFIGURATION DU SERVEUR
  */
-app.set('port', process.env.PORT || 8081);
+app.set('port', process.env.PORT || 8080);
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
 
@@ -200,10 +200,10 @@ app.get('/', function fonctionIndex(req, res)
 	res.render('accueil', optionAccueil);
 });
 
-app.get('/jeu', restrict, function fonctionIndex(req, res)
+app.get('/jeu', function fonctionIndex(req, res)
 {
 	optionAccueil.username = req.session.username;
-	res.render('game', options);
+	res.render('game', optionAccueil);
 });
 
 app.get('/regles', function fonctionIndex(req, res)
@@ -323,11 +323,25 @@ oCase_BD.Initialiser();
 /*
  * INITIALISATION DU PERSONNAGE
  */
+var myPerso;
+callbackGetPersonnageByIdUser = function(reponse)
+{
+if (reponse == -1) myPerso = null;
+else if (reponse == -2) myPerso = null;
+else
+{ 
+	myPerso = reponse;
+	//oPersonnage_BD.SetPersonnage(reponse);
+	//var sacADos = [oItem_BD.GetItemById(9), oItem_BD.GetItemById(10), oItem_BD.GetItemById(11)];
+	//myPerso = new oPersonnage("52b8ca1a813ad6e81c000003", 80, 100, 20, 25, 10, 15, 100, 8, "archer", 0, null, null, sacADos);
+	//myPerso.deplacement("WEST");
+}
+}
 
-var sacADos = [oItem_BD.GetItemById(9), oItem_BD.GetItemById(10), oItem_BD.GetItemById(11)];
-var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
-    15, 100, 0, null, null, sacADos);
+//var sacADos = [oItem_BD.GetItemById(9), oItem_BD.GetItemById(10), oItem_BD.GetItemById(11)];
+//var myPerso = new oPersonnage("52b8ca1a813ad6e81c000003", 80, 100, 20, 25, 10, 15, 100, 8, "archer", 0, null, null, sacADos);
 
+oPersonnage_BD.GetPersonnageByIdUser("52b8ca1a813ad6e81c000001", callbackGetPersonnageByIdUser);
 /**
  * ********* EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR
  * *************
@@ -633,7 +647,7 @@ io.sockets.on('connection', function (socket)
     });
     
 	
-	callbackConnexion = function(reponse)
+	/*callbackConnexion = function(reponse)
 	{
 		console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		console.log("SERVEUR : Reponse connexion : " + reponse);
@@ -648,7 +662,8 @@ io.sockets.on('connection', function (socket)
 		}
 
         console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-	}
+	}*/
+	
 
 
     /***************************************************************************
@@ -704,6 +719,7 @@ io.sockets.on('connection', function (socket)
         });
     });*/
 });
+
 
 
 

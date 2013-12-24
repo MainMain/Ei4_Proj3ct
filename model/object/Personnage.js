@@ -1,5 +1,6 @@
-var oCarte = require('./Carte');
 var oPersonnage_BD = require('../../persistance/Personnage_BD');
+var oCarte = require('../../model/object/Carte');
+
 /**
  * Modélisation d'un personnage
  * 
@@ -37,7 +38,7 @@ var Personnage = (function() {
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours,
+			ptDeplacement, ptDeplacementMax, poidsMax, goulesMax, competence, idSalleEnCours,
 			armeEquipee, armureEquipee, sacADos) {
 		// --- Attributs d'instance
 		this.id = id;
@@ -48,6 +49,8 @@ var Personnage = (function() {
 		this.ptDeplacement = ptDeplacement;
 		this.ptDeplacementMax = ptDeplacementMax;
 		this.poidsMax = poidsMax;
+		this.goulesMax = goulesMax;
+		this.competence = competence;
 		this.idSalleEnCours = idSalleEnCours;
 		this.armeEquipee = armeEquipee;
 		this.armureEquipee = armureEquipee;
@@ -57,7 +60,7 @@ var Personnage = (function() {
 
 	// --- METHODES D'INSTANCE
 	Personnage.prototype = {
-
+		
 		/**
 		 * ECRITURE
 		 * 
@@ -68,6 +71,7 @@ var Personnage = (function() {
 		 * @method deplacement
 		 */
 		deplacement : function(direction) {
+			console.log("PERSONNAGE : Déplacement ! id salle en cours : " + this.idSalleEnCours);
 			// si pu de pts de mouvement, on peut s'arreter là
 			if (this.ptDeplacement == 0)
 				return -2;
@@ -77,6 +81,7 @@ var Personnage = (function() {
 				throw 'Direction argument invalid!';
 				return -1;
 			}
+			
 			// recupere l'id de la salle
 			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours,
 					direction);
@@ -94,8 +99,8 @@ var Personnage = (function() {
 				this.idSalleEnCours = ansIdSalle;
 
 				// maj dans la BD
-				oPersonnage_BD.SetPersonnage(this);
-				
+				//oPersonnage_BD.SetPersonnage(this, null);
+				oPersonnage_BD.test();
 				return 1;
 			}
 		},
@@ -148,11 +153,10 @@ var Personnage = (function() {
 		 * FONCTION POUR AFFICHER DANS LA CONSOLE LA LISTE DES OBJETS DE DU SAC
 		 */
 		logAfficherSacADos : function() {
-			console.log("PERSONNAGE : ****** AFFICHAGE OBJET PERSONNAGE :  "
-					+ this.sacADos.length - 1 + " *********");
-			for (var i = 0; i < this.sacADos.length; i++) {
-				console.log("PERSONNAGE : Objet id = " + this.sacADos[i].id
-						+ " - " + this.sacADos[i].nom);
+			console.log("PERSONNAGE : ****** AFFICHAGE OBJET PERSONNAGE :  "+ (this.sacADos.length) + " du perso : " + this.id + " *********");
+			for (var i = 0; i < this.sacADos.length; i++)
+			{
+				console.log("PERSONNAGE : Objet id = " + this.sacADos[i].id+ " - " + this.sacADos[i].nom);
 			}
 			console.log("PERSONNAGE : *********************************");
 		},
@@ -166,14 +170,12 @@ var Personnage = (function() {
 		 * @method existItemInSac
 		 */
 		existItemInSac : function(item) {
+			this.logAfficherSacADos();
 			if (this.sacADos.indexOf(item) != -1) {
-				console.log("PERSONNAGE : L'item (" + item.id + " - " + item.nom
-						+ ") est bien dans le sac  du perso " + this.id);
+				console.log("PERSONNAGE : L'item (" + item.id + " - " + item.nom + ") est bien dans le sac  du perso " + this.id);
 				return true;
 			} else {
-				console.log("PERSONNAGE : WARNING : L'item (" + item.id + " - "
-						+ item.nom + ") n'est pas dans le sac du perso  "
-						+ this.id);
+				console.log("PERSONNAGE : WARNING : L'item - id = " + item.id + " - " + item.nom + " - n'est pas dans le sac du perso  "+ this.id);
 				return false;
 			}
 		},
@@ -324,7 +326,7 @@ var Personnage = (function() {
 		update : function() {
 			// écrire infos dans la BD
 		},
-
+		
 	};
 	// On pense à retourner le constructeur (afin de pouvoir construire des
 	// instances, sinon tout
@@ -332,5 +334,11 @@ var Personnage = (function() {
 	// l'extérieur)
 	return Personnage;
 }());
+
+callbackSetPersonnage = function(reponse)
+{
+	
+},
+
 
 module.exports = Personnage;

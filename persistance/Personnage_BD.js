@@ -34,41 +34,90 @@ function Personnage_BD() {
  */
 Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
 	
+	console.log("PERSONNAGE_BD : id du perso : " + personnageToSave.id);
 	var PersonnageModel = mongoose.model('Personnage');
+	var nouveauPerso = PersonnageModel();
 	
 	PersonnageModel.find({_id : personnageToSave.id}, function(err,perso)
 	{
 		if (err)  
 		{
+			console.log("PERSONNAGE_BD : SetPersonnage() : erreur ! ");
 			throw err;
 		}
 		
 		if (typeof perso[0] === "undefined")
 		{
-			callbackSetPersonnage(-1)
+			console.log("PERSONNAGE_BD : SetPersonnage() : undefined ! ");
+			//callbackSetPersonnage(-1)
 		}
 		else
 		{
-			perso.ptSante = personnageToSave.ptSante
-			perso.ptSanteMax = personnageToSave.ptSanteMax
-			perso.Action = personnageToSave.ptActions
-			perso.ActionMax = personnageToSave.ptActionsMax
-			perso.ptDeplacement = personnageToSave.ptDeplacement
-			perso.ptDeplacementMax = personnageToSave.ptDeplacementMax
-			perso.poidsMax = personnageToSave.poidsMax
-			perso.gouleLimite = personnageToSave.goulesMax
-			perso.competence = personnageToSave.competence
-			perso.idSalleEnCours = personnageToSave.idSalleEnCours
-			perso.idArmeEquipee = personnageToSave.armeEquipee
-			perso.idArmureEquipee = personnageToSave.armureEquipee
-			perso.sacADos = personnageToSave.sacADos
-		
-			callbackSetPersonnage(new oPersonnage(
+			console.log("PERSONNAGE_BD : SetPersonnage() : personnage trouvé dans la BD ! ");
+			/*nouveauPerso._id = personnageToSave.id;
+			nouveauPerso.ptSante = personnageToSave.ptSante; 
+			nouveauPerso.ptSanteMax = personnageToSave.ptSanteMax; 
+			nouveauPerso.Action = personnageToSave.ptActions; 
+			nouveauPerso.ActionMax = personnageToSave.ptActionsMax;
+			nouveauPerso.ptDeplacement = personnageToSave.ptDeplacement; 
+			nouveauPerso.ptDeplacementMax = personnageToSave.ptDeplacementMax;
+			nouveauPerso.poidsMax = personnageToSave.poidsMax; 
+			nouveauPerso.gouleLimite = personnageToSave.goulesMax; 
+			nouveauPerso.competence = personnageToSave.competence; 
+			nouveauPerso.idSalleEnCours = personnageToSave.idSalleEnCours;
+			nouveauPerso.idArmeEquipee = personnageToSave.armeEquipee;
+			nouveauPerso.idArmureEquipee = personnageToSave.armureEquipee;
+			nouveauPerso.sacADos = personnageToSave.sacADos;
+			*/
+			var idArme = 0, idArmure = 0;
+			// si pas d'arme équipée
+			if (personnageToSave.armeEquipee == null) 
+				idArme = null;
+			else
+				idArme = personnageToSave.armeEquipee.id;
+			// si pas d'amur d'équipée
+			if (personnageToSave.armureEquipee == null)
+				idArmure = null;
+			else 
+				idArmure = personnageToSave.armureEquipee.id;
+			
+			console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
+			console.log("PERSONNAGE_BD : SetPersonnage() : idArme :  " + idArme);
+			PersonnageModel.update({ _id : personnageToSave.id}, 
+					{ptSante 			:  personnageToSave.ptSante,
+						ptSanteMax 			:  personnageToSave.ptSanteMax, 
+						ptAction 			:  personnageToSave.ptActions, 
+						ptActionMax 		:  personnageToSave.ptActionsMax, 
+						ptDeplacement 		:  personnageToSave.ptDeplacement, 
+						ptDeplacementMax 	:  personnageToSave.ptDeplacementMax, 
+						poidsMax 			:  personnageToSave.poidsMax,
+						gouleLimite 		:  personnageToSave.goulesMax, 
+						competence 			:  personnageToSave.competence, 
+						idSalleEnCours		:  personnageToSave.idSalleEnCours,
+						idArmeEquipee		:  idArme, 
+						idArmureEquipee		:  idArmure, 
+						sacADos				:  personnageToSave.sacADos,
+						},
+					 function (err) {
+						  if (err) { throw err; }
+						  console.log('Pseudos modifiés !');}
+					);
+					/*
+					
+					 
+				
+					}*/
+					/*function (err)
+					{
+						if (err){throw err;}
+						console.log('Le personnage a bien été modifié'); 
+					}*/
+			/*callbackSetPersonnage(new oPersonnage(
 				perso._id,perso.ptSante,perso.ptSanteMax,
 				perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
 				perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
 				perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
-				perso.idArmureEquipee,perso.sacADos));
+				perso.idArmureEquipee,perso.sacADos));*/
 		}
 			
 	});
@@ -104,33 +153,41 @@ Personnage_BD.GetPersonnageByIdUser = function(idUtilisateur,callbackGetPersonna
 	{
 		if (err)  
 		{
-		throw err;
+			console.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
+			throw err;
 		}
 		if (typeof user[0] === "undefined")
 		{
-			callbackGetPersonnageByIdUser(-1)
+			console.log("PERSONNAGE_BD : GetPersonnage() : undefined 1 ! ");
+			callbackGetPersonnageByIdUser(-1);
 		}
 		else
 		{
-			PersonnageModel.find({_id : user[0].personnage}, function(err,perso)
+			PersonnageModel.find({_id : user[0].presonnage}, function(err,perso)
 			{
+				console.log("PERSONNAGE_BD : ID user[0].personnage : " +  user[0].presonnage);
 				if (err)  
 				{
+					console.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
 					throw err;
 				}
 				
 				if (typeof perso[0] === "undefined")
 				{
-					callbackGetPersonnageByIdUser(-2)
+					console.log("PERSONNAGE_BD : GetPersonnage() : undefined 2 ! ");
+					callbackGetPersonnageByIdUser(-2);
+					
 				}
 				else
 				{
+					console.log('PERSONNAGE_BD : id perso récupéré : ' + perso[0].id);
+					
 					callbackGetPersonnageByIdUser(new oPersonnage(
-						perso._id,perso.ptSante,perso.ptSanteMax,
-						perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
-						perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
-						perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
-						perso.idArmureEquipee,perso.sacADos));
+						perso[0].id					,perso[0].ptSante			,perso[0].ptSanteMax,
+						perso[0].ptAction			,perso[0].ptActionMax		,perso[0].ptDeplacement,
+						perso[0].ptDeplacementMax	,perso[0].poidsMax			,perso[0].gouleLimite,
+						perso[0].competence			,perso[0].idSalleEnCours	,perso[0].idArmeEquipee,
+						perso[0].idArmureEquipee	,perso[0].sacADos));
 				}
 			
 			});
@@ -181,16 +238,13 @@ Personnage_BD.GetPersonnageByIdPerso = function(idPersonnage,callbackGetPersonna
 	
 },
 
-
 /**
  * CREER UN PERSONNAGE A LA CREATION DE L'UTILISATEUR
  * retourn le personage si le perso est bien créer
  * 
  * @method Creation
  */
-
-Personnage_BD.Creation = function(vie, action, deplacement, poids, goule,
-		competence) {
+Personnage_BD.Creation = function(vie, action, deplacement, poids, goule, competence) {
 
 	var PersonnageModel = mongoose.model('Personnage');
 	var Perso = new PersonnageModel();
@@ -205,9 +259,9 @@ Personnage_BD.Creation = function(vie, action, deplacement, poids, goule,
 	Perso.gouleLimite = goule;
 	Perso.competence = competence;
 	Perso.sacADos = new Array();
-	Perso.idSalleEnCours = "";
-	Perso.idArmeEquipee = "";
-	Perso.idArmureEquipee = "";
+	Perso.idSalleEnCours = 0;
+	Perso.idArmeEquipee = 0;
+	Perso.idArmureEquipee = 0;
 
 	Perso.save(function(err) {
 		if (err) {
@@ -221,6 +275,11 @@ Personnage_BD.Creation = function(vie, action, deplacement, poids, goule,
 
 	});
 	return Perso;
+},
+
+Personnage_BD.test = function()
+{
+	console.log("COUCOU");
 },
 
 

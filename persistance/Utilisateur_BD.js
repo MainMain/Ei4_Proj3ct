@@ -1,7 +1,7 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-var oPersonnageDB = require('./Personnage_BD');
+var oPersonnageDB = require('../Persistance/Personnage_BD');
 var oUtilisateur = require('../model/object/Utilisateur');
 
 
@@ -241,7 +241,10 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	});
 },
  
- 
+Utilisateur_BD.test = function()
+{
+	console.log("COUCOU");
+},
  
 
  
