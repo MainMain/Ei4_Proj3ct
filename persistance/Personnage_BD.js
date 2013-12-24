@@ -67,6 +67,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
 
             console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
             console.log("PERSONNAGE_BD : SetPersonnage() : idArme :  " + idArme);
+            console.log("PERSONNAGE_BD : SetPersonnage() : idSalle :  " + personnageToSave.idSalleEnCours);
             PersonnageModel.update({
                     _id: personnageToSave.id
                 }, {
@@ -130,31 +131,39 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
             throw err;
         }
         if (typeof user[0] === "undefined") {
-            console.log("PERSONNAGE_BD : GetPersonnage() : undefined 1 ! ");
+            console.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé l'user ! ");
             callbackGetPersonnageByIdUser(-1);
         } else {
-            PersonnageModel.find({
-                _id: user[0].presonnage
-            }, function (err, perso) {
-                console.log("PERSONNAGE_BD : ID user[0].personnage : " + user[0].presonnage);
+            PersonnageModel.find({_id: user[0].personnage}, function (err, perso) 
+            {
+            	console.log("PERSONNAGE_BD : ID user[0].id : " + user[0].id);
+            	console.log("PERSONNAGE_BD : ID user[0].pseudo : " + user[0].pseudo);
+                console.log("PERSONNAGE_BD : ID user[0].personnage : " + user[0].personnage);
+                
                 if (err) {
                     console.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
                     throw err;
                 }
 
                 if (typeof perso[0] === "undefined") {
-                    console.log("PERSONNAGE_BD : GetPersonnage() : undefined 2 ! ");
+                    console.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé le perso ! ");
                     callbackGetPersonnageByIdUser(-2);
 
                 } else {
                     console.log('PERSONNAGE_BD : id perso récupéré : ' + perso[0].id);
 
+                    // conversion des id "ArmeEquipee" et "ArmureEquipee" en objet
+                    var arme = null, armure = null;
+                    if (perso[0].idArmeEquipee != null)
+                    	 arme = oItem_BD.GetItemById(perso[0].idArmeEquipee);
+                    if (perso[0].idArmureEquipee != null)
+                   	 armure	 = oItem_BD.GetItemById(perso[0].idArmureEquipee);
                     callbackGetPersonnageByIdUser(new oPersonnage(
                         perso[0].id, perso[0].ptSante, perso[0].ptSanteMax,
                         perso[0].ptAction, perso[0].ptActionMax, perso[0].ptDeplacement,
                         perso[0].ptDeplacementMax, perso[0].poidsMax, perso[0].gouleLimite,
-                        perso[0].competence, perso[0].idSalleEnCours, perso[0].idArmeEquipee,
-                        perso[0].idArmureEquipee, perso[0].sacADos));
+                        perso[0].competence, perso[0].idSalleEnCours, arme,
+                        armure, perso[0].sacADos));
                 }
             });
         }

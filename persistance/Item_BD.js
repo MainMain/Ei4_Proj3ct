@@ -47,7 +47,7 @@ Item_BD.GetItem = function(idItem) {
 	
 	
 },
-
+/*
 Item_BD.NewItem = function(idItem,callbackNewItem) {
 	
 	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
@@ -96,7 +96,7 @@ Item_BD.NewItem = function(idItem,callbackNewItem) {
 	
 
 },
-
+*/
 
 
 

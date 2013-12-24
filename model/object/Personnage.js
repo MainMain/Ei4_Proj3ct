@@ -1,4 +1,3 @@
-var oPersonnage_BD = require('../../persistance/Personnage_BD');
 var oCarte = require('../../model/object/Carte');
 
 /**
@@ -64,18 +63,21 @@ var Personnage = (function() {
 		/**
 		 * ECRITURE
 		 * 
-		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE return : 1 si ok erreur : -1
-		 * si déplacement impossible (pas de case dans la direction) erreur : -2
-		 * si pas de pts mouvement
+		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE 
+		 * return : 1 si ok 
+		 * erreur : -1 si déplacement impossible (pas de case dans la direction)
+		 * erreur : -2 si pas de pts mouvement
 		 * 
 		 * @method deplacement
 		 */
 		deplacement : function(direction) {
 			console.log("PERSONNAGE : Déplacement ! id salle en cours : " + this.idSalleEnCours);
+			
 			// si pu de pts de mouvement, on peut s'arreter là
 			if (this.ptDeplacement == 0)
 				return -2;
-			// Vérification de la direction demandée
+			
+        	// Vérification de la direction demandée
 			if (typeof direction !== 'string'
 					&& Personnage.DIRECTIONS.indexOf(direction.toUpperCase()) === -1) {
 				throw 'Direction argument invalid!';
@@ -83,24 +85,27 @@ var Personnage = (function() {
 			}
 			
 			// recupere l'id de la salle
-			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours,
-					direction);
-			if (ansIdSalle == -1) {
+			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours, direction);
+			
+			// si id de la salle -1, pas de salle dans la direction
+			if (ansIdSalle == -1)
+			{
 				console.log("PERSONNAGE : Déplacement impossible ! ");
 				return -1;
-			} else {
+			} 
+			else 
+			{
 				// Affiche sur le log
 				console.log('PERSONNAGE : Deplacement vers : ' + direction);
-				console.log('PERSONNAGE : Déplacement ok - '
-						+ this.idSalleEnCours);
+				console.log('PERSONNAGE : Déplacement ok - '+ this.idSalleEnCours);
+				
 				// Décrémente les points de déplacement
 				this.ptDeplacement--;
-				// si c'est un id valide, on modifie l'id de salle du perso
+				
+				//  on modifie l'id de salle du perso
 				this.idSalleEnCours = ansIdSalle;
 
-				// maj dans la BD
-				//oPersonnage_BD.SetPersonnage(this, null);
-				oPersonnage_BD.test();
+				// return
 				return 1;
 			}
 		},
@@ -117,8 +122,6 @@ var Personnage = (function() {
 			this.sacADos.push(item);
 			console.log("PERSONNAGE : ajout de l'item " + item.nom
 					+ " au personnage " + this.id);
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 		},
 
 		/**
@@ -143,8 +146,6 @@ var Personnage = (function() {
 			console.log("CASE : DEBUG index : " + index);
 			this.sacADos.splice(i, 1);
 			this.logAfficherSacADos();
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 		},
 
 		/*
@@ -161,6 +162,7 @@ var Personnage = (function() {
 			console.log("PERSONNAGE : *********************************");
 		},
 
+		
 		/**
 		 * LECTURE
 		 * 
@@ -171,7 +173,13 @@ var Personnage = (function() {
 		 */
 		existItemInSac : function(item) {
 			this.logAfficherSacADos();
-			if (this.sacADos.indexOf(item) != -1) {
+			var bool = false;
+			for (var i = 0; i < this.sacADos.length; i++)
+			{
+				if (this.sacADos[i].id == item.id) bool = true;
+			}
+			//if (this.sacADos.indexOf(item) != -1) {
+			if (bool == true){
 				console.log("PERSONNAGE : L'item (" + item.id + " - " + item.nom + ") est bien dans le sac  du perso " + this.id);
 				return true;
 			} else {
@@ -188,9 +196,10 @@ var Personnage = (function() {
 		 * si ni une arme, ni une armure
 		 */
 		sEquiperDunItem : function(item) {
+			// configuration du code de retour
 			var codeRetour = 1;
-			// si type arme
-			console.log("---- " + this.armeEquipee);
+
+			// si c'est une arme
 			if (item.type == 1) {
 				// si déja une arme équipée
 				if (this.armeEquipee != null)
@@ -210,8 +219,6 @@ var Personnage = (function() {
 			} else {
 				return -3;
 			}
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 			return codeRetour;
 		},
 		/**
@@ -224,8 +231,6 @@ var Personnage = (function() {
 				this.armeEquipee = null;
 			else if (item.type == 2)
 				this.armureEquipee = null;
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 		},
 
 		/**

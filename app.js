@@ -16,6 +16,7 @@ var oItem_BD = require('./persistance/Item_BD');
 var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 var oPersonnage_BD = require('./persistance/Personnage_BD');
 var oDatabase = require('./model/database');
+var oPersonnage_Manager = require('./manager/Personnage_Manager');
 
 var usersOnline = new Array();
 
@@ -41,140 +42,6 @@ app.use(express.static(path.join(__dirname, '/')));
 app.use(express.cookieParser());
 app.use(express.session({secret: 'some secret key'}));
 
-
-//middleware
-/*app.use(express.bodyParser());
-app.use(express.cookieParser('shhhh, very secret'));
-app.use(express.session());
-*//*
-//Session-persisted message middleware
-app.use(function (req, res, next) {
-    var err = req.session.error,
-        msg = req.session.success;
-    delete req.session.error;
-    delete req.session.success;
-    res.locals.message = '';
-    if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
-    if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
-    next();
-});
-/*
-//dummy database
-var users = {
-  tj: { name: 'tj' }
-};
-
-//when you create a user, generate a salt
-//and hash the password ('foobar' is the pass here)
-hash('foobar', function(err, salt, hash){
-if (err) throw err;
-// store the salt & hash in the "db"
-users.tj.salt = salt;
-users.tj.hash = hash.toString();
-});
-
-//Authenticate using our plain-object database of doom!
-
-function authenticate(name, pass, fn) {
-  if (!module.parent) console.log('authenticating %s:%s', name, pass);
-  var user = users[name];
-  // query the db for the given username
-  if (!user) return fn(new Error('cannot find user'));
-  // apply the same algorithm to the POSTed password, applying
-  // the hash against the pass / salt, if there is a match we
-  // found the user
-  hash(pass, user.salt, function(err, hash){
-    if (err) return fn(err);
-    if (hash.toString() == user.hash) return fn(null, user);
-    fn(new Error('invalid password'));
-  })
-}
-
-function restrict(req, res, next) {
-  if (req.session.user) {
-    next();
-  } else {
-    req.session.error = 'Access denied!';
-    res.redirect('/');
-  }
-}
-
-function logged(req, res, next) {
-	if (req.session != null) {
-		next();
-	} else {
-		res.redirect('/');
-	}
-}
-
-
-app.get('/restricted', logged, function(req, res){
-  res.send('Wahoo! restricted area, click to <a href="/logout">logout</a>');
-});
-
-app.get('/logout', function(req, res){
-  // destroy the user's session to log them out
-  // will be re-created next request
-  req.session.destroy(function(){
-    res.redirect('/');
-  });
-});
-
-app.post('/login', function(req, res){
-  authenticate(req.body.username, req.body.password, function(err, user){
-    if (user) {
-      // Regenerate session when signing in
-      // to prevent fixation 
-      req.session.regenerate(function(){
-        // Store the user's primary key 
-        // in the session store to be retrieved,
-        // or in this case the entire user object
-        req.session.user = user;
-        req.session.success = 'Authenticated as ' + user.name
-          + ' click to <a href="/logout">logout</a>. '
-          + ' You may now access <a href="/restricted">/restricted</a>.';
-        res.redirect('back');
-      });
-    } else {
-      req.session.error = 'Authentication failed, please check your '
-        + ' username and password.'
-        + ' (use "tj" and "foobar")';
-      res.redirect('login');
-    }
-  });
-});
-
-/*
- * CONFIGURATION DES SESSIONS
- */
-/*
-// Allow parsing cookies from request headers
-app.use(express.cookieParser());
-// Session management
-app.use(express.session({
-    // Private crypting key
-    "secret": "some private string",
-    // Internal session data storage engine, this is the default engine embedded
-    // with connect.
-    // Much more can be found as external modules (Redis, Mongo, Mysql,
-    // file...). look at "npm search connect session store"
-    "store": new express.session.MemoryStore({
-        reapInterval: 60000 * 10
-    })
-}));
-*/
-/** Middleware for limited access */
-/*
-function requireLogin(req, res, next) {
-    if (req.session.username) {
-        // User is authenticated, let him in
-        next();
-    } else {
-        // Otherwise, we redirect him to login form
-        res.redirect("/");
-    }
-};
-*/
 
 var optionAccueil = {"username": null, "errorLogin": null, "InfoInscription": null, "usernameInscription": null}
 
@@ -323,27 +190,17 @@ oCase_BD.Initialiser();
 /*
  * INITIALISATION DU PERSONNAGE
  */
-var myPerso;
-callbackGetPersonnageByIdUser = function(reponse)
+try
 {
-if (reponse == -1) myPerso = null;
-else if (reponse == -2) myPerso = null;
-else
-{ 
-	myPerso = reponse;
-	//oPersonnage_BD.SetPersonnage(reponse);
-	//var sacADos = [oItem_BD.GetItemById(9), oItem_BD.GetItemById(10), oItem_BD.GetItemById(11)];
-	//myPerso = new oPersonnage("52b8ca1a813ad6e81c000003", 80, 100, 20, 25, 10, 15, 100, 8, "archer", 0, null, null, sacADos);
-	//myPerso.deplacement("WEST");
-}
+	var pManager = new oPersonnage_Manager("52b9743673bc052408000001");
+}catch(err)
+{
+	console.log("PAS DE PERSO CORRESPONDANT A CET USER !");
 }
 
-//var sacADos = [oItem_BD.GetItemById(9), oItem_BD.GetItemById(10), oItem_BD.GetItemById(11)];
-//var myPerso = new oPersonnage("52b8ca1a813ad6e81c000003", 80, 100, 20, 25, 10, 15, 100, 8, "archer", 0, null, null, sacADos);
 
-oPersonnage_BD.GetPersonnageByIdUser("52b8ca1a813ad6e81c000001", callbackGetPersonnageByIdUser);
 /**
- * ********* EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION CLIENT -> SERVEUR
+ * ********* EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION CLIENT -> SERVEUR
  * *************
  */
 /*
@@ -371,15 +228,18 @@ io.sockets.on('connection', function (socket)
 		console.log("*******************************************************");
 		// log
 		console.log('SERVER : Déplacement du personnage demandé : ' + move);
+		
 		// déplacement du personnage
-		var ansDeplacementOk = myPerso.deplacement(move);
+		var ansDeplacementOk = pManager.Deplacement(move);
+		
 		// si le déplacement a réussi
 		if (ansDeplacementOk == 1) 
 		{
 			console.log('SERVER : DEBUG envoi de la nouvelle position');
+			
 			// récupère la salle en cours
-			var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
-			console.log("-------- DEBUG " + myPerso.id + " -- " + currentCase);
+			var currentCase = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
+			
 			// renvoi la salle ou erreur
 			if (currentCase == null)
 				socket.emit('MOVE_PERSONNAGE_SC', 0);
@@ -414,6 +274,7 @@ io.sockets.on('connection', function (socket)
     socket.on('INV_PERSONNAGE_CS', function (type, id_item)
 	{
 		console.log("*******************************************************");
+		
 		// recupere l'currentItem
 		var currentItem = oItem_BD.GetItemById(id_item);
 		if (currentItem == null)
@@ -421,8 +282,11 @@ io.sockets.on('connection', function (socket)
 				console.log("SERVEUR : id item : " + id_item);
 				return;
 			}
+		
 		// check si currentItem est bien dans le sac
-		var existItemInSac = myPerso.existItemInSac(currentItem);
+		var existItemInSac = pManager.ExistItemInSac(currentItem);
+		
+		// si l'item n'est pas dans le sac, on renvoi 0
 		if (existItemInSac == false)
 			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, 0);
 
@@ -435,7 +299,7 @@ io.sockets.on('connection', function (socket)
 			 * erreur : -2 si déja une arme équipée
 			 * erreur : -3 si ni une arme, ni une armure
 			 */
-			var reponse = myPerso.sEquiperDunItem(currentItem);
+			var reponse = pManager.SEquiper(currentItem);
 			console.log("SERVEUR : code retour : " + reponse);
 			// et selon le message renvoyé
 			switch (reponse) {
@@ -462,15 +326,11 @@ io.sockets.on('connection', function (socket)
 		} else if (type == "DESEQUIPER") 
 		{
 			console.log("SERVEUR : demande de déséquipement de l'item " + currentItem.id +" - " + currentItem.nom);
-			//console.log("SERVEUR : arme equipee item: " + myPerso.armeEquipee.id + " - " + myPerso.armeEquipee.nom);
-			// si le perso n'est pas équipe d'un item de cet idem
-			if (currentItem.type == 1 && (myPerso.armeEquipee == null || myPerso.armeEquipee.id != currentItem.id))
+			var r = pManager.SeDesequiper(currentItem);
+			if (r == -1) 
 				socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, -4);
-			if (currentItem.type == 2 && (myPerso.armureEquipee == null || myPerso.armureEquipee.id != currentItem.id))
-				socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, -4);
-			
-			var reponse = myPerso.sDesequiperDunItem(currentItem);
-			socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, currentItem.type);
+			else
+				socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, currentItem.type);
 		}
 		console.log("*******************************************************");
     });
@@ -484,18 +344,16 @@ io.sockets.on('connection', function (socket)
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
 		console.log("*******************************************************");
-		// si pas de session
-		if (myPerso == null) {
-			console.log("WARNING - PAS DE SESSION !");
-			return;
-		}
+		
 		// récupère la case en cours
-		var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
+		var currentCase = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
 
 		// recupere l'currentItem
 		var currentItem = oItem_BD.GetItemById(id_item);
 
-		if (type == "RAMASSER") {
+		// si action de type ramasser
+		if (type == "RAMASSER") 
+		{
 
 			// log
 			console.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
@@ -504,47 +362,58 @@ io.sockets.on('connection', function (socket)
 			var existItemInSalle = currentCase.existItemInSalle(currentItem);
 
 			// si l'objet est bien dans la salle
-			if (existItemInSalle == true) {
-				// check si l'objet peut être ajouté au personnage
-				console.log("SERVER : poids sac : " + myPerso.getPoidsSac() + " - poids item : " + currentItem.poids + " - poids max : " + myPerso.poidsMax);
-				if ((myPerso.getPoidsSac() + currentItem.poids) < myPerso.poidsMax) {
-					// ajout de l'currentItem au sac du perso
-					myPerso.ajouterAuSac(currentItem);
+			if (existItemInSalle == true)
+			{
+				//console.log("SERVER : poids sac : " + pManager.GetPoidsSac() + " - poids item : " + currentItem.poids + " - poids max : " + myPerso.poidsMax);
+				
+				// demande au manager de perso d'ajouter l'item
+				var r = pManager.AjouterItemAuSac(currentItem);
+				
+				// ramassage ok
+				if (r == 1)
+				{
+					console.log("SERVER : Demande de ramassage ok ");
+						
 					// suppression de l'objet de la case
 					currentCase.supprimerItem(currentItem);
+						
 					// return au client
-					socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, myPerso.getPoidsSac());
-				} else {
-					console.log("SERVER : Demande de ramassage impossible : poids max atteint");
-					// return au client que l'objet ne peut être ajouté (poids
-					// insufisant)
-					socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -1);
+					socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, pManager.GetPoidsSac());
 				}
-			}
-			// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour
-			// !)
-			else {
+				else
+				{
+				console.log("SERVER : Demande de ramassage impossible : poids max atteint");
+					
+				// return au client que l'objet ne peut être ajouté (poids insufisant)
+				socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -1);
+				}
+			} // fin if (existItemInSalle == true)
+			// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
+			else
+			{
 				// return que l'objet n'est pas dans la case
 				socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -2);
 			}
-		} else if (type == "DEPOSER") {
-			// log
-			console.log("SERVER : Demande pour deposer l'currentItem : " + id_item + " - " + currentItem.nom);
-
+			
+		}
+		// si action de type depose
+		else if (type == "DEPOSER") 
+		{
+		// log
+		console.log("SERVER : Demande pour deposer l'currentItem : " + id_item + " - " + currentItem.nom);
 			// check si currentItem est bien dans le sac
-			var existItemInSac = myPerso.existItemInSac(currentItem);
-
+		var existItemInSac = pManager.ExistItemInSac(currentItem);
 			// si l'item est bien dans le sac
-			if (existItemInSac == true) {
-				// ajout de l'item a la case
-				currentCase.ajouterItem(currentItem);
-				// suppression de l'item au perso
-				myPerso.supprimerDuSac(currentItem);
-				// return au client
-				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, myPerso.getPoidsSac());
+		if (existItemInSac == true) {
+			// ajout de l'item a la case
+			currentCase.ajouterItem(currentItem);
+			
+			// suppression de l'item au perso
+			pManager.SupprimerDuSac(currentItem);
+			// return au client
+			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManager.GetPoidsSac());
 			}
-			// si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour
-			// !)
+			// si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour !)
 			else {
 				// return que l'item n'est pas dans le sac
 				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, -2);
@@ -561,7 +430,7 @@ io.sockets.on('connection', function (socket)
 	{
 		console.log("*******************************************************");
 		// récupère la salle en cours
-		var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
+		var currentCase = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
 		// return selon la valeur de retour
 		if (currentCase == null)
 			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
@@ -576,7 +445,7 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
-		socket.emit('INFO_PERSONNAGE_SC', myPerso);
+		socket.emit('INFO_PERSONNAGE_SC', pManager.GetCopiePerso());
     });
 
 
@@ -625,12 +494,12 @@ io.sockets.on('connection', function (socket)
     	var currentItem = oItem_BD.GetItemById(id_item);
 
     	// check si currentItem est bien dans le sac
-  		var existItemInSac = myPerso.existItemInSac(currentItem);
+  		var existItemInSac = pManager.ExistItemInSac(currentItem);
   		if (existItemInSac == false)
   		socket.emit('PERSONNAGE_USE_CS', currentItem, 0);
 
     	// le personnage tente d'utiliser l'item
-    	var reponse =myPerso.utiliser(currentItem);
+    	var reponse = myPerso.Utiliser(currentItem);
     		
     	// et selon le message renvoyé
     	switch (reponse) {

@@ -77,10 +77,10 @@ database.Initialiser = function() {
 	CaseModel = mongoose.model('Case',CaseSchema); 
 	
 
-	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
+	//PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
 
 /***** CREATION DU SCHEMA "ITEM" ****/
-	var ItemSchema = new mongoose.Schema({
+	/*var ItemSchema = new mongoose.Schema({
 		nom = String,
 		description = String,
 		poids = Number,
@@ -102,7 +102,7 @@ database.Initialiser = function() {
 	});
 	
 	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
-
+*/
 	
 	console.log("Initialisation Database");
 },
