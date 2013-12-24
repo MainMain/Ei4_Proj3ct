@@ -23,28 +23,77 @@ function Item_BD() {
 
 
 /**
- * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
+ * ENVOIE UN ITEM POUR METTRE A JOUR CES PROPRIETES
  * 
- * @method SetItem
+ * @method DestroyItem
  */
  
 Item_BD.DestroyItem = function(itemToDestroy) {
 	// envoi un item à rajouter (ou modifier si son id existe déja)
 	var id = itemToDestroy.id;
 	
+	
+	
 },
 
 
 /**
  * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
- * 
+ * retourn -1 si l'item n'est pas trouvé dans la bd
  * @method GetItem
  */
 Item_BD.GetItem = function(idItem) {
-	// renvoi un item selon l'id passé en paramètre
+	
+	
+	
 },
 
-Item_BD.NewItem = function(idItem) {
+Item_BD.NewItem = function(idItem,callbackNewItem) {
+	
+	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
+	ItemModel = mongoose.model('Item',ItemSchema);
+	
+	var indexBD = Math.floor(Math.random()*20);
+	
+	ItemBaseModel.find({index : indexBD},function{(err, newItem)
+		if (err)
+		{
+			throw (err);
+		}
+		
+		if (typeof newItem[0] === "undefined")
+		{
+			callbackNewItem(-1);	
+		}
+		else 
+		{
+			ItemModel.nom = newItem.nom;
+			ItemModel.description = newItem.description;
+			ItemModel.poids = newItem.poids;
+			ItemModel.type = newItem.type;
+			ItemModel.valeur = newItem.valeur;
+			ItemModel.imageName = newItem.imageName;
+			
+			ItemModel.save(function (err)
+			{
+				if (err)
+				{
+					throw err;
+				}
+				else
+				{
+					console.log('Un item a été créé');
+					callbackNewItem(ItemModel._id,ItemModel.nom,ItemModel.description
+					ItemModel.poids,ItemModel.type,ItemModel.valeur,ItemModel.imageName);
+				}
+				
+			
+			});
+		}
+		
+		
+	});
+	
 
 },
 

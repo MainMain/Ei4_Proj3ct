@@ -43,7 +43,7 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 			NewUser[0].pseudo = Utilisateur.pseudo;
 			NewUser[0].pass = Utilisateur.email;
 			NewUser[0].email = Utilisateur.pass;
-			NewUser[0].presonnage = Utilisateur.idPersonnage;
+			NewUser[0].personnage = Utilisateur.idPersonnage;
 			NewUser[0].nbrMeurtres = Utilisateur.nbrMeurtres;
 			NewUser[0].nbrMeurtresCumule = Utilisateur.nbrMeurtresCumule;
 			NewUser[0].nbrFoisTue = Utilisateur.nbrFoisTue;
@@ -188,7 +188,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 				NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
 				
 				console.log('BASE DE DONNEES : ID du perso cree ' + NewPerso._id);
-				NewUser.presonnage = NewPerso._id;
+				NewUser.personnage = NewPerso._id;
 				
 				NewUser.save(function (err)
 				{
