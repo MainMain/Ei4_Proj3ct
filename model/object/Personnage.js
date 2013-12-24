@@ -71,7 +71,7 @@ var Personnage = (function() {
 		 * @method deplacement
 		 */
 		deplacement : function(direction) {
-			console.log("PERSONNAGE : Déplacement ! id salle en cours : " + this.idSalleEnCours);
+			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
 			
 			// si pu de pts de mouvement, on peut s'arreter là
 			if (this.ptDeplacement == 0)
@@ -95,16 +95,16 @@ var Personnage = (function() {
 			} 
 			else 
 			{
-				// Affiche sur le log
-				console.log('PERSONNAGE : Deplacement vers : ' + direction);
-				console.log('PERSONNAGE : Déplacement ok - '+ this.idSalleEnCours);
-				
 				// Décrémente les points de déplacement
 				this.ptDeplacement--;
 				
 				//  on modifie l'id de salle du perso
 				this.idSalleEnCours = ansIdSalle;
 
+				// Affiche sur le log
+				console.log('PERSONNAGE : Deplacement vers : ' + direction);
+				console.log('PERSONNAGE : Déplacement ok - nvlle salle '+ this.idSalleEnCours);
+				
 				// return
 				return 1;
 			}

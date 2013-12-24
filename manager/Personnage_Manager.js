@@ -15,26 +15,22 @@ var Personnage_Manager = (function () {
         Personnage_Manager.personnage;
 
         // --- METHODE DE CLASSE
-        Personnage_Manager.build = function (idUser) {
-        	this.personnage = 0;
-        	
-            return new Personnage_Manager();
-        };
+        Personnage_Manager.build = function (idUser) { return new Personnage_Manager(); };
 
-        function Personnage_Manager(idUser) {
-        	var context = this;
-        	oPersonnage_BD.GetPersonnageByIdUser(idUser, function(reponse) {context.callbackGetPersonnageByIdUser(reponse); });
+        function Personnage_Manager() {
         }
+        
         // --- METHODES D'INSTANCE
         Personnage_Manager.prototype = {
 
-        	callbackGetPersonnageByIdUser : function (reponse) {
+        	callbackGetPersonnageByIdUser : function (reponse, c) {
         		console.log("PERSO MANAGER : reponse perso by user : " + reponse);
                 if (reponse == -1) this.personnage = null;
                 else if (reponse == -2) this.personnage = null;
                 else {
                     this.personnage = reponse;
                 }
+                c();
             },
             
             callbackSetPersonnage : function(reponse)
@@ -44,9 +40,19 @@ var Personnage_Manager = (function () {
             	else console.log("PMANAGER : ecriture ok");
             },
             
+            Load : function(idUser, callback)
+            {
+            	var context = this;
+            	oPersonnage_BD.GetPersonnageByIdUser(idUser, function(reponse) {context.callbackGetPersonnageByIdUser(reponse, callback); });
+            	console.log("PMANAGER : Actif !");
+            	
+            },
+            
             Deplacement : function (move) {
             	// deplace le personnage
+            	
                 var reponse = this.personnage.deplacement(move);
+                console.log("PMANAGER : deplacement reponse : " + reponse);
                 
                 //si le deplacement est ok, on enregistre
                 if (reponse == 1) oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
@@ -110,6 +116,7 @@ var Personnage_Manager = (function () {
             	return this.personnage.getPoidsSac();
             },
             GetIdSalleEnCours : function () {
+            	console.log("PM : id salle en cours : " + this.personnage.idSalleEnCours);
             	return this.personnage.idSalleEnCours;
             },
             

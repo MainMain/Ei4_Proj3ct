@@ -9,14 +9,19 @@ var express = require('express'),
 var app = express();
 var server = http.createServer(app);
 
-var oPersonnage = require('./model/object/Personnage');
-var oCarte = require('./model/object/Carte');
-var oCase_BD = require('./persistance/Case_BD');
-var oItem_BD = require('./persistance/Item_BD');
-var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
-var oPersonnage_BD = require('./persistance/Personnage_BD');
+// require model
 var oDatabase = require('./model/database');
+// require objets
+var oPersonnage = require('./model/object/Personnage');
+//var oCarte = require('./model/object/Carte');
+//require persistance
+//var oCase_BD = require('./persistance/Case_BD');
+var oItem_BD = require('./persistance/Item_BD');
+//var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
+//var oPersonnage_BD = require('./persistance/Personnage_BD');
+//require manager
 var oPersonnage_Manager = require('./manager/Personnage_Manager');
+var oCase_Manager = require('./manager/Case_Manager');
 
 var usersOnline = new Array();
 
@@ -128,7 +133,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 	}
 	optionAccueil.username = null;
 	optionAccueil.errorLogin = null;
-}
+},
 
 app.put("/", function (req, res)
 {
@@ -156,7 +161,7 @@ callbackInscription = function(reponseInscription, req, res)
 	}
 	optionAccueil.usernameInscription = null;
 	optionAccueil.InfoInscription = null;
-}
+},
 
 app.delete("/", function (req, res)
 {
@@ -184,19 +189,35 @@ var io = require('socket.io').listen(server, {
  * Comme il n'y a pas de BD pour le moment, on en simule une...
  */
 oItem_BD.Initialiser();
-oCarte.Initialiser(3, 4);
-oCase_BD.Initialiser();
+
 
 /*
- * INITIALISATION DU PERSONNAGE
+ * INITIALISATION DU PERSONNAGE ET DES MANAGERS
  */
-try
+var pManager = new oPersonnage_Manager();
+var cManager;
+callbackT = function()
 {
-	var pManager = new oPersonnage_Manager("52b9743673bc052408000001");
-}catch(err)
-{
-	console.log("PAS DE PERSO CORRESPONDANT A CET USER !");
+	cManager = new oCase_Manager(pManager.GetIdSalleEnCours());
+	console.log("DEBUG : NOM SALLE EN COURS " + cManager.GetCopieCase().id);
 }
+
+
+//try
+//{
+	
+	pManager.Load("52b9743673bc052408000001", callbackT);
+	/*, function()
+			{
+				console.log("Fin pManager--------------------------");
+				var cManager = new oCase_Manager(pManager.GetIdSalleEnCours());
+			});*/
+	
+//}catch(err)
+//{
+	console.log("PAS DE PERSO CORRESPONDANT A CET USER !");
+//}
+
 
 
 /**
@@ -218,7 +239,7 @@ io.sockets.on('connection', function (socket)
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
      * la case avec MOVE_PERSONNAGE_SC 
-     * return : currentCase si ok
+     * return : cManager.GetCopieCase() si ok
      * erreur : renvoi 0 si erreur de case
      * erreur : renvoi -1 si impossible de bouger 
      * erreur : -3 si aucun de Pts Mouvement
@@ -235,16 +256,19 @@ io.sockets.on('connection', function (socket)
 		// si le déplacement a réussi
 		if (ansDeplacementOk == 1) 
 		{
-			console.log('SERVER : DEBUG envoi de la nouvelle position');
+			console.log('SERVER : deplacement ok envoi de la nouvelle position');
 			
+			// enregistre dans le manager
+			cManager.ChangeCase(pManager.GetIdSalleEnCours());
 			// récupère la salle en cours
-			var currentCase = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
+			//var cManager.GetCopieCase() = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
+			//var cManager.GetCopieCase() = cManager.GetCopieCase(pManager.GetIdSalleEnCours());
 			
 			// renvoi la salle ou erreur
-			if (currentCase == null)
+			if (cManager.GetCopieCase() == null)
 				socket.emit('MOVE_PERSONNAGE_SC', 0);
 			else
-				socket.emit('MOVE_PERSONNAGE_SC', currentCase);
+				socket.emit('MOVE_PERSONNAGE_SC', cManager.GetCopieCase());
 		}
 		// si le déplacement a raté
 		else if (ansDeplacementOk == -1)
@@ -299,7 +323,9 @@ io.sockets.on('connection', function (socket)
 			 * erreur : -2 si déja une arme équipée
 			 * erreur : -3 si ni une arme, ni une armure
 			 */
+			// demande d'équipement au manager
 			var reponse = pManager.SEquiper(currentItem);
+			
 			console.log("SERVEUR : code retour : " + reponse);
 			// et selon le message renvoyé
 			switch (reponse) {
@@ -346,7 +372,7 @@ io.sockets.on('connection', function (socket)
 		console.log("*******************************************************");
 		
 		// récupère la case en cours
-		var currentCase = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
+		//var cManager.GetCopieCase() = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
 
 		// recupere l'currentItem
 		var currentItem = oItem_BD.GetItemById(id_item);
@@ -354,13 +380,13 @@ io.sockets.on('connection', function (socket)
 		// si action de type ramasser
 		if (type == "RAMASSER") 
 		{
-
 			// log
 			console.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
 
 			// check si currentItem est bien dans la salle
-			var existItemInSalle = currentCase.existItemInSalle(currentItem);
-
+			//var existItemInSalle = cManager.GetCopieCase().existItemInSalle(currentItem);
+			var existItemInSalle = cManager.ExistItem(currentItem);
+			
 			// si l'objet est bien dans la salle
 			if (existItemInSalle == true)
 			{
@@ -375,7 +401,7 @@ io.sockets.on('connection', function (socket)
 					console.log("SERVER : Demande de ramassage ok ");
 						
 					// suppression de l'objet de la case
-					currentCase.supprimerItem(currentItem);
+					cManager.SupprimerItem(currentItem);
 						
 					// return au client
 					socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, pManager.GetPoidsSac());
@@ -406,7 +432,7 @@ io.sockets.on('connection', function (socket)
 			// si l'item est bien dans le sac
 		if (existItemInSac == true) {
 			// ajout de l'item a la case
-			currentCase.ajouterItem(currentItem);
+			cManager.GetCopieCase().ajouterItem(currentItem);
 			
 			// suppression de l'item au perso
 			pManager.SupprimerDuSac(currentItem);
@@ -430,12 +456,12 @@ io.sockets.on('connection', function (socket)
 	{
 		console.log("*******************************************************");
 		// récupère la salle en cours
-		var currentCase = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
+		//var cManager.GetCopieCase() = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
 		// return selon la valeur de retour
-		if (currentCase == null)
+		if (cManager.GetCopieCase() == null)
 			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
 		else
-			socket.emit('INFO_CASE_SC', currentCase);
+			socket.emit('INFO_CASE_SC', cManager.GetCopieCase());
 		console.log("*******************************************************");
     });
 
@@ -499,7 +525,7 @@ io.sockets.on('connection', function (socket)
   		socket.emit('PERSONNAGE_USE_CS', currentItem, 0);
 
     	// le personnage tente d'utiliser l'item
-    	var reponse = myPerso.Utiliser(currentItem);
+    	var reponse = pManager.Utiliser(currentItem);
     		
     	// et selon le message renvoyé
     	switch (reponse) {

@@ -66,11 +66,7 @@ var Case = (function() {
 		 */
 		ajouterItem : function(item) {
 			this.listeItem.push(item);
-			console.log("CASE : suppression de l'item " + item.nom
-					+ " a la case " + this.nom);
-
-			// enregistre les modifs en BD
-			//oCase_BD.SetCase(this);
+			console.log("CASE : suppression de l'item " + item.nom + " a la case " + this.nom);
 		},
 
 		/**
@@ -91,12 +87,8 @@ var Case = (function() {
 					break;
 				}
 			}
-			// index = index-1;
-			// console.log("CASE : DEBUG index : " + index);
+			// supprime de la liste
 			this.listeItem.splice(i, 1);
-
-			// enregistre les modifs en BD
-			//oCase_BD.SetCase(this);
 		},
 
 		/*
