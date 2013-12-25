@@ -80,20 +80,23 @@ app.get('/', function fonctionIndex(req, res)
 {
 	optionAccueil.username = req.session.username;
 	res.render('accueil', optionAccueil);
+	optionAccueil.username = null;
 });
 
 app.get('/jeu', function fonctionIndex(req, res)
 {
 	if (typeof req.session.username === "undefined")
-		{
-			optionAccueil.errorLogin = "Vous devez vous connecter avant de jouer ! ";
-			res.render('accueil', optionAccueil);
-		}
+	{
+		optionAccueil.errorLogin = "Vous devez vous connecter avant de jouer ! ";
+		res.render('accueil', optionAccueil);
+	}
 	else
-		{
-	optionAccueil.username = req.session.username;
-	res.render('game', optionAccueil);
-		}
+	{
+		optionAccueil.username = req.session.username;
+		res.render('game', optionAccueil);
+	}
+	optionAccueil.username = null;
+	optionAccueil.errorLogin = null;
 });
 
 app.get('/regles', function fonctionIndex(req, res)
@@ -150,7 +153,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 			console.log("DEBUG : NOM SALLE EN COURS " + cManager.GetCopieCase().id);
 		}
 
-		pManager.Load("52b9743673bc052408000001", callbackT);
+		pManager.Load(reponseConnexion, callbackT);
 	}
 	else if(reponseConnexion == -1)
 	{
@@ -166,7 +169,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 	optionAccueil.errorLogin = null;
 },
 
-app.put("/", function (req, res)
+app.put('/', function (req, res)
 {
 	var b = req.body;
 	oUtilisateur_BD.Inscription(b.username, b.password, b.email, req, res, callbackInscription);
