@@ -19,7 +19,7 @@ var oDatabase = require('./model/database');
 //require persistance
 //var oCase_BD = require('./persistance/Case_BD');
 //var oItem_BD = require('./persistance/Item_BD');
-//var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
+var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 //var oPersonnage_BD = require('./persistance/Personnage_BD');
 
 //require manager
@@ -51,6 +51,12 @@ app.use(express.static(path.join(__dirname, '/')));
 app.use(express.cookieParser());
 app.use(express.session({secret: 'some secret key'}));
 
+/*
+ * CONFIGURATION DES MANAGERS
+ */
+var iManager;
+var pManager;
+var cManager;
 
 var optionAccueil = {"username": null, "errorLogin": null, "InfoInscription": null, "usernameInscription": null}
 
@@ -78,8 +84,16 @@ app.get('/', function fonctionIndex(req, res)
 
 app.get('/jeu', function fonctionIndex(req, res)
 {
+	if (typeof req.session.username === "undefined")
+		{
+			optionAccueil.errorLogin = "Vous devez vous connecter avant de jouer ! ";
+			res.render('accueil', optionAccueil);
+		}
+	else
+		{
 	optionAccueil.username = req.session.username;
 	res.render('game', optionAccueil);
+		}
 });
 
 app.get('/regles', function fonctionIndex(req, res)
@@ -114,8 +128,8 @@ app.post("/", function (req, res)
 callbackConnexion = function(reponseConnexion, req, res)
 {
 	var b = req.body;
-	// Si bon couple
-	if (reponseConnexion == 1)
+	// Si bon couple, on recoi l'id de l'user
+	if (typeof reponseConnexion === 'string')
 	{
 		req.session.username = b.username;
 		
@@ -123,7 +137,20 @@ callbackConnexion = function(reponseConnexion, req, res)
 		
 		usersOnline.push(b.username);
 		
+		// redirige à la page d'accueil
 		res.render("accueil", optionAccueil);
+		
+		// chargement de son personnage
+		iManager = new oItem_Manager();
+		pManager = new oPersonnage_Manager();
+		cManager;
+		callbackT = function()
+		{
+			cManager = new oCase_Manager(pManager.GetIdSalleEnCours());
+			console.log("DEBUG : NOM SALLE EN COURS " + cManager.GetCopieCase().id);
+		}
+
+		pManager.Load("52b9743673bc052408000001", callbackT);
 	}
 	else if(reponseConnexion == -1)
 	{
@@ -198,21 +225,11 @@ var io = require('socket.io').listen(server, {
 /*
  * INITIALISATION DU PERSONNAGE ET DES MANAGERS
  */
-var iManager = new oItem_Manager();
-var pManager = new oPersonnage_Manager();
-var cManager;
-callbackT = function()
-{
-	cManager = new oCase_Manager(pManager.GetIdSalleEnCours());
-	console.log("DEBUG : NOM SALLE EN COURS " + cManager.GetCopieCase().id);
-	
-}
-
 
 //try
 //{
 	
-	pManager.Load("52b9743673bc052408000001", callbackT);
+	
 	/*, function()
 			{
 				console.log("Fin pManager--------------------------");
@@ -221,7 +238,7 @@ callbackT = function()
 	
 //}catch(err)
 //{
-	console.log("PAS DE PERSO CORRESPONDANT A CET USER !");
+	//console.log("PAS DE PERSO CORRESPONDANT A CET USER !");
 //}
 
 

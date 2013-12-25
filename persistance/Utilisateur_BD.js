@@ -236,7 +236,8 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		}
 		else
 		{
-			callbackConnexion(1, req, res);
+			console.log("USER_BD : id de l'user = " + user[0].id);
+			callbackConnexion(user[0].id, req, res);
 		}
 	});
 },

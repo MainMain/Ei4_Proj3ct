@@ -160,7 +160,7 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                    	 armure	 = oItem_BD.GetItemById(perso[0].idArmureEquipee);
                     callbackGetPersonnageByIdUser(new oPersonnage(
                         perso[0].id, perso[0].ptSante, perso[0].ptSanteMax,
-                        perso[0].ptAction, perso[0].ptActionMax, perso[0].ptDeplacement+20,
+                        perso[0].ptAction, perso[0].ptActionMax, perso[0].ptDeplacement,
                         perso[0].ptDeplacementMax, perso[0].poidsMax, perso[0].gouleLimite,
                         perso[0].competence, perso[0].idSalleEnCours, arme,
                         armure, perso[0].sacADos));
