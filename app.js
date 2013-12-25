@@ -307,9 +307,9 @@ io.sockets.on('connection', function (socket)
 		
 		// recupere l'currentItem
 		var currentItem = iManager.GetItem(id_item);
-		if (currentItem == null)
+		if (currentItem == null || typeof(currentItem) === "undefined" )
 			{
-				console.log("SERVEUR : id item : " + id_item);
+				console.log("SERVEUR : erreur : id item : " + id_item);
 				return;
 			}
 		
@@ -370,8 +370,10 @@ io.sockets.on('connection', function (socket)
     
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM return
-     * poidsTotal si ok erreur : -1 si poids insufisant erreur : -2 si objet
-     * n'est pas dans la case / le sac erreur : -3 si autre
+     * poidsTotal si ok erreur : -1 si poids insufisant
+     * erreur : -2 si objet n'est pas dans la case / le sac 
+     * erreur : -3 si objet à déposer est équipé
+     * erreur : -4 si autre
      */
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
@@ -381,8 +383,14 @@ io.sockets.on('connection', function (socket)
 		//var cManager.GetCopieCase() = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
 
 		// recupere l'currentItem
-		var currentItem = iManager.GetItem(id_item)
+		var currentItem = iManager.GetItem(id_item);
 
+		if (currentItem == null || typeof(currentItem) === "undefined" )
+		{
+			console.log("SERVEUR : erreur : id item : " + id_item);
+			return;
+		}
+		
 		// si action de type ramasser
 		if (type == "RAMASSER") 
 		{
@@ -433,15 +441,27 @@ io.sockets.on('connection', function (socket)
 		{
 		// log
 		console.log("SERVER : Demande pour deposer l'currentItem : " + id_item + " - " + currentItem.nom);
-			// check si currentItem est bien dans le sac
+			
+		// check si l'objet à déposer n'est pas équipé
+		if (pManager.IsItemEquipee(currentItem) == true)
+			{
+				console.log("APP : Objet à déposer est équipé !! ");
+				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, -3);
+				return;
+			}
+		
+		
+		// check si currentItem est bien dans le sac
 		var existItemInSac = pManager.ExistItemInSac(currentItem);
-			// si l'item est bien dans le sac
+
+		// si l'item est bien dans le sac
 		if (existItemInSac == true) {
 			// ajout de l'item a la case
 			cManager.GetCopieCase().ajouterItem(currentItem);
 			
 			// suppression de l'item au perso
 			pManager.SupprimerDuSac(currentItem);
+			
 			// return au client
 			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManager.GetPoidsSac());
 			}

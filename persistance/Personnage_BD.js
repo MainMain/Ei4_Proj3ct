@@ -1,5 +1,5 @@
 // includes
-var oItem_BD = require('./Item_BD');
+var oItem_BD = require('./Item_BD'); // devrait disparaitre...
 var oPersonnage = require('../model/Object/Personnage');
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');

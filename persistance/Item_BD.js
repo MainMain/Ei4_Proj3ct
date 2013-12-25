@@ -158,7 +158,11 @@ Item_BD.Initialiser = function() {
 Item_BD.GetItemById = function(id_item)
 {
 	if (id_item < 17)
-		return this.listeItems[id_item];
+		{
+			console.log("ITEM_BD : Item trouvé dans la BD !");
+			return this.listeItems[id_item];
+		}
+		
 	else
 		{
 		console.log("ITEM_BD : WARNING -> return null");

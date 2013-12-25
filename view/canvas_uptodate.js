@@ -517,7 +517,10 @@ function initialize() {
         if (type == 'DEPOSER') {
             // erreur
             if (codeRetour == -3) {
-                txtObjet.text = ("Erreur inconnue");
+                txtObjet.text = ("Déséquiper l'objet avant de déposer !");
+            }
+            else if (codeRetour == -4) {
+                txtObjet.text = ("Erreur interne !");
             }
             // objet pas dans sac (! pas normal)
             else if (codeRetour == -2) {

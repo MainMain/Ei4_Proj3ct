@@ -123,7 +123,26 @@ var Personnage_Manager = (function () {
             GetCopiePerso : function()
             {
             	return this.personnage;
-            }
+            },
+            
+            IsItemEquipee : function(item)
+            {
+            	console.log("id item = " + item.id + " nom item = " + item.nom);
+            	if (item.type == 1)
+            		{
+            			if (this.personnage.armeEquipee == null) return false;
+            			else if (this.personnage.armeEquipee.id == item.id) return true;
+            			else return false;
+            		}
+            	else if (item.type == 2)
+        		{
+        			if (this.personnage.armureEquipee == null) return false;
+        			else if (this.personnage.armureEquipee.id == item.id) return true;
+        			else return false;
+        		}
+            	return false;
+
+            },
         };
         return Personnage_Manager;
 }());

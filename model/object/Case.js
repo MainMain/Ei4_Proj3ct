@@ -1,5 +1,3 @@
-// includes
-var oCase_BD = require('../../persistance/Case_BD');
 /**
  * Modélisation d'une case
  * 

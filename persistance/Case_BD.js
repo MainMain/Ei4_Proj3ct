@@ -1,6 +1,6 @@
 // includes
 var oCase = require('../model/object/Case');
-var oItem_BD = require('../persistance/Item_BD');
+var oItem_BD = require('../persistance/Item_BD'); // devra disparaitre a terme...
 
 /**
  * CASE : COMMUNICATION SERVEUR <-> BD

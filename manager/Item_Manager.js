@@ -22,7 +22,7 @@ var Item_Manager = (function() {
 
 		GetItem : function(idItem)
 		{
-			oItem_BD.GetItemById(id_item);
+			return oItem_BD.GetItemById(idItem);
 		},
 		
 		GetItemAleatoire : function()
