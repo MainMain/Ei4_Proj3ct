@@ -11,16 +11,20 @@ var server = http.createServer(app);
 
 // require model
 var oDatabase = require('./model/database');
+
 // require objets
-var oPersonnage = require('./model/object/Personnage');
+//var oPersonnage = require('./model/object/Personnage');
 //var oCarte = require('./model/object/Carte');
+
 //require persistance
 //var oCase_BD = require('./persistance/Case_BD');
-var oItem_BD = require('./persistance/Item_BD');
+//var oItem_BD = require('./persistance/Item_BD');
 //var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 //var oPersonnage_BD = require('./persistance/Personnage_BD');
+
 //require manager
 var oPersonnage_Manager = require('./manager/Personnage_Manager');
+var oItem_Manager = require('./manager/Item_Manager');
 var oCase_Manager = require('./manager/Case_Manager');
 
 var usersOnline = new Array();
@@ -188,18 +192,20 @@ var io = require('socket.io').listen(server, {
  * INITIALISATION DE LA BD
  * Comme il n'y a pas de BD pour le moment, on en simule une...
  */
-oItem_BD.Initialiser();
+//oItem_BD.Initialiser();
 
 
 /*
  * INITIALISATION DU PERSONNAGE ET DES MANAGERS
  */
+var iManager = new oItem_Manager();
 var pManager = new oPersonnage_Manager();
 var cManager;
 callbackT = function()
 {
 	cManager = new oCase_Manager(pManager.GetIdSalleEnCours());
 	console.log("DEBUG : NOM SALLE EN COURS " + cManager.GetCopieCase().id);
+	
 }
 
 
@@ -300,7 +306,7 @@ io.sockets.on('connection', function (socket)
 		console.log("*******************************************************");
 		
 		// recupere l'currentItem
-		var currentItem = oItem_BD.GetItemById(id_item);
+		var currentItem = iManager.GetItem(id_item);
 		if (currentItem == null)
 			{
 				console.log("SERVEUR : id item : " + id_item);
@@ -375,7 +381,7 @@ io.sockets.on('connection', function (socket)
 		//var cManager.GetCopieCase() = oCase_BD.GetCaseById(pManager.GetIdSalleEnCours());
 
 		// recupere l'currentItem
-		var currentItem = oItem_BD.GetItemById(id_item);
+		var currentItem = iManager.GetItem(id_item)
 
 		// si action de type ramasser
 		if (type == "RAMASSER") 
@@ -517,7 +523,7 @@ io.sockets.on('connection', function (socket)
     {
     	console.log("*******************************************************");
     	// recupere l'currentItem
-    	var currentItem = oItem_BD.GetItemById(id_item);
+    	var currentItem = iManager.GetItem(id_item);
 
     	// check si currentItem est bien dans le sac
   		var existItemInSac = pManager.ExistItemInSac(currentItem);
