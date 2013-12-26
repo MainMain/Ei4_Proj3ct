@@ -88,7 +88,12 @@ app.get('/jeu', function fonctionIndex(req, res)
 	if (typeof req.session.username === "undefined")
 	{
 		optionAccueil.errorLogin = "Vous devez vous connecter avant de jouer ! ";
-		res.render('accueil', optionAccueil);
+		/*
+		 * ABDOU : j'ai remplacé par "redirect", car sinon, l'url restait /jeu alors qu'on est sur l'accueil...
+		 */
+		
+		//res.render('accueil', optionAccueil);
+		res.redirect('/');
 	}
 	else
 	{
@@ -146,14 +151,11 @@ callbackConnexion = function(reponseConnexion, req, res)
 		// chargement de son personnage
 		iManager = new oItem_Manager();
 		pManager = new oPersonnage_Manager();
-		cManager;
-		callbackT = function()
-		{
-			cManager = new oCase_Manager(pManager.GetIdSalleEnCours());
-			console.log("DEBUG : NOM SALLE EN COURS " + cManager.GetCopieCase().id);
-		}
-
-		pManager.Load(reponseConnexion, callbackT);
+		pManager.Load(reponseConnexion, function()
+				{
+					cManager = new oCase_Manager(pManager.GetIdSalleEnCours());
+					console.log("DEBUG : NOM SALLE EN COURS " + cManager.GetCopieCase().id);
+				});
 	}
 	else if(reponseConnexion == -1)
 	{

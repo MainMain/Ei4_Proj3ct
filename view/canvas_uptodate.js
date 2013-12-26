@@ -576,7 +576,7 @@ function initialize() {
                 // Ajout de l'évenement a l'image
                 imgItem.addEventListener('mouseover', function (event) {
                     var currentItem = listeItemsCase[event.target.name];
-                    labelDescribeItem.text = ("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nDescription : " + currentItem.description);
+                    labelDescribeItem.text = ("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
                     stage.update();
                 }, false);
 
@@ -638,7 +638,7 @@ function initialize() {
             // Ajout de l'évenement a l'image
             imgItem.addEventListener('mouseover', function (event) {
                 var currentItem = listeItemsPerso[event.target.name];
-                labelDescribeItem.text = ("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nDescription : " + currentItem.description);
+                labelDescribeItem.text =  ("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
                 stage.update();
             }, false);
 

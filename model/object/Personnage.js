@@ -20,6 +20,11 @@ var Personnage = (function() {
 	Personnage.goulesMax;
 	Personnage.competence;
 	Personnage.idSalleEnCours;
+	Personnage.mode;			// 0 : oisif - 1 : fouille - 2 : cache - 3 : defense
+	Personnage.multiPtsAttaque;
+	Personnage.multiPtsDefense;
+	Personnage.multiProbaCache;
+    Personnage.multiProbaFouille;
 	Personnage.armeEquipee;
 	Personnage.armureEquipee;
 	Personnage.sacADos;
@@ -29,7 +34,8 @@ var Personnage = (function() {
 
 	// --- METHODES DE CLASSE ---
 	Personnage.build = function(ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours,
+			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours, mode,
+			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
 			armeEquipee, armureEquipee, sacADos) {
 		return new Personnage();
 
@@ -37,7 +43,8 @@ var Personnage = (function() {
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, goulesMax, competence, idSalleEnCours,
+			ptDeplacement, ptDeplacementMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
+			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
 			armeEquipee, armureEquipee, sacADos) {
 		// --- Attributs d'instance
 		this.id = id;
@@ -51,6 +58,11 @@ var Personnage = (function() {
 		this.goulesMax = goulesMax;
 		this.competence = competence;
 		this.idSalleEnCours = idSalleEnCours;
+		this.mode = mode;
+		this.multiPtsAttaque = multiPtsAttaque;
+		this.multiPtsDefense = multiPtsDefense;
+	    this.multiProbaCache = multiProbaCache;
+	    this.multiProbaFouille = multiProbaFouille;
 		this.armeEquipee = armeEquipee;
 		this.armureEquipee = armureEquipee;
 		this.sacADos = sacADos;

@@ -68,6 +68,8 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
             console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
             console.log("PERSONNAGE_BD : SetPersonnage() : idArme :  " + idArme);
             console.log("PERSONNAGE_BD : SetPersonnage() : idSalle :  " + personnageToSave.idSalleEnCours);
+            console.log("PERSONNAGE_BD : SetPersonnage() : multiProbaCache :  " + personnageToSave.multiProbaCache);
+            console.log("PERSONNAGE_BD : SetPersonnage() : multiProbaFouille :  " + personnageToSave.multiProbaFouille);
             PersonnageModel.update({
                     _id: personnageToSave.id
                 }, {
@@ -81,6 +83,11 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                     gouleLimite: personnageToSave.goulesMax,
                     competence: personnageToSave.competence,
                     idSalleEnCours: personnageToSave.idSalleEnCours,
+                    mode : personnageToSave.mode,
+            		multiPtsAttaque : personnageToSave.multiPtsAttaque,
+            		multiPtsDefense : personnageToSave.multiPtsDefense,
+            	    multiProbaCache : personnageToSave.multiProbaCache,
+            	    multiProbaFouille : personnageToSave.multiProbaFouille,
                     idArmeEquipee: idArme,
                     idArmureEquipee: idArmure,
                     sacADos: personnageToSave.sacADos,
@@ -162,8 +169,9 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                         perso[0].id, perso[0].ptSante, perso[0].ptSanteMax,
                         perso[0].ptAction, perso[0].ptActionMax, perso[0].ptDeplacement,
                         perso[0].ptDeplacementMax, perso[0].poidsMax, perso[0].gouleLimite,
-                        perso[0].competence, perso[0].idSalleEnCours, arme,
-                        armure, perso[0].sacADos));
+                        perso[0].competence, perso[0].idSalleEnCours, perso[0].mode, 
+                        perso[0].multiPtsAttaque,  perso[0].multiPtsDefense,  perso[0].multiProbaCache,  perso[0].multiProbaFouille, 
+                        arme,armure, perso[0].sacADos));
                 }
             });
         }
@@ -226,8 +234,13 @@ Personnage_BD.Creation = function (vie, action, deplacement, poids, goule, compe
     Perso.competence = competence;
     Perso.sacADos = new Array();
     Perso.idSalleEnCours = 0;
-    Perso.idArmeEquipee = 0;
-    Perso.idArmureEquipee = 0;
+    Perso.mode = 0;
+    Perso.multiPtsAttaque = 1;
+    Perso.multiPtsDefense = 1;
+    Perso.multiProbaCache = 1;
+    Perso.multiProbaFouille = 1;
+    Perso.idArmeEquipee = null;
+    Perso.idArmureEquipee = null;
 
     Perso.save(function (err) {
         if (err) {
