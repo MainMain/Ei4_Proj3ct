@@ -174,7 +174,21 @@ var Personnage = (function() {
 			console.log("PERSONNAGE : *********************************");
 		},
 
+		getValeurArme : function()
+		{
+			var att;
+			if (this.armeEquipee == null) att = 5;
+			else att = this.armeEquipee.valeur;
+			return (this.att * this.multiPtsAttaque);
+		},
 		
+		getValeurArmure : function()
+		{
+			var def;
+			if (this.armureEquipee == null) def = 0;
+			else def = this.armureEquipee.valeur;
+			return (this.def * this.multiPtsDefense);
+		},
 		/**
 		 * LECTURE
 		 * 
@@ -253,15 +267,19 @@ var Personnage = (function() {
 		utiliser : function(item) {
 			if (item.type < 4 || item.type > 6)
 				return -1;
-			switch (item.type) {
+			switch (item.type) 
+			{
 			case 4:
 				this.ptSante += item.valeur;
+				if(this.ptSante > this.ptSanteMax) this.ptSante = this.ptSanteMax;
 				break;
 			case 5:
 				this.ptActions += item.valeur;
+				if(this.ptActions > this.ptActionsMax) this.ptActions = this.ptActionsMax;
 				break;
 			case 6:
 				this.ptDeplacement += item.valeur;
+				if(this.ptDeplacement > this.ptDeplacementMax) this.ptDeplacement = this.ptDeplacementMax;
 				break;
 			}
 			// maj dans la BD

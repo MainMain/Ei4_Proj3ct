@@ -576,20 +576,191 @@ io.sockets.on('connection', function (socket)
     	var reponse = pManager.Utiliser(currentItem);
     		
     	// et selon le message renvoyé
-    	switch (reponse) {
-    	case 1:
+    	if (reponse == 1) 
+    	{
     		console.log("SERVEUR : utilisation de l'item ok");
     		socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, 1);
-    		break;
-    	case -1:
+    	}
+    	else{
     		console.log("SERVEUR : impossible d'utiliser cet item !");
     		socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, -1);
-    		break;
     	}
     	console.log("*******************************************************");
     });
     
+    /**************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
+	 * return 1 si ok
+	 * erreur : 0 si erreur interne
+	 * erreur : -4 si déja dans ce mode
+	 * erreur : -5 si blessé
+	 * erreur : -6 si changement de mode raté
+	 * erreur : -7 si blessé et changement de mode raté
+	 * 
+	 * ET return dégats infligés
+	 */
+    socket.on('PERSONNAGE_MODE_CS', function (mode) {
+        console.log("*******************************************************");
+        console.log("SERVEUR : chgt de mode demandé, de " + pManager.GetMode() + " -> " + mode);
+        // si déja dans ce mode
+        if (pManager.GetMode() == mode)
+        {
+            socket.emit('PERSONNAGE_MODE_SC', mode, -4);
+            return;
+        }
+        // si c'est un passage en mode défense
+        if (mode == 3) {
+            // changement de mode
+            pManager.ChangementMode(mode);
+
+            // réponse ok
+            socket.emit('PERSONNAGE_MODE_SC', mode, 1);
+            return;
+        }
+        // sinon :
+        // calcul si blessé par goules
+        var reponseDegatsParGoules = cManager.DegatsParGoules();
+        
+        // calcul si chgt mode réussi
+        var reponseChgtModeRate = cManager.ActionRateParGoules();
+        
+        // informe le manager de perso des dégats
+        var degatsInfliges = pManager.DiminuerSante(reponseDegatsParGoules);
+
+        // si action réussie
+        if (!reponseChgtModeRate) {
+            // chgt de mode du perso
+            pManager.ChangementMode(mode);
+
+            if (reponseDegatsParGoules > 0) {
+                // réponse blessé
+                socket.emit('PERSONNAGE_MODE_SC', mode, -1, degatsInfliges);
+                return;
+            } else {
+                // réponse ok
+                socket.emit('PERSONNAGE_MODE_SC', mode, 1);
+                return;
+            }
+        } else {
+            if (reponseDegatsParGoules > 0) {
+                // réponse chgt raté ET blessé
+                socket.emit('PERSONNAGE_MODE_SC', mode, -3, degatsInfliges);
+                return;
+            } else {
+                // réponse chgt raté
+                socket.emit('PERSONNAGE_MODE_SC', mode, -2);
+                return;
+            }
+        }
+        console.log("*******************************************************");
+    });
 	
+    /**************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR EFFECTUER UNE FOUILLE RAPIDE
+	 * 
+	 * Attention : cette méthode rafraichie automatiquement l'affichage !
+	 * 
+	 * return : 1 si ok
+	 * erreur : 0 si erreur interne
+	 * erreur : -1 si fouille rate
+	 * erreur : -2 si fouille rate et blessé
+	 * erreur : -5 si fouille ok mais blessé
+	 * erreur : -6 si action raté
+	 * erreur : -7 si blessé et action raté
+	 * 
+	 * ET return éventuels dégats infligés
+	 * 
+	 * ET return éventuel item découvert
+	 * 
+	 * ET return 1 si objet ajouté au sac, 0 si a la salle
+	 */
+    socket.on('ACTION_FOUILLE_RAPIDE_CS', function ()
+    {
+    	var res;
+    	
+    	 // calcul si blessé par goules
+        var reponseDegatsParGoules = cManager.DegatsParGoules();
+        
+        // calcul si chgt mode réussi
+        var reponseActionReussie = cManager.ActionRateParGoules();
+        
+        // calcul si la fouille reussie
+        var fouilleFrutueuse = cManager.Fouille();
+        
+        // retrait des points d'actions
+        pManager.FouilleRapide();
+        
+        // détermination de l'item trouvé
+        if (fouilleFrutueuse)
+        	{
+        		// tire un item aléatoire
+        		var item = iManager.GetItemAleatoire();
+        		
+        		// ajout au sac
+        		res = pManager.AjouterItemAuSac(item);
+        		
+        		// si la res est false, c'est que l'objet na pas pu être ajouté au sac
+        		// donc ajout à la salle
+        		if (!res) cManager.AjouterItem(item);
+        	}
+        
+        // DIFFERENTES REPONSES :
+        // si la fouille réussie et pas blessé
+        if (fouilleFrutueuse && reponseDegatsParGoules == 0)
+        {
+        socket.emit('ACTION_FOUILLE_RAPIDE_SC',  1, 0, item, res); 
+        socket.emit('INFO_PERSONNAGE_SC', pManager.GetCopiePerso());
+        return; 
+        }
+        // si la fouille réussie et blessé
+        if (fouilleFrutueuse && reponseDegatsParGoules > 0)
+        {
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, reponseDegatsParGoules, item, res);
+        	socket.emit('INFO_PERSONNAGE_SC', pManager.GetCopiePerso());
+        	return;
+        }
+        // si la fouille réussie mais rien trouvé et pas blessé
+        if (!fouilleFrutueuse && reponseDegatsParGoules == 0)
+        {
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -1, 0, null); 
+        	return;
+        }
+        // si la fouille réussie mais rien trouvé et blessé
+        if (!fouilleFrutueuse && reponseDegatsParGoules > 0)
+        {
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -2, reponseDegatsParGoules, null);
+        	socket.emit('INFO_PERSONNAGE_SC', pManager.GetCopiePerso());
+        	return;
+        }
+        // si la fouille rate à cause des goules et pas blessé
+        if (!reponseActionReussie && reponseDegatsParGoules == 0)
+        {
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -6, 0, null); 
+        	return;
+        }
+        // si la fouille rate à cause des goules et blessé
+        if (!reponseActionReussie && reponseDegatsParGoules > 0)
+        {
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -7, reponseDegatsParGoules, null);
+        	socket.emit('INFO_PERSONNAGE_SC', pManager.GetCopiePerso());
+        	return;
+        }
+    });
+    
+    /**************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UN AUTRE JOUEUR
+	 * return 1 si ok
+	 * erreur : 0 si erreur interne
+	 * erreur : -1 si joueur pu dans la salle
+	 * erreur : -2 si changement de mode raté
+	 * erreur : -3 si blessé et changement de mode raté
+	 * erreur : -4 si déja dans ce mode
+	 * 
+	 * ET return dégats infligés
+	 */
+    socket.on('ACTION_ATTAQUE_CS', function (pseudoCible) {
+    });
+
 	/*callbackConnexion = function(reponse)
 	{
 		console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");

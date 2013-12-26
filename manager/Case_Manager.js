@@ -72,7 +72,22 @@ var Case_Manager = (function() {
 		ChangeCase : function(idCase)
 		{
 			this.caseCourante = oCase_BD.GetCaseById(idCase);
-		}
+		},
+		
+		DegatsParGoules : function()
+		{
+			return 1;
+		},
+		
+		ActionRateParGoules : function()
+		{
+			return false;
+		},
+		
+		Fouille : function()
+		{
+			return true;
+		},
 
 	};
 	return Case_Manager;

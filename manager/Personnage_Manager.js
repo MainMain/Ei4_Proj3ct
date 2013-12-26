@@ -68,8 +68,9 @@ var Personnage_Manager = (function () {
 					// save dans la BD
 					oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
 					
-					return 1;
+					return true;
             	}
+            	return false;
             },
             
             SupprimerDuSac : function (item) {
@@ -79,9 +80,7 @@ var Personnage_Manager = (function () {
 				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
-            ExistItemInSac : function (currentItem) {
-            	return this.personnage.existItemInSac(currentItem);
-            },
+           
             
             SEquiper : function (currentItem) {
             	// equipe le perso
@@ -108,13 +107,50 @@ var Personnage_Manager = (function () {
     			return 1;
             },
             
-            Utiliser : function () {
+            Utiliser : function (item) {
+            	var res = this.personnage.utiliser(item);
+            	if (res == 1)
             	// save dans la BD
 				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+				
+				return res;
             },
+            
+            DiminuerSante : function (degats) {
+            	// diminution des degats grace à l'armure
+            	degats -= this.personnage.getValeurArmure();
+            	
+            	// si en mode defense
+            	if (this.personnage.mode == 3) degats * 0.75;
+            	
+            	if (degats > 0){
+            		this.personnage.ptSante -= degats;
+            		oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	}
+            	return degats;
+            },
+            
+            ChangementMode : function(mode)
+            {
+            	this.personnage.mode = mode;
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
+            FouilleRapide : function()
+            {
+            	this.personnage.ptActions -= 4 ;
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
+            /***************** LECTURE *****************/
+            ExistItemInSac : function (currentItem) {
+            	return this.personnage.existItemInSac(currentItem);
+            },
+            
             GetPoidsSac : function () {
             	return this.personnage.getPoidsSac();
             },
+            
             GetIdSalleEnCours : function () {
             	console.log("PM : id salle en cours : " + this.personnage.idSalleEnCours);
             	return this.personnage.idSalleEnCours;
@@ -142,6 +178,12 @@ var Personnage_Manager = (function () {
         		}
             	return false;
 
+            },
+            
+            
+            GetMode : function()
+            {
+            	return this.personnage.mode;
             },
         };
         return Personnage_Manager;

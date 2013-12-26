@@ -1,4 +1,5 @@
 // includes
+var oItem = require('../model/object/Item');
 var oItem_BD = require('./../persistance/Item_BD');
 
 /**
@@ -27,17 +28,31 @@ var Item_Manager = (function() {
 		
 		GetItemAleatoire : function()
 		{
+			// tirer un id aléatoire
+			var max = oItem_BD.NbrItemDifferents();
+			var id = Math.floor(Math.random() * max);
 			
+			// récupère item
+			var newItem = this.GetItem(id);
+			
+			// l'ajouter à la BD
+			this.AjouterItemAuJeu(newItem);
+			
+			// pour tests
+			var newItem = new oItem(16, 	"Item q", 		"qqqqq", 	1, 	0, 21,	"public/spritesheets/armes/16.png");
+			
+			// return l'item
+			return newItem;
 		},
 		
-		AjouterItemDuJeu : function(item)
+		AjouterItemAuJeu : function(item)
 		{
-			
+			//oItem_BD.NewItem(item, function(){});
 		},
 		
 		SupprimerItemDuJeu : function(item)
 		{ 
-			
+			oItem_BD.DestroyItem(item, function(){});
 		},
 
 	};

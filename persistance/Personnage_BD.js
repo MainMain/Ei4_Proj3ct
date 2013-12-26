@@ -66,10 +66,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                 idArmure = personnageToSave.armureEquipee.id;
 
             console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
-            console.log("PERSONNAGE_BD : SetPersonnage() : idArme :  " + idArme);
-            console.log("PERSONNAGE_BD : SetPersonnage() : idSalle :  " + personnageToSave.idSalleEnCours);
-            console.log("PERSONNAGE_BD : SetPersonnage() : multiProbaCache :  " + personnageToSave.multiProbaCache);
-            console.log("PERSONNAGE_BD : SetPersonnage() : multiProbaFouille :  " + personnageToSave.multiProbaFouille);
+       
             PersonnageModel.update({
                     _id: personnageToSave.id
                 }, {

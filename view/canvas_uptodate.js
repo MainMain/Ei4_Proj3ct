@@ -366,16 +366,21 @@ function initialize() {
 
     var BtnUtiliser = stage.addChild(new Button("Utiliser", ColorBtn));
     BtnUtiliser.y = BtnEvents.y + H;
-    /*BtnUtiliser.addEventListener('click', function(event) {
-		
-		});	*/
+    BtnUtiliser.addEventListener('click', function(event) {
+    	 if (idSelectedItemPerso == -1) {
+             alert("Selectionner Item avant de utiliser");
+         } else {
+             socket.emit('PERSONNAGE_USE_CS', idSelectedItemPerso);
+             idSelectedItemPerso = -1;
+         }
+		});	
 
     var BtnRamasseObjet = stage.addChild(new Button("Ramasser Item", ColorBtn));
     BtnRamasseObjet.y = BtnUtiliser.y + H;
     BtnRamasseObjet.addEventListener('click', function (event) {
         // exemple : ramsser l'objet d'id 1
         if (idSelectedItemCase == -1) {
-            alert("Selectionner Item avant de Ramasser")
+            alert("Selectionner Item avant de Ramasser");
         } else {
             socket.emit('INV_CASE_CS', "RAMASSER", idSelectedItemCase);
             idSelectedItemCase = -1;
@@ -386,7 +391,7 @@ function initialize() {
     BtnDeposer.y = BtnRamasseObjet.y + H;
     BtnDeposer.addEventListener('click', function (event) {
         if (idSelectedItemPerso == -1) {
-            alert("Selectionner Item avant de Déposer")
+            alert("Selectionner Item avant de Déposer");
         } else {
             socket.emit('INV_CASE_CS', "DEPOSER", idSelectedItemPerso);
             idSelectedItemPerso = -1;
@@ -427,21 +432,27 @@ function initialize() {
 
     var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
     BtnFouiller.y = BtnAttaquer.y + H;
-    /*BtnFouiller.addEventListener('click', function(event) {
-		
-		});	*/
+    BtnFouiller.addEventListener('click', function(event) {
+    	socket.emit('PERSONNAGE_MODE_CS', 1);
+		});	
 
     var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
     BtnCacher.y = BtnFouiller.y + H;
-    /*BtnCacher.addEventListener('click', function(event) {
-		
-		});	*/
+    BtnCacher.addEventListener('click', function(event) {
+    	socket.emit('PERSONNAGE_MODE_CS', 2);
+		});	
 
     var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
     BtnDefendre.y = BtnCacher.y + H;
-    /*BtnDefendre.addEventListener('click', function(event) {
-		
-		});	*/
+    BtnDefendre.addEventListener('click', function(event) {
+    	socket.emit('PERSONNAGE_MODE_CS', 3);
+		});	
+    
+    var BtnFouilleRapide = stage.addChild(new Button("Fouille rapide", ColorBtn));
+    BtnFouilleRapide.y = BtnDefendre.y + H;
+    BtnFouilleRapide.addEventListener('click', function(event) {
+    	socket.emit('ACTION_FOUILLE_RAPIDE_CS');
+		});	
 
     stage.update();
 
@@ -689,7 +700,6 @@ function initialize() {
     });
 
     /******************************************************************************************************************
-
      * RECEPTION DE LA REPONSE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM
      * Retours (voir server.js) :
      * return 1 si ok
@@ -788,10 +798,96 @@ function initialize() {
 
         }
         stage.update();
-
         // RAFRAICHISSEMENT DE LA CASE ET DU PERSO
     });
+    
+    
+    /********************************************************************************
+     * RECEPTION DE LA REPONSE POUR LE CHANGEMENT DE MODE
+     * return 1 si ok
+	 * erreur : 0 si erreur interne
+	 * erreur : -4 si déja dans ce mode
+	 * erreur : -5 si blessé
+	 * erreur : -6 si changement de mode raté
+	 * erreur : -7 si blessé et changement de mode raté
+     * 
+     * ET return dégats infligés
+     */
+     socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges) 
+     	{
+     		switch(reponse)
+     		{
+     			case 1: txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok !");
+     				break;
+     			case 0 : txtObjetEquipe.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
+     				break;
+     			case -4 : txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
+ 					break;
+     			case -5: txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok  mais blessé : " + degatsInfliges);
+     				break;
+     			case -6 : txtObjetEquipe.text = ("chgt pour mode " + mode +" raté !");
+     				break;
+     			case -7: txtObjetEquipe.text = ("chgt pour mode " + mode +" raté et blessé : "+ degatsInfliges);
+     				break;
+     		}
+     	});
 
+    /********************************************************************************
+     * RECEPTION DE LA REPONSE POUR LA FOUILLE RAPIDE
+     * 
+     * Attention : cette méthode rafraichie automatiquement l'affichage !
+     * 
+	 * return : 1 si ok
+	 * erreur : 0 si erreur interne
+	 * erreur : -1 si fouille rate
+	 * erreur : -2 si fouille rate et blessé
+	 * erreur : -5 si fouille ok mais blessé
+	 * erreur : -6 si action raté
+	 * erreur : -7 si blessé et action raté
+	 * 
+	 * ET return éventuels dégats infligés
+	 * 
+	 * ET return éventuels item découvert
+	 * 
+	 * ET return 1 si objet ajouté au sac, 0 si a la salle
+	 */
+      socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, degatsInfliges, item, degatsInfliges, ajouteAuSac) 
+      	{
+      		alert("reponse : " + reponse + "degats : " + degatsInfliges);
+      		/*
+      		switch(reponse)
+      		{
+      			case  1 : 
+      				txtObjetEquipe.text = "Fouille ok ! Objet découvert : " + item.nom;
+      				if (ajouteAuSac == 0) txtObjetEquipe.text += " ! Ajouté à la case";
+      				break;
+      			case  0 : 
+      				txtObjetEquipe.text = "Fouille ok ! Objet découvert : " + item.nom;
+      				txtObjetEquipe.text = ". Mais vous avez été blessé ! " + degatsInfliges;
+      				if (ajouteAuSac == 0) txtObjetEquipe.text += " ! Ajouté à la case";
+      				break;
+      			case -1 : 
+      				txtObjetEquipe.text = "Fouille raté";
+      				break;
+      			case -2 : 
+      				txtObjetEquipe.text = 
+      				break;
+      			case -4 :
+      				txtObjetEquipe.text = 
+  					break;
+      			case -5 : 
+      				txtObjetEquipe.text = 
+      				break;
+      			case -6 :
+      				txtObjetEquipe.text = 
+      				break;
+      			case -7: 
+      				txtObjetEquipe.text = 
+      				break;
+      		}*/
+      	});
+
+      
     stage.update();
 }
 
