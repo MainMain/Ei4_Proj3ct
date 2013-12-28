@@ -66,17 +66,29 @@ function initialize() {
 	var _labelItemCaseX = _ContItemCaseX;
 	var _labelItemCaseY = _ContItemCaseY - 20;
 	
+	// Placement label Mode Perso
+	var _labelModeX = _ContItemCaseX;
+	var _labelModeY = 10;
+	
+	// Placement label Arme
+	var _labelArmeX = _ContItemCaseX;
+	var _labelArmeY = _labelModeY + 20;
+	
+	// Placement label Armure
+	var _labelArmureX = _ContItemCaseX;
+	var _labelArmureY = _labelArmeY + 20;
+	
+	// Placement label ItemPerso
+	var _labelItemPersoX = _ContItemCaseX;
+	var _labelItemPersoY = _labelArmureY + 20;
+	
 	// Placement Conteneur ItemPerso
 	var _ContItemPersoX = _ContItemCaseX;
-	var _ContItemPersoY = 100;
+	var _ContItemPersoY = _labelItemPersoY + 20;
 	
 	// Dimension Conteneur ItemPerso
 	var _ContItemPersoH = 200;
 	var _ContItemPersoW = 200;
-	
-	// Placement label ItemPerso
-	var _labelItemPersoX = _ContItemPersoX;
-	var _labelItemPersoY = _ContItemPersoY - 20;
 	
 	// Placement label Points de vie
 	var _labelPtsVX = 160;
@@ -84,19 +96,23 @@ function initialize() {
 	
 	// Placement label Points d'action
 	var _labelPtsAX = _labelPtsVX;
-	var _labelPtsAY = _labelPtsVY + 35;
+	var _labelPtsAY = _labelPtsVY + 20;
 	
 	// Placement label Points de mouvements
 	var _labelPtsMX = _labelPtsVX;
-	var _labelPtsMY= _labelPtsAY + 35;
+	var _labelPtsMY= _labelPtsAY + 20;
 	
-	// Placement label Arme
-	var _labelArmeX = _labelItemPersoX ;
-	var _labelArmeY = 10;
+	// Placement label Points d'Attaque
+	var _labelPtsAtqX = _labelPtsVX;
+	var _labelPtsAtqY = _labelPtsMY + 20;
 	
-	// Placement label Armure
-	var _labelArmureX = _labelItemPersoX;
-	var _labelArmureY = _labelArmeY + 35;
+	// Placement label Points de Défense
+	var _labelPtsDefX = _labelPtsVX;
+	var _labelPtsDefY = _labelPtsAtqY +20;
+	
+	// Placement label Poids du Sac
+	var _labelPoidsSacX = _labelPtsVX;
+	var _labelPoidsSacY = _labelPtsDefY + 20; 
 	
 	// Placement label Description Item
 	var _labelDescribeItemX = 500;
@@ -210,7 +226,8 @@ function initialize() {
     // ******************************************
     
 	var txtSalle, txtObjet, txtCase, txtObjetEquipe, 
-	labelObjetCase,	labelInventaire, labelDescribeItem,
+	labelObjetCase,	labelInventaire, labelDescribeItem, labelMode,
+	labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
 	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille;
 	
 	labelObjetCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -231,6 +248,12 @@ function initialize() {
 	labelInventaire.x = _labelItemPersoX;
 	labelInventaire.y = _labelItemPersoY;
 	
+	labelMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelMode.lineHeight = _LineHeight;
+	labelMode.textBaseline = _TextBaseline;
+	labelMode.x = _labelModeX;
+	labelMode.y = _labelModeY;
+	
 	labelArme = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelArme.lineHeight = _LineHeight;
 	labelArme.textBaseline = _TextBaseline;
@@ -250,21 +273,36 @@ function initialize() {
 	labelPtsVie.textBaseline = _TextBaseline;
 	labelPtsVie.x = _labelPtsVX;
 	labelPtsVie.y = _labelPtsVY;
-	labelPtsVie.text="Points de vie :							?/?";
 	
 	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsAction.lineHeight = _LineHeight;
 	labelPtsAction.textBaseline = _TextBaseline;
 	labelPtsAction.x = _labelPtsAX;
 	labelPtsAction.y = _labelPtsAY;
-	labelPtsAction.text="Points d'action :	 			?/?";
 	
 	labelPtsMove = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsMove.lineHeight = _LineHeight;
 	labelPtsMove.textBaseline = _TextBaseline;
 	labelPtsMove.x = _labelPtsMX;
 	labelPtsMove.y = _labelPtsMY;
-	labelPtsMove.text="Points de mouvement : ?/?";
+	
+	labelPtsAtq = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPtsAtq.lineHeight = _LineHeight;
+	labelPtsAtq.textBaseline = _TextBaseline;
+	labelPtsAtq.x = _labelPtsAtqX;
+	labelPtsAtq.y = _labelPtsAtqY;
+	
+	labelPtsDef = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPtsDef.lineHeight = _LineHeight;
+	labelPtsDef.textBaseline = _TextBaseline;
+	labelPtsDef.x = _labelPtsDefX;
+	labelPtsDef.y = _labelPtsDefY;
+	
+	labelPoidsSac = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPoidsSac.lineHeight = _LineHeight;
+	labelPoidsSac.textBaseline = _TextBaseline;
+	labelPoidsSac.x = _labelPoidsSacX;
+	labelPoidsSac.y = _labelPoidsSacY;
 	
 	labelNbAlies = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelNbAlies.lineHeight = _LineHeight;
@@ -594,7 +632,6 @@ function initialize() {
 					SelectedItemCase=currentItem.id;
 					stage.update();
 					});
-				 
 				
 				//Placement de l'image et ajout au conteneur
 				//imgItem.image.onload = setImg(imgItem,200+(i+1)*30,50);
@@ -612,6 +649,18 @@ function initialize() {
 	 * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
 	 */
 	socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
+		
+		var PoidsSac=0;
+		
+		labelPtsVie.text=("Points de vie :							" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
+		labelPtsAction.text=("Points d'action :	 			" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
+		labelPtsMove.text=("Points de mouvement : " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
+		//labelMode.text=("Mode du Perso :" + currentPerso.mode + "");
+		labelMode.text=("Mode du Perso :" +  + "");
+		labelPtsAtq.text=("Points d'attaque :      " +  + "");
+		labelPtsDef.text=("Points de défense :     " +  + "");
+		
+		
 			labelInventaire.text="";
 			labelInventaire.text="Inventaire du perso :";
 	
@@ -626,6 +675,9 @@ function initialize() {
 				
 				// Ajout de l'item à la liste
 				listeItemsPerso.push(item);
+				
+				// Calcul du poids du sac
+				PoidsSac+=item.poids;
 				
 				// Ajout de l'image à l'ihm
 				var imgItem = new createjs.Bitmap(item.imageName);
@@ -659,6 +711,12 @@ function initialize() {
 				// Update l'ihm
 				stage.update();
 			}
+			
+			// Affichage label poids du sac
+			labelPoidsSac.text=("Poids du sac :        " + PoidsSac + "/" + currentPerso.poidsMax);
+			
+			// Update l'ihm
+			stage.update();
 		});
 	
 	/**************************************************************************************
@@ -684,7 +742,7 @@ function initialize() {
 				case 0 : 
 					txtObjetEquipe.text="";
 					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " raté : Item pas dans sac !");
-					alert("Equipement de l'item " + currentItem.id + " raté : Item pas dans sac !");
+					//alert("Equipement de l'item " + currentItem.id + " raté : Item pas dans sac !");
 					break;
 				case 1 : 
 					txtObjetEquipe.text="";
@@ -719,17 +777,17 @@ function initialize() {
 				case -1 : 
 					txtObjetEquipe.text="";
 					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
-					alert("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
+					//alert("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
 					break;
 				case -2 : 
 					txtObjetEquipe.text="";
 					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
-					alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
+					//alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
 					break;
 				case -3 : 
 					txtObjetEquipe.text="";
 					txtObjetEquipe.text=("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
-					alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
+					//alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
 					break;
 			}
 		} 
