@@ -110,9 +110,11 @@
 		</ul>
 	</nav> <!-- #main-navigation -->
 	
-			<div id="LogoutForm" class="logoutform">
-				<input type="submit" id="SubmitLogout" value="Retourner chez les vivants ?" align=right>
-			</div>
+			<form id="LogoutForm" class="logoutform" action="/" method=POST>
+				<input type=hidden name="_method" value="delete"/>
+				<div> Bonjour <%= username %></div>
+				<input type="submit" value="Retourner chez les vivants ?" align=right>
+			</form>
 
 			<div id="content" role="main" class="span12">
 

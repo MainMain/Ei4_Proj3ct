@@ -29,20 +29,21 @@ database.Initialiser = function() {
 	if (err) { throw err; }
 	});
 
+	/***** CREATION DU SCHEMA "UTILISATEUR" ****/
 	var UtilisateurSchema = new mongoose.Schema({		//creation de la structure d'un utilisateur
 		pseudo : String,
 		pass : String,
 		email : String,
-		presonnage : String,
+		personnage : String,
 		nbrMeurtres : Number,
 		nbrMeurtresCumule : Number,
 		nbrFoisTue : Number,
 		nbrFoisTueCumule : Number,
 		numEquipe : Number,
 	});
-	
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
 	
+	/***** CREATION DU SCHEMA "PERSONNAGE" ****/
 	var PersonnageSchema = new mongoose.Schema({
 		ptSante : Number,
 		ptSanteMax : Number,
@@ -52,15 +53,61 @@ database.Initialiser = function() {
 		ptDeplacementMax : Number,
 		poidsMax : Number,
 		gouleLimite : Number,
-		//idSalleEnCours : Schema.Types.ObjectId,
 		competence : String,
-		//idArmeEquipee : Schema.Types.ObjectId,
-		//idArmureEquipee : Schema.Types.ObjectId,
+		idSalleEnCours : Number,
+		mode : Number,
+		multiPtsAttaque : Number,
+		multiPtsDefense : Number,
+		multiProbaCache : Number,
+		multiProbaFouille : Number,
+		idArmeEquipee : Number,
+		idArmureEquipee : Number,
 		sacADos : Array,
+	});
+	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
 	
+	
+	
+
+	
+	/***** CREATION DU SCHEMA "CASE" ****/
+	var CaseSchema = new mongoose.Schema({
+		nom : String,
+		description : String,
+		probaObjet : Number,
+		probaCache : Number,
+		itemsAuSol : Array,
+		nbrGoules : Number,
+	});
+	CaseModel = mongoose.model('Case',CaseSchema); 
+	
+
+	//PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
+
+/***** CREATION DU SCHEMA "ITEM" ****/
+	/*var ItemSchema = new mongoose.Schema({
+		nom = String,
+		description = String,
+		poids = Number,
+		type = Number,
+		valeur = Number,
+		imageName = String,
 	});
 	
-	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
+	ItemModel = mongoose.model('Item',ItemSchema);
+	
+	var ItemBaseSchema = new mongoose.Schema({
+		nom = String,
+		description = String,
+		poids = Number,
+		type = Number,
+		valeur = Number,
+		imageName = String,
+		indice = Number,
+	});
+	
+	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
+*/
 	
 	console.log("Initialisation Database");
 },

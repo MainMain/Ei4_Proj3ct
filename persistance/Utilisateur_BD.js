@@ -1,7 +1,7 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-var oPersonnageDB = require('./Personnage_BD');
+var oPersonnageDB = require('../Persistance/Personnage_BD');
 var oUtilisateur = require('../model/object/Utilisateur');
 
 
@@ -20,35 +20,89 @@ function Utilisateur_BD() {
 
 /**
  * ENVOI UN UTILISATEUR POUR METTRE A JOUR CES PROPRIETES
- * 
+ * retourn -1 si l'utilisateur n'est pas trouvé
+ * retourn le nouvel utilisateur si tout est ok
  * @method SetUtilisateur
  */
-Utilisateur_BD.SetUtilisateur = function(utilisateurToSave) {
-	
+ 
+Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateur) {
+	var Utilisateurmodel = mongoose.model('Utilisateur'); 
+	Utilisateurmodel.find({_id : utilisateurToSave.id},function (err, NewUser)
+	{
+		if (err)
+		{
+			throw (err);
+		}
+		
+		if (typeof NewUser[0] === "undefined")
+		{
+			callbackSetUtilisateur(-1);	
+		}
+		else
+		{
+			NewUser[0].pseudo = Utilisateur.pseudo;
+			NewUser[0].pass = Utilisateur.email;
+			NewUser[0].email = Utilisateur.pass;
+			NewUser[0].personnage = Utilisateur.idPersonnage;
+			NewUser[0].nbrMeurtres = Utilisateur.nbrMeurtres;
+			NewUser[0].nbrMeurtresCumule = Utilisateur.nbrMeurtresCumule;
+			NewUser[0].nbrFoisTue = Utilisateur.nbrFoisTue;
+			NewUser[0].nbrFoisTueCumule = Utilisateur.nbrFoisTueCumule;
+			NewUser[0].numEquipe = Utilisateur.numEquipe;
+			
+			NewUser.save(function (err)
+					{
+						if (err)
+						{
+							throw err;
+						}
+						console.log('Mis a jour de l\'utilisateur!');
+						
+						callbackInscription(new oUtilisateur(
+							NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
+							NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
+							NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
+							NewUser.numEquipe,NewUser.personnage));
+					});
+			
+		}
+		
+		
+	});
 },
 
 /**
  * RENVOIE UN UTILISATEUR AVEC SON ID PASSE EN PARAMETRE
- * 
+ * retourn un utilisateur si ok
+ * retourn -1 l'utilisateur n'est pas trouvé
  * @method GetUtilisateur
  */
-Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
+Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 	
-	var Utilisateurmodel = mongoose.model('Utilisateur'); 
-	var queryU = Utilisateurmodel.find({_id : idUtilisateur});
-	
-	queryU.exec(function (err, NewUser) {
-	if (err)  throw err;
-	
-	return oUtilisateur(
-		NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-		NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-		NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-		NewUser.numEquipe,NewUser.personnage);
+	var Utilisateurmodel = mongoose.model('Utilisateur');
+		
+	Utilisateurmodel.find({_id : idUtilisateur},function (err, NewUser)
+	{
+		if (err)  
+		{
+			throw err;
+		}
+		
+		if (typeof NewUser[0] === "undefined")
+		{
+			callbackGetUtilisateur(-1);	
+		}
+		else
+		{
+			console.log("Appelle du callBack avec un utilisateur")
+			callbackGetUtilisateur( new oUtilisateur(
+				NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
+				NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
+				NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
+				NewUser.numEquipe,NewUser.personnage));
+		}
 	});
 	
-
-
 },
 
 /**
@@ -59,9 +113,8 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur) {
  * Renvoi -2 si email deja pris
  * @method Inscription
  */
-
  
-Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscription)
+Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callbackInscription)
 {
  	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
 	
@@ -125,17 +178,17 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
 			
 			if(sauvegarde == -1 || sauvegarde == -2)
 			{
-				callbackInscription(sauvegarde);
+				callbackInscription(sauvegarde, req, res);
 			}
 			else
 			{		
 				var PersonnageModel = mongoose.model('Personnage');
 				var NewPerso = new PersonnageModel();
 				
-				NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
+				NewPerso = oPersonnageDB.Creation(80,20,15,30,4,"voleur");
 				
-				console.log('BASE DE DONNEES : ID du perso cree' + NewPerso._id);
-				NewUser.presonnage = NewPerso._id;
+				console.log('BASE DE DONNEES : ID du perso cree ' + NewPerso._id);
+				NewUser.personnage = NewPerso._id;
 				
 				NewUser.save(function (err)
 				{
@@ -145,11 +198,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
 					}
 					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
 						
-					callbackInscription(new oUtilisateur(
-						NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-						NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-						NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-						NewUser.numEquipe,NewUser.personnage));
+					callbackInscription(1, req, res);
 				});
 			}
 		});
@@ -164,7 +213,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
  * @method Connexion
  */
  
- Utilisateur_BD.Connexion = function (pseudoU, passU, callbackConnexion)
+ Utilisateur_BD.Connexion = function (pseudoU, passU, req, res, callbackConnexion)
  {
 	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
 	
@@ -179,20 +228,24 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, callbackInscriptio
 		
 		if(typeof user[0] === "undefined")
 		{
-			callbackConnexion(-1);
+			callbackConnexion(-1, req, res);
 		}
 		else if(user[0].pass != passU)
 		{
-			callbackConnexion(-1);
+			callbackConnexion(-1, req, res);
 		}
 		else
 		{
-			callbackConnexion(1);
+			console.log("USER_BD : id de l'user = " + user[0].id);
+			callbackConnexion(user[0].id, req, res);
 		}
 	});
 },
  
- 
+Utilisateur_BD.test = function()
+{
+	console.log("COUCOU");
+},
  
 
  
