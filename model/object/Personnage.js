@@ -79,15 +79,24 @@ var Personnage = (function() {
 		 * return : 1 si ok 
 		 * erreur : -1 si déplacement impossible (pas de case dans la direction)
 		 * erreur : -2 si pas de pts mouvement
+		 * erreur : -3 si trop de goules
+		 * erreur : -4 si zone sure adverse
+		 * erreur : -6 si impossible à cause goules
+		 * 
+		 * ET dégats infligés
 		 * 
 		 * @method deplacement
 		 */
-		deplacement : function(direction) {
+		deplacement : function(direction, nombreGoules) {
 			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
 			
 			// si pu de pts de mouvement, on peut s'arreter là
 			if (this.ptDeplacement == 0)
 				return -2;
+			
+			// si trop de goules, on peut s'arreter là
+			if (nbrGoules > this.goulesMax)
+				return -3;
 			
         	// Vérification de la direction demandée
 			if (typeof direction !== 'string'

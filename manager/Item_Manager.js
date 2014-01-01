@@ -33,13 +33,19 @@ var Item_Manager = (function() {
 			var id = Math.floor(Math.random() * max);
 			
 			// récupère item
-			var newItem = this.GetItem(id);
+			var newItem;
+			this.GetItem(id, function(item)
+					{
+						// l'ajouter à la BD
+						this.AjouterItemAuJeu(newItem);
+						
+						newItem = item;
+						// pour tests
+						var newItem = new oItem(16, 	"Item q", 		"qqqqq", 	1, 	0, 21,	"public/spritesheets/armes/16.png");
+					
+					});
 			
-			// l'ajouter à la BD
-			this.AjouterItemAuJeu(newItem);
 			
-			// pour tests
-			var newItem = new oItem(16, 	"Item q", 		"qqqqq", 	1, 	0, 21,	"public/spritesheets/armes/16.png");
 			
 			// return l'item
 			return newItem;

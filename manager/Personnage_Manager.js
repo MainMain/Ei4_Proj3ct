@@ -48,10 +48,10 @@ var Personnage_Manager = (function () {
             	
             },
             
-            Deplacement : function (move) {
+            Deplacement : function (move, nbrGoules) {
             	// deplace le personnage
             	
-                var reponse = this.personnage.deplacement(move);
+                var reponse = this.personnage.deplacement(move, nbrGoules);
                 console.log("PMANAGER : deplacement reponse : " + reponse);
                 
                 //si le deplacement est ok, on enregistre
@@ -142,6 +142,19 @@ var Personnage_Manager = (function () {
             	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
+            PerteActionParGoule : function()
+            {
+            	this.personnage.ptActions -= 3;
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
+            PerteDeplacementParGoule : function()
+            {
+            	this.personnage.ptDeplacement -= 1;
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+        	
+        	
             /***************** LECTURE *****************/
             ExistItemInSac : function (currentItem) {
             	return this.personnage.existItemInSac(currentItem);
@@ -184,6 +197,13 @@ var Personnage_Manager = (function () {
             GetMode : function()
             {
             	return this.personnage.mode;
+            },
+            
+            GetDeplacementPossible : function(nbrGoules)
+            {
+    			// si trop de goules, on peut s'arreter là
+    			if (nbrGoules > this.personnage.goulesMax)
+    				return false;
             },
         };
         return Personnage_Manager;

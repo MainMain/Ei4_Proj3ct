@@ -79,14 +79,29 @@ var Case_Manager = (function() {
 			return 1;
 		},
 		
-		ActionRateParGoules : function()
+		ActionReussieParGoules : function()
 		{
-			return false;
+			return 0;
 		},
 		
 		Fouille : function()
 		{
 			return true;
+		},
+		
+		GetNombreGoules : function()
+		{
+			return this.caseCourante.nbrGoules();
+		},
+		
+		GetNombreAllies : function()
+		{
+			return 0;
+		},
+		
+		GetTestZoneSure : function(numEquipe)
+		{
+			return false;
 		},
 
 	};
