@@ -142,13 +142,13 @@ var Personnage_Manager = (function () {
             	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
-            PerteActionParGoule : function()
+            PerteActionParGoules : function()
             {
             	this.personnage.ptActions -= 3;
             	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
-            PerteDeplacementParGoule : function()
+            PerteDeplacementParGoules : function()
             {
             	this.personnage.ptDeplacement -= 1;
             	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);

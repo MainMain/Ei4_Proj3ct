@@ -26,6 +26,7 @@ var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 var oPersonnage_Manager = require('./manager/Personnage_Manager');
 var oItem_Manager = require('./manager/Item_Manager');
 var oCase_Manager = require('./manager/Case_Manager');
+var oUtilisateur_Manager = require('./manager/Utilisateur_Manager');
 
 var usersOnline = new Array();
 
@@ -57,6 +58,7 @@ app.use(express.session({secret: 'some secret key'}));
 var iManager;
 var pManager;
 var cManager;
+var uManager;
 
 var optionAccueil = {"username": null, "errorLogin": null, "InfoInscription": null, "usernameInscription": null}
 
@@ -151,6 +153,8 @@ callbackConnexion = function(reponseConnexion, req, res)
 		// chargement de son personnage
 		iManager = new oItem_Manager();
 		pManager = new oPersonnage_Manager();
+		uManager = new oUtilisateur_Manager();
+		uManager.Load(reponseConnexion);
 		pManager.Load(reponseConnexion, function()
 				{
 					cManager = new oCase_Manager(pManager.GetIdSalleEnCours());
@@ -287,6 +291,7 @@ io.sockets.on('connection', function (socket)
 		// test si pas zone sure adverse
 		if (cManager.GetTestZoneSure(uManager.GetNumEquipe()))
 			{
+				console.log("SERVEUR : ! déplacement vers zone sûre ennemie !");
 				socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
 				return;
 			}
@@ -296,15 +301,18 @@ io.sockets.on('connection', function (socket)
 		var nbrGoules = cManager.GetNombreGoules();
 		nbrGoules = nbrGoules - cManager.GetNombreAllies();
 		
-		if (pmanager.GetDeplacementPossible(nbrGoules) == false)
+		if (pManager.GetDeplacementPossible(nbrGoules) == false)
 			{
-				socket.emit('MOVE_PERSONNAGE_SC', -3, 0);
-				return;
+				console.log("SERVEUR : ! déplacement impossible : trop de goules! " + nbrGoules);
+				console.log("SERVEUR : ! suppresion de la réponse à cause des goules...");
+				//socket.emit('MOVE_PERSONNAGE_SC', -3, 0);
+				//return;
 			}
 		
     	// ********* algorithme de test de l'impact des goules *********
     	var restG = TestGoules();
     	console.log("degats ? " + restG["degats"]);
+    	console.log("actionOk ? " + restG["actionOk"]);
     	if (restG["actionOk"] == 0)
     		{
     			// log
@@ -315,11 +323,15 @@ io.sockets.on('connection', function (socket)
     			
     			// renvoi de la réponse
     			socket.emit('MOVE_PERSONNAGE_SC', -5, restG["degats"]); 
+    			return;
     		}
     	// ***************************************************************
 
         
         // déplacement du personnage
+    	//***************************************
+    	nbrGoules = 0;
+    	/*************************************/
 		var ansDeplacementOk = pManager.Deplacement(move, nbrGoules);
 		
 		// si le déplacement a réussi
@@ -776,15 +788,19 @@ io.sockets.on('connection', function (socket)
         var reponseDegatsParGoules = cManager.DegatsParGoules();
         
         // calcul si chgt mode réussi
-        var reponseActionReussie = cManager.ActionReussieParGoules();
-        
-        var a;
-        a["actionOk"] = reponseActionReussie;
-        //a["degats"] = reponseDegatsParGoules;
+        var reponseActionReussie = ! cManager.ActionRateeParGoules();
         
         // informe le manager de perso des dégats
         var degatsInfliges = pManager.DiminuerSante(reponseDegatsParGoules);
-        a["degats"] = degatsInfliges;
+
+        console.log("SERVEUR -> GOULES : degats par goules" + reponseDegatsParGoules);
+        console.log("SERVEUR -> GOULES : degats " + degatsInfliges);
+        console.log("SERVEUR -> GOULES : actionok " + reponseActionReussie);
+        
+        var a = {
+            "degats"	: degatsInfliges,
+            "actionOk" 	: reponseActionReussie,
+        };
         return a;
     }
     

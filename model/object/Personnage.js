@@ -87,7 +87,7 @@ var Personnage = (function() {
 		 * 
 		 * @method deplacement
 		 */
-		deplacement : function(direction, nombreGoules) {
+		deplacement : function(direction, nbrGoules) {
 			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
 			
 			// si pu de pts de mouvement, on peut s'arreter là

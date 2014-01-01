@@ -90,6 +90,7 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 		
 		if (typeof NewUser[0] === "undefined")
 		{
+			console.log("Get Utilisateur : undefined");
 			callbackGetUtilisateur(-1);	
 		}
 		else

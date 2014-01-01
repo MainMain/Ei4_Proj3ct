@@ -76,12 +76,19 @@ var Case_Manager = (function() {
 		
 		DegatsParGoules : function()
 		{
-			return 1;
+			var degatsGoules = Math.floor(Math.random() * 2);
+			var nbrGoulesAttaquantes = Math.floor(Math.random() * this.caseCourante.nbrGoules);
+			
+			return degatsGoules * nbrGoulesAttaquantes;
 		},
 		
-		ActionReussieParGoules : function()
+		ActionRateeParGoules : function()
 		{
-			return 0;
+			var chance = Math.floor(Math.random()  * 2);
+			if (chance >= 1)
+				return false;
+			else
+				return true;
 		},
 		
 		Fouille : function()
@@ -91,7 +98,7 @@ var Case_Manager = (function() {
 		
 		GetNombreGoules : function()
 		{
-			return this.caseCourante.nbrGoules();
+			return this.caseCourante.nbrGoules;
 		},
 		
 		GetNombreAllies : function()
