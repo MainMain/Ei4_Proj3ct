@@ -524,6 +524,9 @@ function initialize() {
         } else if (currentCase == -2) {
             txtSalle.text = "";
             txtSalle.text = ("Vous n'avez plus de points de mouvements !");
+        } else if (currentCase == -5) {
+            txtSalle.text = "";
+            txtSalle.text = ("Déplacement raté à cause des goules !");
         } else {
             socket.emit('INFO_CASE_CS');
             txtSalle.text = "";

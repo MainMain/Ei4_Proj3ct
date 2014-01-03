@@ -91,9 +91,11 @@ var Personnage = (function() {
 			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
 			
 			// si pu de pts de mouvement, on peut s'arreter là
-			if (this.ptDeplacement == 0)
+			if (this.ptDeplacement <= 0)
+				{
+					console.log("PERSONNAGE : pu de pts de déplacement !");
 				return -2;
-			
+				}
 			// si trop de goules, on peut s'arreter là
 			if (nbrGoules > this.goulesMax)
 				return -3;

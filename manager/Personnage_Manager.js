@@ -193,17 +193,28 @@ var Personnage_Manager = (function () {
 
             },
             
-            
             GetMode : function()
             {
             	return this.personnage.mode;
             },
             
-            GetDeplacementPossible : function(nbrGoules)
+            TestDeplacementPossible : function(nbrGoules)
             {
-    			// si trop de goules, on peut s'arreter là
+            	// si pu de PM
+            	if (this.personnage.ptDeplacement <= 0)
+    				return -2;
+            	
+            	// si trop de goules, on peut s'arreter là
     			if (nbrGoules > this.personnage.goulesMax)
-    				return false;
+    				return -3;
+    			
+    			//
+    			return 1;
+            },
+            
+            GetPtsDeplacement : function()
+            {
+            	return this.personnage.ptDeplacement;
             },
         };
         return Personnage_Manager;

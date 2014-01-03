@@ -288,25 +288,35 @@ io.sockets.on('connection', function (socket)
 		// log
 		console.log('SERVER : Déplacement du personnage demandé : ' + move);
 		
+		// -> calcul de goules
+		var nbrGoules = cManager.GetNombreGoules();
+		nbrGoules = nbrGoules - cManager.GetNombreAllies();
+		
+		// test si déplacement possible
+		var testDep = pManager.TestDeplacementPossible();
+		if (testDep != 1)
+			{
+				switch(testDep)
+				{
+					case -2 : // plus de PM
+						console.log('SERVER : DEBUG envoi deplacement impossible : pu de PM');
+						socket.emit('MOVE_PERSONNAGE_SC', -2, 0);
+						break;
+						
+					case -3 : // trop de goules
+						console.log('SERVER : DEBUG envoi deplacement impossible : trop de goules');
+						socket.emit('MOVE_PERSONNAGE_SC', -3, 0);
+						break;
+				}
+				return;
+			}
+		
 		// test si pas zone sure adverse
 		if (cManager.GetTestZoneSure(uManager.GetNumEquipe()))
 			{
 				console.log("SERVEUR : ! déplacement vers zone sûre ennemie !");
 				socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
 				return;
-			}
-		
-		// test si il y a trop de goules pour pouvoir se déplacer
-		// -> calcul de goules
-		var nbrGoules = cManager.GetNombreGoules();
-		nbrGoules = nbrGoules - cManager.GetNombreAllies();
-		
-		if (pManager.GetDeplacementPossible(nbrGoules) == false)
-			{
-				console.log("SERVEUR : ! déplacement impossible : trop de goules! " + nbrGoules);
-				console.log("SERVEUR : ! suppresion de la réponse à cause des goules...");
-				//socket.emit('MOVE_PERSONNAGE_SC', -3, 0);
-				//return;
 			}
 		
     	// ********* algorithme de test de l'impact des goules *********
@@ -328,12 +338,13 @@ io.sockets.on('connection', function (socket)
     	// ***************************************************************
 
         
-        // déplacement du personnage
+        // TEST déplacement du personnage
     	//***************************************
     	nbrGoules = 0;
     	/*************************************/
 		var ansDeplacementOk = pManager.Deplacement(move, nbrGoules);
 		
+		console.log("SERVEUR : code retour ans : " + ansDeplacementOk);
 		// si le déplacement a réussi
 		if (ansDeplacementOk == 1) 
 		{
@@ -356,18 +367,6 @@ io.sockets.on('connection', function (socket)
 		{
 			console.log('SERVER : DEBUG envoi deplacement impossible');
 			socket.emit('MOVE_PERSONNAGE_SC', -1, restG["degats"]);
-		}
-		// plus de pts de mouvement
-		else if (ansDeplacementOk == -2)
-		{
-			console.log('SERVER : DEBUG envoi deplacement impossible : pu de PM');
-			socket.emit('MOVE_PERSONNAGE_SC', -2, restG["degats"]);
-		}
-		// si trop de goules
-		else if (ansDeplacementOk == -3)
-		{
-			console.log('SERVER : DEBUG envoi deplacement impossible : trop de goules');
-			socket.emit('MOVE_PERSONNAGE_SC', -3, restG["degats"]);
 		}
 		console.log("*******************************************************");
     });
