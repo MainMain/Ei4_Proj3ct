@@ -199,7 +199,7 @@ Personnage_BD.GetPersonnageByIdPerso = function (idPersonnage, callbackGetPerson
         } else {
             callbackGetPersonnageByIdPerso(new oPersonnage(
                 perso._id, perso.ptSante, perso.ptSanteMax,
-                perso.ptAction, perso.ptActionMax, perso.ptDeplacement,
+                perso.ptAction, perso.ptActionMax, (perso.ptDeplacement+30),
                 perso.ptDeplacementMax, perso.poidsMax, perso.gouleLimite,
                 perso.competence, perso.idSalleEnCours, perso.idArmeEquipee,
                 perso.idArmureEquipee, perso.sacADos));
