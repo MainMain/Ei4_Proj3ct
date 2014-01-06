@@ -97,9 +97,9 @@
 	<nav class="main-navigation clearfix span12" role="navigation">
 		<h3 class="assistive-text">Menu principal</h3>
 		<ul>
-			<li class="current span2"><a href="/">Accueil</a></li>
+			<li class="span2"><a href="/">Accueil</a></li>
 			<li class="span2"><a href="regles">But du jeu</a></li>
-			<li class="span2">
+			<li class="current span2">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">
 					<li><a href="chat-equipe">Chat</a></li>
@@ -117,14 +117,25 @@
 			</form>
 
 			<div id="content" role="main" class="span12">
-
-				<h1 class="entry-title" align=center> Plateau de jeu </h1>
-
-				<!-- Canvas -->
-
-				<canvas id="myCanvas" width="740" height="640" style="border:1px solid #000000;">
-
-				</canvas>
+			
+				<% if(idEquipe == 0) { %>
+					<form name="formInitPerso" method="POST" action="/game">
+						<input type="hidden" name="_method" value="PUT">
+						<select name="Equipe">
+							<option value="1">Equipe 1</option>
+							<option value="2">Equipe 2</option>
+						</select>
+						<select name="Competence">
+							<option value="1">Brute (Dégats augmentés)</option>
+							<option value="2">Ninja (Probabilité de se cacher augmentée)</option>
+							<option value="3">Chasseur de trésor (Probabilité de fouille augmentée)</option>
+						</select>
+					</form>
+				<% } else { %>
+					<h1 class="entry-title" align=center> Plateau de jeu </h1>
+					<!-- Canvas -->
+					<canvas id="myCanvas" width="740" height="640" style="border:1px solid #000000;"></canvas>
+				<% } %>
 
 			</div>
 			<!-- #content -->
