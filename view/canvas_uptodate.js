@@ -12,6 +12,8 @@ var listeItemsPerso;
 var SelectedItemCase = -1;
 var SelectedItemPerso = -1;
 var SelectedItemEquip = -1;
+var PersoProbaCache=1;
+var PersoProbaFouille=1;
 
 function initialize() {
 
@@ -27,6 +29,29 @@ function initialize() {
 	// ******************************************
 	
 	var socket = io.connect('http://localhost:8080');
+	
+	// ************************************************
+    // * Récupération du canvas et création contexte **
+    // ************************************************
+	
+    canvasElement = document.getElementById("myCanvas");
+    stage = new createjs.Stage(canvasElement);
+    var w = stage.canvas.width;
+    var h = stage.canvas.height;
+    
+    // enabled mouse over / out events
+    stage.enableMouseOver(20);
+    context = canvasElement.getContext("2d");
+
+    // enable touch interactions if supported on the current device:
+    createjs.Touch.enable(stage);
+
+    // Teste la présence de HTML5 et de drag & drop
+    /*if (Modernizr.draganddrop) {
+    	
+    	} else {
+    	  alert("! Vous devez passez en HTML5 !");
+    	}*/
 	
 	// ******************************************
     // ** Réglages mise en forme (partie Design)*
@@ -44,7 +69,9 @@ function initialize() {
 	// Couleur des boutons
 	var ColorBtn="#9F0000";
 	var ColorPad="#313131";
-	
+	var ColorGreen="#008000";
+	var ColorRed="#9F0000";
+
 	// Police des labels
 	var PoliceLabel="14px monospace";
 	
@@ -159,46 +186,33 @@ function initialize() {
 	
 	// label.textBaseline
 	var _TextBaseline = "top";
-
-    //*********** Fin de la partie design **************
-    // ******************************************
 	
-	
-	
-	
-	
-	
-	// ************************************************
-    // * Récupération du canvas et création contexte **
-    // ************************************************
-	
-    canvasElement = document.getElementById("myCanvas");
-    stage = new createjs.Stage(canvasElement);
-    
-    // enabled mouse over / out events
-    stage.enableMouseOver(20);
-    context = canvasElement.getContext("2d");
-
-    // enable touch interactions if supported on the current device:
-    createjs.Touch.enable(stage);
-
-    // Teste la présence de HTML5 et de drag & drop
-    /*if (Modernizr.draganddrop) {
-    	
-    	} else {
-    	  alert("! Vous devez passez en HTML5 !");
-    	}*/
-
-    // application du background
+	 // application du background
     var background = new createjs.Bitmap("public/Background.jpg");
     background.image.onload = setImg(background, 0, 0);
 
     // insertion de la map
-    var map = new createjs.Bitmap("public/images/map.png");
-    map.image.onload = setImg(map, 170, 130);
+    var map = new createjs.Bitmap("public/map/0-0_1.png");
+    	// Placement de la map
+			var _MapX = w/2 - map.image.width/2;
+			var _MapY = h/2 - map.image.height/2;
+    map.image.onload = setImg(map, _MapX, _MapY);
+    
+    // insertion du Perso
+    var imgPerso = new createjs.Bitmap("public/persos/avt1_fr1.png");
+    	// Placement du perso
+    		var _PersoX = w/2 - imgPerso.image.width/2;
+    		var _PersoY = h/2 - imgPerso.image.height/2;
+    imgPerso.image.onload = setImg(imgPerso, _PersoX, _PersoY);
+
+    //*********** Fin de la partie design **************
+    // ******************************************
+
+	
+    
 
 
- // ******************************************
+    // ******************************************
     // ** creation des conteneurs               *
     // ******************************************
 
@@ -320,35 +334,30 @@ function initialize() {
 	labelNbAlies.textBaseline = _TextBaseline;
 	labelNbAlies.x = _labelNbAliesX;
 	labelNbAlies.y = _labelNbAliesY;
-	labelNbAlies.text="Aliés dans la salle : ?";
 	
 	labelNbEnnemis = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelNbEnnemis.lineHeight = _LineHeight;
 	labelNbEnnemis.textBaseline = _TextBaseline;
 	labelNbEnnemis.x = _labelNbEnnemisX;
 	labelNbEnnemis.y = _labelNbEnnemisY;
-	labelNbEnnemis.text="Ennemis dans la salle : ?";
 	
 	labelNbGoules = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelNbGoules.lineHeight = _LineHeight;
 	labelNbGoules.textBaseline = _TextBaseline;
 	labelNbGoules.x = _labelNbGoulesX;
 	labelNbGoules.y = _labelNbGoulesY;
-	labelNbGoules.text="Goules dans la salle : ?";
 	
 	labelProbaCache = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelProbaCache.lineHeight = _LineHeight;
 	labelProbaCache.textBaseline = _TextBaseline;
 	labelProbaCache.x = _labelProbaCacheX;
 	labelProbaCache.y = _labelProbaCacheY;
-	labelProbaCache.text="Proba de Cache : ? %";
 	
 	labelProbaFouille = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelProbaFouille.lineHeight = _LineHeight;
 	labelProbaFouille.textBaseline = _TextBaseline;
 	labelProbaFouille.x = _labelProbaFouilleX;
 	labelProbaFouille.y = _labelProbaFouilleY;
-	labelProbaFouille.text="Proba de Trouver item : ? %";
 	
 	txtSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtSalle.lineHeight = _LineHeight;
@@ -479,34 +488,41 @@ function initialize() {
 		
 		});	*/
 
-    var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
+    // Boutons Ajoutés dans INFO_PERSO en fonction du mode
+    
+   /* var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
     BtnFouiller.y = BtnAttaquer.y + H;
     BtnFouiller.addEventListener('click', function(event) {
     	socket.emit('PERSONNAGE_MODE_CS', 1);
+    	 socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
     var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
     BtnCacher.y = BtnFouiller.y + H;
     BtnCacher.addEventListener('click', function(event) {
     	socket.emit('PERSONNAGE_MODE_CS', 2);
+    	 socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
     var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
     BtnDefendre.y = BtnCacher.y + H;
     BtnDefendre.addEventListener('click', function(event) {
     	socket.emit('PERSONNAGE_MODE_CS', 3);
-		});	
+    	 socket.emit('INFO_PERSONNAGE_CS');
+		});	*/
     
     var BtnFouilleRapide = stage.addChild(new Button("Fouille rapide", ColorBtn));
-    BtnFouilleRapide.y = BtnDefendre.y + H;
+    //BtnFouilleRapide.y = BtnDefendre.y + H;
+    BtnFouilleRapide.y = BtnAttaquer.y + 3*H;
     BtnFouilleRapide.addEventListener('click', function(event) {
     	socket.emit('ACTION_FOUILLE_RAPIDE_CS');
 		});	
 
     stage.update();
 
-    BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = BtnFouiller.x = BtnCacher.x = BtnDefendre.x = AbsBtn;
-
+    //BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = BtnFouiller.x = BtnCacher.x = BtnDefendre.x = AbsBtn;
+    BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = AbsBtn;
+    
     // ******************************************
     // *********** INITIALISATION ***************
     // ******************************************
@@ -622,17 +638,29 @@ function initialize() {
      	{
      		switch(reponse)
      		{
-     			case 1: txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok !");
+     			case 1: 
+     				txtObjetEquipe.text = "";
+     				txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok !");
      				break;
-     			case 0 : txtObjetEquipe.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
+     			case 0 : 
+     				txtObjetEquipe.text = "";
+     				txtObjetEquipe.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
      				break;
-     			case -4 : txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
+     			case -4 : 
+     				txtObjetEquipe.text = "";
+     				txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
  					break;
-     			case -5: txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok  mais blessé : " + degatsInfliges);
+     			case -5: 
+     				txtObjetEquipe.text = "";
+     				txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok  mais blessé : " + degatsInfliges);
      				break;
-     			case -6 : txtObjetEquipe.text = ("chgt pour mode " + mode +" raté !");
+     			case -6 : 
+     				txtObjetEquipe.text = "";
+     				txtObjetEquipe.text = ("chgt pour mode " + mode +" raté !");
      				break;
-     			case -7: txtObjetEquipe.text = ("chgt pour mode " + mode +" raté et blessé : "+ degatsInfliges);
+     			case -7: 
+     				txtObjetEquipe.text = "";
+     				txtObjetEquipe.text = ("chgt pour mode " + mode +" raté et blessé : "+ degatsInfliges);
      				break;
      		}
      	});
@@ -643,6 +671,7 @@ function initialize() {
       * @method INFO_CASE_SC
       */
 	socket.on('INFO_CASE_SC', function(currentCase) {
+		
 		if (currentCase == "ERREUR_CASE")
 		{
 			//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
@@ -650,6 +679,19 @@ function initialize() {
 			txtCase.text=("CLIENT :: nom case = " + "ERREUR_CASE");
 		}
 		else {
+			
+			var ProbCache, ProbFouille;
+			ProbCache=(currentCase.probaCache * PersoProbaCache);
+			// PROBLEME : probaObjet est un texte "mini salle"...
+			ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
+			
+			labelNbAlies.text=("Aliés dans la salle : " + + "");
+			labelNbEnnemis.text=("Ennemis dans la salle : " + + "");
+			labelNbGoules.text=("Goules dans la salle : " + currentCase.nbrGoules + "");
+			labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
+			labelProbaFouille.text=("Proba de Trouver item : " + ProbFouille + "");
+			
+			
 			labelObjetCase.text="";
 			labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
 			
@@ -784,14 +826,131 @@ function initialize() {
 		
 		var PoidsSac=0;
 		
+		PersoProbaCache=currentPerso.multiProbaCache;
+		PersoProbaFouille=currentPerso.multiProbaFouille;
+		
+		// Où récupérer les valeurs des items ??
+		//var PointsAttaque = currentPerso.multiPtsAttaque * (currentPerso.idArmeEquipee + currentPerso.idArmureEquipee) ;
+		//var PointsDefense = currentPerso.multiPtsDefense * (currentPerso.idArmeEquipee + currentPerso.idArmureEquipee) ;
+		//
+		
 		labelPtsVie.text=("Points de vie :							" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 		labelPtsAction.text=("Points d'action :	 			" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 		labelPtsMove.text=("Points de mouvement : " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
-		labelMode.text=("Mode du Perso :" + currentPerso.mode + "");
-		labelMode.text=("Mode du Perso :" +  + "");
-		labelPtsAtq.text=("Points d'attaque :      " +  + "");
-		labelPtsDef.text=("Points de défense :     " +  + "");
+		labelPtsAtq.text=("Points d'attaque :      " + + "");
+		labelPtsDef.text=("Points de défense :     " + + "");
 		
+		//labelPtsAtq.text=("Points d'attaque :      " + PointsAttaque + "");
+		//labelPtsDef.text=("Points de défense :     " + PointsDefense + "");
+		
+		stage.removeChild(BtnFouiller, BtnCacher, BtnDefendre);
+		
+		switch(currentPerso.mode)
+			{
+				case 0 :  labelMode.text=("");
+					
+					var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorRed));
+				    BtnFouiller.y = BtnAttaquer.y + H;
+				    BtnFouiller.addEventListener('click', function(event) {
+				    	socket.emit('PERSONNAGE_MODE_CS', 1);
+				    	 socket.emit('INFO_PERSONNAGE_CS');
+						});	
+	
+				    var BtnCacher = stage.addChild(new Button("Mode Caché", ColorRed));
+				    BtnCacher.y = BtnFouiller.y + H;
+				    BtnCacher.addEventListener('click', function(event) {
+				    	socket.emit('PERSONNAGE_MODE_CS', 2);
+				    	 socket.emit('INFO_PERSONNAGE_CS');
+						});	
+	
+				    var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorRed));
+				    BtnDefendre.y = BtnCacher.y + H;
+				    BtnDefendre.addEventListener('click', function(event) {
+				    	socket.emit('PERSONNAGE_MODE_CS', 3);
+				    	 socket.emit('INFO_PERSONNAGE_CS');
+						});
+					break;
+					
+				case 1 :  labelMode.text="";
+					labelMode.text=("Mode Fouille activé");
+					
+					 var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
+					    BtnFouiller.y = BtnAttaquer.y + H;
+					    BtnFouiller.addEventListener('click', function(event) {
+					    	socket.emit('PERSONNAGE_MODE_CS', 1);
+					    	 socket.emit('INFO_PERSONNAGE_CS');
+							});	
+					    
+					 var BtnCacher = stage.addChild(new Button("Mode Caché", ColorRed));
+					    BtnCacher.y = BtnFouiller.y + H;
+					    BtnCacher.addEventListener('click', function(event) {
+					    	socket.emit('PERSONNAGE_MODE_CS', 2);
+					    	 socket.emit('INFO_PERSONNAGE_CS');
+							});	
+					    		
+					 var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorRed));
+					    BtnDefendre.y = BtnCacher.y + H;
+					    BtnDefendre.addEventListener('click', function(event) {
+					    	socket.emit('PERSONNAGE_MODE_CS', 3);
+					    	 socket.emit('INFO_PERSONNAGE_CS');
+							});	
+					break;
+					
+				case 2 :  
+					labelMode.text="";
+					labelMode.text=("Mode Caché activé");
+					
+					var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorRed));
+				    BtnFouiller.y = BtnAttaquer.y + H;
+				    BtnFouiller.addEventListener('click', function(event) {
+				    	socket.emit('PERSONNAGE_MODE_CS', 1);
+				    	 socket.emit('INFO_PERSONNAGE_CS');
+						});	
+				    
+					var BtnCacher = stage.addChild(new Button("Mode Caché", ColorGreen));
+				    BtnCacher.y = BtnFouiller.y + H;
+				    BtnCacher.addEventListener('click', function(event) {
+				    	socket.emit('PERSONNAGE_MODE_CS', 2);
+				    	 socket.emit('INFO_PERSONNAGE_CS');
+						});	
+				    
+				    var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorRed));
+				    BtnDefendre.y = BtnCacher.y + H;
+				    BtnDefendre.addEventListener('click', function(event) {
+				    	socket.emit('PERSONNAGE_MODE_CS', 3);
+				    	 socket.emit('INFO_PERSONNAGE_CS');
+						});
+					
+					break;
+					
+				case 3 :  
+					labelMode.text="";
+					labelMode.text=("Mode Défense activé");
+					
+					var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorRed));
+				    BtnFouiller.y = BtnAttaquer.y + H;
+				    BtnFouiller.addEventListener('click', function(event) {
+				    	socket.emit('PERSONNAGE_MODE_CS', 1);
+				    	 socket.emit('INFO_PERSONNAGE_CS');
+						});	
+	
+				    var BtnCacher = stage.addChild(new Button("Mode Caché", ColorRed));
+				    BtnCacher.y = BtnFouiller.y + H;
+				    BtnCacher.addEventListener('click', function(event) {
+				    	socket.emit('PERSONNAGE_MODE_CS', 2);
+				    	 socket.emit('INFO_PERSONNAGE_CS');
+						});	
+					
+					 var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorGreen));
+					    BtnDefendre.y = BtnCacher.y + H;
+					    BtnDefendre.addEventListener('click', function(event) {
+					    	socket.emit('PERSONNAGE_MODE_CS', 3);
+					    	 socket.emit('INFO_PERSONNAGE_CS');
+							});	
+					
+					break;
+					
+			}
 		
 		labelInventaire.text="";
 		labelInventaire.text="Inventaire du perso :";
@@ -831,7 +990,6 @@ function initialize() {
 					},false);
 				
 				imgItem.addEventListener("click", function(event){
-					alert("test");
 					var currentItem = listeItemsPerso[event.target.name];
 					SelectedItemPerso=currentItem.id;
 					stage.update();
