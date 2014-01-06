@@ -72,7 +72,44 @@ var Case_Manager = (function() {
 		ChangeCase : function(idCase)
 		{
 			this.caseCourante = oCase_BD.GetCaseById(idCase);
-		}
+		},
+		
+		DegatsParGoules : function()
+		{
+			var degatsGoules = Math.floor(Math.random() * 2);
+			var nbrGoulesAttaquantes = Math.floor(Math.random() * this.caseCourante.nbrGoules);
+			
+			return degatsGoules * nbrGoulesAttaquantes;
+		},
+		
+		ActionRateeParGoules : function()
+		{
+			var chance = Math.floor(Math.random()  * 2);
+			if (chance >= 1)
+				return false;
+			else
+				return true;
+		},
+		
+		Fouille : function()
+		{
+			return true;
+		},
+		
+		GetNombreGoules : function()
+		{
+			return this.caseCourante.nbrGoules;
+		},
+		
+		GetNombreAllies : function()
+		{
+			return 0;
+		},
+		
+		GetTestZoneSure : function(numEquipe)
+		{
+			return false;
+		},
 
 	};
 	return Case_Manager;

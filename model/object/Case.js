@@ -12,24 +12,25 @@ var Case = (function() {
 	Case.description;
 	Case.probaObjet;
 	Case.probaCache;
-	Case.objetsAuSol;
+	//Case.objetsAuSol;
 	Case.nbrGoules;
 	Case.listeItem;
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	Case.build = function(id, nom, probaObjet, probaCache, objetsAuSol,
-			nbrGoules) {
-		return new Case(id, nom, probaObjet, probaCache, objetsAuSol, nbrGoules);
+	Case.build = function(id, nom, description, probaObjet, probaCache,
+			nbrGoules, listeItem) {
+		return new Case(id, nom, description, probaObjet, probaCache,
+			nbrGoules, listeItem);
 	};
 
 	// --- METHODES DE CLASSE ---
-	function Case(id, nom, probaObjet, probaCache, objetsAuSol, nbrGoules,
-			listeItem) {
+	function Case(id, nom, description, probaObjet, probaCache,
+			nbrGoules, listeItem) {
 		this.id = id;
 		this.nom = nom;
+		this.description = description;
 		this.probaObjet = probaObjet;
 		this.probaCache = probaCache;
-		this.objetsAuSol = objetsAuSol;
 		this.nbrGoules = nbrGoules;
 		this.listeItem = listeItem;
 	}

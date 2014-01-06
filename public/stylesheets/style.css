@@ -90,7 +90,7 @@ textarea {
 }
 body {
   margin: 0;
-  font-size: 15px;
+  font-size: 18px;
   line-height: 1.6;
   /* Page width */
 
@@ -107,6 +107,7 @@ body {
   /* Fallback background image */
   
   font-family: "JackLantern BB";
+/*	font-family: "calibri";*/
 }
 /**
  * The selection color
@@ -175,6 +176,12 @@ h1 small {
 h2 {
   font-size: 24px;
   letter-spacing: -1px;
+   color : #7A0B0A;
+}
+h3 {
+  font-size: 22px;
+  letter-spacing: 0px;
+   color : #7A0B0A;
 }
 h4 {
   border-bottom: 1px solid #ededed;

@@ -60,6 +60,7 @@
 		<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
 		<script type="text/javascript" src="/view/Button.js"></script>
 		<script type="text/javascript" src="/view/ButtonMove.js"></script>
+		<script type="text/javascript" src="/view/ButtonPad.js"></script>
 		<script type="text/javascript" src="/view/canvas_uptodate.js"></script>
 
 		<!-- Load Open Sans and Merriweather from Google Fonts
@@ -117,7 +118,6 @@
 			</form>
 
 			<div id="content" role="main" class="span12">
-			
 				<% if(idEquipe == 0) { %>
 					<form name="formInitPerso" method="POST" action="/game">
 						<input type="hidden" name="_method" value="PUT">
@@ -134,9 +134,10 @@
 				<% } else { %>
 					<h1 class="entry-title" align=center> Plateau de jeu </h1>
 					<!-- Canvas -->
-					<canvas id="myCanvas" width="740" height="640" style="border:1px solid #000000;"></canvas>
+					<canvas id="myCanvas" width="1100" height="620" style="border:1px solid #000000;">
+					
+					</canvas>
 				<% } %>
-
 			</div>
 			<!-- #content -->
 

@@ -48,10 +48,10 @@ var Personnage_Manager = (function () {
             	
             },
             
-            Deplacement : function (move) {
+            Deplacement : function (move, nbrGoules) {
             	// deplace le personnage
             	
-                var reponse = this.personnage.deplacement(move);
+                var reponse = this.personnage.deplacement(move, nbrGoules);
                 console.log("PMANAGER : deplacement reponse : " + reponse);
                 
                 //si le deplacement est ok, on enregistre
@@ -68,8 +68,9 @@ var Personnage_Manager = (function () {
 					// save dans la BD
 					oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
 					
-					return 1;
+					return true;
             	}
+            	return false;
             },
             
             SupprimerDuSac : function (item) {
@@ -79,9 +80,7 @@ var Personnage_Manager = (function () {
 				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
-            ExistItemInSac : function (currentItem) {
-            	return this.personnage.existItemInSac(currentItem);
-            },
+           
             
             SEquiper : function (currentItem) {
             	// equipe le perso
@@ -108,13 +107,63 @@ var Personnage_Manager = (function () {
     			return 1;
             },
             
-            Utiliser : function () {
+            Utiliser : function (item) {
+            	var res = this.personnage.utiliser(item);
+            	if (res == 1)
             	// save dans la BD
 				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+				
+				return res;
             },
+            
+            DiminuerSante : function (degats) {
+            	// diminution des degats grace à l'armure
+            	degats -= this.personnage.getValeurArmure();
+            	
+            	// si en mode defense
+            	if (this.personnage.mode == 3) degats * 0.75;
+            	
+            	if (degats > 0){
+            		this.personnage.ptSante -= degats;
+            		oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	}
+            	return degats;
+            },
+            
+            ChangementMode : function(mode)
+            {
+            	this.personnage.mode = mode;
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
+            FouilleRapide : function()
+            {
+            	this.personnage.ptActions -= 4 ;
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
+            PerteActionParGoules : function()
+            {
+            	this.personnage.ptActions -= 3;
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
+            PerteDeplacementParGoules : function()
+            {
+            	this.personnage.ptDeplacement -= 1;
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+        	
+        	
+            /***************** LECTURE *****************/
+            ExistItemInSac : function (currentItem) {
+            	return this.personnage.existItemInSac(currentItem);
+            },
+            
             GetPoidsSac : function () {
             	return this.personnage.getPoidsSac();
             },
+            
             GetIdSalleEnCours : function () {
             	console.log("PM : id salle en cours : " + this.personnage.idSalleEnCours);
             	return this.personnage.idSalleEnCours;
@@ -142,6 +191,30 @@ var Personnage_Manager = (function () {
         		}
             	return false;
 
+            },
+            
+            GetMode : function()
+            {
+            	return this.personnage.mode;
+            },
+            
+            TestDeplacementPossible : function(nbrGoules)
+            {
+            	// si pu de PM
+            	if (this.personnage.ptDeplacement <= 0)
+    				return -2;
+            	
+            	// si trop de goules, on peut s'arreter là
+    			if (nbrGoules > this.personnage.goulesMax)
+    				return -3;
+    			
+    			//
+    			return 1;
+            },
+            
+            GetPtsDeplacement : function()
+            {
+            	return this.personnage.ptDeplacement;
             },
         };
         return Personnage_Manager;

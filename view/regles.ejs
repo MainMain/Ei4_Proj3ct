@@ -3,123 +3,267 @@
 <!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js ie8"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<head>
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+	<!--<![endif]-->
+	<head>
 
-	<meta charset="utf-8">
+		<meta charset="utf-8">
 
-	<!-- Always force latest IE rendering engine & Chrome Frame -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<!-- Always force latest IE rendering engine & Chrome Frame -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<!-- Put your title here! -->
-	<title>Accueil</title>
+		<!-- Put your title here! -->
+		<title>Accueil</title>
 
-	<meta name="description" content="">
+		<meta name="description" content="">
 
-	 <!-- Mobile viewport optimized: h5bp.com/viewport -->
-	<meta name="viewport" content="width=device-width">
+		<!-- Mobile viewport optimized: h5bp.com/viewport -->
+		<meta name="viewport" content="width=device-width">
 
-	<link href="/public/stylesheets/style.css" rel="stylesheet">
+		<link href="/public/stylesheets/style.css" rel="stylesheet">
 
-	<!-- Load Open Sans and Merriweather from Google Fonts
+		<!-- Load Open Sans and Merriweather from Google Fonts
 		For optimal performance, customize it to load the styles you need:
 		http://goo.gl/QufgJ
-	-->
-	<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
+		-->
+		<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
 
-	<!-- All JavaScript at the bottom, except for Modernizr
+		<!-- All JavaScript at the bottom, except for Modernizr
 		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
 		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-	<script src="/view/js/modernizr-2.6.1.min.js"></script>
-</head>
+		<script src="/view/js/modernizr-2.6.1.min.js"></script>
+	</head>
 
-<body>
+	<body>
 
-	<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
-	<!--[if lt IE 8]>
+		<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
+		<!--[if lt IE 8]>
 		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
-	<![endif]-->
+		<![endif]-->
 
-	<header id="master-header" class="clearfix" role="banner">
+		<header id="master-header" class="clearfix" role="banner">
 
-		<hgroup>
-			<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
-			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
-		</hgroup>
+			<hgroup>
+				<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
+				<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
+			</hgroup>
 
-	</header> <!-- #master-header -->
+		</header>
+		<!-- #master-header -->
 
-<div id="main" class="row clearfix">
+		<div id="main" class="row clearfix">
 
-	<!-- Main navigation -->
-	<nav class="main-navigation clearfix span12" role="navigation">
-		<h3 class="assistive-text">Menu principal</h3>
-		<ul>
-			<li class="current span2"><a href="/">Accueil</a></li>
-			<li class="span2"><a href="regles">But du jeu</a></li>
-			<li class="span2">
-				<a href="jeu">Jeu</a>
-				<ul class="sub-menu">
-					<li><a href="chat-equipe">Chat</a></li>
+			<!-- Main navigation -->
+			<nav class="main-navigation clearfix span12" role="navigation">
+				<h3 class="assistive-text">Menu principal</h3>
+				<ul>
+					<li class="current span2">
+						<a href="/">Accueil</a>
+					</li>
+					<li class="span2">
+						<a href="regles">But du jeu</a>
+					</li>
+					<li class="span2">
+						<a href="jeu">Jeu</a>
+						<ul class="sub-menu">
+							<li>
+								<a href="chat-equipe">Chat</a>
+							</li>
+						</ul>
+					</li>
+					<li class="span2">
+						<a href="classement">Classement</a>
+					</li>
+					<li class="span2">
+						<a href="chat-general">Chat</a>
+					</li>
 				</ul>
-			</li>
-			<li class="span2"><a href="classement">Classement</a></li>
-			<li class="span2"><a href="chat-general">Chat</a></li>
-		</ul>
-	</nav> <!-- #main-navigation -->
+			</nav>
+			<!-- #main-navigation -->
 
-<div id="content" role="main" class="span12">
+			<div id="content" role="main" class="span12">
 
-	<h1 class="entry-title" align=center>
-		Règles du jeu
-	</h1>
-	
-	<!-- Règles -->
-	<p>
-		- Le personnage dispose d'un quota de points d'actions par jour (non cumulable).<br>
-		- Certaines actions coûtent des points d'actions au joueur.<br>
-		- Certaines actions coûtent des points d'actions au joueur.<br> 
-		- Le personnage se déplace de cases en cases sans utiliser de points d'actions, mais points de déplacement.<br>
-		- Chaque case est différente. Une description sera affichée afin que le joueur s'imagine la salle <br>
-			(nombre de meubles, description visuelle, probabilité d'être découvert quand il est caché, probabilité de découvrir un objet). <br>
-		- Le personnage dispose d'une barre de vie. Si elle tombe à zéro...<br>
-		- Le personnage peut avoir plusieurs objets sur lui (mais en nombre limité par leurs poids).<br>
-		- Le personnage peut attaquer d'autres joueurs de l'équipe adverse.<br>
-		- Le personnage peut se mettre en "fouille". Dès lors, il à une probabilité de trouver un objet toutes les heures. <br>
-			La probabilité varie en fonction de la salle. Le joueur peut se déconnecter tout en restant en "fouille".<br>
-		- Chaque équipe dispose d'une salle "de repos", où le joueur est intouchable.<br>
-		- Les personnages  ne peuvent aller dans les salles de repos adverses.<br>
-		- Chaque jour, des goules apparaissent aléatoirement dans les salles (sauf salles de repos).<br>
-		- Plus le temps passe, plus les goules seront nombreux.<br>
-		- Un joueur peut se cacher dans une salle. La probabilité qu'il soit découvert lors d'une fouille dépend des objets de la salle.<br>
-		- Les statistiques du joueur ne seront pas affichées, ainsi que son pseudo (mais visibilité dans l'équipe).<br>
-		- Le joueur peut s'équiper d'une arme d'attaque pour augmenter ses points de dégâts.<br>
-		- Le joueur peut s'équiper d'une armure pour augmenter ses points de défense.<br>
-		- Si un joueur se cache dans une salle occupé par des goules, il a une probabilité de se faire attaquer avant de se cacher et une autre probabilité (plus faible) que sa cache rate.<br>
-		- Les déplacements dans une case peuvent être limités à cause du nombre important de goules.<br>
-	<p>
-	<!-- #Règles -->
-</div> <!-- #content -->
+				<h1 class="entry-title" align=center> Règles de jeu </h1>
 
-</div> <!-- #main -->
+				
+				
+				<!-- Règles -->
+				<!-- ***************** PRESENTATION DU JEU ************** -->
+				<h1>Présentation du jeu</h1>
+				<p>
+					Ei4_Projet est un jeu collaboratif par navigateur où deux équipes s’affront sur des sessions de 30 jours dans un
+					 gigantesque complexe abandonné. Le travail d’équipe est maitre si chacun veut espérer s’en sortir vivant et 
+					 prendre le dessus sur l’autre équipe. Partant chacun d’une zone sûre commune à chaque équipe, les joueurs 
+					 devront explorer et se battre pour leur survie… 
+				</p>
+				<!-- Colonne de gauche -->
+				<div style="width:50%; float:left; padding:10px;">
+					<h3>But du jeu</h3>
+					<p>
+						A la fin de la session, l’équipe qui aura remporté le plus de points gagne la partie. 
+						Il y a deux façons de gagner des points :
+						<br>•	Soit en accumulant des objets de défenses nécessaires à la fortification de la zone sûre.
+						<br>•	Soit en battant en duel les membres de l’équipe adversaire, qui permet de leurs voler 10 points.
+					</p>
+					<h3>Points de personnage</h3>
+					<p>
+						Chaque personnage du jeu dispo de différent type de points :
+						<br>•	Les points de vie : chaque attaque portée sur le joueur (ou riposte) diminue les points de vie du joueur.
+						 S’il tombe à zéro, le joueur tombe dans le coma. Il perdra alors son inventaire et sera automatiquement rapatrié
+						  à sa zone sûre.
+						<br>•	Les points de déplacement : chaque déplacement coûte un point de déplacement. Dès que celui-ci est égal à 
+						zéro, il ne peut plus se déplacer.
+						<br>•	Les points d’actions : ils conditions le nombre d’actions que le joueur peut effectuer, certaines étant 
+						plus coûteuses que d’autres. Si le joueur en à plus, il ne pourra effectuer aucune action.
+					</p>
+				</div>
 
-	<footer id="footer">
-	
-	</footer> <!-- #footer -->
+				<!-- Colonne de droite -->
+				<div style="width:50%; float:left; padding:10px;">
+					<h3>Principe de déplacement</h3>
+					<p>
+						Les déplacements se font de salles en salles, et chaque déplacement coûtant donc un point de déplacement. 
+						Chaque salle pouvant accueillir un nombre illimité de joueur. Ces salles contiennent également un « inventaire », 
+						qui est l’ensemble des items dans la salle (qui peuvent être ramassées par un joueur).
+					</p>
+					<h3>Inventaire</h3>
+					<p>
+						Chaque joueur possède un inventaire, limité par un poids max (chaque objet étant plus ou moins lourd).
+						 De cet inventaire, il peut s’équiper d’une arme et / ou d’une armure, et utiliser certains objets, 
+						 augmentant un de ses points de personnage énoncé plus haut.
+					</p>
+				</div>
+				<!--  ********** ACTION DE JEU ************-->
+				<hr>
+				<h1>Actions de jeu</h1>
+								<p> les actions permettent bla blabla blabla blabla blabla blabla blabla blabla bla
+					bla blabla blabla blabla blabla blabla blabla blabla bla </p>
+				<!-- Colonne de gauche -->
+				<div style="width:50%; float:left;background-color:#E6AB81; padding:10px;">
+					<h3>Déplacement</h3>
+					<p>
+						test test test test test test test test test test test test test test test test test test test test test test
+					</p>
+					<h3>Fouille rapide</h3>
+					<p>
+						test test test test test test test test test test test test test test test test test test test test test test
+					</p>
+				</div>
 
-	<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')</script>
-		
+				<!-- Colonne de droite -->
+				<div style="width:50%; float:left; background-color:#7ca8de; padding:10px;">
+					<h3>Ramasser - deposer</h3>
+					<p>
+						test test test test test test test test test test test test test test test test test test test test test test
+					</p>
+					<h3>Gestion de l'équipement</h3>
+					<p>
+						test test test test test test test test test test test test test test test test test test test test test test
+					</p>
+					<h3>Attaquer</h3>
+					<p>
+						test test test test test test test test test test test test test test test test test test test test test test
+					</p>
+				</div>
+				<!-- ********** ACTIONS PASSIVES *************** -->
+				<br>
+				<br>
+				<h1>Actions passives (modes)</h1>
+				<p> les modes permettent bla blabla blabla blabla blabla blabla blabla blabla bla
+					bla blabla blabla blabla blabla blabla blabla blabla bla </p>
+				<!-- Colonne de gauche -->
+				<div style="width:50%; float:left;background-color:#E6AB81; padding:10px;">
+					<h3>Fouiller</h3>
+					<p>
+						test test test test test test test test test test test test test test test test test test test test test test
+					</p>
+					<h3>Se cacher</h3>
+					<p>
+						test test test test test test test test test test test test test test test test test test test test test test
+					</p>
+				</div>
+
+				<!-- Colonne de droite -->
+				<div style="width:50%; float:left; background-color:#7ca8de; padding:10px;">
+					<h3>En défense</h3>
+					<p>
+						test test test test test test test test test test test test test test test test test test test test test test
+					</p>
+					
+				</div>
+
+				<p>
+					- Le personnage dispose d'un quota de points d'actions par jour (non cumulable).
+					<br>
+					- Certaines actions coûtent des points d'actions au joueur.
+					<br>
+					- Certaines actions coûtent des points d'actions au joueur.
+					<br>
+					- Le personnage se déplace de cases en cases sans utiliser de points d'actions, mais points de déplacement.
+					<br>
+					- Chaque case est différente. Une description sera affichée afin que le joueur s'imagine la salle
+					<br>
+					(nombre de meubles, description visuelle, probabilité d'être découvert quand il est caché, probabilité de découvrir un objet).
+					<br>
+					- Le personnage dispose d'une barre de vie. Si elle tombe à zéro...
+					<br>
+					- Le personnage peut avoir plusieurs objets sur lui (mais en nombre limité par leurs poids).
+					<br>
+					- Le personnage peut attaquer d'autres joueurs de l'équipe adverse.
+					<br>
+					- Le personnage peut se mettre en "fouille". Dès lors, il à une probabilité de trouver un objet toutes les heures.
+					<br>
+					La probabilité varie en fonction de la salle. Le joueur peut se déconnecter tout en restant en "fouille".
+					<br>
+					- Chaque équipe dispose d'une salle "de repos", où le joueur est intouchable.
+					<br>
+					- Les personnages  ne peuvent aller dans les salles de repos adverses.
+					<br>
+					- Chaque jour, des goules apparaissent aléatoirement dans les salles (sauf salles de repos).
+					<br>
+					- Plus le temps passe, plus les goules seront nombreux.
+					<br>
+					- Un joueur peut se cacher dans une salle. La probabilité qu'il soit découvert lors d'une fouille dépend des objets de la salle.
+					<br>
+					- Les statistiques du joueur ne seront pas affichées, ainsi que son pseudo (mais visibilité dans l'équipe).
+					<br>
+					- Le joueur peut s'équiper d'une arme d'attaque pour augmenter ses points de dégâts.
+					<br>
+					- Le joueur peut s'équiper d'une armure pour augmenter ses points de défense.
+					<br>
+					- Si un joueur se cache dans une salle occupé par des goules, il a une probabilité de se faire attaquer avant de se cacher et une autre probabilité (plus faible) que sa cache rate.
+					<br>
+					- Les déplacements dans une case peuvent être limités à cause du nombre important de goules.
+					<br>
+				<p>
+
+					<!-- #Règles -->
+			</div>
+			<!-- #content -->
+
+		</div>
+		<!-- #main -->
+
+		<footer id="footer">
+
+		</footer>
+		<!-- #footer -->
+
+		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script>
+			window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')
+		</script>
+
 		<!-- Script nécessaires pour le serveur -->
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
-
 
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			var socket = io.connect('http://localhost:8080');
 
 		</script>
-</body>
+	</body>
 </html>
