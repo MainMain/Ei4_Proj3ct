@@ -870,20 +870,36 @@ function initialize() {
 	socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		
 		var PoidsSac=0;
+		var PointsAttaque, PointsDefense;
 		
 		PersoProbaCache=currentPerso.multiProbaCache;
 		PersoProbaFouille=currentPerso.multiProbaFouille;
 		
 		// Où récupérer les valeurs des items ??
-		//var PointsAttaque = currentPerso.multiPtsAttaque * (currentPerso.idArmeEquipee + currentPerso.idArmureEquipee) ;
-		//var PointsDefense = currentPerso.multiPtsDefense * (currentPerso.idArmeEquipee + currentPerso.idArmureEquipee) ;
-		//
+		if(currentPerso.armeEquipee != null)
+		{
+			PointsAttaque = currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
+		}
+		else
+		{
+			PointsAttaque = currentPerso.multiPtsAttaque ;
+		}
+		
+		if(currentPerso.armureEquipee != null)
+		{
+			PointsDefense = currentPerso.multiPtsDefense * currentPerso.armureEquipee.valeur ;
+			
+		}
+		else
+		{
+			PointsDefense = currentPerso.multiPtsDefense;
+		}
 		
 		labelPtsVie.text=("Points de vie :							" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 		labelPtsAction.text=("Points d'action :	 			" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 		labelPtsMove.text=("Points de mouvement : " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
-		labelPtsAtq.text=("Points d'attaque :      " + + "");
-		labelPtsDef.text=("Points de défense :     " + + "");
+		labelPtsAtq.text=("Points d'attaque :      " + PointsAttaque + "");
+		labelPtsDef.text=("Points de défense :     " + PointsDefense + "");
 		
 		//labelPtsAtq.text=("Points d'attaque :      " + PointsAttaque + "");
 		//labelPtsDef.text=("Points de défense :     " + PointsDefense + "");
