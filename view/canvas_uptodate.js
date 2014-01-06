@@ -64,7 +64,7 @@ function initialize() {
 	var AbsBtn=0;
 	
 	// Ordonnée des boutons
-	var OrdBtn=110;
+	var OrdBtn=0;
 	
 	// Couleur des boutons
 	var ColorBtn="#9F0000";
@@ -77,13 +77,21 @@ function initialize() {
 	
 	// Couleur des labels
 	var ColorLabel = "#fff";
+	var ColorLabelBonus = "#f00";
+	
+	// Espacement des labels en X
+	var _EspaceLabelX = 300;
 	
 	// Espacement items
 	var SpaceItem = 30;
 	
+	// Placement label Mode Perso
+	var _labelModeX = 440 + _EspaceLabelX;
+	var _labelModeY = 0;
+	
 	// Placement Conteneur ItemCase
-	var _ContItemCaseX = 500;
-	var _ContItemCaseY = 550;
+	var _ContItemCaseX = _labelModeX;
+	var _ContItemCaseY = h-75;
 	
 	// Dimension Conteneur ItemCase
 	var _ContItemCaseH = 200;
@@ -93,24 +101,20 @@ function initialize() {
 	var _labelItemCaseX = _ContItemCaseX;
 	var _labelItemCaseY = _ContItemCaseY - 20;
 	
-	// Placement label Mode Perso
-	var _labelModeX = _ContItemCaseX;
-	var _labelModeY = 10;
-	
 	// Placement label Arme
-	var _labelArmeX = _ContItemCaseX;
+	var _labelArmeX = _labelModeX;
 	var _labelArmeY = _labelModeY + 20;
 	
 	// Placement label Armure
-	var _labelArmureX = _ContItemCaseX;
+	var _labelArmureX = _labelModeX;
 	var _labelArmureY = _labelArmeY + 20;
 	
 	// Placement label ItemPerso
-	var _labelItemPersoX = _ContItemCaseX;
+	var _labelItemPersoX = _labelModeX;
 	var _labelItemPersoY = _labelArmureY + 20;
 	
 	// Placement Conteneur ItemPerso
-	var _ContItemPersoX = _ContItemCaseX;
+	var _ContItemPersoX = _labelModeX;
 	var _ContItemPersoY = _labelItemPersoY + 20;
 	
 	// Dimension Conteneur ItemPerso
@@ -119,7 +123,7 @@ function initialize() {
 	
 	// Placement label Points de vie
 	var _labelPtsVX = 160;
-	var _labelPtsVY = 10;
+	var _labelPtsVY = 0;
 	
 	// Placement label Points d'action
 	var _labelPtsAX = _labelPtsVX;
@@ -130,23 +134,23 @@ function initialize() {
 	var _labelPtsMY= _labelPtsAY + 20;
 	
 	// Placement label Points d'Attaque
-	var _labelPtsAtqX = _labelPtsVX;
-	var _labelPtsAtqY = _labelPtsMY + 20;
+	var _labelPtsAtqX = _labelPtsVX + _EspaceLabelX;
+	var _labelPtsAtqY = _labelPtsVY;
 	
 	// Placement label Points de Défense
-	var _labelPtsDefX = _labelPtsVX;
+	var _labelPtsDefX = _labelPtsVX + _EspaceLabelX;
 	var _labelPtsDefY = _labelPtsAtqY +20;
 	
 	// Placement label Poids du Sac
-	var _labelPoidsSacX = _labelPtsVX;
+	var _labelPoidsSacX = _labelPtsVX + _EspaceLabelX;
 	var _labelPoidsSacY = _labelPtsDefY + 20; 
 	
 	// Placement label Description Item
-	var _labelDescribeItemX = 500;
-	var _labelDescribeItemY = 600;
+	var _labelDescribeItemX = _ContItemCaseX;
+	var _labelDescribeItemY = _ContItemCaseY + 30;
 	
 	// Placement label Nombre d'Aliés
-	var _labelNbAliesX = 270;
+	var _labelNbAliesX = 350;
 	var _labelNbAliesY = _labelItemCaseY;
 	
 	// Placement label Nombre d'Ennemis
@@ -166,7 +170,7 @@ function initialize() {
 	var _labelProbaFouilleY = _labelNbAliesY + 80;
 	
 	// Placement Conteneur ArmeEquip
-	var _ContArmeX = _ContItemCaseX + 120;
+	var _ContArmeX = _labelArmeX + 120;
 	var _ContArmeY = _labelArmeY;
 	
 	// Dimension Conteneur ArmeEquip
@@ -174,7 +178,7 @@ function initialize() {
 	var _ContArmeW = 200;
 	
 	// Placement Conteneur ArmureEquip
-	var _ContArmureX = _ContItemCaseX + 135;
+	var _ContArmureX = _labelArmureX + 135;
 	var _ContArmureY = _labelArmureY;
 	
 	// Dimension Conteneur ArmureEquip
@@ -199,7 +203,7 @@ function initialize() {
     map.image.onload = setImg(map, _MapX, _MapY);
     
     // insertion du Perso
-    var imgPerso = new createjs.Bitmap("public/persos/avt1_fr1.png");
+    var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
     	// Placement du perso
     		var _PersoX = w/2 - imgPerso.image.width/2;
     		var _PersoY = h/2 - imgPerso.image.height/2;
@@ -207,10 +211,6 @@ function initialize() {
 
     //*********** Fin de la partie design **************
     // ******************************************
-
-	
-    
-
 
     // ******************************************
     // ** creation des conteneurs               *
@@ -243,8 +243,6 @@ function initialize() {
     contArmure.height = _ContArmureH;
     contArmure.width = _ContArmureW;
     stage.addChild(contArmure);
-	
-	
 
     // ******************************************
     //********** Déclaration des labels *******
@@ -253,6 +251,7 @@ function initialize() {
 	var txtSalle, txtObjet, txtCase, txtObjetEquipe, 
 	labelObjetCase,	labelInventaire, labelDescribeItem, labelMode,
 	labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
+	labelBonusArme, labelBonusArmure,
 	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille;
 	
 	labelObjetCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -292,6 +291,18 @@ function initialize() {
 	labelArmure.x = _labelArmureX;
 	labelArmure.y = _labelArmureY;
 	labelArmure.text="Armure équipée : ";
+	
+	labelBonusArme = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabelBonus));
+	labelBonusArme.lineHeight = _LineHeight;
+	labelBonusArme.textBaseline = _TextBaseline;
+	labelBonusArme.x = _labelArmeX + 10 + 5*SpaceItem;
+	labelBonusArme.y = _labelArmeY;
+	
+	labelBonusArmure = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabelBonus));
+	labelBonusArmure.lineHeight = _LineHeight;
+	labelBonusArmure.textBaseline = _TextBaseline;
+	labelBonusArmure.x = _labelArmureX + 10 + 5*SpaceItem;
+	labelBonusArmure.y = _labelArmureY;
 	
 	labelPtsVie = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsVie.lineHeight = _LineHeight;
@@ -363,7 +374,7 @@ function initialize() {
 	txtSalle.lineHeight = _LineHeight;
 	txtSalle.textBaseline = _TextBaseline;
 	txtSalle.x = 10;
-	txtSalle.y = 620;
+	txtSalle.y = 550;
 	
 	txtObjet = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtObjet.lineHeight = _LineHeight;
@@ -387,7 +398,7 @@ function initialize() {
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
-	var BtnHaut = stage.addChild(new ButtonMove("H", ColorPad));
+	/*var BtnHaut = stage.addChild(new ButtonMove("H", ColorPad));
 	BtnHaut.y = 10;
 	BtnHaut.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
@@ -409,10 +420,45 @@ function initialize() {
 	BtnDroite.x = BtnGauche.x + 60;
 	BtnDroite.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
+		});*/
+	
+	/*var mapW, mapH;
+	mapW=map.image.width;
+	mapH=map.image.height;
+	//alert(map.x);*/
+	var _EpaisseurBpPad = 20;
+	var BtnHaut = stage.addChild(new ButtonPad("H", ColorPad, map.image.width, _EpaisseurBpPad));
+	BtnHaut.y = map.y - _EpaisseurBpPad;
+	BtnHaut.x = map.x;
+	BtnHaut.addEventListener('click', function(event) {
+		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
+		});
+		
+	var BtnBas = stage.addChild(new ButtonPad("B", ColorPad, map.image.width, _EpaisseurBpPad));
+	BtnBas.y = map.y + map.image.height;
+	BtnBas.x = map.x;
+	BtnBas.addEventListener('click', function(event) {
+		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 		});
 	
-	BtnHaut.x = BtnBas.x = 50;
-	BtnGauche.y = BtnDroite.y = 40;
+	var BtnGauche = stage.addChild(new ButtonPad("G", ColorPad, _EpaisseurBpPad, map.image.height));
+	BtnGauche.x = map.x - _EpaisseurBpPad;
+	BtnGauche.y = map.y;
+	BtnGauche.addEventListener('click', function(event) {
+		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
+		});
+	
+	var BtnDroite = stage.addChild(new ButtonPad("D", ColorPad, _EpaisseurBpPad, map.image.height));
+	BtnDroite.x = map.x + map.image.width;
+	BtnDroite.y = map.y;
+	BtnDroite.addEventListener('click', function(event) {
+		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
+		});
+	
+	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "pointer";
+	/*BtnHaut.x = BtnBas.x = 50;
+	BtnGauche.y = BtnDroite.y = 40;*/
+	
 
     // ******************************************
     // ************ Boutons d'action ************
@@ -682,14 +728,13 @@ function initialize() {
 			
 			var ProbCache, ProbFouille;
 			ProbCache=(currentCase.probaCache * PersoProbaCache);
-			// PROBLEME : probaObjet est un texte "mini salle"...
 			ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 			
 			labelNbAlies.text=("Aliés dans la salle : " + + "");
 			labelNbEnnemis.text=("Ennemis dans la salle : " + + "");
 			labelNbGoules.text=("Goules dans la salle : " + currentCase.nbrGoules + "");
 			labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
-			labelProbaFouille.text=("Proba de Trouver item : " + ProbFouille + "");
+			labelProbaFouille.text=("Proba de Trouver item : " + ProbFouille + " % (avec multi de " +  PersoProbaFouille + ")");
 			
 			
 			labelObjetCase.text="";
@@ -1007,14 +1052,34 @@ function initialize() {
 	            // affichage arme équipee
 	            var imgItemArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
 	            imgItemArme.cursor = "pointer";
-
+	            
 	            // Dessin de l'arme équipée
 	            contArme.removeAllChildren();
 	            contArme.addChild(imgItemArme);
+	            
+	            if(currentPerso.armeEquipee.valeur >=0)
+            	{
+            		labelBonusArme.text=("(+" + currentPerso.armeEquipee.valeur + " points)	");
+            	}
+	            else
+            	{
+            		labelBonusArme.text=("(-" + currentPerso.armeEquipee.valeur + " points)");
+            	}
+	            
 	            contArme.addEventListener("click", function (event) {
 	                idSelectedItemEquip = currentPerso.armeEquipee.id;
 	                stage.update();
 	            });
+	            
+	            contArme.addEventListener('mouseover', function(event) {
+					labelDescribeItem.text=("Nom : " + currentPerso.armeEquipee.nom + " (" + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
+					stage.update();
+					},false);
+					
+	            contArme.addEventListener('mouseout', function(event){
+					labelDescribeItem.text="";
+					stage.update();
+					},false);
 	        }
 	        if (currentPerso.armureEquipee != null) {
 	            // affichage arme équipee
@@ -1024,10 +1089,29 @@ function initialize() {
 	            // Dessin de l'armure équipée
 	            contArmure.removeAllChildren();
 	            contArmure.addChild(imgItemArmure);
+	            if(currentPerso.armureEquipee.valeur >=0)
+	            	{
+	            		labelBonusArmure.text=("(+" + currentPerso.armureEquipee.valeur + " points)");
+	            	}
+	            else
+	            	{
+	            		labelBonusArmure.text=("(-" + currentPerso.armureEquipee.valeur + " points)");
+	            	}
+	            
 	            contArmure.addEventListener("click", function (event) {
 	                idSelectedItemEquip = currentPerso.armureEquipee.id;
 	                stage.update();
 	            });
+	            
+	            contArmure.addEventListener('mouseover', function(event) {
+					labelDescribeItem.text=("Nom : " + currentPerso.armureEquipee.nom + " (" + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
+					stage.update();
+					},false);
+					
+	            contArmure.addEventListener('mouseout', function(event){
+					labelDescribeItem.text="";
+					stage.update();
+					},false);
 	        }
 	        
 			// Affichage label poids du sac
