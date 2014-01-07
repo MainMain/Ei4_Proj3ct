@@ -163,7 +163,7 @@ function start() {
 	var AbsBtn=0;
 
 	// Ordonnée des boutons
-	var OrdBtn=200;
+	var OrdBtn=0;
 
 	// Couleur des boutons
 	var ColorBtn="#850000";
