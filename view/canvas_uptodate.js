@@ -14,7 +14,7 @@ var SelectedItemEquip = -1;
 var PersoProbaCache=1;
 var PersoProbaFouille=1;
 
-var background, map, perso;
+var background, backgroundPreload, map, perso;
 
 onload = initialize;
 
@@ -70,9 +70,9 @@ function initialize() {
 	                ];
 
 	// application du background Preload
-	var backgroundPreload = new createjs.Bitmap("public/BackgroundPreload.jpg");
+	backgroundPreload = new createjs.Bitmap("public/BackgroundPreload.jpg");
 	backgroundPreload.image.onload = setImg(backgroundPreload, 0, 0);
-	
+
 	loadProgressLabel = new createjs.Text("","70px Infected","#850000");
 	loadProgressLabel.lineWidth = 600;
 	loadProgressLabel.textAlign = "center";
@@ -133,7 +133,7 @@ function handleComplete() {
 }
 
 function handleClick() {
-	stage.removeChild(loadProgressLabel, loadingBarContainer);
+	stage.removeChild(loadProgressLabel, loadingBarContainer, backgroundPreload);
 	canvas.removeEventListener("click", handleClick);
 	start();
 }
@@ -166,7 +166,7 @@ function start() {
 	var OrdBtn=0;
 
 	// Couleur des boutons
-	var ColorBtn="#9F0000";
+	var ColorBtn="#850000";
 	var ColorPad="#313131";
 	var ColorGreen="#008000";
 	var ColorRed="#9F0000";
@@ -176,10 +176,11 @@ function start() {
 
 	// Couleur des labels
 	var ColorLabel = "#fff";
-	var ColorLabelBonus = "#f00";
+	var ColorLabelBonus = "#850000";
 
-	// Espacement des labels en X
+	// Espacement des labels
 	var _EspaceLabelX = 300;
+	var _EspaceLabelY = 20;
 
 	// Espacement items
 	var SpaceItem = 30;
@@ -202,19 +203,19 @@ function start() {
 
 	// Placement label Arme
 	var _labelArmeX = _labelModeX;
-	var _labelArmeY = _labelModeY + 20;
+	var _labelArmeY = _labelModeY + _EspaceLabelY;
 
 	// Placement label Armure
 	var _labelArmureX = _labelModeX;
-	var _labelArmureY = _labelArmeY + 20;
+	var _labelArmureY = _labelArmeY + _EspaceLabelY;
 
 	// Placement label ItemPerso
 	var _labelItemPersoX = _labelModeX;
-	var _labelItemPersoY = _labelArmureY + 20;
+	var _labelItemPersoY = _labelArmureY + _EspaceLabelY;
 
 	// Placement Conteneur ItemPerso
 	var _ContItemPersoX = _labelModeX;
-	var _ContItemPersoY = _labelItemPersoY + 20;
+	var _ContItemPersoY = _labelItemPersoY + _EspaceLabelY;
 
 	// Dimension Conteneur ItemPerso
 	var _ContItemPersoH = 200;
@@ -226,11 +227,11 @@ function start() {
 
 	// Placement label Points d'action
 	var _labelPtsAX = _labelPtsVX;
-	var _labelPtsAY = _labelPtsVY + 20;
+	var _labelPtsAY = _labelPtsVY + _EspaceLabelY;
 
 	// Placement label Points de mouvements
 	var _labelPtsMX = _labelPtsVX;
-	var _labelPtsMY= _labelPtsAY + 20;
+	var _labelPtsMY= _labelPtsAY + _EspaceLabelY;
 
 	// Placement label Points d'Attaque
 	var _labelPtsAtqX = _labelPtsVX + _EspaceLabelX;
@@ -238,11 +239,11 @@ function start() {
 
 	// Placement label Points de Défense
 	var _labelPtsDefX = _labelPtsVX + _EspaceLabelX;
-	var _labelPtsDefY = _labelPtsAtqY +20;
+	var _labelPtsDefY = _labelPtsAtqY +_EspaceLabelY;
 
 	// Placement label Poids du Sac
 	var _labelPoidsSacX = _labelPtsVX + _EspaceLabelX;
-	var _labelPoidsSacY = _labelPtsDefY + 20; 
+	var _labelPoidsSacY = _labelPtsDefY + _EspaceLabelY; 
 
 	// Placement label Description Item
 	var _labelDescribeItemX = _ContItemCaseX;
@@ -254,19 +255,19 @@ function start() {
 
 	// Placement label Nombre d'Ennemis
 	var _labelNbEnnemisX = _labelNbAliesX;
-	var _labelNbEnnemisY = _labelNbAliesY + 20;
+	var _labelNbEnnemisY = _labelNbAliesY + _EspaceLabelY;
 
 	// Placement label Nombre de Goules
 	var _labelNbGoulesX = _labelNbAliesX;
-	var _labelNbGoulesY = _labelNbAliesY + 40;
+	var _labelNbGoulesY = _labelNbEnnemisY + _EspaceLabelY;
 
 	// Placement label Probabilité de Cache
 	var _labelProbaCacheX = _labelNbAliesX;
-	var _labelProbaCacheY = _labelNbAliesY + 60;
+	var _labelProbaCacheY = _labelNbGoulesY + _EspaceLabelY;
 
 	// Placement label Probabilité de Fouille
 	var _labelProbaFouilleX = _labelNbAliesX;
-	var _labelProbaFouilleY = _labelNbAliesY + 80;
+	var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
 
 	// Placement Conteneur ArmeEquip
 	var _ContArmeX = _labelArmeX + 120;
@@ -342,6 +343,72 @@ function start() {
 	contArmure.height = _ContArmureH;
 	contArmure.width = _ContArmureW;
 	stage.addChild(contArmure);
+
+	// ******************************************
+	// ** Création des barres du perso 			*
+	// ******************************************
+
+	// Barre de vie
+	lifeBarContainer = new createjs.Container();
+
+	lifeBarHeight = 10;
+	lifeBarWidth = 100;
+	lifeBarColor = createjs.Graphics.getRGB(0,150,0);
+	lifeBarFrameColor = createjs.Graphics.getRGB(0,0,0);
+
+	lifeBar = new createjs.Shape();
+	lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 1, lifeBarHeight).endFill();
+
+	frameLifeBar = new createjs.Shape();
+	paddingLifeBar = 3;
+	frameLifeBar.graphics.setStrokeStyle(1).beginStroke(lifeBarFrameColor).drawRect(-paddingLifeBar/2, -paddingLifeBar/2, lifeBarWidth+paddingLifeBar, lifeBarHeight+paddingLifeBar);
+
+	lifeBarContainer.addChild(lifeBar, frameLifeBar);
+	lifeBarContainer.x = 340;
+	lifeBarContainer.y = 0 ;
+	stage.addChild(lifeBarContainer);
+
+	// Barre d'action
+
+	actionBarContainer = new createjs.Container();
+
+	actionBarHeight = 10;
+	actionBarWidth = 100;
+	actionBarColor = createjs.Graphics.getRGB(89,0,0);
+	actionBarFrameColor = createjs.Graphics.getRGB(0,0,0);
+
+	actionBar = new createjs.Shape();
+	actionBar.graphics.beginFill(actionBarColor).drawRect(0, 0, 1, actionBarHeight).endFill();
+
+	frameActionBar = new createjs.Shape();
+	paddingActionBar = 3;
+	frameActionBar.graphics.setStrokeStyle(1).beginStroke(actionBarFrameColor).drawRect(-paddingActionBar/2, -paddingActionBar/2, actionBarWidth+paddingActionBar, actionBarHeight+paddingActionBar);
+
+	actionBarContainer.addChild(actionBar, frameActionBar);
+	actionBarContainer.x = 340;
+	actionBarContainer.y = lifeBarContainer.y + _EspaceLabelY;
+	stage.addChild(actionBarContainer);
+
+	// Barre de mouvement
+
+	moveBarContainer = new createjs.Container();
+
+	moveBarHeight = 10;
+	moveBarWidth = 100;
+	moveBarColor = createjs.Graphics.getRGB(0,0,204);
+	moveBarFrameColor = createjs.Graphics.getRGB(0,0,0);
+
+	moveBar = new createjs.Shape();
+	moveBar.graphics.beginFill(moveBarColor).drawRect(0, 0, 1, moveBarHeight).endFill();
+
+	frameMoveBar = new createjs.Shape();
+	paddingMoveBar = 3;
+	frameMoveBar.graphics.setStrokeStyle(1).beginStroke(moveBarFrameColor).drawRect(-paddingMoveBar/2, -paddingMoveBar/2, moveBarWidth+paddingMoveBar, moveBarHeight+paddingMoveBar);
+
+	moveBarContainer.addChild(moveBar, frameMoveBar);
+	moveBarContainer.x = 340;
+	moveBarContainer.y = actionBarContainer.y + _EspaceLabelY;
+	stage.addChild(moveBarContainer);
 
 	// ******************************************
 	//********** Déclaration des labels *******
@@ -492,7 +559,6 @@ function start() {
 	txtObjetEquipe.textBaseline = _TextBaseline;
 	txtObjetEquipe.x = 10;
 	txtObjetEquipe.y = txtSalle.y - 40;
-
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
@@ -758,12 +824,6 @@ function start() {
 	});
 
 
-
-
-
-
-
-
 	/********************************************************************************
 	 * RECEPTION DE LA REPONSE POUR LE CHANGEMENT DE MODE
 	 * return 1 si ok
@@ -966,6 +1026,7 @@ function start() {
 
 		var PoidsSac=0;
 		var PointsAttaque, PointsDefense;
+		var PointsMove;
 
 		PersoProbaCache=currentPerso.multiProbaCache;
 		PersoProbaFouille=currentPerso.multiProbaFouille;
@@ -990,11 +1051,25 @@ function start() {
 			PointsDefense = currentPerso.multiPtsDefense;
 		}
 
-		labelPtsVie.text=("Points de vie :							" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
-		labelPtsAction.text=("Points d'action :	 			" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
-		labelPtsMove.text=("Points de mouvement : " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
+		labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
+		labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
+		labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
 		labelPtsAtq.text=("Points d'attaque :      " + PointsAttaque + "");
 		labelPtsDef.text=("Points de défense :     " + PointsDefense + "");
+
+		// Mise à jour des barres de vie, action, move
+		lifeBar.scaleX = (currentPerso.ptSante/currentPerso.ptSanteMax) * lifeBarWidth;
+		actionBar.scaleX = (currentPerso.ptActions/currentPerso.ptActionsMax) * actionBarWidth;
+		// Sécurité pour le remplissage de la barre de move
+		if(currentPerso.ptDeplacement > currentPerso.ptDeplacementMax)
+		{
+			PointsMove=currentPerso.ptDeplacementMax;
+			moveBar.scaleX = (PointsMove/currentPerso.ptDeplacementMax) * moveBarWidth;
+		}
+		else
+		{
+			moveBar.scaleX = (currentPerso.ptDeplacement/currentPerso.ptDeplacementMax) * moveBarWidth;
+		}
 
 		//labelPtsAtq.text=("Points d'attaque :      " + PointsAttaque + "");
 		//labelPtsDef.text=("Points de défense :     " + PointsDefense + "");
