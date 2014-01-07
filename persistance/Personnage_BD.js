@@ -36,7 +36,21 @@ Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
 	
 	var PersonnageModel = mongoose.model('Personnage');
 	
-	PersonnageModel.find({_id : personnageToSave.id}, function(err,perso)
+	PersonnageModel.findOneAndUpdate({_id : personnageToSave.id},{	ptSante : personnageToSave.ptSante,
+																	ptSanteMax : personnageToSave.ptSanteMax,
+																	Action : personnageToSave.ptActions,
+																	ActionMax : personnageToSave.ptActionsMax,
+																	ptDeplacement : personnageToSave.ptDeplacement,
+																	ptDeplacementMax : personnageToSave.ptDeplacementMax,
+																	poidsMax : personnageToSave.poidsMax,
+																	gouleLimite : personnageToSave.goulesMax,
+																	competence : personnageToSave.competence,
+																	idSalleEnCours : personnageToSave.idSalleEnCours,
+																	idArmeEquipee : personnageToSave.armeEquipee,
+																	idArmureEquipee : personnageToSave.armureEquipee,
+																	sacADos : personnageToSave.sacADos,});
+	
+/*	PersonnageModel.findOne({_id : personnageToSave.id}, function(err,perso)
 	{
 		if (err)  
 		{
@@ -48,22 +62,23 @@ Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
 			callbackSetPersonnage(-1)
 		}
 		else
-		{
-			perso.ptSante = personnageToSave.ptSante;
-			perso.ptSanteMax = personnageToSave.ptSanteMax;
-			perso.Action = personnageToSave.ptActions;
-			perso.ActionMax = personnageToSave.ptActionsMax;
-			perso.ptDeplacement = personnageToSave.ptDeplacement;
-			perso.ptDeplacementMax = personnageToSave.ptDeplacementMax;
-			perso.poidsMax = personnageToSave.poidsMax;
-			perso.gouleLimite = personnageToSave.goulesMax;
-			perso.competence = personnageToSave.competence;
-			perso.idSalleEnCours = personnageToSave.idSalleEnCours;
-			perso.idArmeEquipee = personnageToSave.armeEquipee;
-			perso.idArmureEquipee = personnageToSave.armureEquipee;
-			perso.sacADos = personnageToSave.sacADos;
+		{	
+			//perso._id = personnageToSave.id;
+			ptSante : personnageToSave.ptSante,
+			ptSanteMax : personnageToSave.ptSanteMax,
+			Action : personnageToSave.ptActions,
+			ActionMax : personnageToSave.ptActionsMax,
+			ptDeplacement : personnageToSave.ptDeplacement,
+			ptDeplacementMax : personnageToSave.ptDeplacementMax,
+			poidsMax : personnageToSave.poidsMax,
+			gouleLimite : personnageToSave.goulesMax,
+			competence : personnageToSave.competence,
+			idSalleEnCours : personnageToSave.idSalleEnCours,
+			idArmeEquipee : personnageToSave.armeEquipee,
+			idArmureEquipee : personnageToSave.armureEquipee,
+			sacADos : personnageToSave.sacADos,
 			console.log('Le personnage a bien été modifié');
-			persosave(function (err)
+			perso.save(function (err)
 			{
 				if (err)
 				{
@@ -78,7 +93,7 @@ Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
 			});
 		}
 			
-	});
+	});*/
 	
 },
 
