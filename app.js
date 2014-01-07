@@ -87,20 +87,22 @@ app.get('/', function fonctionIndex(req, res)
 
 app.get('/jeu', function fonctionIndex(req, res)
 {
+	var options = { "username": req.session.username, "idEquipe": 1 };
 	if (typeof req.session.username === "undefined")
 	{
+		optionAccueil.username = req.session.username;
 		optionAccueil.errorLogin = "Vous devez vous connecter avant de jouer ! ";
 		/*
 		 * ABDOU : j'ai remplacé par "redirect", car sinon, l'url restait /jeu alors qu'on est sur l'accueil...
+		 * JOHAN : j'ai remis "render", car sinon, on peut pas faire passer les options... ^^
 		 */
 		
-		//res.render('accueil', optionAccueil);
-		res.redirect('/');
+		res.render('accueil', optionAccueil);
+		//res.redirect('/');
 	}
 	else
 	{
-		optionAccueil.username = req.session.username;
-		res.render('game', optionAccueil);
+		res.render('game', options);
 	}
 	optionAccueil.username = null;
 	optionAccueil.errorLogin = null;
