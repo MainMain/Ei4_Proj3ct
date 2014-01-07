@@ -87,7 +87,6 @@ app.get('/', function fonctionIndex(req, res)
 
 app.get('/jeu', function fonctionIndex(req, res)
 {
-	var options = { "username": req.session.username, "idEquipe": 1 };
 	if (typeof req.session.username === "undefined")
 	{
 		optionAccueil.username = req.session.username;
@@ -102,10 +101,17 @@ app.get('/jeu', function fonctionIndex(req, res)
 	}
 	else
 	{
+		var options = { "username": req.session.username, "idEquipe": uManager.GetNumEquipe() };
 		res.render('game', options);
 	}
 	optionAccueil.username = null;
 	optionAccueil.errorLogin = null;
+});
+
+app.put('/jeu', function fonctionJeu(req, res)
+{
+	var options = { "username": req.session.username, "idEquipe": uManager.GetNumEquipe() };
+	res.render('game', options);
 });
 
 app.get('/regles', function fonctionIndex(req, res)

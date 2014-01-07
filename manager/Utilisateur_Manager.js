@@ -41,7 +41,7 @@ var Utilisateur_Manager = (function () {
             {
             	var context = this;
             	oUtilisateur_BD.GetUtilisateur(idUser, function(reponse) {context.callbackGetUser(reponse); });
-            	console.log("PMANAGER : Actif !");
+            	console.log("UMANAGER : Actif !");
             	
             },
         

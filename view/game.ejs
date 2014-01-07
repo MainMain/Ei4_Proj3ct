@@ -128,8 +128,8 @@
 			</form>
 
 			<div id="content" role="main" class="span12">
-				<% if(idEquipe == 0) { %>
-					<form name="formInitPerso" method="POST" action="/game">
+				<% if(idEquipe == -1) { %>
+					<form name="formInitPerso" method="POST" action="/jeu">
 						<input type="hidden" name="_method" value="PUT">
 						<select name="Equipe">
 							<option value="1">Equipe 1</option>
@@ -137,9 +137,11 @@
 						</select>
 						<select name="Competence">
 							<option value="1">Brute (Dégats augmentés)</option>
-							<option value="2">Ninja (Probabilité de se cacher augmentée)</option>
-							<option value="3">Chasseur de trésor (Probabilité de fouille augmentée)</option>
+							<option value="2">JE SAIS PAS(Défense augmentés)</option>
+							<option value="3">Ninja (Probabilité de se cacher augmentée)</option>
+							<option value="4">Voleur (Probabilité de fouille augmentée)</option>
 						</select>
+						<input type="submit" value="Se lancer !" name="submitChoixDepart" />
 					</form>
 				<% } else { %>
 					<h1 class="entry-title" align=center> Plateau de jeu </h1>

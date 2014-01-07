@@ -97,10 +97,10 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 		{
 			console.log("Appelle du callBack avec un utilisateur")
 			callbackGetUtilisateur( new oUtilisateur(
-				NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-				NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-				NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-				NewUser.numEquipe,NewUser.personnage));
+				NewUser[0]._id,NewUser[0].pseudo,NewUser[0].email,
+				NewUser[0].nbrMeurtres,NewUser[0].nbrMeurtresCumule,
+				NewUser[0].nbrFoisTue,NewUser[0].nbrFoisTueCumule,
+				NewUser[0].numEquipe,NewUser[0].personnage));
 		}
 	});
 	
