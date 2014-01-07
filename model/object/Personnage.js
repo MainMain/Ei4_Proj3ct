@@ -1,5 +1,5 @@
-var oCarte = require('./Carte');
-var oPersonnage_BD = require('../../persistance/Personnage_BD');
+var oCarte = require('../../model/object/Carte');
+
 /**
  * Modélisation d'un personnage
  * 
@@ -20,6 +20,11 @@ var Personnage = (function() {
 	Personnage.goulesMax;
 	Personnage.competence;
 	Personnage.idSalleEnCours;
+	Personnage.mode;			// 0 : oisif - 1 : fouille - 2 : cache - 3 : defense
+	Personnage.multiPtsAttaque;
+	Personnage.multiPtsDefense;
+	Personnage.multiProbaCache;
+    Personnage.multiProbaFouille;
 	Personnage.armeEquipee;
 	Personnage.armureEquipee;
 	Personnage.sacADos;
@@ -29,7 +34,8 @@ var Personnage = (function() {
 
 	// --- METHODES DE CLASSE ---
 	Personnage.build = function(ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours,
+			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours, mode,
+			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
 			armeEquipee, armureEquipee, sacADos) {
 		return new Personnage();
 
@@ -37,7 +43,8 @@ var Personnage = (function() {
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours,
+			ptDeplacement, ptDeplacementMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
+			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
 			armeEquipee, armureEquipee, sacADos) {
 		// --- Attributs d'instance
 		this.id = id;
@@ -48,7 +55,14 @@ var Personnage = (function() {
 		this.ptDeplacement = ptDeplacement;
 		this.ptDeplacementMax = ptDeplacementMax;
 		this.poidsMax = poidsMax;
+		this.goulesMax = goulesMax;
+		this.competence = competence;
 		this.idSalleEnCours = idSalleEnCours;
+		this.mode = mode;
+		this.multiPtsAttaque = multiPtsAttaque;
+		this.multiPtsDefense = multiPtsDefense;
+	    this.multiProbaCache = multiProbaCache;
+	    this.multiProbaFouille = multiProbaFouille;
 		this.armeEquipee = armeEquipee;
 		this.armureEquipee = armureEquipee;
 		this.sacADos = sacADos;
@@ -57,45 +71,64 @@ var Personnage = (function() {
 
 	// --- METHODES D'INSTANCE
 	Personnage.prototype = {
-
+		
 		/**
 		 * ECRITURE
 		 * 
-		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE return : 1 si ok erreur : -1
-		 * si déplacement impossible (pas de case dans la direction) erreur : -2
-		 * si pas de pts mouvement
+		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE 
+		 * return : 1 si ok 
+		 * erreur : -1 si déplacement impossible (pas de case dans la direction)
+		 * erreur : -2 si pas de pts mouvement
+		 * erreur : -3 si trop de goules
+		 * erreur : -4 si zone sure adverse
+		 * erreur : -6 si impossible à cause goules
+		 * 
+		 * ET dégats infligés
 		 * 
 		 * @method deplacement
 		 */
-		deplacement : function(direction) {
+		deplacement : function(direction, nbrGoules) {
+			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
+			
 			// si pu de pts de mouvement, on peut s'arreter là
-			if (this.ptDeplacement == 0)
+			if (this.ptDeplacement <= 0)
+				{
+					console.log("PERSONNAGE : pu de pts de déplacement !");
 				return -2;
-			// Vérification de la direction demandée
+				}
+			// si trop de goules, on peut s'arreter là
+			if (nbrGoules > this.goulesMax)
+				return -3;
+			
+        	// Vérification de la direction demandée
 			if (typeof direction !== 'string'
 					&& Personnage.DIRECTIONS.indexOf(direction.toUpperCase()) === -1) {
 				throw 'Direction argument invalid!';
 				return -1;
 			}
+			
 			// recupere l'id de la salle
-			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours,
-					direction);
-			if (ansIdSalle == -1) {
+			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours, direction);
+			
+			// si id de la salle -1, pas de salle dans la direction
+			if (ansIdSalle == -1)
+			{
 				console.log("PERSONNAGE : Déplacement impossible ! ");
 				return -1;
-			} else {
-				// Affiche sur le log
-				console.log('PERSONNAGE : Deplacement vers : ' + direction);
-				console.log('PERSONNAGE : Déplacement ok - '
-						+ this.idSalleEnCours);
+			} 
+			else 
+			{
 				// Décrémente les points de déplacement
 				this.ptDeplacement--;
-				// si c'est un id valide, on modifie l'id de salle du perso
+				
+				//  on modifie l'id de salle du perso
 				this.idSalleEnCours = ansIdSalle;
 
-				// maj dans la BD
-				oPersonnage_BD.SetPersonnage(this);
+				// Affiche sur le log
+				console.log('PERSONNAGE : Deplacement vers : ' + direction);
+				console.log('PERSONNAGE : Déplacement ok - nvlle salle '+ this.idSalleEnCours);
 				
+				// return
 				return 1;
 			}
 		},
@@ -112,8 +145,6 @@ var Personnage = (function() {
 			this.sacADos.push(item);
 			console.log("PERSONNAGE : ajout de l'item " + item.nom
 					+ " au personnage " + this.id);
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 		},
 
 		/**
@@ -138,8 +169,6 @@ var Personnage = (function() {
 			console.log("CASE : DEBUG index : " + index);
 			this.sacADos.splice(i, 1);
 			this.logAfficherSacADos();
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 		},
 
 		/*
@@ -148,15 +177,29 @@ var Personnage = (function() {
 		 * FONCTION POUR AFFICHER DANS LA CONSOLE LA LISTE DES OBJETS DE DU SAC
 		 */
 		logAfficherSacADos : function() {
-			console.log("PERSONNAGE : ****** AFFICHAGE OBJET PERSONNAGE :  "
-					+ this.sacADos.length - 1 + " *********");
-			for (var i = 0; i < this.sacADos.length; i++) {
-				console.log("PERSONNAGE : Objet id = " + this.sacADos[i].id
-						+ " - " + this.sacADos[i].nom);
+			console.log("PERSONNAGE : ****** AFFICHAGE OBJET PERSONNAGE :  "+ (this.sacADos.length) + " du perso : " + this.id + " *********");
+			for (var i = 0; i < this.sacADos.length; i++)
+			{
+				console.log("PERSONNAGE : Objet id = " + this.sacADos[i].id+ " - " + this.sacADos[i].nom);
 			}
 			console.log("PERSONNAGE : *********************************");
 		},
 
+		getValeurArme : function()
+		{
+			var att;
+			if (this.armeEquipee == null) att = 5;
+			else att = this.armeEquipee.valeur;
+			return (this.att * this.multiPtsAttaque);
+		},
+		
+		getValeurArmure : function()
+		{
+			var def;
+			if (this.armureEquipee == null) def = 0;
+			else def = this.armureEquipee.valeur;
+			return (this.def * this.multiPtsDefense);
+		},
 		/**
 		 * LECTURE
 		 * 
@@ -166,14 +209,18 @@ var Personnage = (function() {
 		 * @method existItemInSac
 		 */
 		existItemInSac : function(item) {
-			if (this.sacADos.indexOf(item) != -1) {
-				console.log("PERSONNAGE : L'item (" + item.id + " - " + item.nom
-						+ ") est bien dans le sac  du perso " + this.id);
+			this.logAfficherSacADos();
+			var bool = false;
+			for (var i = 0; i < this.sacADos.length; i++)
+			{
+				if (this.sacADos[i].id == item.id) bool = true;
+			}
+			//if (this.sacADos.indexOf(item) != -1) {
+			if (bool == true){
+				console.log("PERSONNAGE : L'item (" + item.id + " - " + item.nom + ") est bien dans le sac  du perso " + this.id);
 				return true;
 			} else {
-				console.log("PERSONNAGE : WARNING : L'item (" + item.id + " - "
-						+ item.nom + ") n'est pas dans le sac du perso  "
-						+ this.id);
+				console.log("PERSONNAGE : WARNING : L'item - id = " + item.id + " - " + item.nom + " - n'est pas dans le sac du perso  "+ this.id);
 				return false;
 			}
 		},
@@ -186,9 +233,10 @@ var Personnage = (function() {
 		 * si ni une arme, ni une armure
 		 */
 		sEquiperDunItem : function(item) {
+			// configuration du code de retour
 			var codeRetour = 1;
-			// si type arme
-			console.log("---- " + this.armeEquipee);
+
+			// si c'est une arme
 			if (item.type == 1) {
 				// si déja une arme équipée
 				if (this.armeEquipee != null)
@@ -208,8 +256,6 @@ var Personnage = (function() {
 			} else {
 				return -3;
 			}
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 			return codeRetour;
 		},
 		/**
@@ -222,8 +268,6 @@ var Personnage = (function() {
 				this.armeEquipee = null;
 			else if (item.type == 2)
 				this.armureEquipee = null;
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 		},
 
 		/**
@@ -234,15 +278,19 @@ var Personnage = (function() {
 		utiliser : function(item) {
 			if (item.type < 4 || item.type > 6)
 				return -1;
-			switch (item.type) {
+			switch (item.type) 
+			{
 			case 4:
 				this.ptSante += item.valeur;
+				if(this.ptSante > this.ptSanteMax) this.ptSante = this.ptSanteMax;
 				break;
 			case 5:
 				this.ptActions += item.valeur;
+				if(this.ptActions > this.ptActionsMax) this.ptActions = this.ptActionsMax;
 				break;
 			case 6:
 				this.ptDeplacement += item.valeur;
+				if(this.ptDeplacement > this.ptDeplacementMax) this.ptDeplacement = this.ptDeplacementMax;
 				break;
 			}
 			// maj dans la BD
@@ -324,7 +372,7 @@ var Personnage = (function() {
 		update : function() {
 			// écrire infos dans la BD
 		},
-
+		
 	};
 	// On pense à retourner le constructeur (afin de pouvoir construire des
 	// instances, sinon tout
@@ -332,5 +380,11 @@ var Personnage = (function() {
 	// l'extérieur)
 	return Personnage;
 }());
+
+callbackSetPersonnage = function(reponse)
+{
+	
+},
+
 
 module.exports = Personnage;

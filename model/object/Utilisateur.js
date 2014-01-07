@@ -29,16 +29,15 @@ var Utilisateur = (function() {
 	function Utilisateur(id, pseudo, email, nbrMeurtres, nbrMeurtresCumule,
 			nbrFoisTue, nbrFoisTueCumule, numEquipe, idPersonnage) {
 		// --- Attributs d'instance
-		this.id;
-		this.pseudo;
-		this.email;
-		this.pass;
-		this.nbrMeurtres;
-		this.nbrMeurtresCumule;
-		this.nbrFoisTue;
-		this.nbrFoisTueCumule;
-		this.numEquipe;
-		this.idPersonnage;
+		this.id = id;
+		this.pseudo = pseudo;
+		this.email = email;
+		this.nbrMeurtres = nbrMeurtres;
+		this.nbrMeurtresCumule = nbrMeurtresCumule;
+		this.nbrFoisTue = nbrFoisTue;
+		this.nbrFoisTueCumule = nbrFoisTueCumule;
+		this.numEquipe = numEquipe;
+		this.idPersonnage = idPersonnage;
 		console.log("Utilisateur : Nouveau Utilisateur crée ");
 	}
 

@@ -54,9 +54,14 @@ database.Initialiser = function() {
 		poidsMax : Number,
 		gouleLimite : Number,
 		competence : String,
-		idSalleEnCours : String,
-		idArmeEquipee : String,
-		idArmureEquipee : String,
+		idSalleEnCours : Number,
+		mode : Number,
+		multiPtsAttaque : Number,
+		multiPtsDefense : Number,
+		multiProbaCache : Number,
+		multiProbaFouille : Number,
+		idArmeEquipee : Number,
+		idArmureEquipee : Number,
 		sacADos : Array,
 	});
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
@@ -77,10 +82,10 @@ database.Initialiser = function() {
 	CaseModel = mongoose.model('Case',CaseSchema); 
 	
 
-	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
+	//PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
 
 /***** CREATION DU SCHEMA "ITEM" ****/
-	var ItemSchema = new mongoose.Schema({
+	/*var ItemSchema = new mongoose.Schema({
 		nom = String,
 		description = String,
 		poids = Number,
@@ -102,7 +107,7 @@ database.Initialiser = function() {
 	});
 	
 	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
-
+*/
 	
 	console.log("Initialisation Database");
 },

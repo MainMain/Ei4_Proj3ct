@@ -1,7 +1,7 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-var oPersonnageDB = require('./Personnage_BD');
+var oPersonnageDB = require('../Persistance/Personnage_BD');
 var oUtilisateur = require('../model/object/Utilisateur');
 
 
@@ -90,16 +90,17 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 		
 		if (typeof NewUser[0] === "undefined")
 		{
+			console.log("Get Utilisateur : undefined");
 			callbackGetUtilisateur(-1);	
 		}
 		else
 		{
 			console.log("Appelle du callBack avec un utilisateur")
 			callbackGetUtilisateur( new oUtilisateur(
-				NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-				NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-				NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-				NewUser.numEquipe,NewUser.personnage));
+				NewUser[0]._id,NewUser[0].pseudo,NewUser[0].email,
+				NewUser[0].nbrMeurtres,NewUser[0].nbrMeurtresCumule,
+				NewUser[0].nbrFoisTue,NewUser[0].nbrFoisTueCumule,
+				NewUser[0].numEquipe,NewUser[0].personnage));
 		}
 	});
 	
@@ -185,7 +186,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 				var PersonnageModel = mongoose.model('Personnage');
 				var NewPerso = new PersonnageModel();
 				
-				NewPerso = oPersonnageDB.Creation(0,0,0,0,0,"");
+				NewPerso = oPersonnageDB.Creation(80,20,15,30,4,"voleur");
 				
 				console.log('BASE DE DONNEES : ID du perso cree ' + NewPerso._id);
 				NewUser.personnage = NewPerso._id;
@@ -236,12 +237,16 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		}
 		else
 		{
-			callbackConnexion(1, req, res);
+			console.log("USER_BD : id de l'user = " + user[0].id);
+			callbackConnexion(user[0].id, req, res);
 		}
 	});
 },
  
- 
+Utilisateur_BD.test = function()
+{
+	console.log("COUCOU");
+},
  
 
  
