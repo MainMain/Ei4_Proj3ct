@@ -830,7 +830,7 @@ io.sockets.on('connection', function (socket)
     	// si pas de goules dans la salle
     	if (cManager.GetNombreGoules() == 0)
     	{
-    		socket.emit('ACTION_ATTAQUE_GOULE_CS', -2, 0);
+    		socket.emit('ACTION_ATTAQUE_GOULE_SC', -2, 0);
     	}
     	
     	// calcul des dégats subis
@@ -840,7 +840,7 @@ io.sockets.on('connection', function (socket)
     	// goules tuées
     	var goulesTues = cManager.AttaqueGoule();
     	
-    	socket.emit('ACTION_ATTAQUE_GOULE_CS', goulesTues, degatsSubis);
+    	socket.emit('ACTION_ATTAQUE_GOULE_SC', goulesTues, degatsSubis);
     });
     
     /******************************************************************************************************************
