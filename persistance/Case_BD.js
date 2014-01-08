@@ -92,6 +92,16 @@ Case_BD.Initialiser = function() {
 		oItem_BD.GetItemById(11), oItem_BD.GetItemById(12)];
 	var array4 = [oItem_BD.GetItemById(10), oItem_BD.GetItemById(11),
 		oItem_BD.GetItemById(12), oItem_BD.GetItemById(13)];
+	/*
+	 * 		this.id = id;
+		this.nom = nom;
+		this.description = description;
+		this.probaObjet = probaObjet;
+		this.probaCache = probaCache;
+		this.nbrGoules = nbrGoules;
+		this.listeItem = listeItem;
+		this.pathImg = pathImg;
+		*/
 	var case1 = new oCase(0, "E11", "Une mini salle", 20, 50, 40, array1);
 	var case2 = new oCase(1, "E12", "Une petite salle", 24, 54, 20, array2);
 	var case3 = new oCase(2, "E13", "Une moyenne salle", 47, 50, 32, array3);

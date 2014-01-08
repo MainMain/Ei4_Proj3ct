@@ -66,7 +66,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                 idArmure = personnageToSave.armureEquipee.id;
 
             console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
-       
+
             PersonnageModel.update({
                     _id: personnageToSave.id
                 }, {
@@ -87,7 +87,9 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
             	    multiProbaFouille : personnageToSave.multiProbaFouille,
                     idArmeEquipee: idArme,
                     idArmureEquipee: idArmure,
-                    sacADos: personnageToSave.sacADos,
+                    sacADos: personnageToSave.sacADos,		
+                    dernierMvt : String,
+            		listeMsgAtt : Array,
                 },
                 function (err) {
                     if (err) {
@@ -163,12 +165,13 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                     if (perso[0].idArmureEquipee != null)
                    	 armure	 = oItem_BD.GetItemById(perso[0].idArmureEquipee);
                     callbackGetPersonnageByIdUser(new oPersonnage(
-                        perso[0].id, perso[0].ptSante, perso[0].ptSanteMax,
-                        perso[0].ptAction, perso[0].ptActionMax, perso[0].ptDeplacement+30,
-                        perso[0].ptDeplacementMax, perso[0].poidsMax, perso[0].gouleLimite,
-                        perso[0].competence, perso[0].idSalleEnCours, perso[0].mode, 
-                        perso[0].multiPtsAttaque,  perso[0].multiPtsDefense,  perso[0].multiProbaCache,  perso[0].multiProbaFouille, 
-                        arme,armure, perso[0].sacADos));
+                        perso[0].id, 				perso[0].ptSante, 			perso[0].ptSanteMax,
+                        perso[0].ptAction,		 	perso[0].ptActionMax, 		perso[0].ptDeplacement+30,
+                        perso[0].ptDeplacementMax,	perso[0].poidsMax, 			perso[0].gouleLimite,
+                        perso[0].competence, 		perso[0].idSalleEnCours, 	perso[0].mode, 
+                        perso[0].multiPtsAttaque,  	perso[0].multiPtsDefense,  	perso[0].multiProbaCache,  
+                        perso[0].multiProbaFouille, arme,						armure,
+                        perso[0].sacADos,			perso[0].dernierMvt,		perso[0].listeMsgAtt		));
                 }
             });
         }
@@ -182,6 +185,7 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
  * retourn un personnage si tout est ok
  * @method GetPersonnageByIdPerso
  */
+/*
 Personnage_BD.GetPersonnageByIdPerso = function (idPersonnage, callbackGetPersonnageByIdPerso) {
 
     // renvoi un personnage selon l'id passé en paramètre
@@ -207,7 +211,7 @@ Personnage_BD.GetPersonnageByIdPerso = function (idPersonnage, callbackGetPerson
 
     });
 
-},
+},*/
 
 /**
  * CREER UN PERSONNAGE A LA CREATION DE L'UTILISATEUR
@@ -238,6 +242,8 @@ Personnage_BD.Creation = function (vie, action, deplacement, poids, goule, compe
     Perso.multiProbaFouille = 1;
     Perso.idArmeEquipee = null;
     Perso.idArmureEquipee = null;
+    Perso.dernierMvt = null;
+    Perso.listeMsgAtt = new Array();
 
     Perso.save(function (err) {
         if (err) {

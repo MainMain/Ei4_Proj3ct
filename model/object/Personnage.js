@@ -28,6 +28,8 @@ var Personnage = (function() {
 	Personnage.armeEquipee;
 	Personnage.armureEquipee;
 	Personnage.sacADos;
+	Personnage.dernierMvt;
+	Personnage.listeMsgAtt;
 
 	// --- ENUMERATIONS DE CLASSE ---
 	Personnage.DIRECTIONS = [ 'NORD', 'SUD', 'EST', 'OUEST' ];
@@ -36,7 +38,7 @@ var Personnage = (function() {
 	Personnage.build = function(ptSante, ptSanteMax, ptActions, ptActionsMax,
 			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours, mode,
 			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
-			armeEquipee, armureEquipee, sacADos) {
+			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt) {
 		return new Personnage();
 
 	};
@@ -45,7 +47,7 @@ var Personnage = (function() {
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
 			ptDeplacement, ptDeplacementMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
 			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
-			armeEquipee, armureEquipee, sacADos) {
+			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt) {
 		// --- Attributs d'instance
 		this.id = id;
 		this.ptSante = ptSante;
@@ -66,7 +68,10 @@ var Personnage = (function() {
 		this.armeEquipee = armeEquipee;
 		this.armureEquipee = armureEquipee;
 		this.sacADos = sacADos;
-		console.log("PERSONNAGE : Nouveau personnage crée ");
+		this.dernierMvt = dernierMvt;
+		this.listeMsgAtt = listeMsgAtt;
+		
+		console.log("PERSONNAGE : Nouveau personnage crée");
 	}
 
 	// --- METHODES D'INSTANCE
@@ -198,12 +203,23 @@ var Personnage = (function() {
 			var def;
 			if (this.armureEquipee == null) def = 0;
 			else def = this.armureEquipee.valeur;
-			return (this.def * this.multiPtsDefense);
+			
+			console.log("PERSONNAGE : Valeur Armure : " + def );
+			return (def * this.multiPtsDefense);
 		},
+		
+		changerMode : function(mode)
+		{
+			// Décrémente les points de déplacement
+			this.ptActions--;
+			
+			this.mode = mode;
+		},
+		
 		/**
 		 * LECTURE
 		 * 
-		 * FONCTION POUR REVOYER SI UN ITEM EST BIEN DANS LE SAC return :true si
+		 * FONCTION POUR RENVOYER SI UN ITEM EST BIEN DANS LE SAC return :true si
 		 * objet est dans la salle, sinon false
 		 * 
 		 * @method existItemInSac

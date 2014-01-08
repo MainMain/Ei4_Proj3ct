@@ -40,17 +40,16 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 		}
 		else
 		{
-			NewUser[0].pseudo = Utilisateur.pseudo;
-			NewUser[0].pass = Utilisateur.email;
-			NewUser[0].email = Utilisateur.pass;
-			NewUser[0].personnage = Utilisateur.idPersonnage;
-			NewUser[0].nbrMeurtres = Utilisateur.nbrMeurtres;
-			NewUser[0].nbrMeurtresCumule = Utilisateur.nbrMeurtresCumule;
-			NewUser[0].nbrFoisTue = Utilisateur.nbrFoisTue;
-			NewUser[0].nbrFoisTueCumule = Utilisateur.nbrFoisTueCumule;
-			NewUser[0].numEquipe = Utilisateur.numEquipe;
+			NewUser[0].pseudo = utilisateurToSave.pseudo;
+			NewUser[0].email = utilisateurToSave.email;
+			NewUser[0].personnage = utilisateurToSave.idPersonnage;
+			NewUser[0].nbrMeurtres = utilisateurToSave.nbrMeurtres;
+			NewUser[0].nbrMeurtresCumule = utilisateurToSave.nbrMeurtresCumule;
+			NewUser[0].nbrFoisTue = utilisateurToSave.nbrFoisTue;
+			NewUser[0].nbrFoisTueCumule = utilisateurToSave.nbrFoisTueCumule;
+			NewUser[0].numEquipe = utilisateurToSave.numEquipe;
 			
-			NewUser.save(function (err)
+			NewUser[0].save(function (err)
 					{
 						if (err)
 						{
@@ -58,7 +57,7 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 						}
 						console.log('Mis a jour de l\'utilisateur!');
 						
-						callbackInscription(new oUtilisateur(
+						callbackSetUtilisateur(new oUtilisateur(
 							NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
 							NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
 							NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,

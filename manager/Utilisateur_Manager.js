@@ -36,6 +36,13 @@ var Utilisateur_Manager = (function () {
             			this.Utilisateur = reponse;
             		}
             },
+			
+			
+			callbackSetEquipe : function(reponse)
+			{
+            	if (reponse == -1) console.log("!!!!! WARNING : PMANAGER : erreur ecriture ");
+            	else console.log("UMANAGER : MAJ de l'equipe OK !");
+			},
             
             Load : function(idUser)
             {
@@ -48,7 +55,14 @@ var Utilisateur_Manager = (function () {
         	GetNumEquipe : function()
         	{
         		return this.Utilisateur.numEquipe;
-        	}
+        	},
+			
+			SetNumEquipe : function(numEquipe)
+			{
+				var context = this;
+				context.Utilisateur.numEquipe = numEquipe;
+            	oUtilisateur_BD.SetUtilisateur(context.Utilisateur, function(reponse) {context.callbackSetEquipe(reponse); });
+			}
         };
         return Utilisateur_Manager;
         
