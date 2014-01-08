@@ -29,11 +29,23 @@ Carte.Initialiser = function(largeur, hauteur) {
 	this.hauteur = hauteur;
 	
 	console.log("CARTE : Initialisation carte");
-	this.matrice = new Array([-1,-1,-1,-1,-1],
+	/*this.matrice = new Array([-1,-1,-1,-1,-1],
 							 [-1, 0,-1, 1,-1],
 							 [-1, 1, 2, 3,-1],
 							 [-1, 4, 5, 6,-1],
-							 [-1,-1,-1,-1,-1]);
+							 [-1,-1,-1,-1,-1]);*/
+	this.matrice=new Array(hauteur);
+	for (i=0; i <hauteur; i++)
+	{
+		this.matrice[i]=new Array(largeur);
+	}
+	this.matrice[0]=([-1,-1,-1,-1,-1]);
+	this.matrice[1]=([-1, 0,-1, 1,-1]);
+	this.matrice[2]=([-1, 2, 3, 4,-1]);
+	this.matrice[3]=([-1, 5, 6, 7,-1]);
+	this.matrice[4]=([-1,-1,-1,-1,-1]);
+	
+	console.log("MATRICE : " + this.matrice);
 	
 	//console.log("CARTE : " + this.matrice);
 	

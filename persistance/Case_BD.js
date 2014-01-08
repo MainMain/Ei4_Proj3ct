@@ -110,11 +110,11 @@ Case_BD.Initialiser = function() {
 	var case6 = new oCase(5, "E16", "Une salle sale", 75, 12, 4, array1,"public/map/0-2.png");
 	var case7 = new oCase(6, "E17", "Une salle sale", 75, 12, 4, array1,"public/map/1-2.png");
 	var case8 = new oCase(7, "E18", "Une salle sale", 75, 12, 4, array1,"public/map/2-2.png");
-	/*var case9 = new oCase(8, "E19", "Une salle sale", 75, 12, 4, array1);
-	var case10 = new oCase(9, "E20", "Une salle sale", 75, 12, 4, array1);
+	var case9 = new oCase(8, "E19", "Une salle sale", 75, 12, 4, array1,"public/map/0-4.png");
+	/*var case10 = new oCase(9, "E20", "Une salle sale", 75, 12, 4, array1);
 	var case11 = new oCase(10, "E21", "Une salle sale", 75, 12, 4, array1);*/
 	
-	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8);//, case9, case10, case11);
+	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9);// case10, case11);
 },
 
 

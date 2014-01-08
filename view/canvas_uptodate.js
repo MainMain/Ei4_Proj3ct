@@ -170,14 +170,13 @@ function start() {
 	var ColorBtn="#850000";
 	var ColorPad="#313131";
 	var ColorGreen="#008000";
-	var ColorRed="#9F0000";
 
 	// Police des labels
 	var PoliceLabel="14px monospace";
 
 	// Couleur des labels
 	var ColorLabel = "#fff";
-	var ColorLabelBonus = "#008000";
+	var ColorLabelBonus = ColorGreen;
 
 	// Espacement des labels
 	var _EspaceLabelX = 300;
@@ -315,13 +314,6 @@ function start() {
 	var _MapY = h/2 - map.image.height/2;
 	//map.image.onload = setImg(map, _MapX, _MapY);*/
 
-	// insertion du Perso
-	var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
-	// Placement du perso
-	var _PersoX = w/2 - imgPerso.image.width/2;
-	var _PersoY = h/2 - imgPerso.image.height/2;
-	imgPerso.image.onload = setImg(imgPerso, _PersoX, _PersoY);
-
 	//*********** Fin de la partie design **************
 	// ******************************************
 
@@ -363,6 +355,22 @@ function start() {
 	contMap.height = _ContMapH;
 	contMap.width = _ContMapW;
 	stage.addChild(contMap);
+	
+	var contPerso = new createjs.Container();
+	contPerso.x = w/2 - 32/2;
+	contPerso.y = h/2 - 32/2;
+	contPerso.height = 32;
+	contPerso.width = 32;
+	stage.addChild(contPerso);
+	
+	// insertion du Perso
+	var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
+	// Placement du perso
+	/*var _PersoX = w/2 - imgPerso.image.width/2;
+	var _PersoY = h/2 - imgPerso.image.height/2;
+	imgPerso.image.onload = setImg(imgPerso, _PersoX, _PersoY);*/
+	contPerso.addChild(imgPerso);
+	//contMap.addChild(contPerso);
 
 	// ******************************************
 	// ** Création des barres du perso 			*
@@ -762,13 +770,21 @@ function start() {
 				    	socket.emit('PERSONNAGE_MODE_CS', 3);
 				    	 socket.emit('INFO_PERSONNAGE_CS');
 						});	*/
+	
+	var BtnAtqGoules = stage.addChild(new Button("Attaquer Goule(s)", ColorBtn));
+	BtnAtqGoules.y = BtnAttaquer.y + H;
+	BtnAtqGoules.addEventListener('click', function(event) {
+		socket.emit('ACTION_ATTAQUE_GOULE_CS');
+						});
 
 	var BtnFouilleRapide = stage.addChild(new Button("Fouille rapide", ColorBtn));
 	//BtnFouilleRapide.y = BtnDefendre.y + H;
-	BtnFouilleRapide.y = BtnAttaquer.y + 3*H;
+	BtnFouilleRapide.y = BtnAtqGoules.y + H;
 	BtnFouilleRapide.addEventListener('click', function(event) {
 		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
 	});	
+	
+	
 
 	stage.update();
 
@@ -979,7 +995,7 @@ function start() {
 				imgItem.x = i * SpaceItem;
 				contInvCase.addChild(imgItem);
 				
-				contMap.removeAllChildren();
+				contMap.removeChild(map);
 				// insertion de la map
 				var map = new createjs.Bitmap(currentCase.pathImg);
 				// Placement de la map
@@ -1155,21 +1171,21 @@ function start() {
 		{
 		case 0 :  labelMode.text=("");
 
-		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorRed));
-		BtnFouiller.y = BtnAttaquer.y + H;
+		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
+		BtnFouiller.y = BtnAtqGoules.y + H;
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
-		var BtnCacher = stage.addChild(new Button("Mode Caché", ColorRed));
+		var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
 		BtnCacher.y = BtnFouiller.y + H;
 		BtnCacher.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 2);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
-		var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorRed));
+		var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
 		BtnDefendre.y = BtnCacher.y + H;
 		BtnDefendre.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 3);
@@ -1186,20 +1202,20 @@ function start() {
 		labelMode.text=("Mode Fouille activé");
 
 		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
-		BtnFouiller.y = BtnAttaquer.y + H;
+		BtnFouiller.y = BtnAtqGoules.y + H;
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
-		var BtnCacher = stage.addChild(new Button("Mode Caché", ColorRed));
+		var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
 		BtnCacher.y = BtnFouiller.y + H;
 		BtnCacher.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 2);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
-		var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorRed));
+		var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
 		BtnDefendre.y = BtnCacher.y + H;
 		BtnDefendre.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 3);
@@ -1218,8 +1234,8 @@ function start() {
 			labelMode.text="";
 			labelMode.text=("Mode Caché activé");
 
-			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorRed));
-			BtnFouiller.y = BtnAttaquer.y + H;
+			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
+			BtnFouiller.y = BtnAtqGoules.y + H;
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
@@ -1232,7 +1248,7 @@ function start() {
 				socket.emit('INFO_PERSONNAGE_CS');
 			});	
 
-			var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorRed));
+			var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
 			BtnDefendre.y = BtnCacher.y + H;
 			BtnDefendre.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 3);
@@ -1251,14 +1267,14 @@ function start() {
 			labelMode.text="";
 			labelMode.text=("Mode Défense activé");
 
-			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorRed));
-			BtnFouiller.y = BtnAttaquer.y + H;
+			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
+			BtnFouiller.y = BtnAtqGoules.y + H;
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
 			});	
 
-			var BtnCacher = stage.addChild(new Button("Mode Caché", ColorRed));
+			var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
 			BtnCacher.y = BtnFouiller.y + H;
 			BtnCacher.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 2);
