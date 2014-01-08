@@ -185,7 +185,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 				var PersonnageModel = mongoose.model('Personnage');
 				var NewPerso = new PersonnageModel();
 				
-				NewPerso = oPersonnageDB.Creation(80,20,15,30,4,"voleur");
+				NewPerso = oPersonnageDB.Creation(100,20,15,30,4,"");
 				
 				console.log('BASE DE DONNEES : ID du perso cree ' + NewPerso._id);
 				NewUser.personnage = NewPerso._id;

@@ -50,7 +50,7 @@ var Personnage_Manager = (function () {
             
 			SetCompetence : function(competence)
 			{
-				this.personnage.competence = competence;
+				var myCompetence = "";
 				
 				/*** - CALCUL SUR LES MULTI POINTS - ***/
 				if(competence == 0)
@@ -68,6 +68,8 @@ var Personnage_Manager = (function () {
 					this.personnage.multiProbaFouille = 1;
 					
 					this.personnage.goulesMax = 2;
+					
+					myCompetence = "brute";
 				}
 				else if(competence == 1)
 				{
@@ -84,6 +86,8 @@ var Personnage_Manager = (function () {
 					this.personnage.multiProbaCache = 3;
 					
 					this.personnage.goulesMax = 5;
+					
+					myCompetence = "explorateur";
 				}
 				else if(competence == 2)
 				{
@@ -100,7 +104,11 @@ var Personnage_Manager = (function () {
 					this.personnage.multiProbaCache = 1;
 					
 					this.personnage.goulesMax = 3;
+					
+					myCompetence = "voleur";
 				}
+				
+				this.personnage.competence = myCompetence;
 				
 				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
 			},
