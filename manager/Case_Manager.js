@@ -58,6 +58,30 @@ var Case_Manager = (function() {
 			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
 		},
 		
+		AttaqueGoule : function()
+		{
+			// détermine si on tue une ou deux goules
+			var proba = Math.floor(Math.random() * 100);
+			var goulesTues;
+			
+			if (proba > 85) 
+			{
+				this.caseCourante.nbrGoules -= 2;
+				goulesTues = 2;
+			}
+			else
+			{
+				this.caseCourante.nbrGoules -= 1;
+				goulesTues = 1;
+			}
+			
+			// écrit les nouveautés dans la BD
+			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
+			
+			// return nbr goules tués
+			return goulesTues;
+		},
+		
 		/************************* LECTURE *******************************/
 		GetCopieCase : function(idCase)
 		{
@@ -92,9 +116,13 @@ var Case_Manager = (function() {
 				return true;
 		},
 		
-		Fouille : function()
+
+		Fouille : function(probaObjetPerso)
 		{
-			return true;
+			var proba = Math.floor(Math.random() * 100);
+			var probaObjetCase = this.caseCourante.probaObjet * 100;
+			probaObjetCase *= probaObjetPerso;
+			
 		},
 		
 		GetNombreGoules : function()

@@ -165,7 +165,18 @@ var Personnage_Manager = (function () {
             	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
         	
-        	
+            AjouterMessage : function(str)
+            {
+            	this.personnage.listeMsgAtt.push(str);
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
+            EffacerMessages : function()
+            {
+            	this.personnage.listeMsgAtt = new Array();
+            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
             /***************** LECTURE *****************/
             ExistItemInSac : function (currentItem) {
             	return this.personnage.existItemInSac(currentItem);
