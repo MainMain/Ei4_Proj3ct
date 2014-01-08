@@ -48,7 +48,15 @@ function initialize() {
 	// *******************************************
 	var manifest = [
 	                {src:"public/Background.jpg", id:"idBackground"},
-	                {src:"public/map/0-0_1.png", id:"idMap"},
+	                {src:"public/map/0-0.png", id:"0-0"},
+	                {src:"public/map/0-1.png", id:"0-1"},
+	                {src:"public/map/0-2.png", id:"0-2"},
+	                {src:"public/map/0-4.png", id:"0-4"},
+	                {src:"public/map/1-1.png", id:"1-1"},
+	                {src:"public/map/1-2.png", id:"1-2"},
+	                {src:"public/map/2-0.png", id:"2-0"},
+	                {src:"public/map/2-1.png", id:"2-1"},
+	                {src:"public/map/2-2.png", id:"2-2"},
 	                {src:"public/persos/perso.gif", id:"idPerso"},
 	                {src:"public/spritesheets/armes/0.png", id:"0"},
 	                {src:"public/spritesheets/armes/1.png", id:"1"},
