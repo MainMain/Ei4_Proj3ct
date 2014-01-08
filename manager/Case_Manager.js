@@ -20,7 +20,7 @@ var Case_Manager = (function() {
 
 	function Case_Manager(idCase) {
 		// FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
-		oCarte.Initialiser(3, 4);
+		oCarte.Initialiser(6, 6);
 		oCase_BD.Initialiser();
 		console.log("CASE MANAGER : id case : " + idCase);
 		this.caseCourante = oCase_BD.GetCaseById(idCase);
