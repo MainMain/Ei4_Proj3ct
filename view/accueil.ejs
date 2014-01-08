@@ -111,6 +111,10 @@
 
 	</article> <!-- .post.hentry -->
 
+	<div>
+	<h1>MESSAGE</h1>
+	<input type="button" id="buttonMessage"/>
+	</div>
 </div> <!-- #content -->
 
 <div id="sidebar" role="complementary" class="span4">
@@ -155,122 +159,21 @@
 		<script src="/socket.io/socket.io.js"></script>
 	
 	<script>
-
-	/*********** EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-	var socket = io.connect('http://localhost:8081');
-	
-	var input_Pseudo = "";
-	var input_Email  = "";
-	
-	/*
-	 * RECEPTION DES INFORMATIONS SUR LA CONNEXION
-	 * Recoit 1 si ok
-	 * Recoit 0 si couple inexistant
-	 */
-	/*
-	socket.on('CONNEXION_SC', function(reponseConnexion)
-	{
-		if(reponseConnexion == 1)
-		{
-			$("#subscribtionAlert").removeClass("*").show();
-			$("#subscribtionAlert").html('<img src="/view/images/zombie.jpg"/>');
-			$("#LogoutForm>div").html('Bonjour ' + input_Pseudo + ' !');
-			$("#LoginForm").hide();
-			$("#SubscribeForm").hide();
-			$("#loginAlert").hide();
-			$("#LogoutForm").show();
-			document.cookie = "user=" + input_Pseudo;
-		}
-		else
-		{
-			$("#loginAlert").html("Le couple Pseudo/Mot de passe n'existe pas !");
-			$("#loginAlert").removeClass("*").addClass("alert alert-error").show();
-		}
-	});
-	*/
-
-	/*
-	 * RECEPTION DES INFORMATIONS SUR L'INSCRIPTION
-	 * Recoit 1 : ok
-	 * Recoit 0 : erreur interne
-	 * Recoit -1 : pseudo deja pris
-	 * Recoit -2 : email deja pris
-	 */
-	 /*
-	socket.on('INSCRIPTION_SC', function(reponseInscription)
-	{
-		if(reponseInscription == 1)
-		{
-			$("#subscribtionAlert").hide();
-			$("#subscribtionAlert").html('Bienvenue ' + input_Pseudo +
-			 " !<br> Votre compte est crée, vous pouvez désormais vous connecter !");
-			$("#subscribtionAlert").removeClass("*").addClass("alert alert-success").show();
-			$("#SubscribeForm").hide();
-		}
-		else if(reponseInscription == 0)
-		{
-			$("#subscribtionAlert").hide();
-			$("#subscribtionAlert").html('Erreur interne');
-			$("#subscribtionAlert").removeClass("*").addClass("alert alert-error").show();
-		}
-		else if(reponseInscription == -1)
-		{
-			$("#subscribtionAlert").hide();
-			$("#subscribtionAlert").html('Pseudo déja utilisé !');
-			$("#subscribtionAlert").removeClass("*").addClass("alert alert-warning").show();
-		}
-		else if(reponseInscription == -2)
-		{
-			$("#subscribtionAlert").hide();
-			$("#subscribtionAlert").html('Email déja utilisé !');
-			$("#subscribtionAlert").removeClass("*").addClass("alert alert-warning").show();
-		}
-	});
-	*/
-	/*
-	 * RECEPTION DES INFORMATIONS SUR LA DECONNEXION
-	 */
-	 /*
-	socket.on('DECONNEXION_SC', function(reponseDeconnexion) {
-		if (reponseDeconnexion == 1) {
-			$("#LoginForm").show();
-			$("#LogoutForm").hide();
-			$("#SubscribeForm").show();
-			document.cookie = "user=";
-		}
-		else
-		{
-			$("#LogoutForm").html("Erreur interne !");
-		}
-	});
-	*/
-	/*
-	// Login form
-	$("#SubmitLogin").click(function(e)
-	{
-		// Setup any needed variables
-		input_Pseudo   = $('#PseudoLogin').val();
-		var input_Password = $('#PasswordLogin').val();
+		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+		var socket = io.connect('http://localhost:8080');
 		
-		socket.emit('CONNEXION_CS', input_Pseudo, input_Password);
-	});
-	*/
-	/*
-	// Subscribe form
-	$("#SubmitSubscribe").click(function(e)
-	{
-		// Setup any needed variables
-		input_Pseudo       = $('#PseudoSubscribe').val();
-		var input_Password = $('#PasswordSubscribe').val();
-		input_Email        = $('#EmailSubscribe').val();
-
-		// Change response text to 'loading...'
-		$("#subscribtionAlert").html('Chargement...').show();
-		socket.emit('INSCRIPTION_CS', input_Pseudo, input_Password, 
-		input_Email);
-	});
-	*/
-	
+		socket.emit('INFO_USER_CS', '<%= username %>' );
+		
+		socket.on('MESSAGE_USER_SC', function(user, message)
+		{
+			$("#buttonMessage").val("Nouveau message de " + user + " : \n" + message);
+		});
+		
+		$("#buttonMessage").click(function()
+		{
+			socket.emit('MESSAGE_USER_CS', "b", "Message test");
+		});
+		
 	</script>
 </body>
 </html>
