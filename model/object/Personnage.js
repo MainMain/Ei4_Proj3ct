@@ -129,6 +129,9 @@ var Personnage = (function() {
 				//  on modifie l'id de salle du perso
 				this.idSalleEnCours = ansIdSalle;
 
+				// on gère son dernier mouvement
+				this.dernierMvt = direction;
+				
 				// Affiche sur le log
 				console.log('PERSONNAGE : Deplacement vers : ' + direction);
 				console.log('PERSONNAGE : Déplacement ok - nvlle salle '+ this.idSalleEnCours);

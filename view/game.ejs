@@ -170,26 +170,11 @@
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 
-
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			var socket = io.connect('http://localhost:8080');
 			
-			/*
-			 * RECEPTION DES INFORMATIONS SUR LA DECONNEXION
-			 */
-			socket.on('DECONNEXION_SC', function(reponseDeconnexion) {
-				if (reponseDeconnexion == 1) {
-					$("#LogoutForm").hide();
-				} else {
-					$("#LogoutForm").html("Erreur interne !");
-				}
-			});
-
-			$("#SubmitLogout").click(function(e) {
-				socket.emit('DECONNEXION_CS');
-			});
-
+			socket.emit('INFO_USER_CS', '<%= username %>' );
 		</script>
 	</body>
 </html>
