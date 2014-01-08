@@ -101,10 +101,11 @@ var Case_Manager = (function() {
 		
 		DegatsParGoules : function()
 		{
-			var degatsGoules = Math.floor(Math.random() * 2);
+			var degatsGoules = Math.floor(Math.random() * 4 + 1);
 			var nbrGoulesAttaquantes = Math.floor(Math.random() * this.caseCourante.nbrGoules);
-			
-			return degatsGoules * nbrGoulesAttaquantes;
+			var total = degatsGoules * nbrGoulesAttaquantes;
+			console.log("CASE_MAN : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total);
+			return total;
 		},
 		
 		ActionRateeParGoules : function()

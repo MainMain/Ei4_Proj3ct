@@ -828,18 +828,19 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_GOULE_CS', function () {
     	// si pas de goules dans la salle
-    	if (cManager.GetNombreGoules() == 0)
+    	if (usersOnline[username].cManager.GetNombreGoules() == 0)
     	{
     		socket.emit('ACTION_ATTAQUE_GOULE_SC', -2, 0);
     	}
     	
     	// calcul des dégats subis
-    	var degatsSubis = cManager.DegatsParGoules();
-    	pManager.DiminuerSante(degatsSubis);
+    	var degatsSubis = usersOnline[username].cManager.DegatsParGoules();
+    	usersOnline[username].pManager.DiminuerSante(degatsSubis);
     	
     	// goules tuées
-    	var goulesTues = cManager.AttaqueGoule();
+    	var goulesTues = usersOnline[username].cManager.AttaqueGoule();
     	
+    	console.log("SERVEUR : attaque goules ->  Goules tués : " + goulesTues + " - Degats " + degatsSubis);
     	socket.emit('ACTION_ATTAQUE_GOULE_SC', goulesTues, degatsSubis);
     });
     
