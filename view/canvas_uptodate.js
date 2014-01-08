@@ -176,7 +176,7 @@ function start() {
 
 	// Couleur des labels
 	var ColorLabel = "#fff";
-	var ColorLabelBonus = "#850000";
+	var ColorLabelBonus = "#008000";
 
 	// Espacement des labels
 	var _EspaceLabelX = 300;
@@ -409,6 +409,27 @@ function start() {
 	moveBarContainer.x = 340;
 	moveBarContainer.y = actionBarContainer.y + _EspaceLabelY;
 	stage.addChild(moveBarContainer);
+	
+	// Barre de Poids du Sac
+
+	sacBarContainer = new createjs.Container();
+
+	sacBarHeight = 10;
+	sacBarWidth = 100;
+	sacBarColor = createjs.Graphics.getRGB(204,153,0);
+	sacBarFrameColor = createjs.Graphics.getRGB(0,0,0);
+
+	sacBar = new createjs.Shape();
+	sacBar.graphics.beginFill(sacBarColor).drawRect(0, 0, 1, sacBarHeight).endFill();
+
+	frameSacBar = new createjs.Shape();
+	paddingSacBar = 3;
+	frameSacBar.graphics.setStrokeStyle(1).beginStroke(sacBarFrameColor).drawRect(-paddingSacBar/2, -paddingSacBar/2, sacBarWidth+paddingSacBar, sacBarHeight+paddingSacBar);
+
+	sacBarContainer.addChild(sacBar, frameSacBar);
+	sacBarContainer.x = 310 +  _EspaceLabelX;
+	sacBarContainer.y = _labelPoidsSacY;
+	stage.addChild(sacBarContainer);
 
 	// ******************************************
 	//********** Déclaration des labels *******
@@ -458,18 +479,6 @@ function start() {
 	labelArmure.y = _labelArmureY;
 	labelArmure.text="Armure équipée : ";
 
-	labelBonusArme = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabelBonus));
-	labelBonusArme.lineHeight = _LineHeight;
-	labelBonusArme.textBaseline = _TextBaseline;
-	labelBonusArme.x = _labelArmeX + 10 + 5*SpaceItem;
-	labelBonusArme.y = _labelArmeY;
-
-	labelBonusArmure = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabelBonus));
-	labelBonusArmure.lineHeight = _LineHeight;
-	labelBonusArmure.textBaseline = _TextBaseline;
-	labelBonusArmure.x = _labelArmureX + 10 + 5*SpaceItem;
-	labelBonusArmure.y = _labelArmureY;
-
 	labelPtsVie = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsVie.lineHeight = _LineHeight;
 	labelPtsVie.textBaseline = _TextBaseline;
@@ -499,6 +508,18 @@ function start() {
 	labelPtsDef.textBaseline = _TextBaseline;
 	labelPtsDef.x = _labelPtsDefX;
 	labelPtsDef.y = _labelPtsDefY;
+	
+	labelBonusArme = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabelBonus));
+	labelBonusArme.lineHeight = _LineHeight;
+	labelBonusArme.textBaseline = _TextBaseline;
+	labelBonusArme.x = _labelPtsAtqX + 170 ;
+	labelBonusArme.y = _labelPtsAtqY;
+
+	labelBonusArmure = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabelBonus));
+	labelBonusArmure.lineHeight = _LineHeight;
+	labelBonusArmure.textBaseline = _TextBaseline;
+	labelBonusArmure.x = _labelPtsDefX + 170;
+	labelBonusArmure.y = _labelPtsDefY;
 
 	labelPoidsSac = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPoidsSac.lineHeight = _LineHeight;
@@ -670,13 +691,10 @@ function start() {
 		if (SelectedItemPerso == -1) {
 			alert("Selectionner Item avant de s'équiper");
 		} else {
-			// Bugg dans la demande au serveur au bout de plusieurs fois
-
-			//alert("Demande serveur (avant)");
 			socket.emit('INV_PERSONNAGE_CS', "EQUIPER", SelectedItemPerso);
 			SelectedItemEquip = -1;
 			SelectedItemPerso = -1;
-			//alert("Demande serveur (apres)");
+			
 		}
 
 	});
@@ -738,6 +756,7 @@ function start() {
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
 	stage.update();
+	// Check message en attente (socket.emit)
 
 	// ******************************************
 	// ********* RECEPTION SERVEUR **************
@@ -796,6 +815,7 @@ function start() {
 				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg");
 				socket.emit('INFO_PERSONNAGE_CS');
 				socket.emit('INFO_CASE_CS');
+				stage.update();
 			}
 		}
 		stage.update();
@@ -814,7 +834,8 @@ function start() {
 			}
 			// dépôt ok
 			else {
-				txtObjet.text = ("Item déposé ! Sac : " + codeRetour + " kg");
+				txtObjet.text = "";
+				txtObjet.text = ("Item " + id_item + "déposé ! Sac : " + codeRetour + " kg");
 				socket.emit('INFO_PERSONNAGE_CS');
 				socket.emit('INFO_CASE_CS');
 				stage.update();
@@ -824,14 +845,12 @@ function start() {
 	});
 
 
-	/********************************************************************************
-	 * RECEPTION DE LA REPONSE POUR LE CHANGEMENT DE MODE
+	/******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
 	 * return 1 si ok
 	 * erreur : 0 si erreur interne
 	 * erreur : -4 si déja dans ce mode
-	 * erreur : -5 si blessé
-	 * erreur : -6 si changement de mode raté
-	 * erreur : -7 si blessé et changement de mode raté
+	 * erreur : -5 si raté à cause goules
 	 * 
 	 * ET return dégats infligés
 	 */
@@ -842,6 +861,7 @@ function start() {
 		case 1: 
 			txtObjetEquipe.text = "";
 			txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok !");
+			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 		case 0 : 
 			txtObjetEquipe.text = "";
@@ -853,17 +873,11 @@ function start() {
 			break;
 		case -5: 
 			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok  mais blessé : " + degatsInfliges);
-			break;
-		case -6 : 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +" raté !");
-			break;
-		case -7: 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +" raté et blessé : "+ degatsInfliges);
+			txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté à cause des Goules");
 			break;
 		}
+		txtObjetEquipe.text+=("Dégats infligés : " + degatsInfliges +"");
+
 			});
 
 	/******************************************************************************************************************
@@ -1027,11 +1041,11 @@ function start() {
 		var PoidsSac=0;
 		var PointsAttaque, PointsDefense;
 		var PointsMove;
+		var currentItem;
 
 		PersoProbaCache=currentPerso.multiProbaCache;
 		PersoProbaFouille=currentPerso.multiProbaFouille;
 
-		// Où récupérer les valeurs des items ??
 		if(currentPerso.armeEquipee != null)
 		{
 			PointsAttaque = currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
@@ -1039,6 +1053,7 @@ function start() {
 		else
 		{
 			PointsAttaque = currentPerso.multiPtsAttaque ;
+
 		}
 
 		if(currentPerso.armureEquipee != null)
@@ -1054,15 +1069,17 @@ function start() {
 		labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 		labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 		labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
-		labelPtsAtq.text=("Points d'attaque :      " + PointsAttaque + "");
-		labelPtsDef.text=("Points de défense :     " + PointsDefense + "");
+		labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
+		labelPtsDef.text=("Points de défense : " + PointsDefense + "");
 
 		// Mise à jour des barres de vie, action, move
 		lifeBar.scaleX = (currentPerso.ptSante/currentPerso.ptSanteMax) * lifeBarWidth;
 		actionBar.scaleX = (currentPerso.ptActions/currentPerso.ptActionsMax) * actionBarWidth;
+		
 		// Sécurité pour le remplissage de la barre de move
 		if(currentPerso.ptDeplacement > currentPerso.ptDeplacementMax)
 		{
+			
 			PointsMove=currentPerso.ptDeplacementMax;
 			moveBar.scaleX = (PointsMove/currentPerso.ptDeplacementMax) * moveBarWidth;
 		}
@@ -1102,6 +1119,8 @@ function start() {
 		});
 
 		BtnFouiller.cursor=BtnCacher.cursor=BtnDefendre.cursor="crosshair";
+		labelBonusArme.text=("");
+		labelBonusArmure.text=("");
 
 		break;
 
@@ -1131,6 +1150,9 @@ function start() {
 
 		BtnFouiller.cursor="not-allowed";
 		BtnCacher.cursor=BtnDefendre.cursor="crosshair";
+
+		labelBonusArme.text=("");
+		labelBonusArmure.text=("");
 
 		break;
 
@@ -1162,6 +1184,9 @@ function start() {
 			BtnCacher.cursor="not-allowed";
 			BtnFouiller.cursor=BtnDefendre.cursor="crosshair";
 
+			labelBonusArme.text=("");
+			labelBonusArmure.text=("");
+
 			break;
 
 		case 3 :  
@@ -1192,6 +1217,9 @@ function start() {
 			BtnDefendre.cursor="not-allowed";
 			BtnFouiller.cursor=BtnCacher.cursor="crosshair";
 
+			labelBonusArme.text=("(+" + PointsAttaque*0.25 + " points)	");
+			labelBonusArmure.text=("(+" + PointsDefense*0.25 + " points)");
+
 			break;
 		}
 
@@ -1202,48 +1230,63 @@ function start() {
 		listeItemsPerso = new Array();
 		contInvPerso.removeAllChildren();
 
+		var iPositionItemInConteneur=0;
+		
 		for (var i = 0; i < currentPerso.sacADos.length; i++) {
+
 
 			// mise de l'item dans une variable
 			var item = currentPerso.sacADos[i];
 
-			// Ajout de l'item à la liste
-			listeItemsPerso.push(item);
-
 			// Calcul du poids du sac
 			PoidsSac+=item.poids;
+			
 
-			// Ajout de l'image à l'ihm
-			var imgItem = new createjs.Bitmap(item.imageName);
+			// Ajout de l'item à la liste
+			listeItemsPerso.push(item);
+			
+			if(!((currentPerso.armeEquipee != null && item.id == currentPerso.armeEquipee.id) || 
+					(currentPerso.armureEquipee != null && item.id == currentPerso.armureEquipee.id)) )
+			{
+				
+				// Ajout de l'item à la liste
+				//listeItemsPerso.push(item);
+				
+				// Ajout de l'image à l'ihm
+				var imgItem = new createjs.Bitmap(item.imageName);
 
-			// ajout d'un texte quand l'user passera la souris dessus
-			imgItem.name = i;
-			imgItem.cursor = "pointer";
+				// ajout d'un texte quand l'user passera la souris dessus
+				imgItem.name = i;
+				imgItem.cursor = "pointer";
 
-			// Ajout de l'évenement a l'image
-			imgItem.addEventListener('mouseover', function(event) {
-				var currentItem = listeItemsPerso[event.target.name];
-				labelDescribeItem.text=("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+				// Ajout de l'évenement a l'image
+				imgItem.addEventListener('mouseover', function(event) {
+					currentItem = listeItemsPerso[event.target.name];
+					labelDescribeItem.text=("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+					stage.update();
+				},false);
+
+				imgItem.addEventListener('mouseout', function(event){
+					labelDescribeItem.text="";
+					stage.update();
+				},false);
+
+				imgItem.addEventListener("click", function(event){
+					var currentItem = listeItemsPerso[event.target.name];
+					SelectedItemPerso=currentItem.id;
+					stage.update();
+				});
+
+				//imgItem.image.onload = setImg(imgItem,10+(i+1)*SpaceItem,400);
+				imgItem.x = iPositionItemInConteneur * SpaceItem;
+				contInvPerso.addChild(imgItem);
+
+				//inc 
+				iPositionItemInConteneur++;
+				
+				// Update l'ihm
 				stage.update();
-			},false);
-
-			imgItem.addEventListener('mouseout', function(event){
-				labelDescribeItem.text="";
-				stage.update();
-			},false);
-
-			imgItem.addEventListener("click", function(event){
-				var currentItem = listeItemsPerso[event.target.name];
-				SelectedItemPerso=currentItem.id;
-				stage.update();
-			});
-
-			//imgItem.image.onload = setImg(imgItem,10+(i+1)*SpaceItem,400);
-			imgItem.x = i * SpaceItem;
-			contInvPerso.addChild(imgItem);
-
-			// Update l'ihm
-			stage.update();
+			}
 		}
 
 		if (currentPerso.armeEquipee != null) {
@@ -1255,14 +1298,14 @@ function start() {
 			contArme.removeAllChildren();
 			contArme.addChild(imgItemArme);
 
-			if(currentPerso.armeEquipee.valeur >=0)
+			/*if(PointsAttaque>=0 &&)
 			{
-				labelBonusArme.text=("(+" + currentPerso.armeEquipee.valeur + " points)	");
+				labelBonusArme.text=("(+" + PointsAttaque*0.25 + " points)	");
 			}
 			else
 			{
-				labelBonusArme.text=("(-" + currentPerso.armeEquipee.valeur + " points)");
-			}
+				labelBonusArme.text=("(-" + PointsDefense*0.25 + " points)");
+			}*/
 
 			contArme.addEventListener("click", function (event) {
 				idSelectedItemEquip = currentPerso.armeEquipee.id;
@@ -1287,14 +1330,14 @@ function start() {
 			// Dessin de l'armure équipée
 			contArmure.removeAllChildren();
 			contArmure.addChild(imgItemArmure);
-			if(currentPerso.armureEquipee.valeur >=0)
+			/*if(currentPerso.armureEquipee.valeur >=0)
 			{
 				labelBonusArmure.text=("(+" + currentPerso.armureEquipee.valeur + " points)");
 			}
 			else
 			{
 				labelBonusArmure.text=("(-" + currentPerso.armureEquipee.valeur + " points)");
-			}
+			}*/
 
 			contArmure.addEventListener("click", function (event) {
 				idSelectedItemEquip = currentPerso.armureEquipee.id;
@@ -1314,6 +1357,9 @@ function start() {
 
 		// Affichage label poids du sac
 		labelPoidsSac.text=("Poids du sac :        " + PoidsSac + "/" + currentPerso.poidsMax);
+		
+		// Affichage barre poids du sac
+		sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
 
 		// Update l'ihm
 		stage.update();
@@ -1482,13 +1528,13 @@ function start() {
 						alert("SelectedItemEquip = " + SelectedItemEquip);
 					});
 				}
-				stage.update();
-
-
 				// log
 				txtObjetEquipe.text = "";
 				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " ok !");
+				
+				stage.update();
 
+				socket.emit('INFO_PERSONNAGE_CS');
 				break;
 			case -1:
 				//alert("-1");
@@ -1525,7 +1571,7 @@ function start() {
 			}
 			txtObjetEquipe.text = "";
 			txtObjetEquipe.text = ("Item de type" + currentItem.type + " déséquipé !");
-
+			socket.emit('INFO_PERSONNAGE_CS');	
 		}
 		stage.update();
 		// RAFRAICHISSEMENT DE LA CASE ET DU PERSO

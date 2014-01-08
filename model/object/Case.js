@@ -25,7 +25,7 @@ var Case = (function() {
 
 	// --- METHODES DE CLASSE ---
 	function Case(id, nom, description, probaObjet, probaCache,
-			nbrGoules, listeItem) {
+			nbrGoules, listeItem, pathImg) {
 		this.id = id;
 		this.nom = nom;
 		this.description = description;
@@ -33,6 +33,7 @@ var Case = (function() {
 		this.probaCache = probaCache;
 		this.nbrGoules = nbrGoules;
 		this.listeItem = listeItem;
+		this.pathImg = pathImg;
 	}
 
 	// --- METHODES D'INSTANCE

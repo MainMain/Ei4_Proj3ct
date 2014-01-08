@@ -19,6 +19,7 @@ var Case_Manager = (function() {
 	Case_Manager.build = function(idUser) {return new Case_Manager();};
 
 	function Case_Manager(idCase) {
+		// FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 		oCarte.Initialiser(3, 4);
 		oCase_BD.Initialiser();
 		console.log("CASE MANAGER : id case : " + idCase);
