@@ -57,32 +57,49 @@ var Personnage_Manager = (function () {
 				{
 					this.personnage.ptSante = 140;
 					this.personnage.ptSanteMax = 140;
+					this.personnage.ptDeplacement = 15;
+					this.personnage.ptDeplacementMax = 15;
+					this.personnage.ptActions = 20;
+					this.personnage.ptActionsMax = 20;
+					
 					this.personnage.multiPtsAttaque = 2;
 					this.personnage.multiPtsDefense = 2;
 					this.personnage.multiProbaCache = 0.5;
+					this.personnage.multiProbaFouille = 1;
+					
 					this.personnage.goulesMax = 2;
-					console.log("========================= 0 =================");
 				}
 				else if(competence == 1)
 				{
+					this.personnage.ptSante = 100;
+					this.personnage.ptSanteMax = 100;
 					this.personnage.ptDeplacement = 25;
 					this.personnage.ptDeplacementMax = 25;
-					this.personnage.multiProbaCache = 3;
+					this.personnage.ptActions = 20;
+					this.personnage.ptActionsMax = 20;
+					
+					this.personnage.multiPtsAttaque = 1;
 					this.personnage.multiPtsDefense = 0.3;
+					this.personnage.multiProbaFouille = 1;
+					this.personnage.multiProbaCache = 3;
+					
 					this.personnage.goulesMax = 5;
-					console.log("========================= 1 =================");
 				}
 				else if(competence == 2)
 				{
+					this.personnage.ptSante = 100;
+					this.personnage.ptSanteMax = 100;
+					this.personnage.ptDeplacement = 15;
+					this.personnage.ptDeplacementMax = 15;
 					this.personnage.ptActions = 30;
 					this.personnage.ptActionsMax = 30;
-					this.personnage.multiProbaFouille = 3;
+					
+					this.personnage.multiPtsAttaque = 1;
 					this.personnage.multiPtsDefense = 1.5;
-					console.log("========================= 2 =================");
-				}
-				else
-				{
-					console.log("========================= ERREUR =================");
+					this.personnage.multiProbaFouille = 3;
+					this.personnage.multiProbaCache = 1;
+					
+					this.personnage.goulesMax = 3;
 				}
 				
 				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
