@@ -15,6 +15,7 @@ var Case = (function() {
 	//Case.objetsAuSol;
 	Case.nbrGoules;
 	Case.listeItem;
+	Case.pathImg;
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	Case.build = function(id, nom, description, probaObjet, probaCache,

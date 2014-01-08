@@ -83,6 +83,7 @@ function initialize() {
 	stage.addChild(loadProgressLabel);
 
 	loadingBarContainer = new createjs.Container();
+	loadingBarContainer.cursor="wait";
 
 	loadingBarHeight = 80;
 	loadingBarWidth = 500;
@@ -288,6 +289,14 @@ function start() {
 	// Dimension Conteneur ArmureEquip
 	var _ContArmureH = 200;
 	var _ContArmureW = 200;
+	
+	// Placement Conteneur Map (en fonction de la taille de l'image !!)
+	var _ContMapX = w/2 - 379/2;
+	var _ContMapY = h/2 - 379/2;
+	
+	// Dimension Conteneur Map
+	var _ContMapH = 379;
+	var _ContMapW = 379;
 
 	// label.lineHeight
 	var _LineHeight = 15;
@@ -299,12 +308,12 @@ function start() {
 	var background = new createjs.Bitmap("public/Background.jpg");
 	background.image.onload = setImg(background, 0, 0);
 
-	// insertion de la map
-	var map = new createjs.Bitmap("public/map/0-0_1.png");
+	/*// insertion de la map (virtuelle) pour regler les boutons
+	var map = new createjs.Bitmap("public/map/0-0.png");
 	// Placement de la map
 	var _MapX = w/2 - map.image.width/2;
 	var _MapY = h/2 - map.image.height/2;
-	map.image.onload = setImg(map, _MapX, _MapY);
+	//map.image.onload = setImg(map, _MapX, _MapY);*/
 
 	// insertion du Perso
 	var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
@@ -347,6 +356,13 @@ function start() {
 	contArmure.height = _ContArmureH;
 	contArmure.width = _ContArmureW;
 	stage.addChild(contArmure);
+	
+	var contMap = new createjs.Container();
+	contMap.x = _ContMapX;
+	contMap.y = _ContMapY;
+	contMap.height = _ContMapH;
+	contMap.width = _ContMapW;
+	stage.addChild(contMap);
 
 	// ******************************************
 	// ** Création des barres du perso 			*
@@ -619,30 +635,31 @@ function start() {
 						});*/
 
 	var _EpaisseurBpPad = 20;
-	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, map.image.width, _EpaisseurBpPad));
-	BtnHaut.y = map.y - _EpaisseurBpPad;
-	BtnHaut.x = map.x;
+	
+	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
+	BtnHaut.y = _ContMapY - _EpaisseurBpPad;
+	BtnHaut.x = _ContMapX;
 	BtnHaut.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
 	});
 
-	var BtnBas = stage.addChild(new ButtonPad("", ColorPad, map.image.width, _EpaisseurBpPad));
-	BtnBas.y = map.y + map.image.height;
-	BtnBas.x = map.x;
+	var BtnBas = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
+	BtnBas.y = _ContMapY + _ContMapH;
+	BtnBas.x = _ContMapX;
 	BtnBas.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 	});
 
-	var BtnGauche = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, map.image.height));
-	BtnGauche.x = map.x - _EpaisseurBpPad;
-	BtnGauche.y = map.y;
+	var BtnGauche = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, _ContMapH));
+	BtnGauche.x = _ContMapX - _EpaisseurBpPad;
+	BtnGauche.y = _ContMapY;
 	BtnGauche.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
 	});
 
-	var BtnDroite = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, map.image.height));
-	BtnDroite.x = map.x + map.image.width;
-	BtnDroite.y = map.y;
+	var BtnDroite = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, _ContMapH));
+	BtnDroite.x = _ContMapX + _ContMapW;
+	BtnDroite.y = _ContMapY;
 	BtnDroite.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 	});
@@ -961,6 +978,12 @@ function start() {
 				//imgItem.image.onload = setImg(imgItem,200+(i+1)*30,50);
 				imgItem.x = i * SpaceItem;
 				contInvCase.addChild(imgItem);
+				
+				contMap.removeAllChildren();
+				// insertion de la map
+				var map = new createjs.Bitmap(currentCase.pathImg);
+				// Placement de la map
+				contMap.addChild(map);
 
 				// Update l'ihm
 				stage.update();
@@ -1082,8 +1105,9 @@ function start() {
 		// Sécurité pour le remplissage de la barre de vie
 		if(currentPerso.ptSante<=0)
 		{
-			//PointsSante=0;
-			labelPtsVie.text=("Points de vie :         	 	0/" + currentPerso.ptSanteMax);
+			
+			//labelPtsVie.text=("Points de vie :         	 	0/" + currentPerso.ptSanteMax);
+			labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 			lifeBar.scaleX = 0;
 		}
 		else
@@ -1094,7 +1118,8 @@ function start() {
 		// Sécurité pour le remplissage de la barre d'action
 		if(currentPerso.ptActions<=0)
 		{
-			labelPtsAction.text=("Points d'action :	 	 	    	0/" + currentPerso.ptActionsMax);
+			//labelPtsAction.text=("Points d'action :	 	 	    	0/" + currentPerso.ptActionsMax);
+			labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 			actionBar.scaleX = 0;
 		}
 		else
@@ -1110,7 +1135,8 @@ function start() {
 		}
 		else if(currentPerso.ptDeplacement<=0)
 		{
-			labelPtsMove.text=("Points de mouvement :     0/" + currentPerso.ptDeplacementMax);
+			//labelPtsMove.text=("Points de mouvement :     0/" + currentPerso.ptDeplacementMax);
+			labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
 			moveBar.scaleX = 0;
 		}
 		else
@@ -1392,7 +1418,7 @@ function start() {
 		
 		// Affichage barre poids du sac
 		sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
-
+		
 		// Update l'ihm
 		stage.update();
 	});

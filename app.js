@@ -310,9 +310,7 @@ io.sockets.on('connection', function (socket)
      * erreur : -2 si aucun de Pts Mouvement
      * erreur : -3 si trop de goules
      * erreur : -4 si zone sure adverse
-     * erreur : -5 si raté à cause goule
      * 
-     * ET return eventuels dégats infligés
      * 
      */
     socket.on('MOVE_PERSONNAGE_CS', function (move)
@@ -347,13 +345,13 @@ io.sockets.on('connection', function (socket)
 		// test si pas zone sure adverse
 		if (usersOnline[username].cManager.GetTestZoneSure(usersOnline[username].uManager.GetNumEquipe()))
 			{
-				console.log("SERVEUR : ! déplacement vers zone sûre ennemie !");
+				console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
 				socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
 				return;
 			}
 		
     	// ********* algorithme de test de l'impact des goules *********
-    	var restG = TestGoules();
+    	/*var restG = TestGoules();
     	console.log("degats ? " + restG["degats"]);
     	console.log("actionOk ? " + restG["actionOk"]);
     	if (restG["actionOk"] == 0)
@@ -391,15 +389,15 @@ io.sockets.on('connection', function (socket)
 			
 			// renvoi la salle ou erreur
 			if (usersOnline[username].cManager.GetCopieCase() == null)
-				socket.emit('MOVE_PERSONNAGE_SC', 0, restG["degats"]);
+				socket.emit('MOVE_PERSONNAGE_SC', 0);
 			else
-				socket.emit('MOVE_PERSONNAGE_SC', usersOnline[username].cManager.GetCopieCase(), restG["degats"]);
+				socket.emit('MOVE_PERSONNAGE_SC', usersOnline[username].cManager.GetCopieCase());
 		}
 		// si le déplacement a raté
 		else if (ansDeplacementOk == -1)
 		{
 			console.log('SERVER : DEBUG envoi deplacement impossible');
-			socket.emit('MOVE_PERSONNAGE_SC', -1, restG["degats"]);
+			socket.emit('MOVE_PERSONNAGE_SC', -1);
 		}
 		console.log("*******************************************************");
     });
@@ -615,38 +613,6 @@ io.sockets.on('connection', function (socket)
 		socket.emit('INFO_PERSONNAGE_SC', usersOnline[username].pManager.GetCopiePerso());
     });
 
-
-    /******************************************************************************************************************
-     * RECEPTION D'UNE DEMANDE DE DECONNEXION
-     * return : 1 si ok
-     * Si erreur : renvoi 0
-     */
-    socket.on('DECONNEXION_CS', function () {
-    	console.log("*******************************************************");
-        // log
-        console.log('SERVER : Demande Deconnexion !');
-
-        socket.emit('DECONNEXION_SC', 1);
-        console.log("*******************************************************");
-    });
-
-
-    /******************************************************************************************************************
-     * RECEPTION D'UNE DEMANDE DE CONNEXION Renvoi "CONNEXION_OK"
-     * return : 1 si login / mdp ok
-     * Si couple inconnu : renvoi 0
-     * si erreur : renvoi -1
-     */
-	 /*
-    socket.on('CONNEXION_CS', function (username, password)
-	{
-		console.log("*******************************************************");
-        // log
-        console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
-		
-		oUtilisateur_BD.Connexion(username, password, callbackConnexion);
-		console.log("*******************************************************");
-    });
     
 	/**************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR UTILISER UN ITEM
@@ -758,8 +724,10 @@ io.sockets.on('connection', function (socket)
     socket.on('ACTION_FOUILLE_RAPIDE_CS', function ()
     {
     	console.log("***************** FOUILLE RAPIDE ******************************");
-        // si pu de pts actions
-        if(usersOnline[username].pManager.AucunPtActions()){
+       
+    	// si pu de pts actions
+        if(usersOnline[username].pManager.AucunPtActions())
+		{
         	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0);
         	return;
         }
@@ -827,7 +795,8 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (pseudoCible) {
         // si pu de pts actions
-        if(usersOnline[username].pManager.AucunPtActions()){
+        if(usersOnline[username].pManager.AucunPtActions())
+        {
         	socket.emit('ACTION_ATTAQUE_SC', 0, 0);
         	return;
         }
@@ -848,16 +817,40 @@ io.sockets.on('connection', function (socket)
     
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
-	 * return 1 si ok
+	 * return 2 si deux goules tuées
+	 * return 1 si une goules tuée
 	 * erreur : 0 si erreur interne
+	 * erreur : -1 si aucune goule tuée
+	 * erreut : -2 si pas de goules dans la salle
 	 * 
 	 * ET degats reçus
 	 * 
 	 */
     socket.on('ACTION_ATTAQUE_GOULE_CS', function () {
-
+    	// si pas de goules dans la salle
+    	if (cManager.GetNombreGoules() == 0)
+    	{
+    		socket.emit('ACTION_ATTAQUE_GOULE_CS', -2, 0);
+    	}
+    	
+    	// calcul des dégats subis
+    	var degatsSubis = cManager.DegatsParGoules();
+    	pManager.DiminuerSante(degatsSubis);
+    	
+    	// goules tuées
+    	var goulesTues = cManager.AttaqueGoule();
+    	
+    	socket.emit('ACTION_ATTAQUE_GOULE_CS', goulesTues, degatsSubis);
+    });
+    
+    /******************************************************************************************************************
+	 * RECEPTION D'UN ACCUSE DE LECTURE DES MESSAGES
+	 */ 
+    socket.on('ACCUSE_LECTURE_MSG_CS', function () {
+    	pManager.EffacerMessages();
     });
 
+    
     /******************************************************************************************************
      * FONCTION DE TEST DE L'IMPACT DES GOULES SUR LES ACTIONS / DEPLACEMENTS DES JOUEURS
      * return [actionOk, degats]
@@ -883,68 +876,6 @@ io.sockets.on('connection', function (socket)
         };
         return a;
     }
-    
-    
-    
-	/*callbackConnexion = function(reponse)
-	{
-		console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-		console.log("SERVEUR : Reponse connexion : " + reponse);
-		
-        if (reponse == 1 || reponse == -1)
-		{
-            socket.emit('CONNEXION_SC', reponse);
-        }
-		else
-		{
-			socket.emit('CONNEXION_SC', 0);
-		}
-
-        console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-	}*/
-	
-
-
-    /***************************************************************************
-     * RECEPTION D'UNE DEMANDE D'INSCRIPTION
-     * Renvoi 1 si ok
-     * si erreur : -1 pseudo deja pris
-     * Si erreur : -2 email deja pris
-     */
-	/*
-    socket.on('INSCRIPTION_CS', function (username, password, email)
-	{
-		console.log("*******************************************************");
-        //Log
-        console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password + " : " + email);
-		
-        oUtilisateur_BD.Inscription(username, password, email, callbackInscription);
-        console.log("*******************************************************");
-    });
-	
-	callbackInscription = function(reponse)
-	{
-		console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-		console.log("SERVEUR : Reponse inscription : " + reponse);
-		//si problème
-        if (reponse == -1 || reponse == -2)
-		{
-            socket.emit('INSCRIPTION_SC', reponse);
-        }
-        // sinon, c'est un utilisateur, donc 
-        else
-		{
-            console.log("SERVEUR : INSCRIPTION OK");
-            // créer le personnage
-            var myPerso = new oPersonnage(reponse.idPersonnage, 0, 0, 0, 0, 0, 0, 0, 0, null, null, null);
-            oPersonnage_BD.SetPersonnage(myPerso);
-            socket.emit('INSCRIPTION_SC', 1);
-        }
-        console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-	}
-	*/
-
-    //});
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE SI UN UTILISATEUR EST CONNECTE

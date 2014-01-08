@@ -102,19 +102,19 @@ Case_BD.Initialiser = function() {
 		this.listeItem = listeItem;
 		this.pathImg = pathImg;
 		*/
-	var case1 = new oCase(0, "E11", "Une mini salle", 20, 50, 40, array1);
-	var case2 = new oCase(1, "E12", "Une petite salle", 24, 54, 20, array2);
-	var case3 = new oCase(2, "E13", "Une moyenne salle", 47, 50, 32, array3);
-	var case4 = new oCase(3, "E14", "Une grande salle", 47, 45, 40, array2);
-	var case5 = new oCase(4, "E15", "Une géante salle", 0, 21, 100, array2);
-	var case6 = new oCase(5, "E16", "Une salle sale", 75, 12, 4, array1);
-	var case7 = new oCase(6, "E17", "Une salle sale", 75, 12, 4, array1);
-	var case8 = new oCase(7, "E18", "Une salle sale", 75, 12, 4, array1);
-	var case9 = new oCase(8, "E19", "Une salle sale", 75, 12, 4, array1);
+	var case1 = new oCase(0, "E11", "Une mini salle", 20, 50, 40, array1,"public/map/0-0.png");
+	var case2 = new oCase(1, "E12", "Une petite salle", 24, 54, 20, array2,"public/map/2-0.png");
+	var case3 = new oCase(2, "E13", "Une moyenne salle", 47, 50, 32, array3,"public/map/0-1.png");
+	var case4 = new oCase(3, "E14", "Une grande salle", 47, 45, 40, array2,"public/map/1-1.png");
+	var case5 = new oCase(4, "E15", "Une géante salle", 0, 21, 100, array2,"public/map/2-1.png");
+	var case6 = new oCase(5, "E16", "Une salle sale", 75, 12, 4, array1,"public/map/0-2.png");
+	var case7 = new oCase(6, "E17", "Une salle sale", 75, 12, 4, array1,"public/map/1-2.png");
+	var case8 = new oCase(7, "E18", "Une salle sale", 75, 12, 4, array1,"public/map/2-2.png");
+	/*var case9 = new oCase(8, "E19", "Une salle sale", 75, 12, 4, array1);
 	var case10 = new oCase(9, "E20", "Une salle sale", 75, 12, 4, array1);
-	var case11 = new oCase(10, "E21", "Une salle sale", 75, 12, 4, array1);
+	var case11 = new oCase(10, "E21", "Une salle sale", 75, 12, 4, array1);*/
 	
-	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9, case10, case11);
+	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8);//, case9, case10, case11);
 },
 
 
