@@ -831,6 +831,7 @@ io.sockets.on('connection', function (socket)
     	if (usersOnline[username].cManager.GetNombreGoules() == 0)
     	{
     		socket.emit('ACTION_ATTAQUE_GOULE_SC', -2, 0);
+    		return;
     	}
     	
     	// calcul des dégats subis

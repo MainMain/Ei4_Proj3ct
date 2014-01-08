@@ -282,8 +282,8 @@ function start() {
 	var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
 	
 	// Placement label Retour Goules
-	var _labelRetourGoulesX = 150;
-	var _labelRetourGoulesY = 170;
+	var _labelRetourGoulesX = 10;
+	var _labelRetourGoulesY = 570;
 	
 	// Placement Conteneur ArmeEquip
 	var _ContArmeX = _labelArmeX + 120;
@@ -478,7 +478,7 @@ function start() {
 	var txtSalle, txtObjet, txtCase, txtObjetEquipe, 
 	labelObjetCase,	labelInventaire, labelDescribeItem, labelMode,
 	labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
-	labelBonusArme, labelBonusArmure, labelIdSalle, labelRetourGoules,
+	labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules,
 	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille;
 
 	labelIdSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -486,6 +486,12 @@ function start() {
 	labelIdSalle.textBaseline = _TextBaseline;
 	labelIdSalle.x = _labelIdSalleX;
 	labelIdSalle.y = _labelIdSalleY;
+	
+	labelNomSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelNomSalle.lineHeight = _LineHeight;
+	labelNomSalle.textBaseline = _TextBaseline;
+	labelNomSalle.x = _labelIdSalleX;
+	labelNomSalle.y = _labelIdSalleY + 20;
 	
 	labelRetourGoules = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourGoules.lineHeight = _LineHeight;
@@ -808,13 +814,12 @@ function start() {
 		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
 	});	
 	
-	
-
 	stage.update();
 
 	//BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = BtnFouiller.x = BtnCacher.x = BtnDefendre.x = AbsBtn;
 	BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = AbsBtn;
 	BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor = BtnAttaquer.cursor = "crosshair";
+	
 	// ******************************************
 	// *********** INITIALISATION ***************
 	// ******************************************
@@ -829,15 +834,66 @@ function start() {
 	// ********* RECEPTION SERVEUR **************
 	// ******************************************
 	
-	//******************************************************************************************************************
-	// * RECEPTION DU NOUVEL ID SALLE DU PERSONNAGE
-	//********************************************
-	/*socket.on('ACTION_ATTAQUE_GOULE_SC', function (currentCase) {
-		
-	}*/
-	//******************************************************************************************************************
-	// * RECEPTION DU NOUVEL ID SALLE DU PERSONNAGE
-	//********************************************
+	/******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
+	 * return 2 si deux goules tuées
+	 * return 1 si une goules tuée
+	 * erreur : 0 si erreur interne
+	 * erreur : -1 si aucune goule tuée
+	 * erreut : -2 si pas de goules dans la salle
+	 * 
+	 * ET degats reçus
+	 * 
+	 */
+	socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
+		alert("retour");
+		switch(goulesTues)
+		{
+			case 2: 
+				alert("2");
+			labelRetourGoules.text="";
+			labelRetourGoules.text=("2 Goules tuées ! -" + degatsSubis + " points de vie");
+			break;
+			
+			case 1: 
+				labelRetourGoules.text="";
+			labelRetourGoules.text=("1 Goule tuée ! -" + degatsSubis + " points de vie");
+				alert("1");
+			break;
+			
+			case 0:
+				alert("0");
+				labelRetourGoules.text="";
+			labelRetourGoules.text=("Attaque de Goule(s) : erreur interne");
+			break;
+			
+			case -1:
+				alert("-1");
+				labelRetourGoules.text="";
+			labelRetourGoules.text=("Attaque de Goule(s) échouée ! -" + degatsSubis + " points de vie");
+			break;
+			
+			case -2:
+				alert("-2");
+				labelRetourGoules.text="";
+			labelRetourGoules.text=("Pas de Goule dans la salle !");
+			break;
+		}
+		stage.update();
+	});
+	
+	/******************************************************************************************************************
+     * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
+     * la case avec MOVE_PERSONNAGE_SC 
+     * return : usersOnline[username].cManager.GetCopieCase() si ok
+     * erreur : renvoi 0 si erreur de case
+     * erreur : renvoi -1 si impossible de bouger 
+     * erreur : -2 si aucun de Pts Mouvement
+     * erreur : -3 si trop de goules
+     * erreur : -4 si zone sure adverse
+     * 
+     * 
+     */
 	socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 		/*if (currentCase == 0) {
 			txtSalle.text = "";
@@ -883,6 +939,7 @@ function start() {
 			
 			default:
 			socket.emit('INFO_CASE_CS');
+			labelRetourGoules.text="";
 			txtSalle.text = "";
 			txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1006,7 +1063,8 @@ function start() {
 			labelNbGoules.text=("Goules dans la salle : " + currentCase.nbrGoules + "");
 			labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
 			labelProbaFouille.text=("Proba de Trouver item : " + ProbFouille + " % (avec multi de " +  PersoProbaFouille + ")");
-
+			labelNomSalle.text="";
+			labelNomSalle.text=("Nom salle : "+currentCase.nom+"");
 
 			labelObjetCase.text="";
 			labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
