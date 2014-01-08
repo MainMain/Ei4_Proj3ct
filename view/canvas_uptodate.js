@@ -817,7 +817,7 @@ function start() {
 	// * RECEPTION DU NOUVEL ID SALLE DU PERSONNAGE
 	//********************************************
 	socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
-		if (currentCase == 0) {
+		/*if (currentCase == 0) {
 			txtSalle.text = "";
 			txtSalle.text = ("WARNING : ERREUR_CASE");
 		} else if (currentCase == -1) {
@@ -835,6 +835,36 @@ function start() {
 			txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
 			//modifieIdSalle(currentCase.nom, currentCase.id);
 			socket.emit('INFO_PERSONNAGE_CS');
+		}*/
+		switch(currentCase)
+		{
+			case 0: txtSalle.text = "";
+			txtSalle.text = ("WARNING : ERREUR_CASE");
+			break;
+			
+			case -1: txtSalle.text = "";
+			txtSalle.text = ("Impossible d'aller par là !");
+			break;
+			
+			case -2: txtSalle.text = "";
+			txtSalle.text = ("Vous n'avez plus de points de mouvements !");
+			break;
+			
+			case -3: txtSalle.text = "";
+			txtSalle.text = ("Trop de Goules dans cette salle !");
+			break;
+			
+			case -4:
+			txtSalle.text = "";
+			txtSalle.text = ("Impossible de pénétrer dans la Maison de l'ennemi!");
+			break;
+			
+			default:
+			socket.emit('INFO_CASE_CS');
+			txtSalle.text = "";
+			txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
 		}
 		stage.update();
 	});
