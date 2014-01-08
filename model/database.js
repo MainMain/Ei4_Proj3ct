@@ -109,7 +109,7 @@ database.Initialiser = function() {
 		indice = Number,
 	});
 	
-	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
+	ItemBaseModel = mongoose.model('ItemBase',	ItemBaseSchema);
 */
 	
 	console.log("Initialisation Database");

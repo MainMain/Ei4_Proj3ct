@@ -55,8 +55,8 @@ Item_BD.GetItem = function(idItem) {
 /*
 Item_BD.NewItem = function(idItem,callbackNewItem) {
 	
-	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
-	ItemModel = mongoose.model('Item',ItemSchema);
+	ItemBaseModel = mongoose.model('ItemBase');
+	ItemModel = mongoose.model('Item');
 	
 	var indexBD = Math.floor(Math.random()*20);
 	

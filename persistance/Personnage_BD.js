@@ -33,69 +33,7 @@ function Personnage_BD() {
  * @method SetPersonnage
  */
 
-/*Personnage_BD.SetPersonnage = function(personnageToSave,callbackSetPersonnage) {
-	
-	var PersonnageModel = mongoose.model('Personnage');
-	
-	PersonnageModel.findOneAndUpdate({_id : personnageToSave.id},{	ptSante : personnageToSave.ptSante,
-																	ptSanteMax : personnageToSave.ptSanteMax,
-																	Action : personnageToSave.ptActions,
-																	ActionMax : personnageToSave.ptActionsMax,
-																	ptDeplacement : personnageToSave.ptDeplacement,
-																	ptDeplacementMax : personnageToSave.ptDeplacementMax,
-																	poidsMax : personnageToSave.poidsMax,
-																	gouleLimite : personnageToSave.goulesMax,
-																	competence : personnageToSave.competence,
-																	idSalleEnCours : personnageToSave.idSalleEnCours,
-																	idArmeEquipee : personnageToSave.armeEquipee,
-																	idArmureEquipee : personnageToSave.armureEquipee,
-																	sacADos : personnageToSave.sacADos,});
-	
-PersonnageModel.findOne({_id : personnageToSave.id}, function(err,perso)
-	{
-		if (err)  
-		{
-			throw err;
-		}
-		
-		if (typeof perso[0] === "undefined")
-		{
-			callbackSetPersonnage(-1)
-		}
-		else
-		{	
-			//perso._id = personnageToSave.id;
-			ptSante : personnageToSave.ptSante,
-			ptSanteMax : personnageToSave.ptSanteMax,
-			Action : personnageToSave.ptActions,
-			ActionMax : personnageToSave.ptActionsMax,
-			ptDeplacement : personnageToSave.ptDeplacement,
-			ptDeplacementMax : personnageToSave.ptDeplacementMax,
-			poidsMax : personnageToSave.poidsMax,
-			gouleLimite : personnageToSave.goulesMax,
-			competence : personnageToSave.competence,
-			idSalleEnCours : personnageToSave.idSalleEnCours,
-			idArmeEquipee : personnageToSave.armeEquipee,
-			idArmureEquipee : personnageToSave.armureEquipee,
-			sacADos : personnageToSave.sacADos,
-			console.log('Le personnage a bien été modifié');
-			perso.save(function (err)
-			{
-				if (err)
-				{
-					throw err;
-				}
-				callbackSetPersonnage(new oPersonnage(
-					perso._id,perso.ptSante,perso.ptSanteMax,
-					perso.ptAction,perso.ptActionMax,perso.ptDeplacement,
-					perso.ptDeplacementMax,perso.poidsMax,perso.gouleLimite,
-					perso.competence,perso.idSalleEnCours,perso.idArmeEquipee,
-					perso.idArmureEquipee,perso.sacADos));
-			});
-		}
-			
-	});*/
-	
+
 
 Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage) {
 
