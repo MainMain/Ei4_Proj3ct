@@ -63,6 +63,8 @@ database.Initialiser = function() {
 		idArmeEquipee : Number,
 		idArmureEquipee : Number,
 		sacADos : Array,
+		dernierMvt : String,
+		listeMsgAtt : Array,
 	});
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
 	
@@ -76,8 +78,9 @@ database.Initialiser = function() {
 		description : String,
 		probaObjet : Number,
 		probaCache : Number,
-		itemsAuSol : Array,
 		nbrGoules : Number,
+		itemsAuSol : Array,
+		pathImg : String,
 	});
 	CaseModel = mongoose.model('Case',CaseSchema); 
 	

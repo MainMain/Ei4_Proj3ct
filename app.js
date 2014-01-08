@@ -661,12 +661,14 @@ io.sockets.on('connection', function (socket)
 	 * erreur : 0 si erreur interne
 	 * erreur : -4 si déja dans ce mode
 	 * erreur : -5 si raté à cause goules
+	 * erreur : -10 si plus de pts actions
 	 * 
 	 * ET return dégats infligés
 	 */
     socket.on('PERSONNAGE_MODE_CS', function (mode) {
         console.log("*******************************************************");
         console.log("SERVEUR : chgt de mode demandé, de " + pManager.GetMode() + " -> " + mode);
+        
         // si déja dans ce mode
         if (pManager.GetMode() == mode)
         {
@@ -683,6 +685,13 @@ io.sockets.on('connection', function (socket)
             return;
         }
         // sinon :
+        
+        // si pu de pts actions
+        if(pManager.AucunPtActions()){
+        	socket.emit('PERSONNAGE_MODE_SC', mode, -10);
+        	return;
+        }
+        
         // ********* algorithme de test de l'impact des goules *********
     	var restG = TestGoules();
     	console.log("degats ? " + restG["degats"]);
@@ -692,13 +701,13 @@ io.sockets.on('connection', function (socket)
     			console.log("chgt de mode ratée à cause des goules");
     			
     			// renvoi de la réponse
-    			socket.emit('MOVE_PERSONNAGE_SC', -5, restG["degats"]); 
+    			socket.emit('PERSONNAGE_MODE_SC', -5, restG["degats"]); 
     		}
     	// ***************************************************************
 
     	// chgt de mode du perso
         pManager.ChangementMode(mode);
-    	console.log("chgt d emode ok");
+    	console.log("SERVEUR : chgt de mode ok");
     	socket.emit('PERSONNAGE_MODE_SC', 1, restG["degats"]);
     	 
         console.log("*******************************************************");
@@ -712,6 +721,7 @@ io.sockets.on('connection', function (socket)
 	 * erreur : 0 si erreur interne
 	 * erreur : -1 si fouille rate
 	 * erreur : -5 si action raté
+	 * erreur : -10 si plus de pts actions
 	 * 
 	 * ET return éventuels item découvert
 	 * 
@@ -722,6 +732,12 @@ io.sockets.on('connection', function (socket)
     socket.on('ACTION_FOUILLE_RAPIDE_CS', function ()
     {
     	console.log("***************** FOUILLE RAPIDE ******************************");
+        // si pu de pts actions
+        if(pManager.AucunPtActions()){
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0);
+        	return;
+        }
+        
     	// ********* algorithme de test de l'impact des goules *********
     	var restG = TestGoules();
     	console.log("degats ? " + restG["degats"]);
@@ -777,12 +793,43 @@ io.sockets.on('connection', function (socket)
 	 * erreur : 0 si erreur interne
 	 * erreur : -1 si joueur pu dans la salle
 	 * erreur : -5 si raté à cause goules
-	 * 
+	 * erreur : -10 si plus de pts actions
 	 * 
 	 * ET return dégats infligés
+	 * 
+	 * ET return dégats reçus
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (pseudoCible) {
-    	
+        // si pu de pts actions
+        if(pManager.AucunPtActions()){
+        	socket.emit('ACTION_ATTAQUE_SC', 0, 0);
+        	return;
+        }
+    });
+    
+    /******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR OBTENIR LES MESSAGES EN ATTENTE
+	 * return 1 si ok
+	 * erreur : 0 si erreur interne
+	 * erreur : -1 si aucun message
+	 * 
+	 * ET liste messages
+	 * 
+	 */
+    socket.on('CHECK_MSG_ATT_CS', function () {
+
+    });
+    
+    /******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
+	 * return 1 si ok
+	 * erreur : 0 si erreur interne
+	 * 
+	 * ET degats reçus
+	 * 
+	 */
+    socket.on('ACTION_ATTAQUE_GOULE_CS', function () {
+
     });
 
     /******************************************************************************************************
@@ -800,8 +847,8 @@ io.sockets.on('connection', function (socket)
         // informe le manager de perso des dégats
         var degatsInfliges = pManager.DiminuerSante(reponseDegatsParGoules);
 
-        console.log("SERVEUR -> GOULES : degats par goules" + reponseDegatsParGoules);
-        console.log("SERVEUR -> GOULES : degats " + degatsInfliges);
+        console.log("SERVEUR -> GOULES : degats par goules " + reponseDegatsParGoules);
+        console.log("SERVEUR -> GOULES : degats infligés " + degatsInfliges);
         console.log("SERVEUR -> GOULES : actionok " + reponseActionReussie);
         
         var a = {
@@ -810,6 +857,8 @@ io.sockets.on('connection', function (socket)
         };
         return a;
     }
+    
+    
     
 	/*callbackConnexion = function(reponse)
 	{

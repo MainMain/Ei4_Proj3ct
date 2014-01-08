@@ -1,4 +1,4 @@
-// includes
+ // includes
 var oPersonnage = require('../model/Object/Personnage');
 var oPersonnage_BD = require('../persistance/Personnage_BD');
 
@@ -132,13 +132,13 @@ var Personnage_Manager = (function () {
             
             ChangementMode : function(mode)
             {
-            	this.personnage.mode = mode;
+            	this.personnage.changerMode(mode);
             	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             FouilleRapide : function()
             {
-            	this.personnage.ptActions -= 4 ;
+            	this.personnage.ptActions -= 4;
             	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
@@ -215,6 +215,12 @@ var Personnage_Manager = (function () {
             GetPtsDeplacement : function()
             {
             	return this.personnage.ptDeplacement;
+            },
+            
+            AucunPtActions : function()
+            {
+            	if (this.personnage.ptActions <= 0) return true;
+            	else return false;
             },
         };
         return Personnage_Manager;
