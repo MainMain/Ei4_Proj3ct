@@ -107,7 +107,7 @@ var Personnage = (function() {
 				return -1;
 			}
 			
-			// recupere l'id de la salle
+			// recupere l'id de la salle suivante
 			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours, direction);
 			
 			// si id de la salle -1, pas de salle dans la direction
