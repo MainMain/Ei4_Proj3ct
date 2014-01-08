@@ -12,7 +12,7 @@
 	Copyright (c) 2009-2012, Jayj.dk
 	All rights reserved.
 */
-@font-face { 	font-family: "JackLantern BB"; 	src: url('../font/JackLanternBB.ttf'); }
+/*@font-face { 	font-family: "JackLantern BB"; 	src: url('../font/JackLanternBB.ttf'); }*/s
 @font-face { 	font-family: "Infected"; 	src: url('../font/Infected.ttf'); }
 
 .clearfix {
@@ -85,7 +85,7 @@ button,
 input,
 select,
 textarea {
-  font-family: "JackLantern BB";
+  font-family: "calibri";
   color: #222222;
 }
 body {
@@ -106,7 +106,7 @@ body {
   background-attachment: fixed;
   /* Fallback background image */
   
-  font-family: "JackLantern BB";
+  font-family: "calibri";
 /*	font-family: "calibri";*/
 }
 /**
@@ -152,7 +152,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "JackLantern BB";
+  font-family: "calibri";
 }
 h1 small,
 h2 small,
@@ -905,7 +905,7 @@ input[type="search"] {
   border: 1px solid rgba(0, 0, 0, 0.05);
   margin-top: 70px;
   margin-bottom: 25px;
-  font-size: 20px;
+  font-size: 16px;
 }
 .loginform:before,
 .loginform:after {
@@ -917,15 +917,15 @@ input[type="search"] {
 }
 
 .loginform input[type="submit"]{
-  width: 30%;
+  width: 20%;
   margin: auto 15px;
   padding: 6px 6px;
-  font-family: "JackLantern BB";
+  font-family: "calibri";
   font-size: 20px;
   color: #FF0000;
 }
 .loginform input{
-  width: 19%;
+  width: 23%;
   margin: auto 15px;
   padding: 6px 0px;
   font-size: 20px;
@@ -956,7 +956,7 @@ input[type="search"] {
   width: 30%;
   margin: auto 15px;
   padding: 6px 6px;
-  font-family: "JackLantern BB";
+  font-family: "calibri";
   font-size: 20px;
   color: #FF0000;
   float:right;
