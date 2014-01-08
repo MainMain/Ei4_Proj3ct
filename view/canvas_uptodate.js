@@ -184,6 +184,10 @@ function start() {
 
 	// Espacement items
 	var SpaceItem = 30;
+	
+	// Placement label id Salle en cours
+	var _labelIdSalleX=150;
+	var _labelIdSalleY=150;
 
 	// Placement label Mode Perso
 	var _labelModeX = 440 + _EspaceLabelX;
@@ -438,9 +442,15 @@ function start() {
 	var txtSalle, txtObjet, txtCase, txtObjetEquipe, 
 	labelObjetCase,	labelInventaire, labelDescribeItem, labelMode,
 	labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
-	labelBonusArme, labelBonusArmure,
+	labelBonusArme, labelBonusArmure, labelIdSalle,
 	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille;
 
+	labelIdSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelIdSalle.lineHeight = _LineHeight;
+	labelIdSalle.textBaseline = _TextBaseline;
+	labelIdSalle.x = _labelIdSalleX;
+	labelIdSalle.y = _labelIdSalleY;
+	
 	labelObjetCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelObjetCase.lineHeight = _LineHeight;
 	labelObjetCase.textBaseline = _TextBaseline;
@@ -609,35 +619,35 @@ function start() {
 						});*/
 
 	var _EpaisseurBpPad = 20;
-	var BtnHaut = stage.addChild(new ButtonPad("H", ColorPad, map.image.width, _EpaisseurBpPad));
+	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, map.image.width, _EpaisseurBpPad));
 	BtnHaut.y = map.y - _EpaisseurBpPad;
 	BtnHaut.x = map.x;
 	BtnHaut.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
 	});
 
-	var BtnBas = stage.addChild(new ButtonPad("B", ColorPad, map.image.width, _EpaisseurBpPad));
+	var BtnBas = stage.addChild(new ButtonPad("", ColorPad, map.image.width, _EpaisseurBpPad));
 	BtnBas.y = map.y + map.image.height;
 	BtnBas.x = map.x;
 	BtnBas.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 	});
 
-	var BtnGauche = stage.addChild(new ButtonPad("G", ColorPad, _EpaisseurBpPad, map.image.height));
+	var BtnGauche = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, map.image.height));
 	BtnGauche.x = map.x - _EpaisseurBpPad;
 	BtnGauche.y = map.y;
 	BtnGauche.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
 	});
 
-	var BtnDroite = stage.addChild(new ButtonPad("D", ColorPad, _EpaisseurBpPad, map.image.height));
+	var BtnDroite = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, map.image.height));
 	BtnDroite.x = map.x + map.image.width;
 	BtnDroite.y = map.y;
 	BtnDroite.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 	});
 
-	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "move";
+	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "crosshair";
 	/*BtnHaut.x = BtnBas.x = 50;
 					BtnGauche.y = BtnDroite.y = 40;*/
 
@@ -1040,7 +1050,6 @@ function start() {
 
 		var PoidsSac=0;
 		var PointsAttaque, PointsDefense;
-		var PointsMove;
 		var currentItem;
 
 		PersoProbaCache=currentPerso.multiProbaCache;
@@ -1053,40 +1062,63 @@ function start() {
 		else
 		{
 			PointsAttaque = currentPerso.multiPtsAttaque ;
-
 		}
 
 		if(currentPerso.armureEquipee != null)
 		{
 			PointsDefense = currentPerso.multiPtsDefense * currentPerso.armureEquipee.valeur ;
-
 		}
 		else
 		{
 			PointsDefense = currentPerso.multiPtsDefense;
 		}
 
-		labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
-		labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
-		labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
+		// Mise à jour des labels
 		labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
 		labelPtsDef.text=("Points de défense : " + PointsDefense + "");
+		labelIdSalle.text=("Salle en cours : " + currentPerso.idSalleEnCours + "");
 
-		// Mise à jour des barres de vie, action, move
-		lifeBar.scaleX = (currentPerso.ptSante/currentPerso.ptSanteMax) * lifeBarWidth;
-		actionBar.scaleX = (currentPerso.ptActions/currentPerso.ptActionsMax) * actionBarWidth;
-		
-		// Sécurité pour le remplissage de la barre de move
-		if(currentPerso.ptDeplacement > currentPerso.ptDeplacementMax)
+		// Mise à jour des barres de vie, action, move		
+		// Sécurité pour le remplissage de la barre de vie
+		if(currentPerso.ptSante<=0)
 		{
-			
-			PointsMove=currentPerso.ptDeplacementMax;
-			moveBar.scaleX = (PointsMove/currentPerso.ptDeplacementMax) * moveBarWidth;
+			//PointsSante=0;
+			labelPtsVie.text=("Points de vie :         	 	0/" + currentPerso.ptSanteMax);
+			lifeBar.scaleX = 0;
 		}
 		else
 		{
+			labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
+			lifeBar.scaleX = (currentPerso.ptSante/currentPerso.ptSanteMax) * lifeBarWidth;
+		}
+		// Sécurité pour le remplissage de la barre d'action
+		if(currentPerso.ptActions<=0)
+		{
+			labelPtsAction.text=("Points d'action :	 	 	    	0/" + currentPerso.ptActionsMax);
+			actionBar.scaleX = 0;
+		}
+		else
+		{
+			labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
+			actionBar.scaleX = (currentPerso.ptActions/currentPerso.ptActionsMax) * actionBarWidth;
+		}
+		// Sécurité pour le remplissage de la barre de move
+		if(currentPerso.ptDeplacement > currentPerso.ptDeplacementMax)
+		{
+			labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
+			moveBar.scaleX = currentPerso.ptDeplacementMax;
+		}
+		else if(currentPerso.ptDeplacement<=0)
+		{
+			labelPtsMove.text=("Points de mouvement :     0/" + currentPerso.ptDeplacementMax);
+			moveBar.scaleX = 0;
+		}
+		else
+		{
+			labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
 			moveBar.scaleX = (currentPerso.ptDeplacement/currentPerso.ptDeplacementMax) * moveBarWidth;
 		}
+		
 
 		//labelPtsAtq.text=("Points d'attaque :      " + PointsAttaque + "");
 		//labelPtsDef.text=("Points de défense :     " + PointsDefense + "");
