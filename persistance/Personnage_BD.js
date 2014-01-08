@@ -66,7 +66,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                 idArmure = personnageToSave.armureEquipee.id;
 
             console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
-       
+
             PersonnageModel.update({
                     _id: personnageToSave.id
                 }, {

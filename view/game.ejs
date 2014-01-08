@@ -128,14 +128,14 @@
 			</form>
 
 			<div id="content" role="main" class="span12">
-				<% if(idEquipe == -1) { %>
+				<% if(idEquipe == 0) { %>
 					<form name="formInitPerso" method="POST" action="/jeu">
 						<input type="hidden" name="_method" value="PUT">
-						<select name="Equipe">
+						<select name="equipe">
 							<option value="1">Equipe 1</option>
 							<option value="2">Equipe 2</option>
 						</select>
-						<select name="Competence">
+						<select name="competence">
 							<option value="1">Brute (Dégats augmentés)</option>
 							<option value="2">JE SAIS PAS(Défense augmentés)</option>
 							<option value="3">Ninja (Probabilité de se cacher augmentée)</option>

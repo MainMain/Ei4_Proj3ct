@@ -48,6 +48,17 @@ var Personnage_Manager = (function () {
             	
             },
             
+			SetCompetence : function(competence)
+			{
+				this.personnage.competence = competence;
+				
+				/*** - CALCUL SUR LES MULTI POINTS - ***/
+				
+				/*** - CALCUL SUR LES MULTI POINTS - ***/
+				
+				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+			},
+			
             Deplacement : function (move, nbrGoules) {
             	// deplace le personnage
             	

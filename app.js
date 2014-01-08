@@ -110,6 +110,9 @@ app.get('/jeu', function fonctionIndex(req, res)
 
 app.put('/jeu', function fonctionJeu(req, res)
 {
+	var b = req.body;
+	uManager.SetNumEquipe(b.equipe);
+	pManager.SetCompetence(b.competence);
 	var options = { "username": req.session.username, "idEquipe": uManager.GetNumEquipe() };
 	res.render('game', options);
 });
@@ -150,6 +153,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 	if (typeof reponseConnexion === 'string')
 	{
 		req.session.username = b.username;
+		req.session.id = reponseConnexion;
 		
 		optionAccueil.username = req.session.username;
 		
