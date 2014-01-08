@@ -324,7 +324,7 @@ io.sockets.on('connection', function (socket)
 		nbrGoules = nbrGoules - usersOnline[username].cManager.GetNombreAllies();
 		
 		// test si déplacement possible
-		var testDep = usersOnline[username].pManager.TestDeplacementPossible();
+		var testDep = usersOnline[username].pManager.TestDeplacementPossible(nbrGoules, move);
 		if (testDep != 1)
 			{
 				switch(testDep)

@@ -274,11 +274,20 @@ var Personnage_Manager = (function () {
             	return this.personnage.mode;
             },
             
-            TestDeplacementPossible : function(nbrGoules)
+            TestDeplacementPossible : function(nbrGoules, direction)
             {
             	// si pu de PM
             	if (this.personnage.ptDeplacement <= 0)
     				return -2;
+            	
+            	console.log("PM : last mvt : " + this.personnage.dernierMvt);
+            	if (
+            			direction == "OUEST" && this.personnage.dernierMvt == "EST" ||
+            			direction == "EST" && this.personnage.dernierMvt == "OUEST" ||
+            			direction == "NORD" && this.personnage.dernierMvt == "SUD" ||
+            			direction == "SUD" && this.personnage.dernierMvt == "NORD"
+            	)
+            		return 1;
             	
             	// si trop de goules, on peut s'arreter là
     			if (nbrGoules > this.personnage.goulesMax)

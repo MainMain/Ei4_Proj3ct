@@ -101,9 +101,17 @@ var Personnage = (function() {
 					console.log("PERSONNAGE : pu de pts de déplacement !");
 				return -2;
 				}
+			
 			// si trop de goules, on peut s'arreter là
 			if (nbrGoules > this.goulesMax)
+				{
+					if (!
+							(direction == "OUEST" && this.dernierMvt == "EST" ||
+            			direction == "EST" && this.dernierMvt == "OUEST" ||
+            			direction == "NORD" && this.dernierMvt == "SUD" ||
+            			direction == "SUD" && this.dernierMvt == "NORD"))
 				return -3;
+				}
 			
         	// Vérification de la direction demandée
 			if (typeof direction !== 'string'
