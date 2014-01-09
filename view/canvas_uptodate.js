@@ -48,6 +48,8 @@ function initialize() {
 	// *******************************************
 	var manifest = [
 	                {src:"public/Background.jpg", id:"idBackground"},
+	                {src:"public/ButtonRed.png", id:"idButton"},
+	                {src:"public/ButtonGreen.png", id:"idButton2"},
 	                {src:"public/map/0-0.png", id:"0-0"},
 	                {src:"public/map/0-1.png", id:"0-1"},
 	                {src:"public/map/0-2.png", id:"0-2"},
@@ -318,6 +320,12 @@ function start() {
 	// application du background
 	var background = new createjs.Bitmap("public/Background.jpg");
 	background.image.onload = setImg(background, 0, 0);
+	
+	var testButton = new createjs.Bitmap("public/ButtonRed.png");
+	testButton.image.onload = setImg(testButton, 150, 200);
+	
+	var testBtn = new createjs.Bitmap("public/ButtonGreen.png");
+	testBtn.image.onload = setImg(testBtn, 150, 250);
 
 	/*// insertion de la map (virtuelle) pour regler les boutons
 	var map = new createjs.Bitmap("public/map/0-0.png");
