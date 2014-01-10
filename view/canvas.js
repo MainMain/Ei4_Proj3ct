@@ -181,7 +181,9 @@ function start() {
 
 	// Couleur des boutons
 	var ColorBtn="#850000";
-	var ColorPad="#313131";
+	//var ColorPad="#313131";
+	
+	var ColorPad=createjs.Graphics.getRGB(0,0,0,0.01);
 	var ColorGreen="#008000";
 
 	// Police des labels
@@ -671,37 +673,37 @@ function start() {
 						socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 						});*/
 
-	var _EpaisseurBpPad = 20;
+	var _EpaisseurBpPad = 50;
 	
 	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
-	BtnHaut.y = _ContMapY - _EpaisseurBpPad;
+	BtnHaut.y = _ContMapY;
 	BtnHaut.x = _ContMapX;
 	BtnHaut.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
 	});
 
 	var BtnBas = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
-	BtnBas.y = _ContMapY + _ContMapH;
+	BtnBas.y = _ContMapY + _ContMapH - _EpaisseurBpPad;
 	BtnBas.x = _ContMapX;
 	BtnBas.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 	});
 
 	var BtnGauche = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, _ContMapH));
-	BtnGauche.x = _ContMapX - _EpaisseurBpPad;
+	BtnGauche.x = _ContMapX;
 	BtnGauche.y = _ContMapY;
 	BtnGauche.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
 	});
 
 	var BtnDroite = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, _ContMapH));
-	BtnDroite.x = _ContMapX + _ContMapW;
+	BtnDroite.x = _ContMapX + _ContMapW - _EpaisseurBpPad;
 	BtnDroite.y = _ContMapY;
 	BtnDroite.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 	});
 
-	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "crosshair";
+	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "pointer";
 	/*BtnHaut.x = BtnBas.x = 50;
 					BtnGauche.y = BtnDroite.y = 40;*/
 
@@ -858,11 +860,9 @@ function start() {
 	 * 
 	 */
 	socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
-		alert("retour");
 		switch(goulesTues)
 		{
 			case 2: 
-				alert("2");
 			labelRetourGoules.text="";
 			labelRetourGoules.text=("2 Goules tuées ! -" + degatsSubis + " points de vie");
 			break;
@@ -870,23 +870,19 @@ function start() {
 			case 1: 
 				labelRetourGoules.text="";
 			labelRetourGoules.text=("1 Goule tuée ! -" + degatsSubis + " points de vie");
-				alert("1");
 			break;
 			
 			case 0:
-				alert("0");
 				labelRetourGoules.text="";
 			labelRetourGoules.text=("Attaque de Goule(s) : erreur interne");
 			break;
 			
 			case -1:
-				alert("-1");
 				labelRetourGoules.text="";
 			labelRetourGoules.text=("Attaque de Goule(s) échouée ! -" + degatsSubis + " points de vie");
 			break;
 			
 			case -2:
-				alert("-2");
 				labelRetourGoules.text="";
 			labelRetourGoules.text=("Pas de Goule dans la salle !");
 			break;

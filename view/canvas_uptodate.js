@@ -858,11 +858,9 @@ function start() {
 	 * 
 	 */
 	socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
-		alert("retour");
 		switch(goulesTues)
 		{
 			case 2: 
-				alert("2");
 			labelRetourGoules.text="";
 			labelRetourGoules.text=("2 Goules tuées ! -" + degatsSubis + " points de vie");
 			break;
@@ -870,23 +868,19 @@ function start() {
 			case 1: 
 				labelRetourGoules.text="";
 			labelRetourGoules.text=("1 Goule tuée ! -" + degatsSubis + " points de vie");
-				alert("1");
 			break;
 			
 			case 0:
-				alert("0");
 				labelRetourGoules.text="";
 			labelRetourGoules.text=("Attaque de Goule(s) : erreur interne");
 			break;
 			
 			case -1:
-				alert("-1");
 				labelRetourGoules.text="";
 			labelRetourGoules.text=("Attaque de Goule(s) échouée ! -" + degatsSubis + " points de vie");
 			break;
 			
 			case -2:
-				alert("-2");
 				labelRetourGoules.text="";
 			labelRetourGoules.text=("Pas de Goule dans la salle !");
 			break;
