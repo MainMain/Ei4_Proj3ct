@@ -23,14 +23,13 @@ var Personnage_Manager = (function () {
         // --- METHODES D'INSTANCE
         Personnage_Manager.prototype = {
 
-        	callbackGetPersonnageByIdUser : function (reponse, c) {
+        	callbackGetPersonnageByIdUser : function (reponse) {
         		console.log("PERSO MANAGER : reponse perso by user : " + reponse);
                 if (reponse == -1) this.personnage = null;
                 else if (reponse == -2) this.personnage = null;
                 else {
                     this.personnage = reponse;
                 }
-                c();
             },
             
             callbackSetPersonnage : function(reponse)
@@ -40,10 +39,10 @@ var Personnage_Manager = (function () {
             	else console.log("PMANAGER : ecriture ok");
             },
             
-            Load : function(idUser, callback)
+            Load : function(idUser)
             {
             	var context = this;
-            	oPersonnage_BD.GetPersonnageByIdUser(idUser, function(reponse) {context.callbackGetPersonnageByIdUser(reponse, callback); });
+            	oPersonnage_BD.GetPersonnageByIdUser(idUser, function(reponse) {context.callbackGetPersonnageByIdUser(reponse); });
             	console.log("PMANAGER : Actif !");
             	
             },
