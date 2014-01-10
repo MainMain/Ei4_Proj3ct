@@ -94,7 +94,7 @@ app.get('/jeu', function fonctionIndex(req, res)
 	}
 	else
 	{
-		var options = { "username": s.username, "idEquipe": usersOnline[s.username].uManager.GetNumEquipe(), "sessionID" : s.id };
+		var options = { "username": s.username, "idEquipe": usersOnline[s.id].uManager.GetNumEquipe(), "sessionID" : s.id };
 		res.render('game', options);
 	}
 	optionAccueil.username = null;
@@ -105,9 +105,9 @@ app.put('/jeu', function fonctionJeu(req, res)
 {
 	var b = req.body;
 	var s = req.session;
-	usersOnline[s.username].uManager.SetNumEquipe(b.equipe);
-	usersOnline[s.username].pManager.SetCompetence(b.competence);
-	var options = { "username": req.session.username, "idEquipe": usersOnline[s.username].uManager.GetNumEquipe(), "sessionID" : s.id };
+	usersOnline[s.id].uManager.SetNumEquipe(b.equipe);
+	usersOnline[s.id].pManager.SetCompetence(b.competence);
+	var options = { "username": req.session.username, "idEquipe": usersOnline[s.id].uManager.GetNumEquipe(), "sessionID" : s.id };
 	res.render('game', options);
 });
 
@@ -118,19 +118,22 @@ app.get('/regles', function fonctionIndex(req, res)
 
 app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 {
-	var options = { "username": req.session.username, "errorLogin": null };
+	var s = req.session;
+	var options = { "username": req.session.username, "errorLogin": null, "sessionID" : s.id };
 	res.render('chat-equipe', options);
 });
 
 app.get('/classement', restrict, function fonctionIndex(req, res)
 {
-	var options = { "username": req.session.username, "errorLogin": null };
+	var s = req.session;
+	var options = { "username": req.session.username, "errorLogin": null, "sessionID" : s.id };
 	res.render('classement', options);
 });
 
 app.get('/chat-general', restrict, function fonctionIndex(req, res)
 {
-	var options = { "username": req.session.username, "errorLogin": null, "users": usersOnline, "countUser": req.session.views };
+	var s = req.session;
+	var options = { "username": req.session.username, "errorLogin": null, "users": usersOnline, "countUser": req.session.views, "sessionID" : s.id };
 	res.render('chat', options);
 });
 
@@ -152,20 +155,21 @@ callbackConnexion = function(reponseConnexion, req, res)
 		
 		optionAccueil.username = s.username;
 		
-		if(usersOnline[s.username] == null)
+		if(usersOnline[s.id] == null)
 		{
-			usersOnline[s.username] = new Object;
+			usersOnline[s.id] = new Object;
 		}
 		
 		// chargement de son personnage
-		usersOnline[s.username].iManager = new oItem_Manager();
-		usersOnline[s.username].pManager = new oPersonnage_Manager();
-		usersOnline[s.username].uManager = new oUtilisateur_Manager();
-		usersOnline[s.username].uManager.Load(reponseConnexion);
-		usersOnline[s.username].pManager.Load(reponseConnexion, function()
+		usersOnline[s.id].username = s.username;
+		usersOnline[s.id].iManager = new oItem_Manager();
+		usersOnline[s.id].pManager = new oPersonnage_Manager();
+		usersOnline[s.id].uManager = new oUtilisateur_Manager();
+		usersOnline[s.id].uManager.Load(reponseConnexion);
+		usersOnline[s.id].pManager.Load(reponseConnexion, function()
 		{
-			usersOnline[s.username].cManager = new oCase_Manager(usersOnline[s.username].pManager.GetIdSalleEnCours());
-			console.log("DEBUG : NOM SALLE EN COURS " + usersOnline[s.username].cManager.GetCopieCase().id);
+			usersOnline[s.id].cManager = new oCase_Manager(usersOnline[s.id].pManager.GetIdSalleEnCours());
+			console.log("DEBUG : NOM SALLE EN COURS " + usersOnline[s.id].cManager.GetCopieCase().id);
 		});
 		
 		// redirige à la page d'accueil
@@ -207,7 +211,7 @@ callbackInscription = function(reponseInscription, req, res)
 	else
 	{
 		optionAccueil.usernameInscription = b.username;
-		res.render("accueil", optionAccueil);s
+		res.render("accueil", optionAccueil);
 	}
 	optionAccueil.usernameInscription = null;
 	optionAccueil.InfoInscription = null;
@@ -215,7 +219,7 @@ callbackInscription = function(reponseInscription, req, res)
 
 app.delete("/", function (req, res)
 {
-	usersOnline[req.session.username] = null;
+	delete usersOnline[req.session.id];
 	req.session.destroy();
 	res.render('accueil', optionAccueil);
 });
@@ -271,7 +275,7 @@ var io = require('socket.io').listen(server, {
  */
 io.sockets.on('connection', function (socket)
 {
-	var username = "";
+	var id = "";
     //test sessions
     socket.emit('MESSAGE_TEST', 'Vous êtes bien connecté !');
     socket.broadcast.emit('MESSAGE_TEST', 'Un autre client vient de se connecter !');
@@ -279,32 +283,40 @@ io.sockets.on('connection', function (socket)
     console.log('SERVER : Un client est connecté !');
     //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
 
-	socket.on('INFO_USER_CS', function(sessionUsername)
+	socket.on('INFO_USER_CS', function(sessionID)
 	{
-		username = sessionUsername;
-		if(usersOnline[username])
+		id = sessionID;
+		if(usersOnline[id])
 		{
-			usersOnline[username].socket = socket;
+			usersOnline[id].socket = socket;
 		}
 	});
 	
 	socket.on('MESSAGE_USER_CS', function(user, message)
 	{
-		if(usersOnline[user])
+		var found = false;
+		
+		for(var i in usersOnline)
 		{
-			console.log("Message Envoyé à " + user);
-			usersOnline[user].socket.emit('MESSAGE_USER_SC', username, message);
+			console.log("-" + i + "-");
+		/*
+			if(usersOnline[i].username == user)
+			{
+				usersOnline[i].socket.emit('MESSAGE_USER_SC', usersOnline[id].username, message);
+				found = true;
+			}
+		*/
 		}
-		else
+		if(!found)
 		{
-			console.log("Message Non Envoyé !");
+			socket.emit('MESSAGE_USER_SC', user, -1);
 		}
 	});
 	
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
      * la case avec MOVE_PERSONNAGE_SC 
-     * return : usersOnline[username].cManager.GetCopieCase() si ok
+     * return : usersOnline[id].cManager.GetCopieCase() si ok
      * erreur : renvoi 0 si erreur de case
      * erreur : renvoi -1 si impossible de bouger 
      * erreur : -2 si aucun de Pts Mouvement
@@ -320,11 +332,11 @@ io.sockets.on('connection', function (socket)
 		console.log('SERVER : Déplacement du personnage demandé : ' + move);
 		
 		// -> calcul de goules
-		var nbrGoules = usersOnline[username].cManager.GetNombreGoules();
-		nbrGoules = nbrGoules - usersOnline[username].cManager.GetNombreAllies();
+		var nbrGoules = usersOnline[id].cManager.GetNombreGoules();
+		nbrGoules = nbrGoules - usersOnline[id].cManager.GetNombreAllies();
 		
 		// test si déplacement possible
-		var testDep = usersOnline[username].pManager.TestDeplacementPossible();
+		var testDep = usersOnline[id].pManager.TestDeplacementPossible();
 		if (testDep != 1)
 			{
 				switch(testDep)
@@ -343,7 +355,7 @@ io.sockets.on('connection', function (socket)
 			}
 		
 		// test si pas zone sure adverse
-		if (usersOnline[username].cManager.GetTestZoneSure(usersOnline[username].uManager.GetNumEquipe()))
+		if (usersOnline[id].cManager.GetTestZoneSure(usersOnline[id].uManager.GetNumEquipe()))
 			{
 				console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
 				socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
@@ -360,7 +372,7 @@ io.sockets.on('connection', function (socket)
 			console.log("deplacement ratée à cause des goules");
 			
 			// retrait des points de déplacement
-			usersOnline[username].pManager.PerteDeplacementParGoules();
+			usersOnline[id].pManager.PerteDeplacementParGoules();
 			
 			// renvoi de la réponse
 			socket.emit('MOVE_PERSONNAGE_SC', -5, restG["degats"]); 
@@ -373,7 +385,7 @@ io.sockets.on('connection', function (socket)
     	//***************************************
     	nbrGoules = 0;
     	/*************************************/
-		var ansDeplacementOk = usersOnline[username].pManager.Deplacement(move, nbrGoules);
+		var ansDeplacementOk = usersOnline[id].pManager.Deplacement(move, nbrGoules);
 		
 		console.log("SERVEUR : code retour ans : " + ansDeplacementOk);
 		// si le déplacement a réussi
@@ -382,16 +394,16 @@ io.sockets.on('connection', function (socket)
 			console.log('SERVER : deplacement ok envoi de la nouvelle position');
 			
 			// enregistre dans le manager
-			usersOnline[username].cManager.ChangeCase(usersOnline[username].pManager.GetIdSalleEnCours());
+			usersOnline[id].cManager.ChangeCase(usersOnline[id].pManager.GetIdSalleEnCours());
 			// récupère la salle en cours
-			//var usersOnline[username].cManager.GetCopieCase() = oCase_BD.GetCaseById(usersOnline[username].pManager.GetIdSalleEnCours());
-			//var usersOnline[username].cManager.GetCopieCase() = usersOnline[username].cManager.GetCopieCase(usersOnline[username].pManager.GetIdSalleEnCours());
+			//var usersOnline[id].cManager.GetCopieCase() = oCase_BD.GetCaseById(usersOnline[id].pManager.GetIdSalleEnCours());
+			//var usersOnline[id].cManager.GetCopieCase() = usersOnline[id].cManager.GetCopieCase(usersOnline[id].pManager.GetIdSalleEnCours());
 			
 			// renvoi la salle ou erreur
-			if (usersOnline[username].cManager.GetCopieCase() == null)
+			if (usersOnline[id].cManager.GetCopieCase() == null)
 				socket.emit('MOVE_PERSONNAGE_SC', 0);
 			else
-				socket.emit('MOVE_PERSONNAGE_SC', usersOnline[username].cManager.GetCopieCase());
+				socket.emit('MOVE_PERSONNAGE_SC', usersOnline[id].cManager.GetCopieCase());
 		}
 		// si le déplacement a raté
 		else if (ansDeplacementOk == -1)
@@ -417,7 +429,7 @@ io.sockets.on('connection', function (socket)
 		console.log("*******************************************************");
 		
 		// recupere l'currentItem
-		var currentItem = usersOnline[username].iManager.GetItem(id_item);
+		var currentItem = usersOnline[id].iManager.GetItem(id_item);
 		if (currentItem == null || typeof(currentItem) === "undefined" )
 			{
 				console.log("SERVEUR : erreur : id item : " + id_item);
@@ -425,7 +437,7 @@ io.sockets.on('connection', function (socket)
 			}
 		
 		// check si currentItem est bien dans le sac
-		var existItemInSac = usersOnline[username].pManager.ExistItemInSac(currentItem);
+		var existItemInSac = usersOnline[id].pManager.ExistItemInSac(currentItem);
 		
 		// si l'item n'est pas dans le sac, on renvoi 0
 		if (existItemInSac == false)
@@ -441,7 +453,7 @@ io.sockets.on('connection', function (socket)
 			 * erreur : -3 si ni une arme, ni une armure
 			 */
 			// demande d'équipement au manager
-			var reponse = usersOnline[username].pManager.SEquiper(currentItem);
+			var reponse = usersOnline[id].pManager.SEquiper(currentItem);
 			
 			console.log("SERVEUR : code retour : " + reponse);
 			// et selon le message renvoyé
@@ -469,7 +481,7 @@ io.sockets.on('connection', function (socket)
 		} else if (type == "DESEQUIPER") 
 		{
 			console.log("SERVEUR : demande de déséquipement de l'item " + currentItem.id +" - " + currentItem.nom);
-			var r = usersOnline[username].pManager.SeDesequiper(currentItem);
+			var r = usersOnline[id].pManager.SeDesequiper(currentItem);
 			if (r == -1) 
 				socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, -4);
 			else
@@ -491,10 +503,10 @@ io.sockets.on('connection', function (socket)
 		console.log("*******************************************************");
 		
 		// récupère la case en cours
-		//var usersOnline[username].cManager.GetCopieCase() = oCase_BD.GetCaseById(usersOnline[username].pManager.GetIdSalleEnCours());
+		//var usersOnline[id].cManager.GetCopieCase() = oCase_BD.GetCaseById(usersOnline[id].pManager.GetIdSalleEnCours());
 
 		// recupere l'currentItem
-		var currentItem = usersOnline[username].iManager.GetItem(id_item);
+		var currentItem = usersOnline[id].iManager.GetItem(id_item);
 
 		if (currentItem == null || typeof(currentItem) === "undefined" )
 		{
@@ -509,16 +521,16 @@ io.sockets.on('connection', function (socket)
 			console.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
 
 			// check si currentItem est bien dans la salle
-			//var existItemInSalle = usersOnline[username].cManager.GetCopieCase().existItemInSalle(currentItem);
-			var existItemInSalle = usersOnline[username].cManager.ExistItem(currentItem);
+			//var existItemInSalle = usersOnline[id].cManager.GetCopieCase().existItemInSalle(currentItem);
+			var existItemInSalle = usersOnline[id].cManager.ExistItem(currentItem);
 			
 			// si l'objet est bien dans la salle
 			if (existItemInSalle == true)
 			{
-				//console.log("SERVER : poids sac : " + usersOnline[username].pManager.GetPoidsSac() + " - poids item : " + currentItem.poids + " - poids max : " + myPerso.poidsMax);
+				//console.log("SERVER : poids sac : " + usersOnline[id].pManager.GetPoidsSac() + " - poids item : " + currentItem.poids + " - poids max : " + myPerso.poidsMax);
 				
 				// demande au manager de perso d'ajouter l'item
-				var r = usersOnline[username].pManager.AjouterItemAuSac(currentItem);
+				var r = usersOnline[id].pManager.AjouterItemAuSac(currentItem);
 				
 				// ramassage ok
 				if (r == 1)
@@ -526,10 +538,10 @@ io.sockets.on('connection', function (socket)
 					console.log("SERVER : Demande de ramassage ok ");
 						
 					// suppression de l'objet de la case
-					usersOnline[username].cManager.SupprimerItem(currentItem);
+					usersOnline[id].cManager.SupprimerItem(currentItem);
 						
 					// return au client
-					socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, usersOnline[username].pManager.GetPoidsSac());
+					socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, usersOnline[id].pManager.GetPoidsSac());
 				}
 				else
 				{
@@ -554,7 +566,7 @@ io.sockets.on('connection', function (socket)
 		console.log("SERVER : Demande pour deposer l'currentItem : " + id_item + " - " + currentItem.nom);
 			
 		// check si l'objet à déposer n'est pas équipé
-		if (usersOnline[username].pManager.IsItemEquipee(currentItem) == true)
+		if (usersOnline[id].pManager.IsItemEquipee(currentItem) == true)
 			{
 				console.log("APP : Objet à déposer est équipé !! ");
 				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, -3);
@@ -563,18 +575,18 @@ io.sockets.on('connection', function (socket)
 		
 		
 		// check si currentItem est bien dans le sac
-		var existItemInSac = usersOnline[username].pManager.ExistItemInSac(currentItem);
+		var existItemInSac = usersOnline[id].pManager.ExistItemInSac(currentItem);
 
 		// si l'item est bien dans le sac
 		if (existItemInSac == true) {
 			// ajout de l'item a la case
-			usersOnline[username].cManager.GetCopieCase().ajouterItem(currentItem);
+			usersOnline[id].cManager.GetCopieCase().ajouterItem(currentItem);
 			
 			// suppression de l'item au perso
-			usersOnline[username].pManager.SupprimerDuSac(currentItem);
+			usersOnline[id].pManager.SupprimerDuSac(currentItem);
 			
 			// return au client
-			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, usersOnline[username].pManager.GetPoidsSac());
+			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, usersOnline[id].pManager.GetPoidsSac());
 			}
 			// si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour !)
 			else {
@@ -594,12 +606,12 @@ io.sockets.on('connection', function (socket)
 	{
 		console.log("*******************************************************");
 		// récupère la salle en cours
-		//var usersOnline[username].cManager.GetCopieCase() = oCase_BD.GetCaseById(usersOnline[username].pManager.GetIdSalleEnCours());
+		//var usersOnline[id].cManager.GetCopieCase() = oCase_BD.GetCaseById(usersOnline[id].pManager.GetIdSalleEnCours());
 		// return selon la valeur de retour
-		if (usersOnline[username].cManager.GetCopieCase() == null)
+		if (usersOnline[id].cManager.GetCopieCase() == null)
 			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
 		else
-			socket.emit('INFO_CASE_SC', usersOnline[username].cManager.GetCopieCase());
+			socket.emit('INFO_CASE_SC', usersOnline[id].cManager.GetCopieCase());
 		console.log("*******************************************************");
     });
 
@@ -609,8 +621,8 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
-		console.log("USER OBJECT = -" + usersOnline[username] + "-");
-		socket.emit('INFO_PERSONNAGE_SC', usersOnline[username].pManager.GetCopiePerso());
+		console.log("USER OBJECT = -" + usersOnline[id] + "-");
+		socket.emit('INFO_PERSONNAGE_SC', usersOnline[id].pManager.GetCopiePerso());
     });
 
     
@@ -624,15 +636,15 @@ io.sockets.on('connection', function (socket)
     {
     	console.log("*******************************************************");
     	// recupere l'currentItem
-    	var currentItem = usersOnline[username].iManager.GetItem(id_item);
+    	var currentItem = usersOnline[id].iManager.GetItem(id_item);
 
     	// check si currentItem est bien dans le sac
-  		var existItemInSac = usersOnline[username].pManager.ExistItemInSac(currentItem);
+  		var existItemInSac = usersOnline[id].pManager.ExistItemInSac(currentItem);
   		if (existItemInSac == false)
   		socket.emit('PERSONNAGE_USE_CS', currentItem, 0);
 
     	// le personnage tente d'utiliser l'item
-    	var reponse = usersOnline[username].pManager.Utiliser(currentItem);
+    	var reponse = usersOnline[id].pManager.Utiliser(currentItem);
     		
     	// et selon le message renvoyé
     	if (reponse == 1) 
@@ -659,10 +671,10 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('PERSONNAGE_MODE_CS', function (mode) {
         console.log("*******************************************************");
-        console.log("SERVEUR : chgt de mode demandé, de " + usersOnline[username].pManager.GetMode() + " -> " + mode);
+        console.log("SERVEUR : chgt de mode demandé, de " + usersOnline[id].pManager.GetMode() + " -> " + mode);
         
         // si déja dans ce mode
-        if (usersOnline[username].pManager.GetMode() == mode)
+        if (usersOnline[id].pManager.GetMode() == mode)
         {
             socket.emit('PERSONNAGE_MODE_SC', mode, -4);
             return;
@@ -670,7 +682,7 @@ io.sockets.on('connection', function (socket)
         // si c'est un passage en mode défense
         if (mode == 3) {
             // changement de mode
-            usersOnline[username].pManager.ChangementMode(mode);
+            usersOnline[id].pManager.ChangementMode(mode);
 
             // réponse ok
             socket.emit('PERSONNAGE_MODE_SC', mode, 1);
@@ -679,7 +691,7 @@ io.sockets.on('connection', function (socket)
         // sinon :
         
         // si pu de pts actions
-        if(usersOnline[username].pManager.AucunPtActions()){
+        if(usersOnline[id].pManager.AucunPtActions()){
         	socket.emit('PERSONNAGE_MODE_SC', mode, -10);
         	return;
         }
@@ -698,7 +710,7 @@ io.sockets.on('connection', function (socket)
     	// ***************************************************************
 
     	// chgt de mode du perso
-        usersOnline[username].pManager.ChangementMode(mode);
+        usersOnline[id].pManager.ChangementMode(mode);
     	console.log("SERVEUR : chgt de mode ok");
     	socket.emit('PERSONNAGE_MODE_SC', 1, restG["degats"]);
     	 
@@ -726,7 +738,7 @@ io.sockets.on('connection', function (socket)
     	console.log("***************** FOUILLE RAPIDE ******************************");
        
     	// si pu de pts actions
-        if(usersOnline[username].pManager.AucunPtActions())
+        if(usersOnline[id].pManager.AucunPtActions())
 		{
         	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0);
         	return;
@@ -740,32 +752,32 @@ io.sockets.on('connection', function (socket)
     			// log
     			console.log("fouille ratée à cause des goules");
     			// retrait de points d'actions
-    			usersOnline[username].pManager.PerteActionParGoules();
+    			usersOnline[id].pManager.PerteActionParGoules();
     			// renvoi de la réponse
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, null, restG["degats"], null); 
     		}
     	// ***************************************************************
     	
         // calcul si la fouille reussie
-        var fouilleFrutueuse = usersOnline[username].cManager.Fouille();
+        var fouilleFrutueuse = usersOnline[id].cManager.Fouille();
         
         // retrait des points d'actions
-        usersOnline[username].pManager.FouilleRapide();
+        usersOnline[id].pManager.FouilleRapide();
         
         // si fouille Fructueuse détermination de l'item trouvé
         if (fouilleFrutueuse)
         {
         	console.log("");
         	// tire un item aléatoire
-        	var item = usersOnline[username].iManager.GetItemAleatoire(function(newItem)
+        	var item = usersOnline[id].iManager.GetItemAleatoire(function(newItem)
         	{
         		// ajout au sac
-        		var res = usersOnline[username].pManager.AjouterItemAuSac(item);
+        		var res = usersOnline[id].pManager.AjouterItemAuSac(item);
         	        		
         		// si la res est false, c'est que l'objet na pas pu être ajouté au sac
         		// donc ajout à la salle
         		if (!res)
-        			usersOnline[username].cManager.AjouterItem(item);
+        			usersOnline[id].cManager.AjouterItem(item);
         	        		
         		console.log("fouille fructueuse. Ajout au sac? " + res);
         		// si la fouille réussie
@@ -795,7 +807,7 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (pseudoCible) {
         // si pu de pts actions
-        if(usersOnline[username].pManager.AucunPtActions())
+        if(usersOnline[id].pManager.AucunPtActions())
         {
         	socket.emit('ACTION_ATTAQUE_SC', 0, 0);
         	return;
@@ -858,13 +870,13 @@ io.sockets.on('connection', function (socket)
     function TestGoules()
     {
     	 // calcul si blessé par goules
-        var reponseDegatsParGoules = usersOnline[username].cManager.DegatsParGoules();
+        var reponseDegatsParGoules = usersOnline[id].cManager.DegatsParGoules();
         
         // calcul si chgt mode réussi
-        var reponseActionReussie = ! usersOnline[username].cManager.ActionRateeParGoules();
+        var reponseActionReussie = ! usersOnline[id].cManager.ActionRateeParGoules();
         
         // informe le manager de perso des dégats
-        var degatsInfliges = usersOnline[username].pManager.DiminuerSante(reponseDegatsParGoules);
+        var degatsInfliges = usersOnline[id].pManager.DiminuerSante(reponseDegatsParGoules);
 
         console.log("SERVEUR -> GOULES : degats par goules " + reponseDegatsParGoules);
         console.log("SERVEUR -> GOULES : degats infligés " + degatsInfliges);

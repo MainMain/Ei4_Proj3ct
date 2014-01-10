@@ -162,11 +162,18 @@
 		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 		var socket = io.connect('http://localhost:8080');
 		
-		socket.emit('INFO_USER_CS', '<%= username %>' );
+		socket.emit('INFO_USER_CS', '<%= sessionID %>' );
 		
 		socket.on('MESSAGE_USER_SC', function(user, message)
 		{
-			$("#buttonMessage").val("Nouveau message de " + user + " : \n" + message);
+			if(message == -1)
+			{
+				$("#buttonMessage").val("Erreur l'utilisateur " + user + " est actuellement hors ligne");
+			}
+			else
+			{
+				$("#buttonMessage").val("Nouveau message de " + user + " : \n" + message);
+			}
 		});
 		
 		$("#buttonMessage").click(function()
