@@ -885,6 +885,7 @@ function start() {
 			labelRetourGoules.text=("Pas de Goule dans la salle !");
 			break;
 		}
+		socket.emit('INFO_CASE_CS');
 		stage.update();
 	});
 	
