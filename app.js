@@ -206,7 +206,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 		usersOnline[s.idUser].username = s.username;
 		
 		// chargement de son personnage
-		//iManagers[s.idUser] = new oItem_Manager();
+		//iManager[s.idUser] = new oItem_Manager();
 		//pManagers[s.idUser] = new oPersonnage_Manager();
 		//uManagers[s.idUser] = new oUtilisateur_Manager();
 		//uManagers[s.idUser].Load(reponseConnexion);
@@ -473,7 +473,7 @@ io.sockets.on('connection', function (socket)
 		console.log("*******************************************************");
 		
 		// recupere l'currentItem
-		var currentItem = iManagers[id].GetItem(id_item);
+		var currentItem = iManager.GetItem(id_item);
 		if (currentItem == null || typeof(currentItem) === "undefined" )
 			{
 				console.log("SERVEUR : erreur : id item : " + id_item);
@@ -550,7 +550,7 @@ io.sockets.on('connection', function (socket)
 		//var cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase() = oCase_BD.GetCaseById(pManagers[id].GetIdSalleEnCours());
 
 		// recupere l'currentItem
-		var currentItem = iManagers[id].GetItem(id_item);
+		var currentItem = iManager.GetItem(id_item);
 
 		if (currentItem == null || typeof(currentItem) === "undefined" )
 		{
@@ -681,7 +681,7 @@ io.sockets.on('connection', function (socket)
     {
     	console.log("*******************************************************");
     	// recupere l'currentItem
-    	var currentItem = iManagers[id].GetItem(id_item);
+    	var currentItem = iManager.GetItem(id_item);
 
     	// check si currentItem est bien dans le sac
   		var existItemInSac = pManagers[id].ExistItemInSac(currentItem);
@@ -814,7 +814,7 @@ io.sockets.on('connection', function (socket)
         {
         	console.log("");
         	// tire un item aléatoire
-        	var item = iManagers[id].GetItemAleatoire(function(newItem)
+        	var item = iManager.GetItemAleatoire(function(newItem)
         	{
         		// ajout au sac
         		var res = pManagers[id].AjouterItemAuSac(item);
