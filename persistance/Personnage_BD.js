@@ -160,6 +160,7 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                     console.log('PERSONNAGE_BD : id salle perso récupéré : ' + perso[0].idSalleEnCours);
                     // conversion des id "ArmeEquipee" et "ArmureEquipee" en objet
                     var arme = null, armure = null;
+					console.log("idArmeEquipee = " + perso[0].idArmeEquipee);
                     if (perso[0].idArmeEquipee != null)
                     	 arme = oItem_BD.GetItemById(perso[0].idArmeEquipee);
                     if (perso[0].idArmureEquipee != null)

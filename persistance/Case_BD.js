@@ -117,7 +117,17 @@ Case_BD.Initialiser = function() {
 	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9);// case10, case11);
 },
 
-
+ Case_BD.GetCasesId = function()
+ {
+	var tabId = new Array();
+	for(var i in this.listeCases)
+	{
+		tabId[i] = this.listeCases[i].id;
+	}
+	
+	return tabId;
+ },
+ 
 /*  *** TRASH ***
  * 
  *

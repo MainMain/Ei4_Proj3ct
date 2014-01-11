@@ -247,6 +247,24 @@ Utilisateur_BD.test = function()
 	console.log("COUCOU");
 },
  
+ Utilisateur_BD.GetUsersId = function(callback)
+ {
+	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
+	var tabId = new Array();
+	
+	Utilisateurmodel.find({}, function(err, users)
+	{
+		if(err)
+		{
+			throw err;
+		}
+		for(var i in users)
+		{
+			tabId[i] = users[i].id;
+		}
+		callback(tabId);
+	});
+ },
 
  
  module.exports = Utilisateur_BD;

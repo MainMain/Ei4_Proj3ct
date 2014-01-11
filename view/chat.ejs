@@ -104,7 +104,11 @@
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			var socket = io.connect('http://localhost:8080');
 			
-			socket.emit('INFO_USER_CS', '<%= username %>' );
+			$( document ).ready(function()
+			{
+				socket.emit('INFO_USER_CS', '<%= sessionID %>' );
+			});
+		
 		</script>
 </body>
 </html>
