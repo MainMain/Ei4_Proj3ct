@@ -81,7 +81,25 @@
 	</h1>
 	
 	<!-- Chat -->
-		<h1> <%= countUser %> Users : <%= users %> </h1>
+		<div class="chat span12">
+			<div class="row">
+				<div class="span8 msgArea" id="msgArea">
+					<h1 align=center >Messages :</h1>
+					<div class="msgTextArea" id="msgs">
+						<!-- <textarea readonly align="center" cols=90></textarea> -->
+					</div>
+					<div class="chatContols">
+						<input type="text" placeholder="Votre message" id="msgTextBox"/>
+						<input type="submit" value="Envoyer !" id="msgSubmit"/>
+					</div>
+				</div>
+				<div class="span4 userArea" id="userArea">
+					<h1 align=center >Utilisateurs connectés :</h1>
+					<ul id="listUsers">
+					</ul>
+				</div>
+			</div>
+		</div>
 	<!-- #Chat -->
 </div> <!-- #content -->
 
@@ -103,12 +121,33 @@
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			var socket = io.connect('http://localhost:8080');
-			
+					
 			$( document ).ready(function()
 			{
-				socket.emit('INFO_USER_CS', '<%= sessionID %>' );
+				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "chat");
 			});
-		
+			
+			socket.on('USER_CONNECTED_SC', function(users)
+			{
+				$("#listUsers").html("");
+				for(var i in users)
+				{
+					$("#listUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
+				}
+			});
+			
+			socket.on('USER_MESSAGE_SC', function(user, message)
+			{
+				$("#msgs").append("<div>" + user + " : " + message + "</div>");
+			});
+			
+			$("#msgSubmit").click(function()
+			{
+				var message = $("#msgTextBox").val();
+				socket.emit("USER_MESSAGE_CS", '<%= username %>', message);
+				$("#msgs").append("<div> Moi : " + message + "</div>");
+			});
+			
 		</script>
 </body>
 </html>

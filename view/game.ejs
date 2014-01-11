@@ -176,7 +176,7 @@
 			
 			$( document ).ready(function()
 			{
-				socket.emit('INFO_USER_CS', '<%= sessionID %>' );
+				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "game");
 			});
 		
 		</script>
