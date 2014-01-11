@@ -537,10 +537,19 @@ io.sockets.on('connection', function (socket)
     
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM 
-     * return poidsTotal si ok erreur : -1 si poids insufisant
+     * 
+     * return TYPE (RAMASSER OU DEPOSER)
+     * 
+     * ET return poidsTotal si ok 
+     * erreur : -1 si poids insufisant
      * erreur : -2 si objet n'est pas dans la case / le sac 
      * erreur : -3 si objet à déposer est équipé
      * erreur : -4 si autre
+     * erreur : -5 si raté par goules
+     * 
+     * ET return id_item
+     * 
+     * ET degats reçus
      */
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
@@ -584,22 +593,35 @@ io.sockets.on('connection', function (socket)
 					// suppression de l'objet de la case
 					cManagers[pManagers[id].GetIdSalleEnCours()].SupprimerItem(currentItem);
 						
+					 // ********* algorithme de test de l'impact des goules *********
+			    	var restG = TestGoules();
+			    	console.log("degats ? " + restG["degats"]);
+			    	if (restG["actionOk"] == 0)
+			    		{
+			    			// log
+			    			console.log("chgt de mode ratée à cause des goules");
+			    			
+			    			// renvoi de la réponse
+			    			socket.emit('INV_CASE_SC', 'RAMASSER', -5, restG["degats"]); 
+			    		}
+			    	// ***************************************************************
+			    	
 					// return au client
-					socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, pManagers[id].GetPoidsSac());
+					socket.emit('INV_CASE_SC', 'RAMASSER', pManagers[id].GetPoidsSac(), currentItem.id, restG["degats"]);
 				}
 				else
 				{
 				console.log("SERVER : Demande de ramassage impossible : poids max atteint");
 					
 				// return au client que l'objet ne peut être ajouté (poids insufisant)
-				socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -1);
+				socket.emit('INV_CASE_SC', 'RAMASSER', -1, currentItem.id, 0);
 				}
 			} // fin if (existItemInSalle == true)
 			// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
 			else
 			{
 				// return que l'objet n'est pas dans la case
-				socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -2);
+				socket.emit('INV_CASE_SC', 'RAMASSER', -2, currentItem.id, 0);
 			}
 			
 		}
@@ -613,7 +635,7 @@ io.sockets.on('connection', function (socket)
 		if (pManagers[id].IsItemEquipee(currentItem) == true)
 			{
 				console.log("APP : Objet à déposer est équipé !! ");
-				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, -3);
+				socket.emit('INV_CASE_SC', 'DEPOSER', -3, currentItem.id, 0);
 				return;
 			}
 		
@@ -630,12 +652,12 @@ io.sockets.on('connection', function (socket)
 			pManagers[id].SupprimerDuSac(currentItem);
 			
 			// return au client
-			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManagers[id].GetPoidsSac());
+			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManagers[id].GetPoidsSac(), 0);
 			}
 			// si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour !)
 			else {
 				// return que l'item n'est pas dans le sac
-				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, -2);
+				socket.emit('INV_CASE_SC', 'DEPOSER', -2, currentItem.id, 0);
 			}
 		}
 		console.log("*******************************************************");

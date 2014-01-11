@@ -66,7 +66,8 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                 idArmure = personnageToSave.armureEquipee.id;
 
             console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
-
+            console.log("PERSONNAGE_BD : SetPersonnage() : last mvt :  " + personnageToSave.dernierMvt);
+            
             PersonnageModel.update({
                     _id: personnageToSave.id
                 }, {
@@ -88,7 +89,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                     idArmeEquipee: idArme,
                     idArmureEquipee: idArmure,
                     sacADos: personnageToSave.sacADos,		
-                    dernierMvt : String,
+                    dernierMvt : personnageToSave.dernierMvt,
             		listeMsgAtt : Array,
                 },
                 function (err) {
