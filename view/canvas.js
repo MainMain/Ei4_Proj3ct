@@ -129,7 +129,7 @@ function handleProgress() {
 	loadingBar.scaleX = preload.progress * loadingBarWidth;
 
 	progresPrecentage = Math.round(preload.progress*100);
-	loadProgressLabel.text =("Wait before making war");
+	loadProgressLabel.text =("Loading Apocalypse");
 
 	stage.update();
 }
@@ -140,7 +140,7 @@ function handleComplete() {
 	map = preload.getResult("idMap");
 	perso = preload.getResult("idPerso");*/
 
-	loadProgressLabel.text = "Click for making war";
+	loadProgressLabel.text = "Click to Survive";
 	stage.update();
 
 	canvas.addEventListener("click", handleClick);
@@ -323,19 +323,12 @@ function start() {
 	var _TextBaseline = "top";
 
 	// application du background
-	var background = new createjs.Bitmap("public/Background_11.jpg");
-	background.image.onload = setImg(background, 0, 0);
-
-	/*// insertion de la map (virtuelle) pour regler les boutons
-	var map = new createjs.Bitmap("public/map/0-0.png");
-	// Placement de la map
-	var _MapX = w/2 - map.image.width/2;
-	var _MapY = h/2 - map.image.height/2;
-	//map.image.onload = setImg(map, _MapX, _MapY);*/
+	//var background = new createjs.Bitmap("public/Background_11.jpg");
+	//background.image.onload = setImg(background, 0, 0);
 
 	//*********** Fin de la partie design **************
 	// ******************************************
-
+	
 	// ******************************************
 	// ** creation des conteneurs               *
 	// ******************************************
@@ -384,12 +377,7 @@ function start() {
 
 	// insertion du Perso
 	var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
-	// Placement du perso
-	/*var _PersoX = w/2 - imgPerso.image.width/2;
-	var _PersoY = h/2 - imgPerso.image.height/2;
-	imgPerso.image.onload = setImg(imgPerso, _PersoX, _PersoY);*/
 	contPerso.addChild(imgPerso);
-	//contMap.addChild(contPerso);
 
 	// ******************************************
 	// ** Création des barres du perso 			*
@@ -778,12 +766,10 @@ function start() {
 		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
 	});	
 
-	stage.update();
-
-	//BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = BtnFouiller.x = BtnCacher.x = BtnDefendre.x = AbsBtn;
 	BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = AbsBtn;
 	BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor = BtnAttaquer.cursor = "pointer";
-
+	stage.update();
+	
 	// ******************************************
 	// *********** INITIALISATION ***************
 	// ******************************************
@@ -837,10 +823,10 @@ function start() {
 
 		default:
 			socket.emit('INFO_CASE_CS');
-		labelRetourGoules.text="";
-		txtSalle.text = "";
-		txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
-		socket.emit('INFO_PERSONNAGE_CS');
+			labelRetourGoules.text="";
+			txtSalle.text = "";
+			txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
+			socket.emit('INFO_PERSONNAGE_CS');
 		break;
 		}
 		stage.update();
@@ -949,8 +935,6 @@ function start() {
 				txtObjetEquipe.text = ("Armure déséquipée !");
 				socket.emit('INFO_PERSONNAGE_CS');
 			}
-
-			stage.update();
 		}
 		stage.update();
 	});
@@ -974,58 +958,62 @@ function start() {
 	socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG) {
 		if (type == 'RAMASSER') {
 			switch(codeRetour)
-			// erreur
-			case -3:
-				txtObjet.text = "";
-				txtObjet.text = ("Erreur inconnue");
-			break;
-			// poids insufisant
-			case -1:
-				txtObjet.text = "";
-				txtObjet.text = ("Impossible de ramasser l'objet : poids max atteint !");
-			break;
-			// objet pas dans case
-			case -2:
-				txtObjet.text = "";
-				txtObjet.text = ("L'objet " + id_item + " n'est plus dans la salle !");
-			break;
-			case -5:
-				txtObjet.text = "";
-				txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
-			// ramassage ok
-			default:
-				txtObjet.text = "";
-				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie");
-				socket.emit('INFO_PERSONNAGE_CS');
-				socket.emit('INFO_CASE_CS');
-				stage.update();
-			break;
+			{
+				// erreur
+				case -3:
+					txtObjet.text = "";
+					txtObjet.text = ("Erreur inconnue");
+					break;
+					// poids insufisant
+				case -1:
+					txtObjet.text = "";
+					txtObjet.text = ("Impossible de ramasser l'objet : poids max atteint !");
+					break;
+					// objet pas dans case
+				case -2:
+					txtObjet.text = "";
+					txtObjet.text = ("L'objet " + id_item + " n'est plus dans la salle !");
+					break;
+				case -5:
+					txtObjet.text = "";
+					txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
+					// ramassage ok
+				default:
+					txtObjet.text = "";
+					txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie");
+					socket.emit('INFO_PERSONNAGE_CS');
+					socket.emit('INFO_CASE_CS');
+					stage.update();
+					break;
+			}
 		}
 		stage.update();
 		if (type == 'DEPOSER') {
 			switch(codeRetour)
-			// erreur
-			case -3:
-				txtObjet.text = "";
-				txtObjet.text = ("Déséquiper l'objet avant de déposer !");
-			break;
-			case -4:
-				txtObjet.text = "";
-				txtObjet.text = ("Erreur interne !");
-			break;
-			// objet pas dans sac (! pas normal)
-			case -2:
-				txtObjet.text = "";
-				txtObjet.text = ("L'item " + id_item + " n'est plus dans le sac ");
-			break;
-			// dépôt ok
-			default:
-				txtObjet.text = "";
-				txtObjet.text = ("Item " + id_item + "déposé ! Sac : " + codeRetour + " kg");
-				socket.emit('INFO_CASE_CS');
-				socket.emit('INFO_PERSONNAGE_CS');
-				stage.update();
-			break;
+			{
+				// erreur
+				case -3:
+					txtObjet.text = "";
+					txtObjet.text = ("Déséquiper l'objet avant de déposer !");
+					break;
+				case -4:
+					txtObjet.text = "";
+					txtObjet.text = ("Erreur interne !");
+					break;
+					// objet pas dans sac (! pas normal)
+				case -2:
+					txtObjet.text = "";
+					txtObjet.text = ("L'item " + id_item + " n'est plus dans le sac ");
+					break;
+					// dépôt ok
+				default:
+					txtObjet.text = "";
+					txtObjet.text = ("Item " + id_item + "déposé ! Sac : " + codeRetour + " kg");
+					socket.emit('INFO_CASE_CS');
+					socket.emit('INFO_PERSONNAGE_CS');
+					stage.update();
+					break;
+			}
 		}
 		stage.update();
 	});
@@ -1035,7 +1023,7 @@ function start() {
 	 *
 	 * @method INFO_CASE_SC
 	 */
-	socket.on('INFO_CASE_SC', function(currentCase) {
+	socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 
 		if (currentCase == "ERREUR_CASE")
 		{
@@ -1048,9 +1036,9 @@ function start() {
 			var ProbCache, ProbFouille;
 			ProbCache=(currentCase.probaCache * PersoProbaCache);
 			ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
-
-			labelNbAlies.text=("Aliés dans la salle : " + + "");
-			labelNbEnnemis.text=("Ennemis dans la salle : " + + "");
+			
+			labelNbAlies.text=("Aliés dans la salle : " + nbrAllies + "");
+			labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 			labelNbGoules.text=("Goules dans la salle : " + currentCase.nbrGoules + "");
 			labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
 			labelProbaFouille.text=("Proba de Trouver item : " + ProbFouille + " % (avec multi de " +  PersoProbaFouille + ")");
