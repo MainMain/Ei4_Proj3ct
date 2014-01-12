@@ -323,8 +323,8 @@ function start() {
 	var _TextBaseline = "top";
 
 	// application du background
-	//var background = new createjs.Bitmap("public/Background_11.jpg");
-	//background.image.onload = setImg(background, 0, 0);
+	var background = new createjs.Bitmap("public/Background_11.jpg");
+	background.image.onload = setImg(background, 0, 0);
 
 	//*********** Fin de la partie design **************
 	// ******************************************
