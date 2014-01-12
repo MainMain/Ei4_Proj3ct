@@ -13,7 +13,11 @@ var Personnage_Manager = (function () {
 
         // --- ATTRIBUTS DE CLASSE ---
         Personnage_Manager.personnage;
-
+        Personnage_Manager.coutFouilleRapide = 4;
+        Personnage_Manager.coutAttaqueEnnemi = 7;
+        Personnage_Manager.coutAttaqueGoule = 3;
+        Personnage_Manager.coutInterceptionGoule = 2;
+        
         // --- METHODE DE CLASSE
         Personnage_Manager.build = function (idUser) { return new Personnage_Manager(); };
 
@@ -181,6 +185,7 @@ var Personnage_Manager = (function () {
             },
             
             DiminuerSante : function (degats) {
+            	console.log("PM : DiminuerSante : Degats recus : " + degats);
             	// diminution des degats grace à l'armure
             	degats -= this.personnage.getValeurArmure();
             	
@@ -191,6 +196,7 @@ var Personnage_Manager = (function () {
             		this.personnage.ptSante -= degats;
             		//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             	}
+            	console.log("PM : DiminuerSante : Baisse de vie : " + degats);
             	return degats;
             },
             
@@ -202,13 +208,13 @@ var Personnage_Manager = (function () {
             
             FouilleRapide : function()
             {
-            	this.personnage.ptActions -= 4;
+            	this.personnage.ptActions -= this.coutFouilleRapide;
             	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             PerteActionParGoules : function()
             {
-            	this.personnage.ptActions -= 3;
+            	this.personnage.ptActions -= this.coutInterceptionGoule;
             	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
@@ -218,14 +224,15 @@ var Personnage_Manager = (function () {
             	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
         	
-            AjouterMessage : function(str)
+            AddMessage : function(msg)
             {
-            	this.personnage.listeMsgAtt.push(str);
-            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	console.log("PERSONNAGE_MANAGER : Ajout du message " + msg);
+            	this.personnage.listeMsgAtt.push(msg);
             },
             
             EffacerMessages : function()
             {
+            	console.log("PERSONNAGE_MANAGER : Effacement de la liste des messages");
             	this.personnage.listeMsgAtt = new Array();
             	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
@@ -234,6 +241,9 @@ var Personnage_Manager = (function () {
             {
             	var degatsRecus;
             	var degatsInfliges;
+            	
+            	// diminution ptAction
+            	this.personnage.ptActions -= this.coutAttaqueEnnemi;
             	
             	degatsInfliges = this.personnage.GetPtsAttaque() - this.managerPersoEnn.GetPtsDefense();
             	degatsRecus = this.managerPersoEnn.GetPtsAttaque() - this.personnage.GetPtsDefense();
@@ -249,12 +259,21 @@ var Personnage_Manager = (function () {
                 };
                 return a;
             },
-
-            AddMessage : function(msg)
-            {
-            	this.personnage.listeMsgAtt.push(msg);
-            },
             
+            AttaquerGoule : function()
+            {
+            	// diminution ptAction
+            	this.personnage.ptActions -= this.coutAttaqueGoule;
+            },
+
+            
+            Decouvert : function()
+            {
+            	console.log("PERSONNAGE_MANAGER : Le perso " + this.id + " a été découvert !" );
+            	// add msg
+            	this.personnage.listeMsgAtt.push("Vous avez été découvert ! Votre planque est foute !");
+            	this.personnage.mode = 0;
+            },
             /***************** LECTURE *****************/
             GetListMsgAtt : function()
             {
@@ -308,11 +327,6 @@ var Personnage_Manager = (function () {
 
             },
             
-            GetMode : function()
-            {
-            	return this.personnage.mode;
-            },
-            
             TestDeplacementPossible : function(nbrGoules, direction)
             {
             	// si pu de PM
@@ -339,6 +353,20 @@ var Personnage_Manager = (function () {
             GetPtsDeplacement : function()
             {
             	return this.personnage.ptDeplacement;
+            },
+            
+            GetMultiFouille : function()
+            {
+            	return this.personnage.multiProbaFouille;
+            },
+            GetMultiCache : function()
+            {
+            	return this.personnage.multiProbaCache;
+            },
+            
+            GetMode : function()
+            {
+            	return this.personnage.mode;
             },
             
             AucunPtActions : function()

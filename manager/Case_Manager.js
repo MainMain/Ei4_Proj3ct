@@ -98,31 +98,64 @@ var Case_Manager = (function() {
 			this.caseCourante = oCase_BD.GetCaseById(idCase);
 		},
 		
-		DegatsParGoules : function()
+		AttaqueDeGoules : function()
 		{
+			// attaque des goules
 			var degatsGoules = Math.floor(Math.random() * 4 + 1);
 			var nbrGoulesAttaquantes = Math.floor(Math.random() * this.caseCourante.nbrGoules);
 			var total = degatsGoules * nbrGoulesAttaquantes;
 			console.log("CASE_MAN : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total);
-			return total;
+			
+			// action raté ou non
+			var chance = Math.floor(Math.random()  * 10);
+			chance -= nbrGoulesAttaquantes * 0.3;
+			var actionOk;
+			if (chance >= 5) actionOk = false;
+			else actionOk = true;
+			
+			if (this.caseCourante.nbrGoules == 0) actionOk = true;
+			
+			//console.log("CM - Attaque de goules : total : " + total);
+			 var a = {
+		            "degats"	: total,
+		            "nbrGoulesA" : nbrGoulesAttaquantes,
+		            "actionOk" 	: actionOk,
+		        };
+		    return a;
 		},
 		
-		ActionRateeParGoules : function()
+		/*ActionRateeParGoules : function()
 		{
 			var chance = Math.floor(Math.random()  * 2);
 			if (chance >= 1)
 				return false;
 			else
 				return true;
-		},
+		},*/
 		
 
 		Fouille : function(probaObjetPerso)
 		{
 			var proba = Math.floor(Math.random() * 100);
-			var probaObjetCase = this.caseCourante.probaObjet * 100;
-			probaObjetCase *= probaObjetPerso;
+			var probaObjetCase = this.caseCourante.probaObjet * probaObjetPerso;
+
+			console.log("CASE_MANAGER : Fouille() : proba = "+proba+" - probaObjetCase  => brut = "+this.caseCourante.probaObjet+" - net = "+probaObjetCase);
+			if (proba < probaObjetCase) return true;
+			else return false;
+		},
+		
+		DecouverteEnnemi : function(probaObjetPerso, probaCacheEnn)
+		{
+
+			console.log("CASE_MANAGER : DecouverteEnnemi() : proba "+ this.caseCourante.probaObjet +" - multi :" +probaObjetPerso);
 			
+			var proba = Math.floor(Math.random() * 100);
+			var probaDecouverte = this.caseCourante.probaObjet * probaObjetPerso;
+			var probaDecouverte2 = probaDecouverte / probaCacheEnn;
+			
+			console.log("CASE_MANAGER : DecouverteEnnemi() : proba = "+proba+" - probaDecouverte  => brut = "+probaDecouverte+" - net = "+probaDecouverte2);
+			if (proba < probaDecouverte) return true;
+			else return false;
 		},
 		
 		GetNombreGoules : function()
