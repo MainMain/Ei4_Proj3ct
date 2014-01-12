@@ -109,7 +109,7 @@ var Personnage_Manager = (function () {
 				
 				this.personnage.competence = myCompetence;
 				
-				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+				//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
 			},
 			
             Deplacement : function (move, nbrGoules) {
@@ -119,7 +119,7 @@ var Personnage_Manager = (function () {
                 console.log("PMANAGER : deplacement reponse : " + reponse);
                 
                 //si le deplacement est ok, on enregistre
-                if (reponse == 1) oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+                if (reponse == 1) //oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
                 return reponse;
             },
             
@@ -130,7 +130,7 @@ var Personnage_Manager = (function () {
 					this.personnage.ajouterAuSac(item);
 					
 					// save dans la BD
-					oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+					//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
 					
 					return true;
             	}
@@ -141,7 +141,7 @@ var Personnage_Manager = (function () {
             	this.personnage.supprimerDuSac(item);
             	
             	// save dans la BD
-				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+				//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
            
@@ -150,7 +150,7 @@ var Personnage_Manager = (function () {
             	// equipe le perso
             	var reponse = this.personnage.sEquiperDunItem(currentItem);
             	// si equipage ok, on enregistre
-            	if (reponse == 1)  oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	if (reponse == 1)  //oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             	return reponse;
             },
             
@@ -165,7 +165,7 @@ var Personnage_Manager = (function () {
     			this.personnage.sDesequiperDunItem(item);
     			
     			// save dans la BD
-				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+				//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
 				
     			// return
     			return 1;
@@ -175,7 +175,7 @@ var Personnage_Manager = (function () {
             	var res = this.personnage.utiliser(item);
             	if (res == 1)
             	// save dans la BD
-				oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+				//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
 				
 				return res;
             },
@@ -189,7 +189,7 @@ var Personnage_Manager = (function () {
             	
             	if (degats > 0){
             		this.personnage.ptSante -= degats;
-            		oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            		//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             	}
             	return degats;
             },
@@ -197,43 +197,78 @@ var Personnage_Manager = (function () {
             ChangementMode : function(mode)
             {
             	this.personnage.changerMode(mode);
-            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             FouilleRapide : function()
             {
             	this.personnage.ptActions -= 4;
-            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             PerteActionParGoules : function()
             {
             	this.personnage.ptActions -= 3;
-            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             PerteDeplacementParGoules : function()
             {
             	this.personnage.ptDeplacement -= 1;
-            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
         	
             AjouterMessage : function(str)
             {
             	this.personnage.listeMsgAtt.push(str);
-            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             EffacerMessages : function()
             {
             	this.personnage.listeMsgAtt = new Array();
-            	oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            },
+            
+            Attaquer : function(managerPersoEnn)
+            {
+            	var degatsRecus;
+            	var degatsInfliges;
+            	
+            	degatsInfliges = this.personnage.GetPtsAttaque() - this.managerPersoEnn.GetPtsDefense();
+            	degatsRecus = this.managerPersoEnn.GetPtsAttaque() - this.personnage.GetPtsDefense();
+            	
+            	this.DiminuerSante(degatsRecus);
+            	managerPersoEnn.DiminuerSante(degatsInfliges);
+            	managerPersoEnn.AddMessage("Attaqué par un ennemi ! Degats subis : " + degatsInfliges
+            			+ " -degats infligés en riposte : " + degatsRecus);
+            	
+                var a = {
+                    "degatsRecus"	: degatsRecus,
+                    "degatsInflges" : degatsInfliges,
+                };
+                return a;
+            },
+
+            AddMessage : function(msg)
+            {
+            	this.personnage.listeMsgAtt.push(msg);
             },
             
             /***************** LECTURE *****************/
             GetListMsgAtt : function()
             {
             	return this.personnage.listeMsgAtt;
+            },
+            
+            GetPtsAttaque : function()
+            {
+            	return this.personnage.armeEquipe.valeur * this.personnage.multiPtsAttaque;
+            },
+            
+            GetPtsDefense : function()
+            {
+            	return this.personnage.armureEquipee.valeur * this.personnage.multiPtsDefense;
             },
             
             ExistItemInSac : function (currentItem) {
@@ -245,7 +280,7 @@ var Personnage_Manager = (function () {
             },
             
             GetIdSalleEnCours : function () {
-            	console.log("PM : id salle en cours : " + this.personnage.idSalleEnCours);
+            	//console.log("PM : id salle en cours : " + this.personnage.idSalleEnCours);
             	return this.personnage.idSalleEnCours;
             },
             
@@ -312,7 +347,6 @@ var Personnage_Manager = (function () {
             	else return false;
             },
             
-
             getPersonnageToDisplay : function()
     		{
     			var comPoidsSac = this.personnage.getPoidsSac() / this.personnage.poidsMax;
