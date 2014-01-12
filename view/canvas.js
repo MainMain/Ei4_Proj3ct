@@ -182,7 +182,7 @@ function start() {
 	// Couleur des boutons
 	var ColorBtn="#850000";
 	//var ColorPad="#313131";
-	
+
 	var ColorPad=createjs.Graphics.getRGB(0,0,0,0.01);
 	var ColorGreen="#008000";
 
@@ -199,7 +199,7 @@ function start() {
 
 	// Espacement items
 	var SpaceItem = 30;
-	
+
 	// Placement label id Salle en cours
 	var _labelIdSalleX=150;
 	var _labelIdSalleY=150;
@@ -287,11 +287,11 @@ function start() {
 	// Placement label Probabilité de Fouille
 	var _labelProbaFouilleX = _labelNbAliesX;
 	var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
-	
+
 	// Placement label Retour Goules
 	var _labelRetourGoulesX = 10;
 	var _labelRetourGoulesY = 570;
-	
+
 	// Placement Conteneur ArmeEquip
 	var _ContArmeX = _labelArmeX + 120;
 	var _ContArmeY = _labelArmeY;
@@ -307,11 +307,11 @@ function start() {
 	// Dimension Conteneur ArmureEquip
 	var _ContArmureH = 200;
 	var _ContArmureW = 200;
-	
+
 	// Placement Conteneur Map (en fonction de la taille de l'image !!)
 	var _ContMapX = w/2 - 379/2;
 	var _ContMapY = h/2 - 379/2;
-	
+
 	// Dimension Conteneur Map
 	var _ContMapH = 379;
 	var _ContMapW = 379;
@@ -367,21 +367,21 @@ function start() {
 	contArmure.height = _ContArmureH;
 	contArmure.width = _ContArmureW;
 	stage.addChild(contArmure);
-	
+
 	var contMap = new createjs.Container();
 	contMap.x = _ContMapX;
 	contMap.y = _ContMapY;
 	contMap.height = _ContMapH;
 	contMap.width = _ContMapW;
 	stage.addChild(contMap);
-	
+
 	var contPerso = new createjs.Container();
 	contPerso.x = w/2 - 32/2;
 	contPerso.y = h/2 - 32/2;
 	contPerso.height = 32;
 	contPerso.width = 32;
 	stage.addChild(contPerso);
-	
+
 	// insertion du Perso
 	var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
 	// Placement du perso
@@ -456,7 +456,7 @@ function start() {
 	moveBarContainer.x = 340;
 	moveBarContainer.y = actionBarContainer.y + _EspaceLabelY;
 	stage.addChild(moveBarContainer);
-	
+
 	// Barre de Poids du Sac
 
 	sacBarContainer = new createjs.Container();
@@ -493,19 +493,19 @@ function start() {
 	labelIdSalle.textBaseline = _TextBaseline;
 	labelIdSalle.x = _labelIdSalleX;
 	labelIdSalle.y = _labelIdSalleY;
-	
+
 	labelNomSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelNomSalle.lineHeight = _LineHeight;
 	labelNomSalle.textBaseline = _TextBaseline;
 	labelNomSalle.x = _labelIdSalleX;
 	labelNomSalle.y = _labelIdSalleY + 20;
-	
+
 	labelRetourGoules = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourGoules.lineHeight = _LineHeight;
 	labelRetourGoules.textBaseline = _TextBaseline;
 	labelRetourGoules.x = _labelRetourGoulesX;
 	labelRetourGoules.y = _labelRetourGoulesY;
-	
+
 	labelObjetCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelObjetCase.lineHeight = _LineHeight;
 	labelObjetCase.textBaseline = _TextBaseline;
@@ -573,7 +573,7 @@ function start() {
 	labelPtsDef.textBaseline = _TextBaseline;
 	labelPtsDef.x = _labelPtsDefX;
 	labelPtsDef.y = _labelPtsDefY;
-	
+
 	labelBonusArme = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabelBonus));
 	labelBonusArme.lineHeight = _LineHeight;
 	labelBonusArme.textBaseline = _TextBaseline;
@@ -650,7 +650,7 @@ function start() {
 	// ** Création des boutons de déplacement ***
 	// ******************************************
 	var _EpaisseurBpPad = 50;
-	
+
 	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
 	BtnHaut.y = _ContMapY;
 	BtnHaut.x = _ContMapX;
@@ -680,17 +680,17 @@ function start() {
 	});
 
 	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "pointer";
-	
+
 	// ******************************************
 	// ************ Boutons d'action ************
 	// ******************************************
-	
+
 	/*var BtnEvents = new createjs.Bitmap("public/ButtonRed.png");
 	BtnEvents.image.onload = setImg(BtnEvents, AbsBtn, OrdBtn);
-	
+
 	var testBtn = new createjs.Bitmap("public/ButtonGreen.png");
 	testBtn.image.onload = setImg(testBtn, 150, 250);*/
-	
+
 	var BtnEvents = stage.addChild(new Button("Historique", ColorBtn));
 	BtnEvents.y = OrdBtn;
 	/*BtnEvents.addEventListener('click', function(event) {
@@ -740,7 +740,7 @@ function start() {
 			socket.emit('INV_PERSONNAGE_CS', "EQUIPER", SelectedItemPerso);
 			SelectedItemEquip = -1;
 			SelectedItemPerso = -1;
-			
+
 		}
 
 	});
@@ -756,7 +756,7 @@ function start() {
 			SelectedItemEquip = -1;
 			SelectedItemPerso = -1;
 		}
-		
+
 	});
 
 	var BtnAttaquer = stage.addChild(new Button("Attaquer...", ColorBtn));
@@ -764,12 +764,12 @@ function start() {
 	/*BtnAttaquer.addEventListener('click', function(event) {
 
 						});	*/
-	
+
 	var BtnAtqGoules = stage.addChild(new Button("Attaquer Goule(s)", ColorBtn));
 	BtnAtqGoules.y = BtnAttaquer.y + H;
 	BtnAtqGoules.addEventListener('click', function(event) {
 		socket.emit('ACTION_ATTAQUE_GOULE_CS');
-						});
+	});
 
 	var BtnFouilleRapide = stage.addChild(new Button("Fouille rapide", ColorBtn));
 	//BtnFouilleRapide.y = BtnDefendre.y + H;
@@ -777,13 +777,13 @@ function start() {
 	BtnFouilleRapide.addEventListener('click', function(event) {
 		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
 	});	
-	
+
 	stage.update();
 
 	//BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = BtnFouiller.x = BtnCacher.x = BtnDefendre.x = AbsBtn;
 	BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = AbsBtn;
 	BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor = BtnAttaquer.cursor = "pointer";
-	
+
 	// ******************************************
 	// *********** INITIALISATION ***************
 	// ******************************************
@@ -798,114 +798,179 @@ function start() {
 	// ******************************************
 	// ********* RECEPTION SERVEUR **************
 	// ******************************************
-	
+
 	/******************************************************************************************************************
-	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
-	 * return 2 si deux goules tuées
-	 * return 1 si une goules tuée
-	 * erreur : 0 si erreur interne
-	 * erreur : -1 si aucune goule tuée
-	 * erreut : -2 si pas de goules dans la salle
+	 * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
+	 * la case avec MOVE_PERSONNAGE_SC 
+	 * return : usersOnline[username].cManager.GetCopieCase() si ok
+	 * erreur : renvoi 0 si erreur de case
+	 * erreur : renvoi -1 si impossible de bouger 
+	 * erreur : -2 si aucun de Pts Mouvement
+	 * erreur : -3 si trop de goules
+	 * erreur : -4 si zone sure adverse
 	 * 
-	 * ET degats reçus
 	 * 
 	 */
-	socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
-		switch(goulesTues)
-		{
-			case 2: 
-			labelRetourGoules.text="";
-			labelRetourGoules.text=("2 Goules tuées ! -" + degatsSubis + " points de vie");
-			break;
-			
-			case 1: 
-				labelRetourGoules.text="";
-			labelRetourGoules.text=("1 Goule tuée ! -" + degatsSubis + " points de vie");
-			break;
-			
-			case 0:
-				labelRetourGoules.text="";
-			labelRetourGoules.text=("Attaque de Goule(s) : erreur interne");
-			break;
-			
-			case -1:
-				labelRetourGoules.text="";
-			labelRetourGoules.text=("Attaque de Goule(s) échouée ! -" + degatsSubis + " points de vie");
-			break;
-			
-			case -2:
-				labelRetourGoules.text="";
-			labelRetourGoules.text=("Pas de Goule dans la salle !");
-			break;
-		}
-		socket.emit('INFO_CASE_CS');
-		stage.update();
-	});
-	
-	/******************************************************************************************************************
-     * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
-     * la case avec MOVE_PERSONNAGE_SC 
-     * return : usersOnline[username].cManager.GetCopieCase() si ok
-     * erreur : renvoi 0 si erreur de case
-     * erreur : renvoi -1 si impossible de bouger 
-     * erreur : -2 si aucun de Pts Mouvement
-     * erreur : -3 si trop de goules
-     * erreur : -4 si zone sure adverse
-     * 
-     * 
-     */
 	socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 		switch(currentCase)
 		{
-			case 0: txtSalle.text = "";
-			txtSalle.text = ("WARNING : ERREUR_CASE");
-			break;
-			
-			case -1: txtSalle.text = "";
-			txtSalle.text = ("Impossible d'aller par là !");
-			break;
-			
-			case -2: txtSalle.text = "";
-			txtSalle.text = ("Vous n'avez plus de points de mouvements !");
-			break;
-			
-			case -3: txtSalle.text = "";
-			txtSalle.text = ("Trop de Goules dans cette salle !");
-			break;
-			
-			case -4:
+		case 0: txtSalle.text = "";
+		txtSalle.text = ("WARNING : ERREUR_CASE");
+		break;
+
+		case -1: txtSalle.text = "";
+		txtSalle.text = ("Impossible d'aller par là !");
+		break;
+
+		case -2: txtSalle.text = "";
+		txtSalle.text = ("Vous n'avez plus de points de mouvements !");
+		break;
+
+		case -3: txtSalle.text = "";
+		txtSalle.text = ("Trop de Goules dans cette salle !");
+		break;
+
+		case -4:
 			txtSalle.text = "";
 			txtSalle.text = ("Impossible de pénétrer dans la Maison de l'ennemi!");
 			break;
-			
-			default:
+
+		default:
 			socket.emit('INFO_CASE_CS');
-			labelRetourGoules.text="";
-			txtSalle.text = "";
-			txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
-			socket.emit('INFO_PERSONNAGE_CS');
-			break;
+		labelRetourGoules.text="";
+		txtSalle.text = "";
+		txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
+		socket.emit('INFO_PERSONNAGE_CS');
+		break;
 		}
 		stage.update();
 	});
 
-	 
-    /******************************************************************************************************************
-     * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM 
-     * 
-     * return TYPE (RAMASSER OU DEPOSER)
-     * 
-     * ET return poidsTotal si ok 
-     * erreur : -1 si poids insufisant
-     * erreur : -2 si objet n'est pas dans la case / le sac 
-     * erreur : -3 si objet à déposer est équipé
-     * erreur : -4 si autre
-     * erreur : -5 si raté par goules
-     * 
-     * ET return id_item
-     * 
-     * ET degats reçus
-     */
+	/******************************************************************************************************************
+	 * RECEPTION DE LA REPONSE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM
+	 * return 1 si arme équipée / déséquipée
+	 * return 2 si armure équipée / déséquipée
+	 * erreur : 0 si objet n'est pas dans le sac
+	 * erreur : -1 si il y a déja une arme d'équipée
+	 * erreur : -2 si il y a déja une armure d'équipée
+	 * erreur : -3 si item n'est ni arme ni armure
+	 * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
+	 */
+	socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
+		//alert("retour button ok");
+
+		if (codeRetour == 0) {
+			txtObjetEquipe.text = "";
+			txtObjetEquipe.text = ("L'item " + currentItem.id + " n'est plus dans le sac ");
+			// quitte la fonction
+			return;
+		}
+		if (type == "EQUIPER") {
+			//alert("LOG CODE : " + codeRetour);
+			switch (codeRetour) {
+			case 0:
+				//alert("0");
+				txtObjetEquipe.text = "";
+				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
+				//alert("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
+				break;
+
+				// équipage ok
+			case 1:
+				var imgItem = new createjs.Bitmap(currentItem.imageName);
+				imgItem.cursor = "pointer";
+				// Si le type de l'item est : ARME
+				if (currentItem.type == 1) {
+					// Dessin de l'arme équipée
+					contArme.removeAllChildren();
+					contArme.addChild(imgItem);
+					contArme.addEventListener("click", function (event) {
+						SelectedItemEquip = currentItem.id;
+						stage.update();
+					});
+				}
+				// Si le type de l'item est : ARMURE
+				else if (currentItem.type == 2) {
+					// Dessin de l'armure équipée
+					contArmure.removeAllChildren();
+					contArmure.addChild(imgItem);
+					contArmure.addEventListener("click", function (event) {
+						SelectedItemEquip = currentItem.id;
+						stage.update();
+					});
+				}
+				// log
+				txtObjetEquipe.text = "";
+				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " ok !");
+
+				stage.update();
+				socket.emit('INFO_PERSONNAGE_CS');
+				break;
+
+			case -1:
+				//alert("-1");
+				txtObjetEquipe.text = "";
+				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : arme déja équipée");
+				//alert("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
+				break;
+
+			case -2:
+				//alert("-2");
+				txtObjetEquipe.text = "";
+				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : armure déja équipée");
+				//alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
+				break;
+
+			case -3:
+				//alert("-3");
+				txtObjetEquipe.text = "";
+				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : l'objet n'est pas équipable");
+				//alert("Equipement de l'item " + currentItem.id + " raté : l'objet n'est pas équipable");
+				break;
+
+			}
+		} else if (type == "DEQUIPER") {
+			if (codeRetour == -4) {
+				txtObjetEquipe.text = "";
+				txtObjetEquipe.tetx = ("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
+			} else if (codeRetour == 1) {
+				// Si déquipe arme
+				// efface l'arme
+				contArme.removeAllChildren();
+				txtObjetEquipe.text = "";
+				txtObjetEquipe.text = ("Arme déséquipée !");
+				socket.emit('INFO_PERSONNAGE_CS');					
+			}
+			// Si déquipe armure
+			else if (codeRetour == 2) {
+				// efface armure
+				contArmure.removeAllChildren();
+				txtObjetEquipe.text = "";
+				txtObjetEquipe.text = ("Armure déséquipée !");
+				socket.emit('INFO_PERSONNAGE_CS');
+			}
+
+			stage.update();
+		}
+		stage.update();
+	});
+
+	/******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM 
+	 * 
+	 * return TYPE (RAMASSER OU DEPOSER)
+	 * 
+	 * ET return poidsTotal si ok 
+	 * erreur : -1 si poids insufisant
+	 * erreur : -2 si objet n'est pas dans la case / le sac 
+	 * erreur : -3 si objet à déposer est équipé
+	 * erreur : -4 si autre
+	 * erreur : -5 si raté par goules
+	 * 
+	 * ET return id_item
+	 * 
+	 * ET degats reçus
+	 */
 	socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG) {
 		if (type == 'RAMASSER') {
 			// erreur
@@ -957,42 +1022,6 @@ function start() {
 		}
 		stage.update();
 	});
-
-
-	/******************************************************************************************************************
-	 * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
-	 * return 1 si ok
-	 * erreur : 0 si erreur interne
-	 * erreur : -4 si déja dans ce mode
-	 * erreur : -5 si raté à cause goules
-	 * 
-	 * ET return dégats infligés
-	 */
-	socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges) 
-			{
-		switch(reponse)
-		{
-		case 1: 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok !");
-			socket.emit('INFO_PERSONNAGE_CS');
-			break;
-		case 0 : 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
-			break;
-		case -4 : 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
-			break;
-		case -5: 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté à cause des Goules");
-			break;
-		}
-		txtObjetEquipe.text+=("Dégats infligés : " + degatsInfliges +"");
-
-			});
 
 	/******************************************************************************************************************
 	 * RECEPTION DES INFORMATIONS SUR LA CASE
@@ -1066,7 +1095,7 @@ function start() {
 				//imgItem.image.onload = setImg(imgItem,200+(i+1)*30,50);
 				imgItem.x = i * SpaceItem;
 				contInvCase.addChild(imgItem);
-				
+
 				contMap.removeChild(map);
 				// insertion de la map
 				var map = new createjs.Bitmap(currentCase.pathImg);
@@ -1119,7 +1148,7 @@ function start() {
 		// Sécurité pour le remplissage de la barre de vie
 		if(currentPerso.ptSante<=0)
 		{
-			
+
 			//labelPtsVie.text=("Points de vie :         	 	0/" + currentPerso.ptSanteMax);
 			labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 			lifeBar.scaleX = 0;
@@ -1299,7 +1328,7 @@ function start() {
 		contInvPerso.removeAllChildren();
 
 		var iPositionItemInConteneur=0;
-		
+
 		for (var i = 0; i < currentPerso.sacADos.length; i++) 
 		{
 			// mise de l'item dans une variable
@@ -1307,10 +1336,10 @@ function start() {
 
 			// Calcul du poids du sac
 			PoidsSac+=item.poids;
-			
+
 			// Ajout de l'item à la liste
 			listeItemsPerso.push(item);
-			
+
 			if(!((currentPerso.armeEquipee != null && item.id == currentPerso.armeEquipee.id) || 
 					(currentPerso.armureEquipee != null && item.id == currentPerso.armureEquipee.id)) )
 			{			
@@ -1344,7 +1373,7 @@ function start() {
 
 				// position de l'item dans le conteneur
 				iPositionItemInConteneur++;
-				
+
 				// Update l'ihm
 				stage.update();
 			}
@@ -1391,7 +1420,7 @@ function start() {
 			// Dessin de l'armure équipée
 			contArmure.removeAllChildren();
 			contArmure.addChild(imgItemArmure);
-			
+
 			/*if(currentPerso.armureEquipee.valeur >=0)
 			{
 				labelBonusArmure.text=("(+" + currentPerso.armureEquipee.valeur + " points)");
@@ -1419,122 +1448,111 @@ function start() {
 
 		// Affichage label poids du sac
 		labelPoidsSac.text=("Poids du sac :        " + PoidsSac + "/" + currentPerso.poidsMax);
-		
+
 		// Affichage barre poids du sac
 		sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
-		
+
 		// Update l'ihm
 		stage.update();
 	});
 
-	/******************************************************************************************************************
-	 * RECEPTION DE LA REPONSE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM
-	 * return 1 si arme équipée / déséquipée
-     * return 2 si armure équipée / déséquipée
-     * erreur : 0 si objet n'est pas dans le sac
-     * erreur : -1 si il y a déja une arme d'équipée
-     * erreur : -2 si il y a déja une armure d'équipée
-     * erreur : -3 si item n'est ni arme ni armure
-     * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
+	/**************************************************************************************
+	 * RECEPTION Suite à une DEMANDE POUR UTILISER UN ITEM
+	 * return 1 si ok
+	 * erreur : 0 si objet n'est pas dans le sac
+	 * erreur : -1 si objet pas utilisable
 	 */
-	socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
-		//alert("retour button ok");
+	socket.on('PERSONNAGE_USE_SC', 
 
-		if (codeRetour == 0) {
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("L'item " + currentItem.id + " n'est plus dans le sac ");
-			// quitte la fonction
-			return;
-		}
-		if (type == "EQUIPER") {
-			//alert("LOG CODE : " + codeRetour);
-			switch (codeRetour) {
-			case 0:
-				//alert("0");
-				txtObjetEquipe.text = "";
-				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
-				//alert("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
-				break;
+	/******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
+	 * return 2 si deux goules tuées
+	 * return 1 si une goules tuée
+	 * erreur : 0 si erreur interne
+	 * erreur : -1 si aucune goule tuée
+	 * erreut : -2 si pas de goules dans la salle
+	 * 
+	 * ET degats reçus
+	 * 
+	 */
+	socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
+		switch(goulesTues)
+		{
+		case 2: 
+			labelRetourGoules.text="";
+			labelRetourGoules.text=("2 Goules tuées ! -" + degatsSubis + " points de vie");
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
 
-				// équipage ok
-			case 1:
-				var imgItem = new createjs.Bitmap(currentItem.imageName);
-				imgItem.cursor = "pointer";
-				// Si le type de l'item est : ARME
-				if (currentItem.type == 1) {
-					// Dessin de l'arme équipée
-					contArme.removeAllChildren();
-					contArme.addChild(imgItem);
-					contArme.addEventListener("click", function (event) {
-						SelectedItemEquip = currentItem.id;
-						stage.update();
-					});
-				}
-				// Si le type de l'item est : ARMURE
-				else if (currentItem.type == 2) {
-					// Dessin de l'armure équipée
-					contArmure.removeAllChildren();
-					contArmure.addChild(imgItem);
-					contArmure.addEventListener("click", function (event) {
-						SelectedItemEquip = currentItem.id;
-						stage.update();
-					});
-				}
-				// log
-				txtObjetEquipe.text = "";
-				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " ok !");
-				
-				stage.update();
-				socket.emit('INFO_PERSONNAGE_CS');
-				break;
-				
-			case -1:
-				//alert("-1");
-				txtObjetEquipe.text = "";
-				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : arme déja équipée");
-				//alert("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
-				break;
-				
-			case -2:
-				//alert("-2");
-				txtObjetEquipe.text = "";
-				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : armure déja équipée");
-				//alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
-				break;
-				
-			case -3:
-				//alert("-3");
-				txtObjetEquipe.text = "";
-				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : l'objet n'est pas équipable");
-				//alert("Equipement de l'item " + currentItem.id + " raté : l'objet n'est pas équipable");
-				break;
-				
-			}
-		} else if (type == "DEQUIPER") {
-			if (codeRetour == -4) {
-				txtObjetEquipe.text = "";
-				txtObjetEquipe.tetx = ("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
-			} else if (codeRetour == 1) {
-				// Si déquipe arme
-				// efface l'arme
-				contArme.removeAllChildren();
-				txtObjetEquipe.text = "";
-				txtObjetEquipe.text = ("Arme déséquipée !");
-				socket.emit('INFO_PERSONNAGE_CS');					
-			}
-			// Si déquipe armure
-			else if (codeRetour == 2) {
-				// efface armure
-				contArmure.removeAllChildren();
-				txtObjetEquipe.text = "";
-				txtObjetEquipe.text = ("Armure déséquipée !");
-				socket.emit('INFO_PERSONNAGE_CS');
-			}
-			
-			stage.update();
+		case 1: 
+			labelRetourGoules.text="";
+			labelRetourGoules.text=("1 Goule tuée ! -" + degatsSubis + " points de vie");
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
+
+		case 0:
+			labelRetourGoules.text="";
+			labelRetourGoules.text=("Attaque de Goule(s) : erreur interne");
+			break;
+
+		case -1:
+			labelRetourGoules.text="";
+			labelRetourGoules.text=("Attaque de Goule(s) échouée ! -" + degatsSubis + " points de vie");
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
+
+		case -2:
+			labelRetourGoules.text="";
+			labelRetourGoules.text=("Pas de Goule dans la salle !");
+			break;
 		}
+		socket.emit('INFO_CASE_CS');
 		stage.update();
 	});
+
+
+
+
+
+	/******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
+	 * return 1 si ok
+	 * erreur : 0 si erreur interne
+	 * erreur : -4 si déja dans ce mode
+	 * erreur : -5 si raté à cause goules
+	 * 
+	 * ET return dégats infligés
+	 */
+	socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges) 
+			{
+		switch(reponse)
+		{
+		case 1: 
+			txtObjetEquipe.text = "";
+			txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok !");
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
+		case 0 : 
+			txtObjetEquipe.text = "";
+			txtObjetEquipe.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
+			break;
+		case -4 : 
+			txtObjetEquipe.text = "";
+			txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
+			break;
+		case -5: 
+			txtObjetEquipe.text = "";
+			txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté à cause des Goules");
+			break;
+		}
+		txtObjetEquipe.text+=("Dégats infligés : " + degatsInfliges +"");
+
+			});
+
+
+
+
+
 
 	/* ET return éventuels dégats infligés
 	 * 
