@@ -973,52 +973,59 @@ function start() {
 	 */
 	socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG) {
 		if (type == 'RAMASSER') {
+			switch(codeRetour)
 			// erreur
-			if (codeRetour == -3) {
+			case -3:
 				txtObjet.text = "";
 				txtObjet.text = ("Erreur inconnue");
-			}
+			break;
 			// poids insufisant
-			else if (codeRetour == -1) {
+			case -1:
 				txtObjet.text = "";
 				txtObjet.text = ("Impossible de ramasser l'objet : poids max atteint !");
-			}
+			break;
 			// objet pas dans case
-			else if (codeRetour == -2) {
+			case -2:
 				txtObjet.text = "";
 				txtObjet.text = ("L'objet " + id_item + " n'est plus dans la salle !");
-			}
+			break;
+			case -5:
+				txtObjet.text = "";
+				txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
 			// ramassage ok
-			else {
-				alert(DegatsG);
+			default:
 				txtObjet.text = "";
 				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie");
 				socket.emit('INFO_PERSONNAGE_CS');
 				socket.emit('INFO_CASE_CS');
 				stage.update();
-			}
+			break;
 		}
 		stage.update();
 		if (type == 'DEPOSER') {
+			switch(codeRetour)
 			// erreur
-			if (codeRetour == -3) {
+			case -3:
+				txtObjet.text = "";
 				txtObjet.text = ("Déséquiper l'objet avant de déposer !");
-			}
-			else if (codeRetour == -4) {
+			break;
+			case -4:
+				txtObjet.text = "";
 				txtObjet.text = ("Erreur interne !");
-			}
+			break;
 			// objet pas dans sac (! pas normal)
-			else if (codeRetour == -2) {
+			case -2:
+				txtObjet.text = "";
 				txtObjet.text = ("L'item " + id_item + " n'est plus dans le sac ");
-			}
+			break;
 			// dépôt ok
-			else {
+			default:
 				txtObjet.text = "";
 				txtObjet.text = ("Item " + id_item + "déposé ! Sac : " + codeRetour + " kg");
 				socket.emit('INFO_CASE_CS');
 				socket.emit('INFO_PERSONNAGE_CS');
 				stage.update();
-			}
+			break;
 		}
 		stage.update();
 	});
@@ -1462,7 +1469,7 @@ function start() {
 	 * erreur : 0 si objet n'est pas dans le sac
 	 * erreur : -1 si objet pas utilisable
 	 */
-	socket.on('PERSONNAGE_USE_SC', 
+	//socket.on('PERSONNAGE_USE_SC', );
 
 	/******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
