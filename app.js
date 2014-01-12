@@ -918,7 +918,7 @@ io.sockets.on('connection', function (socket)
 	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UN AUTRE JOUEUR
 	 * return 1 si ok
 	 * erreur : 0 si erreur interne
-	 * erreur : -1 si joueur pu dans la salle
+	 * erreur : -1 si joueur n'est plus dans la caase
 	 * erreur : -5 si raté à cause goules
 	 * erreur : -10 si plus de pts actions
 	 * 
@@ -926,13 +926,27 @@ io.sockets.on('connection', function (socket)
 	 * 
 	 * ET return dégats reçus
 	 */
-    socket.on('ACTION_ATTAQUE_CS', function (pseudoCible) {
+    socket.on('ACTION_ATTAQUE_CS', function (idCible) {
         // si pu de pts actions
         if(pManagers[id].AucunPtActions())
         {
-        	socket.emit('ACTION_ATTAQUE_SC', 0, 0);
+        	socket.emit('ACTION_ATTAQUE_SC', 0, 0, 0);
         	return;
         }
+        
+        // si lus dans la case
+        if(pManagers[idCible].GetIdSalleEnCours() != pManagers[id].GetIdSalleEnCours())
+        {
+        	socket.emit('ACTION_ATTAQUE_SC', -1, 0, 0);
+        	return;
+        }
+        
+        // combat
+        var ans = pManagers[id].Attaquer(pManagers[idCible]);
+        // log
+        console.log("Attaque de " + id + " -> " + idCible +" : (" + ans.degatsInfliges + ") <-> ("+ans.degatsRecus +")");
+        // return
+        socket.emit('ACTION_ATTAQUE_SC', 0, 0, 0);
     });
     
     /******************************************************************************************************************
@@ -1028,7 +1042,7 @@ io.sockets.on('connection', function (socket)
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
 	 * 
-	 * return liste des ennemis
+	 * return liste des ennemis (tableau associatif) [idUtilisateur, personnageEnnemi]
 	 * erreur : liste vide si aucun ennemis dans la case
 	 */ 
     socket.on('INFO_CASE_ENNEMIS_CS', function () {
@@ -1049,7 +1063,7 @@ io.sockets.on('connection', function (socket)
     			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
     			{
     				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
-    				listeEnn.push(pManagers[idUser].getPersonnageToDisplay());
+    				listeEnn[idUser] = (pManagers[idUser].getPersonnageToDisplay());
     			}
     		}
     	}
