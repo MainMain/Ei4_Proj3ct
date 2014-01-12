@@ -14,6 +14,8 @@ var Case_Manager = (function() {
 
     // --- ATTRIBUTS DE CLASSE ---
 	Case_Manager.caseCourante;
+    Case_Manager.idZoneSure1 = 0;
+    Case_Manager.idZoneSure2 = 5;
     
 	// --- METHODE DE CLASSE
 	Case_Manager.build = function(idUser) {return new Case_Manager();};
@@ -24,6 +26,9 @@ var Case_Manager = (function() {
 		console.log("CASE MANAGER : id case : " + idCase);
 		this.caseCourante = oCase_BD.GetCaseById(idCase);
 		console.log("CMANAGER : Actif !");
+		
+		this.idZoneSure1 = 0;
+		this.idZoneSure2 = 5;
 	}
 	// --- METHODES D'INSTANCE
 	Case_Manager.prototype = {
@@ -170,7 +175,14 @@ var Case_Manager = (function() {
 		
 		GetTestZoneSure : function(numEquipe)
 		{
-			return false;
+			console.log("CASE_MANAGER : GetTestZoneSure()/ numEquipe = "+numEquipe + " id case destination : " + this.caseCourante.id + "id zone sure 2 = " + this.idZoneSure2);
+			if ( 
+					(numEquipe == 1 && this.caseCourante.id == this.idZoneSure2) ||
+					(numEquipe == 2 && this.caseCourante.id == this.idZoneSure1))
+				return true;
+			else
+				return false;
+					
 		},
 
 	};

@@ -9,11 +9,6 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
-/*
- *  VARIABLES GLOBALES DE JEU
- */
-var idZoneSure1 = 0;
-var idZoneSure2 = 3;
 
 /*
  * 
@@ -484,7 +479,10 @@ io.sockets.on('connection', function (socket)
 			}
 		
 		// test si pas zone sure adverse
-		if (cManagers[pManagers[id].GetIdSalleEnCours()].GetTestZoneSure(uManagers[id].GetNumEquipe()))
+		// on regarde le manager de la salle suivante et on teste si zone sure
+		var idNextCase = pManagers[id].GetIdNextSalle(move);
+		//console.log("------------------------------" + cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()));
+		if (idNextCase != -1 && cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()))
 		{
 			console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
 			socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
