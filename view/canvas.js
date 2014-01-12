@@ -649,30 +649,6 @@ function start() {
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
-	/*var BtnHaut = stage.addChild(new ButtonMove("H", ColorPad));
-					BtnHaut.y = 10;
-					BtnHaut.addEventListener('click', function(event) {
-						socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
-						});
-
-					var BtnBas = stage.addChild(new ButtonMove("B", ColorPad));
-					BtnBas.y = BtnHaut.y + 60;
-					BtnBas.addEventListener('click', function(event) {
-						socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
-						});
-
-					var BtnGauche = stage.addChild(new ButtonMove("G", ColorPad));
-					BtnGauche.x = 20;
-					BtnGauche.addEventListener('click', function(event) {
-						socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
-						});
-
-					var BtnDroite = stage.addChild(new ButtonMove("D", ColorPad));
-					BtnDroite.x = BtnGauche.x + 60;
-					BtnDroite.addEventListener('click', function(event) {
-						socket.emit('MOVE_PERSONNAGE_CS', 'EST');
-						});*/
-
 	var _EpaisseurBpPad = 50;
 	
 	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
@@ -704,10 +680,7 @@ function start() {
 	});
 
 	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "pointer";
-	/*BtnHaut.x = BtnBas.x = 50;
-					BtnGauche.y = BtnDroite.y = 40;*/
-
-
+	
 	// ******************************************
 	// ************ Boutons d'action ************
 	// ******************************************
@@ -791,29 +764,6 @@ function start() {
 	/*BtnAttaquer.addEventListener('click', function(event) {
 
 						});	*/
-
-	// Boutons Ajoutés dans INFO_PERSO en fonction du mode
-
-	/* var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
-				    BtnFouiller.y = BtnAttaquer.y + H;
-				    BtnFouiller.addEventListener('click', function(event) {
-				    	socket.emit('PERSONNAGE_MODE_CS', 1);
-				    	 socket.emit('INFO_PERSONNAGE_CS');
-						});	
-
-				    var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
-				    BtnCacher.y = BtnFouiller.y + H;
-				    BtnCacher.addEventListener('click', function(event) {
-				    	socket.emit('PERSONNAGE_MODE_CS', 2);
-				    	 socket.emit('INFO_PERSONNAGE_CS');
-						});	
-
-				    var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
-				    BtnDefendre.y = BtnCacher.y + H;
-				    BtnDefendre.addEventListener('click', function(event) {
-				    	socket.emit('PERSONNAGE_MODE_CS', 3);
-				    	 socket.emit('INFO_PERSONNAGE_CS');
-						});	*/
 	
 	var BtnAtqGoules = stage.addChild(new Button("Attaquer Goule(s)", ColorBtn));
 	BtnAtqGoules.y = BtnAttaquer.y + H;
@@ -832,7 +782,7 @@ function start() {
 
 	//BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = BtnFouiller.x = BtnCacher.x = BtnDefendre.x = AbsBtn;
 	BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = AbsBtn;
-	BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor = BtnAttaquer.cursor = "crosshair";
+	BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor = BtnAttaquer.cursor = "pointer";
 	
 	// ******************************************
 	// *********** INITIALISATION ***************
@@ -905,25 +855,6 @@ function start() {
      * 
      */
 	socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
-		/*if (currentCase == 0) {
-			txtSalle.text = "";
-			txtSalle.text = ("WARNING : ERREUR_CASE");
-		} else if (currentCase == -1) {
-			txtSalle.text = "";
-			txtSalle.text = ("Impossible d'aller par là !");
-		} else if (currentCase == -2) {
-			txtSalle.text = "";
-			txtSalle.text = ("Vous n'avez plus de points de mouvements !");
-		} else if (currentCase == -5) {
-			txtSalle.text = "";
-			txtSalle.text = ("Déplacement raté à cause des goules !");
-		} else {
-			socket.emit('INFO_CASE_CS');
-			txtSalle.text = "";
-			txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
-			//modifieIdSalle(currentCase.nom, currentCase.id);
-			socket.emit('INFO_PERSONNAGE_CS');
-		}*/
 		switch(currentCase)
 		{
 			case 0: txtSalle.text = "";
@@ -958,11 +889,24 @@ function start() {
 		stage.update();
 	});
 
-	/******************************************************************************************************************
-	 * RECEPTION D'UNE REPONSE POUR LA DEMANDE DE MODIF
-	 * D'OBJET DANS LA CASE
-	 */
-	socket.on('INV_CASE_SC', function (type, id_item, codeRetour) {
+	 
+    /******************************************************************************************************************
+     * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM 
+     * 
+     * return TYPE (RAMASSER OU DEPOSER)
+     * 
+     * ET return poidsTotal si ok 
+     * erreur : -1 si poids insufisant
+     * erreur : -2 si objet n'est pas dans la case / le sac 
+     * erreur : -3 si objet à déposer est équipé
+     * erreur : -4 si autre
+     * erreur : -5 si raté par goules
+     * 
+     * ET return id_item
+     * 
+     * ET degats reçus
+     */
+	socket.on('INV_CASE_SC', function (type, id_item, codeRetour, DegatsG) {
 		if (type == 'RAMASSER') {
 			// erreur
 			if (codeRetour == -3) {
@@ -982,7 +926,9 @@ function start() {
 			// ramassage ok
 			else {
 				txtObjet.text = "";
-				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg");
+				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie");
+				//labelRetourGoules.text="";
+				//labelRetourGoules.tetx="";
 				socket.emit('INFO_PERSONNAGE_CS');
 				socket.emit('INFO_CASE_CS');
 				stage.update();
@@ -1272,7 +1218,7 @@ function start() {
 		});	
 
 		BtnFouiller.cursor="not-allowed";
-		BtnCacher.cursor=BtnDefendre.cursor="crosshair";
+		BtnCacher.cursor=BtnDefendre.cursor="pointer";
 
 		labelBonusArme.text=("");
 		labelBonusArmure.text=("");
@@ -1305,7 +1251,7 @@ function start() {
 			});
 
 			BtnCacher.cursor="not-allowed";
-			BtnFouiller.cursor=BtnDefendre.cursor="crosshair";
+			BtnFouiller.cursor=BtnDefendre.cursor="pointer";
 
 			labelBonusArme.text=("");
 			labelBonusArmure.text=("");
@@ -1338,7 +1284,7 @@ function start() {
 			});	
 
 			BtnDefendre.cursor="not-allowed";
-			BtnFouiller.cursor=BtnCacher.cursor="crosshair";
+			BtnFouiller.cursor=BtnCacher.cursor="pointer";
 
 			labelBonusArme.text=("(+" + PointsAttaque*0.25 + " points)	");
 			labelBonusArmure.text=("(+" + PointsDefense*0.25 + " points)");
@@ -1484,12 +1430,13 @@ function start() {
 
 	/******************************************************************************************************************
 	 * RECEPTION DE LA REPONSE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM
-	 * Retours (voir server.js) :
-	 * return 1 si ok
-	 * erreur : 0 si objet n'est pas dans le sac
-	 * erreur : -1 si il y a déja une arme d'équipée
-	 * erreur : -2  si il y a déja une armure d'équipée
-	 * erreur : -3 si item n'est ni arme ni armure
+	 * return 1 si arme équipée / déséquipée
+     * return 2 si armure équipée / déséquipée
+     * erreur : 0 si objet n'est pas dans le sac
+     * erreur : -1 si il y a déja une arme d'équipée
+     * erreur : -2 si il y a déja une armure d'équipée
+     * erreur : -3 si item n'est ni arme ni armure
+     * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
 	 */
 	socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 		//alert("retour button ok");
@@ -1507,7 +1454,7 @@ function start() {
 				//alert("0");
 				txtObjetEquipe.text = "";
 				txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
-				alert("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
+				//alert("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
 				break;
 
 				// équipage ok
