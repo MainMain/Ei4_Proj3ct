@@ -98,23 +98,40 @@ var Case_Manager = (function() {
 			this.caseCourante = oCase_BD.GetCaseById(idCase);
 		},
 		
-		DegatsParGoules : function()
+		AttaqueDeGoules : function()
 		{
+			// attaque des goules
 			var degatsGoules = Math.floor(Math.random() * 4 + 1);
 			var nbrGoulesAttaquantes = Math.floor(Math.random() * this.caseCourante.nbrGoules);
 			var total = degatsGoules * nbrGoulesAttaquantes;
 			console.log("CASE_MAN : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total);
-			return total;
+			
+			// action raté ou non
+			var chance = Math.floor(Math.random()  * 10);
+			chance -= nbrGoulesAttaquantes * 0.3;
+			var actionOk;
+			if (chance >= 5) actionOk = false;
+			else actionOk = true;
+			
+			if (this.caseCourante.nbrGoules == 0) actionOk = true;
+			
+			//console.log("CM - Attaque de goules : total : " + total);
+			 var a = {
+		            "degats"	: total,
+		            "nbrGoulesA" : nbrGoulesAttaquantes,
+		            "actionOk" 	: actionOk,
+		        };
+		    return a;
 		},
 		
-		ActionRateeParGoules : function()
+		/*ActionRateeParGoules : function()
 		{
 			var chance = Math.floor(Math.random()  * 2);
 			if (chance >= 1)
 				return false;
 			else
 				return true;
-		},
+		},*/
 		
 
 		Fouille : function(probaObjetPerso)

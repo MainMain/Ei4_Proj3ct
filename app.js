@@ -972,15 +972,15 @@ io.sockets.on('connection', function (socket)
     		if(pManagers[idUser].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours() 
     				&& pManagers[idUser].mode == 2)
     		{
-    			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
+    			console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : id salle : " + pManagers[idUser].GetIdSalleEnCours());
     			// si équipe différente
     			if (uManagers[idUser].GetNumEquipe() != uManagers[idUser].GetNumEquipe(id))
     			{
-    				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
+    				console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : : " + uManagers[idUser].GetNumEquipe());
     				ennemiDecouvert = cManagers[pManagers[id].GetIdSalleEnCours()].DecouverteEnnemi(pManagers[id].GetMultiFouille(), pManagers[idUser].GetMultiCache());
     				if (ennemiDecouvert)
     				{
-    					console.log("SERVEUR : ennemi découvert lors d'une fouille !");
+    					console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : ennemi découvert lors d'une fouille !");
     					// incrémente nombre découvertes
     					nbrEnnDecouverts++;
     					
@@ -998,7 +998,7 @@ io.sockets.on('connection', function (socket)
         // si fouille Fructueuse détermination de l'item trouvé
         if (fouilleFrutueuse)
         {
-        	console.log("");
+        	console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille fructueuse");
         	// tire un item aléatoire
         	var item = iManager.GetItemAleatoire(function(newItem)
         	{
@@ -1010,14 +1010,14 @@ io.sockets.on('connection', function (socket)
         		if (!res)
         			cManagers[pManagers[id].GetIdSalleEnCours()].AjouterItem(item);
         	        		
-        		console.log("fouille fructueuse. Ajout au sac? " + res);
+        		console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille fructueuse. Ajout au sac? " + res);
         		// si la fouille réussie
         		socket.emit('ACTION_FOUILLE_RAPIDE_SC',  1, item, restG["degats"], res, nbrEnnDecouverts); 
         	});
         }
         else
         {
-        	console.log("fouille raté");
+        	console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille raté");
         	socket.emit('ACTION_FOUILLE_RAPIDE_SC',  -1, null, restG["degats"], null, nbrEnnDecouverts); 
         }
         console.log("*****************************************************************");
@@ -1131,6 +1131,7 @@ io.sockets.on('connection', function (socket)
 	 * 
 	 */
     socket.on('ACTION_ATTAQUE_GOULE_CS', function () {
+    	console.log("******************** ATTAQUE DE GOULES *****************");
     	// si pas de goules dans la salle
     	if (cManagers[pManagers[id].GetIdSalleEnCours()].GetNombreGoules() == 0)
     	{
@@ -1139,14 +1140,18 @@ io.sockets.on('connection', function (socket)
     	}
     	
     	// calcul des dégats subis
-    	var degatsSubis = cManagers[pManagers[id].GetIdSalleEnCours()].DegatsParGoules();
-    	pManagers[id].DiminuerSante(degatsSubis);
+    	var ans = cManagers[pManagers[id].GetIdSalleEnCours()].AttaqueDeGoules();
+    	var degatsSubis = pManagers[id].DiminuerSante(ans["degats"]);
+    	
+    	// attaque
+    	pManagers[id].AttaquerGoule();
     	
     	// goules tuées
     	var goulesTues = cManagers[pManagers[id].GetIdSalleEnCours()].AttaqueGoule();
     	
     	console.log("SERVEUR : attaque goules ->  Goules tués : " + goulesTues + " - Degats " + degatsSubis);
     	socket.emit('ACTION_ATTAQUE_GOULE_SC', goulesTues, degatsSubis);
+    	console.log("*********************************************************");
     });
     /*
      * 
@@ -1259,23 +1264,17 @@ io.sockets.on('connection', function (socket)
     function TestGoules()
     {
     	 // calcul si blessé par goules
-        var reponseDegatsParGoules = cManagers[pManagers[id].GetIdSalleEnCours()].DegatsParGoules();
-        
-        // calcul si chgt mode réussi
-        var reponseActionReussie = ! cManagers[pManagers[id].GetIdSalleEnCours()].ActionRateeParGoules();
+        var ans = cManagers[pManagers[id].GetIdSalleEnCours()].AttaqueDeGoules();
         
         // informe le manager de perso des dégats
-        var degatsInfliges = pManagers[id].DiminuerSante(reponseDegatsParGoules);
+        var degatsInfliges = pManagers[id].DiminuerSante(ans["degats"]);
 
-        console.log("SERVEUR -> GOULES : degats par goules " + reponseDegatsParGoules);
-        console.log("SERVEUR -> GOULES : degats infligés " + degatsInfliges);
-        console.log("SERVEUR -> GOULES : actionok " + reponseActionReussie);
+        console.log("SERVEUR -> GOULES : degats par goules : " + ans["degats"]);
+        console.log("SERVEUR -> GOULES : degats infligés : " + degatsInfliges);
+        console.log("SERVEUR -> GOULES : nbr goules attaquantes :  " + ans["nbrGoulesA"]);
+        console.log("SERVEUR -> GOULES : action ok ? : " + ans["actionOk"]);
         
-        var a = {
-            "degats"	: degatsInfliges,
-            "actionOk" 	: reponseActionReussie,
-        };
-        return a;
+        return ans;
     }
     
     /******************************************************************************************************************

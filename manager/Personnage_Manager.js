@@ -13,7 +13,11 @@ var Personnage_Manager = (function () {
 
         // --- ATTRIBUTS DE CLASSE ---
         Personnage_Manager.personnage;
-
+        Personnage_Manager.coutFouilleRapide = 4;
+        Personnage_Manager.coutAttaqueEnnemi = 7;
+        Personnage_Manager.coutAttaqueGoule = 3;
+        Personnage_Manager.coutInterceptionGoule = 2;
+        
         // --- METHODE DE CLASSE
         Personnage_Manager.build = function (idUser) { return new Personnage_Manager(); };
 
@@ -181,6 +185,7 @@ var Personnage_Manager = (function () {
             },
             
             DiminuerSante : function (degats) {
+            	console.log("PM : DiminuerSante : Degats recus : " + degats);
             	// diminution des degats grace à l'armure
             	degats -= this.personnage.getValeurArmure();
             	
@@ -191,6 +196,7 @@ var Personnage_Manager = (function () {
             		this.personnage.ptSante -= degats;
             		//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             	}
+            	console.log("PM : DiminuerSante : Baisse de vie : " + degats);
             	return degats;
             },
             
@@ -202,13 +208,13 @@ var Personnage_Manager = (function () {
             
             FouilleRapide : function()
             {
-            	this.personnage.ptActions -= 4;
+            	this.personnage.ptActions -= this.coutFouilleRapide;
             	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             PerteActionParGoules : function()
             {
-            	this.personnage.ptActions -= 3;
+            	this.personnage.ptActions -= this.coutInterceptionGoule;
             	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
@@ -236,6 +242,9 @@ var Personnage_Manager = (function () {
             	var degatsRecus;
             	var degatsInfliges;
             	
+            	// diminution ptAction
+            	this.personnage.ptActions -= this.coutAttaqueEnnemi;
+            	
             	degatsInfliges = this.personnage.GetPtsAttaque() - this.managerPersoEnn.GetPtsDefense();
             	degatsRecus = this.managerPersoEnn.GetPtsAttaque() - this.personnage.GetPtsDefense();
             	
@@ -249,6 +258,12 @@ var Personnage_Manager = (function () {
                     "degatsInflges" : degatsInfliges,
                 };
                 return a;
+            },
+            
+            AttaquerGoule : function()
+            {
+            	// diminution ptAction
+            	this.personnage.ptActions -= this.coutAttaqueGoule;
             },
 
             
