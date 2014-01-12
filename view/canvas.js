@@ -1220,7 +1220,7 @@ function start() {
 		case 0 :  labelMode.text=("");
 
 		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
-		BtnFouiller.y = BtnAtqGoules.y + H;
+		BtnFouiller.y = BtnFouilleRapide.y + H;
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1250,7 +1250,7 @@ function start() {
 		labelMode.text=("Mode Fouille activé");
 
 		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
-		BtnFouiller.y = BtnAtqGoules.y + H;
+		BtnFouiller.y = BtnFouilleRapide.y + H;
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1283,7 +1283,7 @@ function start() {
 			labelMode.text=("Mode Caché activé");
 
 			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
-			BtnFouiller.y = BtnAtqGoules.y + H;
+			BtnFouiller.y = BtnFouilleRapide.y + H;
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
@@ -1316,7 +1316,7 @@ function start() {
 			labelMode.text=("Mode Défense activé");
 
 			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
-			BtnFouiller.y = BtnAtqGoules.y + H;
+			BtnFouiller.y = BtnFouilleRapide.y + H;
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
