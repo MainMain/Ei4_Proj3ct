@@ -906,7 +906,7 @@ function start() {
      * 
      * ET degats reçus
      */
-	socket.on('INV_CASE_SC', function (type, id_item, codeRetour, DegatsG) {
+	socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG) {
 		if (type == 'RAMASSER') {
 			// erreur
 			if (codeRetour == -3) {
@@ -925,10 +925,9 @@ function start() {
 			}
 			// ramassage ok
 			else {
+				alert(DegatsG);
 				txtObjet.text = "";
 				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie");
-				//labelRetourGoules.text="";
-				//labelRetourGoules.tetx="";
 				socket.emit('INFO_PERSONNAGE_CS');
 				socket.emit('INFO_CASE_CS');
 				stage.update();
