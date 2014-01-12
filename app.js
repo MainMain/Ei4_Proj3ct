@@ -493,7 +493,7 @@ io.sockets.on('connection', function (socket)
 		
     	// ********* algorithme de calcul de l'impact des goules *********
     	/*var restG = TestGoules();
-    	console.log("degats ? " + restG["degats"]);
+
     	console.log("actionOk ? " + restG["actionOk"]);
     	if (restG["actionOk"] == 0)
 		{
@@ -695,7 +695,7 @@ io.sockets.on('connection', function (socket)
 						
 					 // ********* algorithme de calcul de l'impact des goules *********
 			    	var restG = TestGoules();
-			    	console.log("degats ? " + restG["degats"]);
+			
 			    	if (restG["actionOk"] == 0)
 			    		{
 			    			// log
@@ -712,10 +712,11 @@ io.sockets.on('connection', function (socket)
 				}
 				else
 				{
-				console.log("SERVER : Demande de ramassage impossible : poids max atteint");
+					// log
+					console.log("SERVER : Demande de ramassage impossible : poids max atteint");
 					
-				// return au client que l'objet ne peut être ajouté (poids insufisant)
-				socket.emit('INV_CASE_SC', 'RAMASSER', -1, currentItem.id, 0);
+					// return au client que l'objet ne peut être ajouté (poids insufisant)
+					socket.emit('INV_CASE_SC', 'RAMASSER', -1, currentItem.id, 0);
 				}
 			} // fin if (existItemInSalle == true)
 			// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
@@ -888,7 +889,7 @@ io.sockets.on('connection', function (socket)
         
         // ********* algorithme de calcul de l'impact des goules *********
     	var restG = TestGoules();
-    	console.log("degats ? " + restG["degats"]);
+
     	if (restG["actionOk"] == 0)
     		{
     			// log
@@ -931,6 +932,8 @@ io.sockets.on('connection', function (socket)
 	 * ET return éventuel dégats infligés
 	 * 
 	 * ET return 1 si objet ajouté au sac, 0 si a la salle
+	 * 
+	 * ET return nbr ennemis découverts
 	 */
     socket.on('ACTION_FOUILLE_RAPIDE_CS', function ()
     {
@@ -939,13 +942,13 @@ io.sockets.on('connection', function (socket)
     	// si pu de pts actions
         if(pManagers[id].AucunPtActions())
 		{
-        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0);
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0, 0);
         	return;
         }
         
     	// ********* algorithme de calcul de l'impact des goules *********
     	var restG = TestGoules();
-    	console.log("degats ? " + restG["degats"]);
+
     	if (restG["actionOk"] == 0)
     		{
     			// log
@@ -953,14 +956,41 @@ io.sockets.on('connection', function (socket)
     			// retrait de points d'actions
     			pManagers[id].PerteActionParGoules();
     			// renvoi de la réponse
-    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, null, restG["degats"], null); 
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, null, restG["degats"], null, 0); 
     			return;
     		}
     	// ***************************************************************
     	
         // calcul si la fouille reussie
-        var fouilleFrutueuse = cManagers[pManagers[id].GetIdSalleEnCours()].Fouille();
-        
+        var fouilleFrutueuse = cManagers[pManagers[id].GetIdSalleEnCours()].Fouille(pManagers[id].GetMultiFouille());
+        var nbrEnnDecouverts = 0;
+        var ennemiDecouvert;
+        // pour chaque personnage caché de la salle, calcul s'il est découvert
+    	for(var idUser in pManagers) 
+    	{
+    		// si le perso en cours est dans la meme salle ET en mode planqué
+    		if(pManagers[idUser].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours() 
+    				&& pManagers[idUser].mode == 2)
+    		{
+    			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
+    			// si équipe différente
+    			if (uManagers[idUser].GetNumEquipe() != uManagers[idUser].GetNumEquipe(id))
+    			{
+    				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
+    				ennemiDecouvert = cManagers[pManagers[id].GetIdSalleEnCours()].DecouverteEnnemi(pManagers[id].GetMultiFouille(), pManagers[idUser].GetMultiCache());
+    				if (ennemiDecouvert)
+    				{
+    					console.log("SERVEUR : ennemi découvert lors d'une fouille !");
+    					// incrémente nombre découvertes
+    					nbrEnnDecouverts++;
+    					
+    					// modifie le mode du perso découvert
+    					pManagers[idUser].Decouvert();
+    				}
+    			}
+    		}
+    	}
+        // var fouilleFrutueuse = cManagers[pManagers[id].GetIdSalleEnCours()].DecouverteEnnemi( , );
         
         // retrait des points d'actions
         pManagers[id].FouilleRapide();
@@ -982,13 +1012,13 @@ io.sockets.on('connection', function (socket)
         	        		
         		console.log("fouille fructueuse. Ajout au sac? " + res);
         		// si la fouille réussie
-        		socket.emit('ACTION_FOUILLE_RAPIDE_SC',  1, item, restG["degats"], res); 
+        		socket.emit('ACTION_FOUILLE_RAPIDE_SC',  1, item, restG["degats"], res, nbrEnnDecouverts); 
         	});
         }
         else
         {
         	console.log("fouille raté");
-        	socket.emit('ACTION_FOUILLE_RAPIDE_SC',  -1, null, restG["degats"], null); 
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC',  -1, null, restG["degats"], null, nbrEnnDecouverts); 
         }
         console.log("*****************************************************************");
         
@@ -1033,7 +1063,7 @@ io.sockets.on('connection', function (socket)
         
         // ********* algorithme de calcul de l'impact des goules *********
     	var restG = TestGoules();
-    	console.log("degats ? " + restG["degats"]);
+
     	if (restG["actionOk"] == 0)
     		{
     			// log

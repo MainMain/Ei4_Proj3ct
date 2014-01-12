@@ -120,9 +120,25 @@ var Case_Manager = (function() {
 		Fouille : function(probaObjetPerso)
 		{
 			var proba = Math.floor(Math.random() * 100);
-			var probaObjetCase = this.caseCourante.probaObjet * 100;
-			probaObjetCase *= probaObjetPerso;
+			var probaObjetCase = this.caseCourante.probaObjet * probaObjetPerso;
+
+			console.log("CASE_MANAGER : Fouille() : proba = "+proba+" - probaObjetCase  => brut = "+this.caseCourante.probaObjet+" - net = "+probaObjetCase);
+			if (proba < probaObjetCase) return true;
+			else return false;
+		},
+		
+		DecouverteEnnemi : function(probaObjetPerso, probaCacheEnn)
+		{
+
+			console.log("CASE_MANAGER : DecouverteEnnemi() : proba "+ this.caseCourante.probaObjet +" - multi :" +probaObjetPerso);
 			
+			var proba = Math.floor(Math.random() * 100);
+			var probaDecouverte = this.caseCourante.probaObjet * probaObjetPerso;
+			var probaDecouverte2 = probaDecouverte / probaCacheEnn;
+			
+			console.log("CASE_MANAGER : DecouverteEnnemi() : proba = "+proba+" - probaDecouverte  => brut = "+probaDecouverte+" - net = "+probaDecouverte2);
+			if (proba < probaDecouverte) return true;
+			else return false;
 		},
 		
 		GetNombreGoules : function()

@@ -218,14 +218,15 @@ var Personnage_Manager = (function () {
             	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
         	
-            AjouterMessage : function(str)
+            AddMessage : function(msg)
             {
-            	this.personnage.listeMsgAtt.push(str);
-            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
+            	console.log("PERSONNAGE_MANAGER : Ajout du message " + msg);
+            	this.personnage.listeMsgAtt.push(msg);
             },
             
             EffacerMessages : function()
             {
+            	console.log("PERSONNAGE_MANAGER : Effacement de la liste des messages");
             	this.personnage.listeMsgAtt = new Array();
             	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
@@ -250,11 +251,14 @@ var Personnage_Manager = (function () {
                 return a;
             },
 
-            AddMessage : function(msg)
-            {
-            	this.personnage.listeMsgAtt.push(msg);
-            },
             
+            Decouvert : function()
+            {
+            	console.log("PERSONNAGE_MANAGER : Le perso " + this.id + " a été découvert !" );
+            	// add msg
+            	this.personnage.listeMsgAtt.push("Vous avez été découvert ! Votre planque est foute !");
+            	this.personnage.mode = 0;
+            },
             /***************** LECTURE *****************/
             GetListMsgAtt : function()
             {
@@ -308,11 +312,6 @@ var Personnage_Manager = (function () {
 
             },
             
-            GetMode : function()
-            {
-            	return this.personnage.mode;
-            },
-            
             TestDeplacementPossible : function(nbrGoules, direction)
             {
             	// si pu de PM
@@ -339,6 +338,20 @@ var Personnage_Manager = (function () {
             GetPtsDeplacement : function()
             {
             	return this.personnage.ptDeplacement;
+            },
+            
+            GetMultiFouille : function()
+            {
+            	return this.personnage.multiProbaFouille;
+            },
+            GetMultiCache : function()
+            {
+            	return this.personnage.multiProbaCache;
+            },
+            
+            GetMode : function()
+            {
+            	return this.personnage.mode;
             },
             
             AucunPtActions : function()
