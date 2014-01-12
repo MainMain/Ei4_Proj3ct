@@ -181,9 +181,7 @@ function start() {
 
 	// Couleur des boutons
 	var ColorBtn="#850000";
-	//var ColorPad="#313131";
-	
-	var ColorPad=createjs.Graphics.getRGB(0,0,0,0.01);
+	var ColorPad="#313131";
 	var ColorGreen="#008000";
 
 	// Police des labels
@@ -673,37 +671,37 @@ function start() {
 						socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 						});*/
 
-	var _EpaisseurBpPad = 50;
+	var _EpaisseurBpPad = 20;
 	
 	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
-	BtnHaut.y = _ContMapY;
+	BtnHaut.y = _ContMapY - _EpaisseurBpPad;
 	BtnHaut.x = _ContMapX;
 	BtnHaut.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
 	});
 
 	var BtnBas = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
-	BtnBas.y = _ContMapY + _ContMapH - _EpaisseurBpPad;
+	BtnBas.y = _ContMapY + _ContMapH;
 	BtnBas.x = _ContMapX;
 	BtnBas.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 	});
 
 	var BtnGauche = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, _ContMapH));
-	BtnGauche.x = _ContMapX;
+	BtnGauche.x = _ContMapX - _EpaisseurBpPad;
 	BtnGauche.y = _ContMapY;
 	BtnGauche.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
 	});
 
 	var BtnDroite = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, _ContMapH));
-	BtnDroite.x = _ContMapX + _ContMapW - _EpaisseurBpPad;
+	BtnDroite.x = _ContMapX + _ContMapW;
 	BtnDroite.y = _ContMapY;
 	BtnDroite.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 	});
 
-	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "pointer";
+	BtnHaut.cursor = BtnBas.cursor = BtnGauche.cursor = BtnDroite.cursor = "crosshair";
 	/*BtnHaut.x = BtnBas.x = 50;
 					BtnGauche.y = BtnDroite.y = 40;*/
 
@@ -1221,7 +1219,7 @@ function start() {
 		case 0 :  labelMode.text=("");
 
 		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
-		BtnFouiller.y = BtnFouilleRapide.y + H;
+		BtnFouiller.y = BtnAtqGoules.y + H;
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1251,7 +1249,7 @@ function start() {
 		labelMode.text=("Mode Fouille activé");
 
 		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
-		BtnFouiller.y = BtnFouilleRapide.y + H;
+		BtnFouiller.y = BtnAtqGoules.y + H;
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1284,7 +1282,7 @@ function start() {
 			labelMode.text=("Mode Caché activé");
 
 			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
-			BtnFouiller.y = BtnFouilleRapide.y + H;
+			BtnFouiller.y = BtnAtqGoules.y + H;
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
@@ -1317,7 +1315,7 @@ function start() {
 			labelMode.text=("Mode Défense activé");
 
 			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
-			BtnFouiller.y = BtnFouilleRapide.y + H;
+			BtnFouiller.y = BtnAtqGoules.y + H;
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');

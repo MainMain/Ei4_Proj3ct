@@ -9,6 +9,15 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
+/*
+ *  VARIABLES GLOBALES DE JEU
+ */
+var idZoneSure1 = 0;
+var idZoneSure2 = 3;
+
+/*
+ * 
+ */
 // require model
 var oDatabase = require('./model/database');
 
@@ -21,12 +30,16 @@ var oCase_BD       = require('./persistance/Case_BD');
 //var oItem_BD       = require('./persistance/Item_BD');
 var oUtilisateur_BD  = require('./persistance/Utilisateur_BD');
 //var oPersonnage_BD = require('./persistance/Personnage_BD');
+var oCarte = require('./model/object/Carte');
 
 //require manager
 var oPersonnage_Manager  = require('./manager/Personnage_Manager');
 var oItem_Manager        = require('./manager/Item_Manager');
 var oCase_Manager        = require('./manager/Case_Manager');
 var oUtilisateur_Manager = require('./manager/Utilisateur_Manager');
+
+// FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
+oCarte.Initialiser(6, 6);
 
 var iManager    = new oItem_Manager();
 
@@ -175,7 +188,7 @@ app.get('/classement', restrict, function fonctionIndex(req, res)
 app.get('/chat-general', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": req.session.username, "errorLogin": null, "users": usersOnline, "countUser": req.session.views, "sessionID" : s.idUser };
+	var options = { "username": req.session.username, "errorLogin": null, "sessionID" : s.idUser };
 	res.render('chat', options);
 });
 
@@ -202,9 +215,6 @@ callbackConnexion = function(reponseConnexion, req, res)
 		optionAccueil.username = s.username;
 		optionAccueil.sessionID = s.idUser;
 		
-		usersOnline[s.idUser] = new Object;
-		usersOnline[s.idUser].username = s.username;
-		
 		// chargement de son personnage
 		//iManager[s.idUser] = new oItem_Manager();
 		//pManagers[s.idUser] = new oPersonnage_Manager();
@@ -215,6 +225,12 @@ callbackConnexion = function(reponseConnexion, req, res)
 		//	cManagers[s.idUser] = new oCase_Manager(pManagers[s.idUser].GetIdSalleEnCours());
 		//	console.log("DEBUG : NOM SALLE EN COURS " + cManagers[s.idUser].GetCopieCase().id);
 		//});
+
+		uManagers[s.idUser] = new oUtilisateur_Manager();
+		pManagers[s.idUser] = new oPersonnage_Manager();
+
+		uManagers[s.idUser].Load(s.idUser);
+		pManagers[s.idUser].Load(s.idUser);
 		
 		//cManagers[pManagers[s.idUser].GetIdSalleEnCours()];
 		// redirige à la page d'accueil
@@ -265,7 +281,6 @@ callbackInscription = function(reponseInscription, req, res)
 
 app.delete("/", function (req, res)
 {
-	delete usersOnline[req.session.idUser];
 	req.session.destroy();
 	res.render('accueil', optionAccueil);
 });
@@ -329,32 +344,77 @@ io.sockets.on('connection', function (socket)
     console.log('SERVER : Un client est connecté !');
     //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.GetIdSalleEnCours());
 
-	socket.on('INFO_USER_CS', function(sessionID)
+	socket.on('INFO_USER_CS', function(sessionID, username, page)
 	{
-		id = sessionID;
-		if(usersOnline[id])
+		if(sessionID != "null" && sessionID != "undefined")
 		{
-			console.log("INFO_USER_CS : Fonction appelé pour l'user " + usersOnline[id].username);
-			usersOnline[id].socket = socket;
+			id = sessionID;
+			user = username;
+			
+			users = new Array();
+			j = 0;
+			
+			if(!usersOnline[id])
+			{
+				usersOnline[id] = new Object()
+				usersOnline[id].sockets = new Array();
+			}
+			usersOnline[id].username = user;
+			usersOnline[id].page	 = page;
+			usersOnline[id].sockets.push(socket);
+			
+			console.log("Connexion de " + user + " avec l'ID " + id + " à la page " + page);
+			
+			if(page == "chat")
+			{
+				socket.broadcast.emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+			}
+			
+			for(var i in usersOnline)
+			{
+				if(usersOnline[i].page == "chat")
+				{
+					users[j] = usersOnline[i].username;
+					j++;
+				}
+			}
+			socket.broadcast.emit("USER_CONNECTED_SC", users);
+			socket.emit("USER_CONNECTED_SC", users);
 		}
 	});
 	
-	socket.on('MESSAGE_USER_CS', function(user, message)
+	socket.on('disconnect', function()
 	{
-		var found = false;
-		
-		for(var i in usersOnline)
+		if(usersOnline[id])
 		{
-			if(usersOnline[i].username == user)
+			usersOnline[id].sockets.splice(usersOnline[id].sockets.indexOf(socket), 1);
+			if(usersOnline[id].sockets.length == 0)
 			{
-				usersOnline[i].socket.emit('MESSAGE_USER_SC', usersOnline[id].username, message);
-				found = true;
+				if(usersOnline[id].page == "chat")
+				{
+					socket.broadcast.emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersOnline[id].username);
+				}
+				console.log("Déconnexion de " + usersOnline[id].username);
+				delete usersOnline[id];
+			}	
+			
+			users = new Array();
+			j = 0;
+			
+			for(var i in usersOnline)
+			{
+				users[j] = usersOnline[i].username;
+				console.log("User :" + usersOnline[i].username);
+				j++;
 			}
+			socket.broadcast.emit("USER_CONNECTED_SC", users);
+			socket.emit("USER_CONNECTED_SC", users);
 		}
-		if(!found)
-		{
-			socket.emit('MESSAGE_USER_SC', user, -1);
-		}
+	});
+	
+	socket.on('USER_MESSAGE_CS', function(user, message)
+	{
+		socket.broadcast.emit("USER_MESSAGE_SC", user, message);
 	});
 	
     /******************************************************************************************************************
@@ -537,10 +597,19 @@ io.sockets.on('connection', function (socket)
     
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM 
-     * return poidsTotal si ok erreur : -1 si poids insufisant
+     * 
+     * return TYPE (RAMASSER OU DEPOSER)
+     * 
+     * ET return poidsTotal si ok 
+     * erreur : -1 si poids insufisant
      * erreur : -2 si objet n'est pas dans la case / le sac 
      * erreur : -3 si objet à déposer est équipé
      * erreur : -4 si autre
+     * erreur : -5 si raté par goules
+     * 
+     * ET return id_item
+     * 
+     * ET degats reçus
      */
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
@@ -584,22 +653,35 @@ io.sockets.on('connection', function (socket)
 					// suppression de l'objet de la case
 					cManagers[pManagers[id].GetIdSalleEnCours()].SupprimerItem(currentItem);
 						
+					 // ********* algorithme de test de l'impact des goules *********
+			    	var restG = TestGoules();
+			    	console.log("degats ? " + restG["degats"]);
+			    	if (restG["actionOk"] == 0)
+			    		{
+			    			// log
+			    			console.log("chgt de mode ratée à cause des goules");
+			    			
+			    			// renvoi de la réponse
+			    			socket.emit('INV_CASE_SC', 'RAMASSER', -5, restG["degats"]); 
+			    		}
+			    	// ***************************************************************
+			    	
 					// return au client
-					socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, pManagers[id].GetPoidsSac());
+					socket.emit('INV_CASE_SC', 'RAMASSER', pManagers[id].GetPoidsSac(), currentItem.id, restG["degats"]);
 				}
 				else
 				{
 				console.log("SERVER : Demande de ramassage impossible : poids max atteint");
 					
 				// return au client que l'objet ne peut être ajouté (poids insufisant)
-				socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -1);
+				socket.emit('INV_CASE_SC', 'RAMASSER', -1, currentItem.id, 0);
 				}
 			} // fin if (existItemInSalle == true)
 			// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
 			else
 			{
 				// return que l'objet n'est pas dans la case
-				socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -2);
+				socket.emit('INV_CASE_SC', 'RAMASSER', -2, currentItem.id, 0);
 			}
 			
 		}
@@ -613,7 +695,7 @@ io.sockets.on('connection', function (socket)
 		if (pManagers[id].IsItemEquipee(currentItem) == true)
 			{
 				console.log("APP : Objet à déposer est équipé !! ");
-				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, -3);
+				socket.emit('INV_CASE_SC', 'DEPOSER', -3, currentItem.id, 0);
 				return;
 			}
 		
@@ -630,12 +712,12 @@ io.sockets.on('connection', function (socket)
 			pManagers[id].SupprimerDuSac(currentItem);
 			
 			// return au client
-			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManagers[id].GetPoidsSac());
+			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManagers[id].GetPoidsSac(), 0);
 			}
 			// si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour !)
 			else {
 				// return que l'item n'est pas dans le sac
-				socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, -2);
+				socket.emit('INV_CASE_SC', 'DEPOSER', -2, currentItem.id, 0);
 			}
 		}
 		console.log("*******************************************************");
@@ -869,7 +951,14 @@ io.sockets.on('connection', function (socket)
 	 * 
 	 */
     socket.on('CHECK_MSG_ATT_CS', function () {
-
+    	if (pManager[id].GetListMsgAtt().count > 0)
+    	{
+    		socket.emit('CHECK_MSG_ATT_SC', 1, pManager[id].GetListMsgAtt());
+    	}
+    	else
+    	{
+    		socket.emit('CHECK_MSG_ATT_SC', -1);
+    	}
     });
     
     /******************************************************************************************************************
@@ -908,9 +997,73 @@ io.sockets.on('connection', function (socket)
     socket.on('ACCUSE_LECTURE_MSG_CS', function () {
     	pManagers[id].EffacerMessages();
     });
-
     
-    /******************************************************************************************************
+
+    /******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ALLIES DANS LA CASE
+	 * 
+	 * return tableau associatif : [pseudo, personnageAAfficher]
+	 * erreur : liste vide si aucun allié dans la case
+	 */ 
+    socket.on('INFO_CASE_ALLIES_CS', function () {
+    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	// déclaration des variables
+    	var listeAllies = new Array();
+    	var idSalle = pManagers[id].GetIdSalleEnCours();
+    	
+    	
+    	// construction de la liste
+    	for(var idUser in pManagers) 
+    	{
+    		// si le perso en cours est dans la meme salle
+    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle)
+    		{
+    			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
+    			// si l'user correspondant au perso est de la meme équipe
+    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+    			{
+    				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
+    				listeAllies[uManagers[idUser]] = (pManagers[idUser].getPersonnageToDisplay());
+    			}
+    		}
+    	}
+    	socket.emit('INFO_CASE_ALLIES_SC', listeAllies);
+    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    });
+    
+    /******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
+	 * 
+	 * return liste des ennemis
+	 * erreur : liste vide si aucun ennemis dans la case
+	 */ 
+    socket.on('INFO_CASE_ENNEMIS_CS', function () {
+    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	// déclaration des variables
+    	var listeEnn = new Array();
+    	var idSalle = pManagers[id].GetIdSalleEnCours();
+    	
+    	
+    	// construction de la liste
+    	for(var idUser in pManagers) 
+    	{
+    		// si le perso en cours est dans la meme salle
+    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle)
+    		{
+    			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
+    			// si l'user correspondant au perso est de la meme équipe
+    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+    			{
+    				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
+    				listeEnn.push(pManagers[idUser].getPersonnageToDisplay());
+    			}
+    		}
+    	}
+    	socket.emit('INFO_CASE_ENNEMIS_SC', listeEnn);
+    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    });
+    
+    /******************************************************************************************************************
      * FONCTION DE TEST DE L'IMPACT DES GOULES SUR LES ACTIONS / DEPLACEMENTS DES JOUEURS
      * return [actionOk, degats]
      */

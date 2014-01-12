@@ -66,30 +66,31 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                 idArmure = personnageToSave.armureEquipee.id;
 
             console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
-
+            console.log("PERSONNAGE_BD : SetPersonnage() : last mvt :  " + personnageToSave.dernierMvt);
+            
             PersonnageModel.update({
                     _id: personnageToSave.id
                 }, {
-                    ptSante: personnageToSave.ptSante,
-                    ptSanteMax: personnageToSave.ptSanteMax,
-                    ptAction: personnageToSave.ptActions,
-                    ptActionMax: personnageToSave.ptActionsMax,
-                    ptDeplacement: personnageToSave.ptDeplacement,
-                    ptDeplacementMax: personnageToSave.ptDeplacementMax,
-                    poidsMax: personnageToSave.poidsMax,
-                    gouleLimite: personnageToSave.goulesMax,
-                    competence: personnageToSave.competence,
-                    idSalleEnCours: personnageToSave.idSalleEnCours,
-                    mode : personnageToSave.mode,
-            		multiPtsAttaque : personnageToSave.multiPtsAttaque,
-            		multiPtsDefense : personnageToSave.multiPtsDefense,
-            	    multiProbaCache : personnageToSave.multiProbaCache,
+                    ptSante: 			personnageToSave.ptSante,
+                    ptSanteMax: 		personnageToSave.ptSanteMax,
+                    ptAction: 			personnageToSave.ptActions,
+                    ptActionMax: 		personnageToSave.ptActionsMax,
+                    ptDeplacement: 		personnageToSave.ptDeplacement,
+                    ptDeplacementMax: 	personnageToSave.ptDeplacementMax,
+                    poidsMax: 			personnageToSave.poidsMax,
+                    gouleLimite: 		personnageToSave.goulesMax,
+                    competence: 		personnageToSave.competence,
+                    idSalleEnCours: 	personnageToSave.idSalleEnCours,
+                    mode : 				personnageToSave.mode,
+            		multiPtsAttaque : 	personnageToSave.multiPtsAttaque,
+            		multiPtsDefense : 	personnageToSave.multiPtsDefense,
+            	    multiProbaCache : 	personnageToSave.multiProbaCache,
             	    multiProbaFouille : personnageToSave.multiProbaFouille,
-                    idArmeEquipee: idArme,
-                    idArmureEquipee: idArmure,
-                    sacADos: personnageToSave.sacADos,		
-                    dernierMvt : String,
-            		listeMsgAtt : Array,
+                    idArmeEquipee: 		idArme,
+                    idArmureEquipee: 	idArmure,
+                    sacADos: 			personnageToSave.sacADos,		
+                    dernierMvt : 		personnageToSave.dernierMvt,
+            		listeMsgAtt : 		personnageToSave.listeMsgAtt,
                 },
                 function (err) {
                     if (err) {

@@ -162,11 +162,12 @@
 		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 		var socket = io.connect('http://localhost:8080');
 		
-		$( document ).ready(function()
-		{
-			socket.emit('INFO_USER_CS', '<%= sessionID %>' );
-		});
-		
+		<% if(sessionID) { %>
+			$( document ).ready(function()
+			{
+				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "accueil");
+			});
+		<% } %>
 		
 		socket.on('MESSAGE_USER_SC', function(user, message)
 		{
