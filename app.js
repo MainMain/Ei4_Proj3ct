@@ -225,6 +225,12 @@ callbackConnexion = function(reponseConnexion, req, res)
 		//	cManagers[s.idUser] = new oCase_Manager(pManagers[s.idUser].GetIdSalleEnCours());
 		//	console.log("DEBUG : NOM SALLE EN COURS " + cManagers[s.idUser].GetCopieCase().id);
 		//});
+
+		uManagers[s.idUser] = new oUtilisateur_Manager();
+		pManagers[s.idUser] = new oPersonnage_Manager();
+
+		uManagers[s.idUser].Load(s.idUser);
+		pManagers[s.idUser].Load(s.idUser);
 		
 		//cManagers[pManagers[s.idUser].GetIdSalleEnCours()];
 		// redirige à la page d'accueil
