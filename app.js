@@ -9,6 +9,15 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
+/*
+ *  VARIABLES GLOBALES DE JEU
+ */
+var idZoneSure1 = 0;
+var idZoneSure2 = 3;
+
+/*
+ * 
+ */
 // require model
 var oDatabase = require('./model/database');
 
@@ -21,12 +30,16 @@ var oCase_BD       = require('./persistance/Case_BD');
 //var oItem_BD       = require('./persistance/Item_BD');
 var oUtilisateur_BD  = require('./persistance/Utilisateur_BD');
 //var oPersonnage_BD = require('./persistance/Personnage_BD');
+var oCarte = require('./model/object/Carte');
 
 //require manager
 var oPersonnage_Manager  = require('./manager/Personnage_Manager');
 var oItem_Manager        = require('./manager/Item_Manager');
 var oCase_Manager        = require('./manager/Case_Manager');
 var oUtilisateur_Manager = require('./manager/Utilisateur_Manager');
+
+// FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
+oCarte.Initialiser(6, 6);
 
 var iManager    = new oItem_Manager();
 
@@ -938,7 +951,14 @@ io.sockets.on('connection', function (socket)
 	 * 
 	 */
     socket.on('CHECK_MSG_ATT_CS', function () {
-
+    	if (pManager[id].GetListMsgAtt().count > 0)
+    	{
+    		socket.emit('CHECK_MSG_ATT_SC', 1, pManager[id].GetListMsgAtt());
+    	}
+    	else
+    	{
+    		socket.emit('CHECK_MSG_ATT_SC', -1);
+    	}
     });
     
     /******************************************************************************************************************
@@ -977,9 +997,73 @@ io.sockets.on('connection', function (socket)
     socket.on('ACCUSE_LECTURE_MSG_CS', function () {
     	pManagers[id].EffacerMessages();
     });
-
     
-    /******************************************************************************************************
+
+    /******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ALLIES DANS LA CASE
+	 * 
+	 * return tableau associatif : [pseudo, personnageAAfficher]
+	 * erreur : liste vide si aucun allié dans la case
+	 */ 
+    socket.on('INFO_CASE_ALLIES_CS', function () {
+    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	// déclaration des variables
+    	var listeAllies = new Array();
+    	var idSalle = pManagers[id].GetIdSalleEnCours();
+    	
+    	
+    	// construction de la liste
+    	for(var idUser in pManagers) 
+    	{
+    		// si le perso en cours est dans la meme salle
+    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle)
+    		{
+    			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
+    			// si l'user correspondant au perso est de la meme équipe
+    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+    			{
+    				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
+    				listeAllies[uManagers[idUser]] = (pManagers[idUser].getPersonnageToDisplay());
+    			}
+    		}
+    	}
+    	socket.emit('INFO_CASE_ALLIES_SC', listeAllies);
+    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    });
+    
+    /******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
+	 * 
+	 * return liste des ennemis
+	 * erreur : liste vide si aucun ennemis dans la case
+	 */ 
+    socket.on('INFO_CASE_ENNEMIS_CS', function () {
+    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    	// déclaration des variables
+    	var listeEnn = new Array();
+    	var idSalle = pManagers[id].GetIdSalleEnCours();
+    	
+    	
+    	// construction de la liste
+    	for(var idUser in pManagers) 
+    	{
+    		// si le perso en cours est dans la meme salle
+    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle)
+    		{
+    			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
+    			// si l'user correspondant au perso est de la meme équipe
+    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+    			{
+    				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
+    				listeEnn.push(pManagers[idUser].getPersonnageToDisplay());
+    			}
+    		}
+    	}
+    	socket.emit('INFO_CASE_ENNEMIS_SC', listeEnn);
+    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    });
+    
+    /******************************************************************************************************************
      * FONCTION DE TEST DE L'IMPACT DES GOULES SUR LES ACTIONS / DEPLACEMENTS DES JOUEURS
      * return [actionOk, degats]
      */

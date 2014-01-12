@@ -841,6 +841,7 @@ function start() {
 	// AFFICHAGE DE L'IVENTAIRE DE CASE ET PERSO
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
+	socket.emit('INFO_CASE_ALLIES_CS');
 	stage.update();
 	// Check message en attente (socket.emit)
 

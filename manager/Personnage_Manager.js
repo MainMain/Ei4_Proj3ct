@@ -231,6 +231,11 @@ var Personnage_Manager = (function () {
             },
             
             /***************** LECTURE *****************/
+            GetListMsgAtt : function()
+            {
+            	return this.personnage.listeMsgAtt;
+            },
+            
             ExistItemInSac : function (currentItem) {
             	return this.personnage.existItemInSac(currentItem);
             },
@@ -306,6 +311,24 @@ var Personnage_Manager = (function () {
             	if (this.personnage.ptActions <= 0) return true;
             	else return false;
             },
+            
+
+            getPersonnageToDisplay : function()
+    		{
+    			var comPoidsSac = this.personnage.getPoidsSac() / this.personnage.poidsMax;
+    				
+    			console.log("PM : approximation poids sac : " + comPoidsSac +" %");
+    			var perso = new oPersonnage(new oPersonnage(
+                        this.personnage.id, 		this.personnage.ptSante, 	this.personnage.ptSanteMax,
+                        -1,							-1 							-1,
+                        -1,							-1, 						-1,
+                        this.personnage.competence, -1, 						this.personnage.mode,
+                        -1,  						-1,  						-1  ,
+                        -1,							this.personnage.armeEquipe,	this.personnage.armureEquipe,
+                        comPoidsSac,				-1,							-1		));
+    			
+    			return perso;
+    		},
         };
         return Personnage_Manager;
 }());

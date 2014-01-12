@@ -164,7 +164,7 @@ Item_BD.GetItemById = function(id_item)
 {
 	if (id_item < 17)
 		{
-			console.log("ITEM_BD : Item trouvé dans la BD !");
+			//console.log("ITEM_BD : Item trouvé dans la BD !");
 			return this.listeItems[id_item];
 		}
 		

@@ -56,6 +56,11 @@ var Utilisateur_Manager = (function () {
         	{
         		return this.Utilisateur.numEquipe;
         	},
+        	
+        	GetPseudo : function()
+        	{
+        		return this.Utilisateur.pseudo;
+        	},
 			
 			SetNumEquipe : function(numEquipe)
 			{
