@@ -1,7 +1,7 @@
  // includes
 var oPersonnage = require('../model/Object/Personnage');
 var oPersonnage_BD = require('../persistance/Personnage_BD');
-
+var oCarte = require('../model/object/Carte');
 
 /**
  * PERSONNAGE MANAGER : RELIE LE SERVEUR AUX OBJETS ET GERE LES SAUVEGARDES
@@ -22,6 +22,11 @@ var Personnage_Manager = (function () {
         Personnage_Manager.build = function (idUser) { return new Personnage_Manager(); };
 
         function Personnage_Manager() {
+            this.coutFouilleRapide = 4;
+            this.coutAttaqueEnnemi = 7;
+            this.coutAttaqueGoule = 3;
+            this.coutInterceptionGoule = 2;
+            
         }
         
         // --- METHODES D'INSTANCE
@@ -391,6 +396,11 @@ var Personnage_Manager = (function () {
     			
     			return perso;
     		},
+    		
+    		GetIdNextSalle : function(direction)
+    		{
+    			return oCarte.GetIdSalleSuivante(this.personnage.idSalleEnCours, direction);
+    		}
         };
         return Personnage_Manager;
 }());

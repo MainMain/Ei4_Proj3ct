@@ -9,11 +9,6 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
-/*
- *  VARIABLES GLOBALES DE JEU
- */
-var idZoneSure1 = 0;
-var idZoneSure2 = 3;
 
 /*
  * 
@@ -484,7 +479,10 @@ io.sockets.on('connection', function (socket)
 			}
 		
 		// test si pas zone sure adverse
-		if (cManagers[pManagers[id].GetIdSalleEnCours()].GetTestZoneSure(uManagers[id].GetNumEquipe()))
+		// on regarde le manager de la salle suivante et on teste si zone sure
+		var idNextCase = pManagers[id].GetIdNextSalle(move);
+		//console.log("------------------------------" + cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()));
+		if (idNextCase != -1 && cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()))
 		{
 			console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
 			socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
@@ -771,6 +769,10 @@ io.sockets.on('connection', function (socket)
      * RECEPTION D'UNE DEMANDE D'INFOS SUR UNE CASE 
      * Renvoi la case 
      * Si erreur : renvoi NULL
+     * 
+     * ET nbr allies
+     * 
+     * ET nbr ennemis
      */
     socket.on('INFO_CASE_CS', function ()
 	{
@@ -782,7 +784,29 @@ io.sockets.on('connection', function (socket)
 		if (cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase() == null)
 			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
 		else
-			socket.emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase());
+		{
+			var nbrAllies = 0, nbrEnnemis = 0;
+			// construction de la liste
+	    	for(var idUser in pManagers) 
+	    	{
+	    		// si le perso en cours est dans la meme salle
+	    		if(pManagers[idUser].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
+	    		{
+	    			// si l'user correspondant au perso est de la meme équipe
+	    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+	    			{
+	    				nbrAllies++;
+	    			}
+	    			// sinon et si il n'est pas caché
+	    			else if (pManagers[idUser].GetMode != 2)
+	    			{
+	    				nbrEnnemis++;
+	    			}
+	    		}
+	    	}
+	    	
+			socket.emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase(), nbrAllies, nbrEnnemis);
+		}
 		console.log("*******************************************************");
     });
     /*
@@ -1247,7 +1271,7 @@ io.sockets.on('connection', function (socket)
     	for(var idUser in pManagers) 
     	{
     		// si le perso en cours est dans la meme salle
-    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle)
+    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle && pManagers[idUser].GetMode != 2)
     		{
     			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
     			// si l'user correspondant au perso est de la meme équipe
