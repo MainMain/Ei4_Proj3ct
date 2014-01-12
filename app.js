@@ -344,6 +344,15 @@ io.sockets.on('connection', function (socket)
     console.log('SERVER : Un client est connecté !');
     //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.GetIdSalleEnCours());
 
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     */
 	socket.on('INFO_USER_CS', function(sessionID, username, page)
 	{
 		if(sessionID != "null" && sessionID != "undefined")
@@ -382,7 +391,15 @@ io.sockets.on('connection', function (socket)
 			socket.emit("USER_CONNECTED_SC", users);
 		}
 	});
-	
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     */
 	socket.on('disconnect', function()
 	{
 		if(usersOnline[id])
@@ -416,7 +433,15 @@ io.sockets.on('connection', function (socket)
 	{
 		socket.broadcast.emit("USER_MESSAGE_SC", user, message);
 	});
-	
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
      * la case avec MOVE_PERSONNAGE_SC 
@@ -466,7 +491,7 @@ io.sockets.on('connection', function (socket)
 			return;
 		}
 		
-    	// ********* algorithme de test de l'impact des goules *********
+    	// ********* algorithme de calcul de l'impact des goules *********
     	/*var restG = TestGoules();
     	console.log("degats ? " + restG["degats"]);
     	console.log("actionOk ? " + restG["actionOk"]);
@@ -517,7 +542,15 @@ io.sockets.on('connection', function (socket)
 		}
 		console.log("*******************************************************");
     });
-	
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM 
      * return 1 si arme équipée / déséquipée
@@ -593,8 +626,15 @@ io.sockets.on('connection', function (socket)
 		}
 		console.log("*******************************************************");
     });
-    
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM 
      * 
@@ -653,16 +693,17 @@ io.sockets.on('connection', function (socket)
 					// suppression de l'objet de la case
 					cManagers[pManagers[id].GetIdSalleEnCours()].SupprimerItem(currentItem);
 						
-					 // ********* algorithme de test de l'impact des goules *********
+					 // ********* algorithme de calcul de l'impact des goules *********
 			    	var restG = TestGoules();
 			    	console.log("degats ? " + restG["degats"]);
 			    	if (restG["actionOk"] == 0)
 			    		{
 			    			// log
-			    			console.log("chgt de mode ratée à cause des goules");
+			    			console.log("SERVEUR : chgt de mode ratée à cause des goules");
 			    			
 			    			// renvoi de la réponse
-			    			socket.emit('INV_CASE_SC', 'RAMASSER', -5, restG["degats"]); 
+			    			socket.emit('INV_CASE_SC', 'RAMASSER', -5, currentItem.id, restG["degats"]);
+			    			return;
 			    		}
 			    	// ***************************************************************
 			    	
@@ -741,8 +782,15 @@ io.sockets.on('connection', function (socket)
 			socket.emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase());
 		console.log("*******************************************************");
     });
-
-
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE D'INFO SUR LE PERSONNAGE
      */
@@ -751,8 +799,15 @@ io.sockets.on('connection', function (socket)
 		console.log("USER OBJECT = -" + usersOnline[id] + "-");
 		socket.emit('INFO_PERSONNAGE_SC', pManagers[id].GetCopiePerso());
     });
-
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
 	/**************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR UTILISER UN ITEM
 	 * return 1 si ok
@@ -785,7 +840,15 @@ io.sockets.on('connection', function (socket)
     	}
     	console.log("*******************************************************");
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
 	 * return 1 si ok
@@ -823,16 +886,17 @@ io.sockets.on('connection', function (socket)
         	return;
         }
         
-        // ********* algorithme de test de l'impact des goules *********
+        // ********* algorithme de calcul de l'impact des goules *********
     	var restG = TestGoules();
     	console.log("degats ? " + restG["degats"]);
     	if (restG["actionOk"] == 0)
     		{
     			// log
-    			console.log("chgt de mode ratée à cause des goules");
+    			console.log("SERVEUR : chgt de mode ratée à cause des goules");
     			
     			// renvoi de la réponse
     			socket.emit('PERSONNAGE_MODE_SC', -5, restG["degats"]); 
+    			return;
     		}
     	// ***************************************************************
 
@@ -843,7 +907,15 @@ io.sockets.on('connection', function (socket)
     	 
         console.log("*******************************************************");
     });
-	
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR EFFECTUER UNE FOUILLE RAPIDE
 	 * 
@@ -871,7 +943,7 @@ io.sockets.on('connection', function (socket)
         	return;
         }
         
-    	// ********* algorithme de test de l'impact des goules *********
+    	// ********* algorithme de calcul de l'impact des goules *********
     	var restG = TestGoules();
     	console.log("degats ? " + restG["degats"]);
     	if (restG["actionOk"] == 0)
@@ -882,11 +954,13 @@ io.sockets.on('connection', function (socket)
     			pManagers[id].PerteActionParGoules();
     			// renvoi de la réponse
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, null, restG["degats"], null); 
+    			return;
     		}
     	// ***************************************************************
     	
         // calcul si la fouille reussie
         var fouilleFrutueuse = cManagers[pManagers[id].GetIdSalleEnCours()].Fouille();
+        
         
         // retrait des points d'actions
         pManagers[id].FouilleRapide();
@@ -919,7 +993,15 @@ io.sockets.on('connection', function (socket)
         console.log("*****************************************************************");
         
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UN AUTRE JOUEUR
 	 * return 1 si ok
@@ -930,31 +1012,55 @@ io.sockets.on('connection', function (socket)
 	 * 
 	 * ET return dégats infligés
 	 * 
-	 * ET return dégats reçus
+	 * ET return dégats reçus (ennemi)
+	 * 
+	 * ET return dégats reçues (goules)
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (idCible) {
         // si pu de pts actions
         if(pManagers[id].AucunPtActions())
         {
-        	socket.emit('ACTION_ATTAQUE_SC', 0, 0, 0);
+        	socket.emit('ACTION_ATTAQUE_SC', -10, 0, 0, 0);
         	return;
         }
         
-        // si lus dans la case
+        // si plus dans la case
         if(pManagers[idCible].GetIdSalleEnCours() != pManagers[id].GetIdSalleEnCours())
         {
-        	socket.emit('ACTION_ATTAQUE_SC', -1, 0, 0);
+        	socket.emit('ACTION_ATTAQUE_SC', -1, 0, 0, 0);
         	return;
         }
         
+        // ********* algorithme de calcul de l'impact des goules *********
+    	var restG = TestGoules();
+    	console.log("degats ? " + restG["degats"]);
+    	if (restG["actionOk"] == 0)
+    		{
+    			// log
+    			console.log("SERVEUR : attaque ratée à cause des goules");
+    			
+    			// renvoi de la réponse
+    			socket.emit('PERSONNAGE_MODE_SC', -5, 0, 0, restG["degats"]); 
+    			return;
+    		}
+    	// ***************************************************************
+    	
         // combat
         var ans = pManagers[id].Attaquer(pManagers[idCible]);
         // log
         console.log("Attaque de " + id + " -> " + idCible +" : (" + ans.degatsInfliges + ") <-> ("+ans.degatsRecus +")");
         // return
-        socket.emit('ACTION_ATTAQUE_SC', 0, 0, 0);
+        socket.emit('ACTION_ATTAQUE_SC', 1, degatsInfliges, degatsRecus, restG["degats"]);
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR OBTENIR LES MESSAGES EN ATTENTE
 	 * return 1 si ok
@@ -974,7 +1080,15 @@ io.sockets.on('connection', function (socket)
     		socket.emit('CHECK_MSG_ATT_SC', -1);
     	}
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
 	 * return 2 si deux goules tuées
@@ -1004,15 +1118,30 @@ io.sockets.on('connection', function (socket)
     	console.log("SERVEUR : attaque goules ->  Goules tués : " + goulesTues + " - Degats " + degatsSubis);
     	socket.emit('ACTION_ATTAQUE_GOULE_SC', goulesTues, degatsSubis);
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UN ACCUSE DE LECTURE DES MESSAGES
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function () {
     	pManagers[id].EffacerMessages();
     });
-    
-
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ALLIES DANS LA CASE
 	 * 
@@ -1044,7 +1173,15 @@ io.sockets.on('connection', function (socket)
     	socket.emit('INFO_CASE_ALLIES_SC', listeAllies);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
 	 * 
@@ -1076,7 +1213,15 @@ io.sockets.on('connection', function (socket)
     	socket.emit('INFO_CASE_ENNEMIS_SC', listeEnn);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * FONCTION DE TEST DE L'IMPACT DES GOULES SUR LES ACTIONS / DEPLACEMENTS DES JOUEURS
      * return [actionOk, degats]
@@ -1102,6 +1247,11 @@ io.sockets.on('connection', function (socket)
         };
         return a;
     }
+    
+    /******************************************************************************************************************
+     * FONCTION DE TEST SI UNE FOUILLE PERMET DE DECOUVRIR OU ITEM OU UNE PERSONNE
+     * return [actionOk, degats]
+     */
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE SI UN UTILISATEUR EST CONNECTE
