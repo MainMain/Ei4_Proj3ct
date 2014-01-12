@@ -897,7 +897,7 @@ textarea {
 }
 .msgTextArea
 {
-	min-height:100px;
+	min-height:200px;
 	border: 3px solid rgba(0, 0, 0, 0.75);
 }
 .chat

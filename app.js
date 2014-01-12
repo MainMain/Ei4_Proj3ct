@@ -346,6 +346,11 @@ io.sockets.on('connection', function (socket)
 			
 			console.log("Connexion de " + user + " avec l'ID " + id + " à la page " + page);
 			
+			if(page == "chat")
+			{
+				socket.broadcast.emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+			}
+			
 			for(var i in usersOnline)
 			{
 				if(usersOnline[i].page == "chat")
@@ -366,6 +371,10 @@ io.sockets.on('connection', function (socket)
 			usersOnline[id].sockets.splice(usersOnline[id].sockets.indexOf(socket), 1);
 			if(usersOnline[id].sockets.length == 0)
 			{
+				if(usersOnline[id].page == "chat")
+				{
+					socket.broadcast.emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersOnline[id].username);
+				}
 				console.log("Déconnexion de " + usersOnline[id].username);
 				delete usersOnline[id];
 			}	
