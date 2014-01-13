@@ -14,25 +14,41 @@ var Case_Manager = (function() {
 
     // --- ATTRIBUTS DE CLASSE ---
 	Case_Manager.caseCourante;
-    Case_Manager.idZoneSure1 = 0;
-    Case_Manager.idZoneSure2 = 5;
+    Case_Manager.idZoneSure1;
+    Case_Manager.idZoneSure2;
     
 	// --- METHODE DE CLASSE
-	Case_Manager.build = function(idUser) {return new Case_Manager();};
+	Case_Manager.build = function() {return new Case_Manager();};
 
-	function Case_Manager(idCase) {
-
-		oCase_BD.Initialiser();
-		console.log("CASE MANAGER : id case : " + idCase);
-		this.caseCourante = oCase_BD.GetCaseById(idCase);
-		console.log("CMANAGER : Actif !");
-		
+	function Case_Manager() 
+	{
 		this.idZoneSure1 = 0;
 		this.idZoneSure2 = 5;
 	}
 	// --- METHODES D'INSTANCE
 	Case_Manager.prototype = {
-
+		callbackInitCase : function(reponse) {
+			if (reponse == -1)
+				console.log("!!!!! WARNING : CMANAGER : erreur lecture ");
+			else if (reponse == -2)
+				console.log("!!!!! WARNING :CMANAGER : erreur lecture ");
+			else
+			{
+				this.caseCourante = reponse;
+				console.log("CMANAGER : lecture ok");
+				console.log("CMANAGER case -> id : " + this.caseCourante.id + " : Actif ! Nom : "
+						+ this.caseCourante.nom + " Image : " 
+						+ this.caseCourante.pathImg +" Nbr Goules : "
+						+ this.caseCourante.nbrGoules +" Description : "
+						+ this.caseCourante.description +" ProbaObjet : "
+						+ this.caseCourante.probaObjet);
+				for (var i = 0; i < this.caseCourante.listeItems; i++)
+					{
+						console.log("Objet : " + this.listeItems[i].nom);
+					}
+			}
+		},
+		
 		callbackSetCase : function(reponse) {
 			if (reponse == -1)
 				console.log("!!!!! WARNING : CMANAGER : erreur ecriture ");
@@ -42,24 +58,25 @@ var Case_Manager = (function() {
 				console.log("CMANAGER : ecriture ok");
 		},
 		
+		Load : function(idCase)
+		{
+			console.log("CASE MANAGER : création de la case : " + idCase);
+			// chargement de la case
+			var context = this;
+			this.caseCourante = oCase_BD.GetCaseById(idCase,  function(reponse) {context.callbackInitCase(reponse); });
+		},
 
 		/************************* ECRITURE *******************************/
 		AjouterItem : function(item)
 		{
 			// ajoute de l'objet case
 			this.caseCourante.ajouterItem(item);
-			
-			// écrit les nouveautés dans la BD
-			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
 		},
 		
 		SupprimerItem : function(item)
 		{
 			// suprime de l'objet case
 			this.caseCourante.supprimerItem(item);
-			
-			// écrit les nouveautés dans la BD
-			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
 		},
 		
 		AttaqueGoule : function()
@@ -79,9 +96,6 @@ var Case_Manager = (function() {
 				goulesTues = 1;
 			}
 			
-			// écrit les nouveautés dans la BD
-			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
-			
 			// return nbr goules tués
 			return goulesTues;
 		},
@@ -96,11 +110,6 @@ var Case_Manager = (function() {
 		ExistItem : function(item)
 		{
 			return this.caseCourante.existItemInSalle(item);
-		},
-		
-		ChangeCase : function(idCase)
-		{
-			this.caseCourante = oCase_BD.GetCaseById(idCase);
 		},
 		
 		AttaqueDeGoules : function()
@@ -129,16 +138,6 @@ var Case_Manager = (function() {
 		    return a;
 		},
 		
-		/*ActionRateeParGoules : function()
-		{
-			var chance = Math.floor(Math.random()  * 2);
-			if (chance >= 1)
-				return false;
-			else
-				return true;
-		},*/
-		
-
 		Fouille : function(probaObjetPerso)
 		{
 			var proba = Math.floor(Math.random() * 100);
@@ -181,8 +180,12 @@ var Case_Manager = (function() {
 					(numEquipe == 2 && this.caseCourante.id == this.idZoneSure1))
 				return true;
 			else
-				return false;
-					
+				return false;	
+		},
+		
+		Save : function()
+		{
+			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
 		},
 
 	};

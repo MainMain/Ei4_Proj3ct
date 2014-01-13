@@ -74,12 +74,13 @@ database.Initialiser = function() {
 	
 	/***** CREATION DU SCHEMA "CASE" ****/
 	var CaseSchema = new mongoose.Schema({
+		id : Number,
 		nom : String,
 		description : String,
 		probaObjet : Number,
 		probaCache : Number,
 		nbrGoules : Number,
-		itemsAuSol : Array,
+		listeItem : Array,
 		pathImg : String,
 	});
 	CaseModel = mongoose.model('Case',CaseSchema); 
