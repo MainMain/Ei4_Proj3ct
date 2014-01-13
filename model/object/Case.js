@@ -75,6 +75,7 @@ var Case = (function() {
 		ajouterItem : function(item) {
 			this.listeItem.push(item);
 			console.log("CASE : suppression de l'item " + item.nom + " a la case " + this.nom);
+			this.logAfficherItems();
 		},
 
 		/**
@@ -97,6 +98,7 @@ var Case = (function() {
 			}
 			// supprime de la liste
 			this.listeItem.splice(i, 1);
+			this.logAfficherItems();
 		},
 
 		/*

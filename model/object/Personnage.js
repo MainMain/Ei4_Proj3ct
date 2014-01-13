@@ -161,6 +161,7 @@ var Personnage = (function() {
 			this.sacADos.push(item);
 			console.log("PERSONNAGE : ajout de l'item " + item.nom
 					+ " au personnage " + this.id);
+			this.logAfficherSacADos();
 		},
 
 		/**
