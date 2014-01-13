@@ -9,11 +9,6 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
-/*
- *  VARIABLES GLOBALES DE JEU
- */
-var idZoneSure1 = 0;
-var idZoneSure2 = 3;
 
 /*
  * 
@@ -410,7 +405,6 @@ var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 		}
 	});
 	
-	
 	socket.on('disconnect', function()
 	{
 		var users = new Array();
@@ -594,7 +588,15 @@ io.sockets.on('connection', function (socket)
 			}
 		}
 	});
-	
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
      * la case avec MOVE_PERSONNAGE_SC 
@@ -637,16 +639,19 @@ io.sockets.on('connection', function (socket)
 			}
 		
 		// test si pas zone sure adverse
-		if (cManagers[pManagers[id].GetIdSalleEnCours()].GetTestZoneSure(uManagers[id].GetNumEquipe()))
+		// on regarde le manager de la salle suivante et on teste si zone sure
+		var idNextCase = pManagers[id].GetIdNextSalle(move);
+		//console.log("------------------------------" + cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()));
+		if (idNextCase != -1 && cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()))
 		{
 			console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
 			socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
 			return;
 		}
 		
-    	// ********* algorithme de test de l'impact des goules *********
+    	// ********* algorithme de calcul de l'impact des goules *********
     	/*var restG = TestGoules();
-    	console.log("degats ? " + restG["degats"]);
+
     	console.log("actionOk ? " + restG["actionOk"]);
     	if (restG["actionOk"] == 0)
 		{
@@ -695,7 +700,15 @@ io.sockets.on('connection', function (socket)
 		}
 		console.log("*******************************************************");
     });
-	
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM 
      * return 1 si arme équipée / déséquipée
@@ -771,8 +784,15 @@ io.sockets.on('connection', function (socket)
 		}
 		console.log("*******************************************************");
     });
-    
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE POUR RAMASSER OU DEPOSER UN ITEM 
      * 
@@ -788,6 +808,8 @@ io.sockets.on('connection', function (socket)
      * ET return id_item
      * 
      * ET degats reçus
+     * 
+     * ET nbr goules attaquantes
      */
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
@@ -831,35 +853,37 @@ io.sockets.on('connection', function (socket)
 					// suppression de l'objet de la case
 					cManagers[pManagers[id].GetIdSalleEnCours()].SupprimerItem(currentItem);
 						
-					 // ********* algorithme de test de l'impact des goules *********
+					 // ********* algorithme de calcul de l'impact des goules *********
 			    	var restG = TestGoules();
-			    	console.log("degats ? " + restG["degats"]);
+			
 			    	if (restG["actionOk"] == 0)
 			    		{
 			    			// log
-			    			console.log("chgt de mode ratée à cause des goules");
+			    			console.log("SERVEUR : chgt de mode ratée à cause des goules");
 			    			
 			    			// renvoi de la réponse
-			    			socket.emit('INV_CASE_SC', 'RAMASSER', -5, restG["degats"]); 
+			    			socket.emit('INV_CASE_SC', 'RAMASSER', -5, currentItem.id, restG["degats"], restG["nbrGoulesA"]);
+			    			return;
 			    		}
 			    	// ***************************************************************
 			    	
 					// return au client
-					socket.emit('INV_CASE_SC', 'RAMASSER', pManagers[id].GetPoidsSac(), currentItem.id, restG["degats"]);
+					socket.emit('INV_CASE_SC', 'RAMASSER', pManagers[id].GetPoidsSac(), currentItem.id, restG["degats"], restG["nbrGoulesA"]);
 				}
 				else
 				{
-				console.log("SERVER : Demande de ramassage impossible : poids max atteint");
+					// log
+					console.log("SERVER : Demande de ramassage impossible : poids max atteint");
 					
-				// return au client que l'objet ne peut être ajouté (poids insufisant)
-				socket.emit('INV_CASE_SC', 'RAMASSER', -1, currentItem.id, 0);
+					// return au client que l'objet ne peut être ajouté (poids insufisant)
+					socket.emit('INV_CASE_SC', 'RAMASSER', -1, currentItem.id, 0, 0);
 				}
 			} // fin if (existItemInSalle == true)
 			// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
 			else
 			{
 				// return que l'objet n'est pas dans la case
-				socket.emit('INV_CASE_SC', 'RAMASSER', -2, currentItem.id, 0);
+				socket.emit('INV_CASE_SC', 'RAMASSER', -2, currentItem.id, 0, 0);
 			}
 			
 		}
@@ -873,7 +897,7 @@ io.sockets.on('connection', function (socket)
 		if (pManagers[id].IsItemEquipee(currentItem) == true)
 			{
 				console.log("APP : Objet à déposer est équipé !! ");
-				socket.emit('INV_CASE_SC', 'DEPOSER', -3, currentItem.id, 0);
+				socket.emit('INV_CASE_SC', 'DEPOSER', -3, currentItem.id, 0, 0);
 				return;
 			}
 		
@@ -890,12 +914,12 @@ io.sockets.on('connection', function (socket)
 			pManagers[id].SupprimerDuSac(currentItem);
 			
 			// return au client
-			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManagers[id].GetPoidsSac(), 0);
+			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManagers[id].GetPoidsSac(), 0, 0);
 			}
 			// si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour !)
 			else {
 				// return que l'item n'est pas dans le sac
-				socket.emit('INV_CASE_SC', 'DEPOSER', -2, currentItem.id, 0);
+				socket.emit('INV_CASE_SC', 'DEPOSER', -2, currentItem.id, 0, 0);
 			}
 		}
 		console.log("*******************************************************");
@@ -905,6 +929,10 @@ io.sockets.on('connection', function (socket)
      * RECEPTION D'UNE DEMANDE D'INFOS SUR UNE CASE 
      * Renvoi la case 
      * Si erreur : renvoi NULL
+     * 
+     * ET nbr allies
+     * 
+     * ET nbr ennemis
      */
     socket.on('INFO_CASE_CS', function ()
 	{
@@ -916,11 +944,40 @@ io.sockets.on('connection', function (socket)
 		if (cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase() == null)
 			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
 		else
-			socket.emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase());
+		{
+			var nbrAllies = 0, nbrEnnemis = 0;
+			// construction de la liste
+	    	for(var idUser in pManagers) 
+	    	{
+	    		// si le perso en cours est dans la meme salle
+	    		if(pManagers[idUser].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
+	    		{
+	    			// si l'user correspondant au perso est de la meme équipe
+	    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+	    			{
+	    				nbrAllies++;
+	    			}
+	    			// sinon et si il n'est pas caché
+	    			else if (pManagers[idUser].GetMode != 2)
+	    			{
+	    				nbrEnnemis++;
+	    			}
+	    		}
+	    	}
+	    	
+			socket.emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase(), nbrAllies, nbrEnnemis);
+		}
 		console.log("*******************************************************");
     });
-
-
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE D'INFO SUR LE PERSONNAGE
      */
@@ -929,8 +986,15 @@ io.sockets.on('connection', function (socket)
 		console.log("USER OBJECT = -" + usersOnline[id] + "-");
 		socket.emit('INFO_PERSONNAGE_SC', pManagers[id].GetCopiePerso());
     });
-
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
 	/**************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR UTILISER UN ITEM
 	 * return 1 si ok
@@ -963,16 +1027,29 @@ io.sockets.on('connection', function (socket)
     	}
     	console.log("*******************************************************");
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
-	 * return 1 si ok
+	 * 
+	 * return mode
+	 * 
+	 * ET return 1 si ok
 	 * erreur : 0 si erreur interne
 	 * erreur : -4 si déja dans ce mode
 	 * erreur : -5 si raté à cause goules
 	 * erreur : -10 si plus de pts actions
 	 * 
 	 * ET return dégats infligés
+	 * 
+	 * ET nbr goules attaquantes
 	 */
     socket.on('PERSONNAGE_MODE_CS', function (mode) {
         console.log("*******************************************************");
@@ -981,7 +1058,7 @@ io.sockets.on('connection', function (socket)
         // si déja dans ce mode
         if (pManagers[id].GetMode() == mode)
         {
-            socket.emit('PERSONNAGE_MODE_SC', mode, -4);
+            socket.emit('PERSONNAGE_MODE_SC', mode, -4, 0, 0);
             return;
         }
         // si c'est un passage en mode défense
@@ -990,38 +1067,47 @@ io.sockets.on('connection', function (socket)
             pManagers[id].ChangementMode(mode);
 
             // réponse ok
-            socket.emit('PERSONNAGE_MODE_SC', mode, 1);
+            socket.emit('PERSONNAGE_MODE_SC', mode, 1, 0, 0);
             return;
         }
         // sinon :
         
         // si pu de pts actions
         if(pManagers[id].AucunPtActions()){
-        	socket.emit('PERSONNAGE_MODE_SC', mode, -10);
+        	socket.emit('PERSONNAGE_MODE_SC', mode, -10, 0, 0);
         	return;
         }
         
-        // ********* algorithme de test de l'impact des goules *********
+        // ********* algorithme de calcul de l'impact des goules *********
     	var restG = TestGoules();
-    	console.log("degats ? " + restG["degats"]);
+
     	if (restG["actionOk"] == 0)
     		{
     			// log
-    			console.log("chgt de mode ratée à cause des goules");
+    			console.log("SERVEUR : chgt de mode ratée à cause des goules");
     			
     			// renvoi de la réponse
-    			socket.emit('PERSONNAGE_MODE_SC', -5, restG["degats"]); 
+    			socket.emit('PERSONNAGE_MODE_SC', mode, -5, restG["degats"], restG["nbrGoulesA"]); 
+    			return;
     		}
     	// ***************************************************************
 
     	// chgt de mode du perso
         pManagers[id].ChangementMode(mode);
     	console.log("SERVEUR : chgt de mode ok");
-    	socket.emit('PERSONNAGE_MODE_SC', 1, restG["degats"]);
+    	socket.emit('PERSONNAGE_MODE_SC', mode, 1, restG["degats"], restG["nbrGoulesA"]);
     	 
         console.log("*******************************************************");
     });
-	
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR EFFECTUER UNE FOUILLE RAPIDE
 	 * 
@@ -1037,6 +1123,10 @@ io.sockets.on('connection', function (socket)
 	 * ET return éventuel dégats infligés
 	 * 
 	 * ET return 1 si objet ajouté au sac, 0 si a la salle
+	 * 
+	 * ET return nbr ennemis découverts
+	 * 
+	 * ET nbr goules attaquantes
 	 */
     socket.on('ACTION_FOUILLE_RAPIDE_CS', function ()
     {
@@ -1045,13 +1135,13 @@ io.sockets.on('connection', function (socket)
     	// si pu de pts actions
         if(pManagers[id].AucunPtActions())
 		{
-        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0);
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0, 0, 0, 0);
         	return;
         }
         
-    	// ********* algorithme de test de l'impact des goules *********
+    	// ********* algorithme de calcul de l'impact des goules *********
     	var restG = TestGoules();
-    	console.log("degats ? " + restG["degats"]);
+
     	if (restG["actionOk"] == 0)
     		{
     			// log
@@ -1059,12 +1149,41 @@ io.sockets.on('connection', function (socket)
     			// retrait de points d'actions
     			pManagers[id].PerteActionParGoules();
     			// renvoi de la réponse
-    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, null, restG["degats"], null); 
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, null, restG["degats"], null, 0, restG["nbrGoulesA"]); 
+    			return;
     		}
     	// ***************************************************************
     	
         // calcul si la fouille reussie
-        var fouilleFrutueuse = cManagers[pManagers[id].GetIdSalleEnCours()].Fouille();
+        var fouilleFrutueuse = cManagers[pManagers[id].GetIdSalleEnCours()].Fouille(pManagers[id].GetMultiFouille());
+        var nbrEnnDecouverts = 0;
+        var ennemiDecouvert;
+        // pour chaque personnage caché de la salle, calcul s'il est découvert
+    	for(var idUser in pManagers) 
+    	{
+    		// si le perso en cours est dans la meme salle ET en mode planqué
+    		if(pManagers[idUser].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours() 
+    				&& pManagers[idUser].mode == 2)
+    		{
+    			console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : id salle : " + pManagers[idUser].GetIdSalleEnCours());
+    			// si équipe différente
+    			if (uManagers[idUser].GetNumEquipe() != uManagers[idUser].GetNumEquipe(id))
+    			{
+    				console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : : " + uManagers[idUser].GetNumEquipe());
+    				ennemiDecouvert = cManagers[pManagers[id].GetIdSalleEnCours()].DecouverteEnnemi(pManagers[id].GetMultiFouille(), pManagers[idUser].GetMultiCache());
+    				if (ennemiDecouvert)
+    				{
+    					console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : ennemi découvert lors d'une fouille !");
+    					// incrémente nombre découvertes
+    					nbrEnnDecouverts++;
+    					
+    					// modifie le mode du perso découvert
+    					pManagers[idUser].Decouvert();
+    				}
+    			}
+    		}
+    	}
+        // var fouilleFrutueuse = cManagers[pManagers[id].GetIdSalleEnCours()].DecouverteEnnemi( , );
         
         // retrait des points d'actions
         pManagers[id].FouilleRapide();
@@ -1072,7 +1191,7 @@ io.sockets.on('connection', function (socket)
         // si fouille Fructueuse détermination de l'item trouvé
         if (fouilleFrutueuse)
         {
-        	console.log("");
+        	console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille fructueuse");
         	// tire un item aléatoire
         	var item = iManager.GetItemAleatoire(function(newItem)
         	{
@@ -1084,41 +1203,89 @@ io.sockets.on('connection', function (socket)
         		if (!res)
         			cManagers[pManagers[id].GetIdSalleEnCours()].AjouterItem(item);
         	        		
-        		console.log("fouille fructueuse. Ajout au sac? " + res);
+        		console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille fructueuse. Ajout au sac? " + res);
         		// si la fouille réussie
-        		socket.emit('ACTION_FOUILLE_RAPIDE_SC',  1, item, restG["degats"], res); 
+        		socket.emit('ACTION_FOUILLE_RAPIDE_SC',  1, item, restG["degats"], res, nbrEnnDecouverts, restG["nbrGoulesA"]); 
         	});
         }
         else
         {
-        	console.log("fouille raté");
-        	socket.emit('ACTION_FOUILLE_RAPIDE_SC',  -1, null, restG["degats"], null); 
+        	console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille raté");
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC',  -1, null, restG["degats"], null, nbrEnnDecouverts, restG["nbrGoulesA"]); 
         }
         console.log("*****************************************************************");
         
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UN AUTRE JOUEUR
 	 * return 1 si ok
 	 * erreur : 0 si erreur interne
-	 * erreur : -1 si joueur pu dans la salle
+	 * erreur : -1 si joueur n'est plus dans la caase
 	 * erreur : -5 si raté à cause goules
 	 * erreur : -10 si plus de pts actions
 	 * 
 	 * ET return dégats infligés
 	 * 
-	 * ET return dégats reçus
+	 * ET return dégats reçus (ennemi)
+	 * 
+	 * ET return dégats reçues (goules)
+	 * 
+	 * ET nbr goules attaquantes
 	 */
-    socket.on('ACTION_ATTAQUE_CS', function (pseudoCible) {
+    socket.on('ACTION_ATTAQUE_CS', function (idCible) {
         // si pu de pts actions
         if(pManagers[id].AucunPtActions())
         {
-        	socket.emit('ACTION_ATTAQUE_SC', 0, 0);
+        	socket.emit('ACTION_ATTAQUE_SC', -10, 0, 0, 0, 0);
         	return;
         }
+        
+        // si plus dans la case
+        if(pManagers[idCible].GetIdSalleEnCours() != pManagers[id].GetIdSalleEnCours())
+        {
+        	socket.emit('ACTION_ATTAQUE_SC', -1, 0, 0, 0, 0);
+        	return;
+        }
+        
+        // ********* algorithme de calcul de l'impact des goules *********
+    	var restG = TestGoules();
+
+    	if (restG["actionOk"] == 0)
+    		{
+    			// log
+    			console.log("SERVEUR : attaque ratée à cause des goules");
+    			
+    			// renvoi de la réponse
+    			socket.emit('PERSONNAGE_MODE_SC', -5, 0, 0, restG["degats"], restG["nbrGoulesA"]); 
+    			return;
+    		}
+    	// ***************************************************************
+    	
+        // combat
+        var ans = pManagers[id].Attaquer(pManagers[idCible]);
+        // log
+        console.log("Attaque de " + id + " -> " + idCible +" : (" + ans.degatsInfliges + ") <-> ("+ans.degatsRecus +")");
+        // return
+        socket.emit('ACTION_ATTAQUE_SC', 1, degatsInfliges, degatsRecus, restG["degats"], restG["nbrGoulesA"]);
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR OBTENIR LES MESSAGES EN ATTENTE
 	 * return 1 si ok
@@ -1138,7 +1305,15 @@ io.sockets.on('connection', function (socket)
     		socket.emit('CHECK_MSG_ATT_SC', -1);
     	}
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
 	 * return 2 si deux goules tuées
@@ -1149,34 +1324,56 @@ io.sockets.on('connection', function (socket)
 	 * 
 	 * ET degats reçus
 	 * 
+	 * ET nbr goules attaquantes
+	 * 
 	 */
     socket.on('ACTION_ATTAQUE_GOULE_CS', function () {
+    	console.log("******************** ATTAQUE DE GOULES *****************");
     	// si pas de goules dans la salle
     	if (cManagers[pManagers[id].GetIdSalleEnCours()].GetNombreGoules() == 0)
     	{
-    		socket.emit('ACTION_ATTAQUE_GOULE_SC', -2, 0);
+    		socket.emit('ACTION_ATTAQUE_GOULE_SC', -2, 0, 0);
     		return;
     	}
     	
     	// calcul des dégats subis
-    	var degatsSubis = cManagers[pManagers[id].GetIdSalleEnCours()].DegatsParGoules();
-    	pManagers[id].DiminuerSante(degatsSubis);
+    	var ans = cManagers[pManagers[id].GetIdSalleEnCours()].AttaqueDeGoules();
+    	var degatsSubis = pManagers[id].DiminuerSante(ans["degats"]);
+    	
+    	// attaque
+    	pManagers[id].AttaquerGoule();
     	
     	// goules tuées
     	var goulesTues = cManagers[pManagers[id].GetIdSalleEnCours()].AttaqueGoule();
     	
     	console.log("SERVEUR : attaque goules ->  Goules tués : " + goulesTues + " - Degats " + degatsSubis);
-    	socket.emit('ACTION_ATTAQUE_GOULE_SC', goulesTues, degatsSubis);
+    	socket.emit('ACTION_ATTAQUE_GOULE_SC', goulesTues, degatsSubis, 0);
+    	console.log("*********************************************************");
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UN ACCUSE DE LECTURE DES MESSAGES
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function () {
     	pManagers[id].EffacerMessages();
     });
-    
-
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ALLIES DANS LA CASE
 	 * 
@@ -1208,11 +1405,19 @@ io.sockets.on('connection', function (socket)
     	socket.emit('INFO_CASE_ALLIES_SC', listeAllies);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
 	 * 
-	 * return liste des ennemis
+	 * return liste des ennemis (tableau associatif) [idUtilisateur, personnageEnnemi]
 	 * erreur : liste vide si aucun ennemis dans la case
 	 */ 
     socket.on('INFO_CASE_ENNEMIS_CS', function () {
@@ -1226,21 +1431,29 @@ io.sockets.on('connection', function (socket)
     	for(var idUser in pManagers) 
     	{
     		// si le perso en cours est dans la meme salle
-    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle)
+    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle && pManagers[idUser].GetMode != 2)
     		{
     			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
     			// si l'user correspondant au perso est de la meme équipe
     			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
     			{
     				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
-    				listeEnn.push(pManagers[idUser].getPersonnageToDisplay());
+    				listeEnn[idUser] = (pManagers[idUser].getPersonnageToDisplay());
     			}
     		}
     	}
     	socket.emit('INFO_CASE_ENNEMIS_SC', listeEnn);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
     /******************************************************************************************************************
      * FONCTION DE TEST DE L'IMPACT DES GOULES SUR LES ACTIONS / DEPLACEMENTS DES JOUEURS
      * return [actionOk, degats]
@@ -1248,24 +1461,23 @@ io.sockets.on('connection', function (socket)
     function TestGoules()
     {
     	 // calcul si blessé par goules
-        var reponseDegatsParGoules = cManagers[pManagers[id].GetIdSalleEnCours()].DegatsParGoules();
-        
-        // calcul si chgt mode réussi
-        var reponseActionReussie = ! cManagers[pManagers[id].GetIdSalleEnCours()].ActionRateeParGoules();
+        var ans = cManagers[pManagers[id].GetIdSalleEnCours()].AttaqueDeGoules();
         
         // informe le manager de perso des dégats
-        var degatsInfliges = pManagers[id].DiminuerSante(reponseDegatsParGoules);
+        var degatsInfliges = pManagers[id].DiminuerSante(ans["degats"]);
 
-        console.log("SERVEUR -> GOULES : degats par goules " + reponseDegatsParGoules);
-        console.log("SERVEUR -> GOULES : degats infligés " + degatsInfliges);
-        console.log("SERVEUR -> GOULES : actionok " + reponseActionReussie);
+        console.log("SERVEUR -> GOULES : degats par goules : " + ans["degats"]);
+        console.log("SERVEUR -> GOULES : degats infligés : " + degatsInfliges);
+        console.log("SERVEUR -> GOULES : nbr goules attaquantes :  " + ans["nbrGoulesA"]);
+        console.log("SERVEUR -> GOULES : action ok ? : " + ans["actionOk"]);
         
-        var a = {
-            "degats"	: degatsInfliges,
-            "actionOk" 	: reponseActionReussie,
-        };
-        return a;
+        return ans;
     }
+    
+    /******************************************************************************************************************
+     * FONCTION DE TEST SI UNE FOUILLE PERMET DE DECOUVRIR OU ITEM OU UNE PERSONNE
+     * return [actionOk, degats]
+     */
 
     /***************************************************************************
      * RECEPTION D'UNE DEMANDE SI UN UTILISATEUR EST CONNECTE
