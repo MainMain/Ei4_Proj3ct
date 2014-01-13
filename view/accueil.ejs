@@ -43,7 +43,7 @@
 	<header id="master-header" class="clearfix" role="banner">
 
 		<hgroup>
-			<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
+			<h1 id="site-title"><a href="/" title="">Ei4 Proj3ct</a></h1>
 			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
 		</hgroup>
 
@@ -60,7 +60,7 @@
 			<li class="span2">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">
-					<li><a href="chat-equipe">Chat</a></li>
+					<li><a href="chat-equipe">Chat de l'équipe</a></li>
 				</ul>
 			</li>
 			<li class="span2"><a href="classement">Classement</a></li>
@@ -110,11 +110,6 @@
 		</footer>
 
 	</article> <!-- .post.hentry -->
-
-	<div>
-	<h1>MESSAGE</h1>
-	<input type="button" id="buttonMessage"/>
-	</div>
 </div> <!-- #content -->
 
 <div id="sidebar" role="complementary" class="span4">
@@ -131,7 +126,7 @@
 			</div>
 		<% } else { %>
 			<!-- Subscription form -->
-			<form id="SubscribeForm" name="SubscribeForm" class="subscribeform" method=POST>
+			<form id="SubscribeForm" name="SubscribeForm" class="subscribeform" method="POST" action="/">
 				<input type="hidden" name="_method" value="PUT">
 				<h2 align=center>Venez creuser votre tombe !</h2>
 				<input type="text" id="PseudoSubscribe" placeholder="Pseudo" name="username"value="" required="">
