@@ -257,17 +257,17 @@ function start() {
 	// Dimension Conteneur ItemPerso
 	var _ContItemPersoH = 32;
 	var _ContItemPersoW = 320;
-	
+
 	//------------------- Zone 1 -----------------------------------------------------
 
 	// Placement label Points de vie
 	var _labelPtsVX = 160;
 	var _labelPtsVY = 20;
-	
+
 	// Placement label Points de faim
 	var _labelPtsFX = _labelPtsVX;
 	var _labelPtsFY = _labelPtsVY + _EspaceLabelY;
-	
+
 	//------------------ Zone 2 -------------------------------------------------------
 
 	// Placement label Points d'action
@@ -277,9 +277,9 @@ function start() {
 	// Placement label Points de mouvements
 	var _labelPtsMX = _labelPtsAX;
 	var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
-	
+
 	//------------------
-	
+
 	// Placement label id Salle en cours
 	var _labelIdSalleX = _labelPtsAX;
 	var _labelIdSalleY = _labelPtsMY + _EspaceLabelY;
@@ -323,11 +323,11 @@ function start() {
 	// Placement label Retour Goules
 	var _labelRetourGoulesX = 10;
 	var _labelRetourGoulesY = 570;
-	
+
 	// Placement label Choix Mode
 	var _labelChoixModeX = AbsBtnD+5;
 	var _labelChoixModeY = OrdBtnMode-20;
-	
+
 	// Placement Conteneur ArmeEquip
 	var _ContArmeX = _labelArmeX + 125;
 	var _ContArmeY = _labelArmeY-3;
@@ -364,7 +364,7 @@ function start() {
 
 	//*********** Fin de la partie design **************
 	// ******************************************
-	
+
 	// ******************************************
 	// ** creation des conteneurs               *
 	// ******************************************
@@ -378,7 +378,7 @@ function start() {
 	var shape = new createjs.Shape();
 	stage.addChild(shape);
 	shape.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(_ContItemCaseX-4, _ContItemCaseY-4, _ContItemCaseW+4, _ContItemCaseH+4);
-	
+
 	var contInvPerso = new createjs.Container();
 	contInvPerso.x = _ContItemPersoX;
 	contInvPerso.y = _ContItemPersoY;
@@ -454,7 +454,7 @@ function start() {
 	lifeBarContainer.x = 310;
 	lifeBarContainer.y = _labelPtsVY ;
 	stage.addChild(lifeBarContainer);
-	
+
 	// Barre de Faim
 
 	faimBarContainer = new createjs.Container();
@@ -475,7 +475,7 @@ function start() {
 	faimBarContainer.x = lifeBarContainer.x;
 	faimBarContainer.y = lifeBarContainer.y + _EspaceLabelY;
 	stage.addChild(faimBarContainer);
-	
+
 	//------------------- Zone 2 -----------------------------------------------------
 	// Barre d'action
 
@@ -518,7 +518,7 @@ function start() {
 	moveBarContainer.x = actionBarContainer.x;
 	moveBarContainer.y = _labelPtsMY;
 	stage.addChild(moveBarContainer);
-	
+
 	//------------------------------------------------------------------------
 
 	// Barre de Poids du Sac
@@ -541,13 +541,13 @@ function start() {
 	sacBarContainer.x = _labelItemPersoX + 180;
 	sacBarContainer.y = _labelItemPersoY;
 	stage.addChild(sacBarContainer);
-	
-	
-	
+
+
+
 	// ******************************************
 	// ********** Zones de Boutons	      *******
 	// ******************************************
-	
+
 	var shapeMode = new createjs.Shape();
 	stage.addChild(shapeMode);
 	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(AbsBtnD-4, OrdBtnMode-4, 145, 155);
@@ -598,7 +598,7 @@ function start() {
 	labelInventaire.textBaseline = _TextBaseline;
 	labelInventaire.x = _labelItemPersoX;
 	labelInventaire.y = _labelItemPersoY;
-	
+
 	labelChoixMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelChoixMode.lineHeight = _LineHeight;
 	labelChoixMode.textBaseline = _TextBaseline;
@@ -625,7 +625,7 @@ function start() {
 	labelArmure.x = _labelArmureX;
 	labelArmure.y = _labelArmureY;
 	labelArmure.text="Armure équipée : ";
-	
+
 	//------------------- Zone 1 -----------------------------------------------------
 
 	labelPtsVie = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -633,14 +633,14 @@ function start() {
 	labelPtsVie.textBaseline = _TextBaseline;
 	labelPtsVie.x = _labelPtsVX;
 	labelPtsVie.y = _labelPtsVY;
-	
+
 	labelPtsFaim = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsFaim.lineHeight = _LineHeight;
 	labelPtsFaim.textBaseline = _TextBaseline;
 	labelPtsFaim.x = _labelPtsFX;
 	labelPtsFaim.y = _labelPtsFY;
 	labelPtsFaim.text="Points d'appétit :";
-	
+
 	//------------------- Zone 2 -----------------------------------------------------
 
 	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -654,7 +654,7 @@ function start() {
 	labelPtsMove.textBaseline = _TextBaseline;
 	labelPtsMove.x = _labelPtsMX;
 	labelPtsMove.y = _labelPtsMY;
-	
+
 	//---------------------------------------
 
 	labelPtsAtq = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -740,19 +740,19 @@ function start() {
 	txtObjetEquipe.textBaseline = _TextBaseline;
 	txtObjetEquipe.x = 10;
 	txtObjetEquipe.y = txtSalle.y - 40;
-	
+
 	labelRetourFouilleRapide = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
 	labelRetourFouilleRapide.x = 10;
 	labelRetourFouilleRapide.y = txtSalle.y + 60;
-	
+
 	labelRetourMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourMode.lineHeight = _LineHeight;
 	labelRetourMode.textBaseline = _TextBaseline;
 	labelRetourMode.x = 10;
 	labelRetourMode.y = txtSalle.y+20;
-	
+
 	labelRetourModeG = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourModeG.lineHeight = _LineHeight;
 	labelRetourModeG.textBaseline = _TextBaseline;
@@ -805,7 +805,7 @@ function start() {
 	BtnSaveBD.addEventListener('click', function(event) {
 		socket.emit('SAVE_BD_DEBUG_CS');
 	});
-	
+
 	//var testBtn = new createjs.Bitmap("public/ButtonGreen.png");
 	//testBtn.image.onload = setImg(testBtn, 150, 250);
 
@@ -912,23 +912,23 @@ function start() {
 	BtnFouilleRapide.addEventListener('click', function(event) {
 		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
 	});	
-	
+
 	var BtnListeAllies = new createjs.Bitmap("public/Boutons/Allies.png");
 	BtnListeAllies.image.onload = setImg(BtnListeAllies, AbsBtnD, OrdBtnListe);
 	/*BtnListeAllies.addEventListener('click', function(event) {
-		
+
 	});	*/
-	
+
 	var BtnListeEnnemis = new createjs.Bitmap("public/Boutons/Ennemis.png");
 	BtnListeEnnemis.image.onload = setImg(BtnListeEnnemis, AbsBtnD, OrdBtnListe + H);
 	/*BtnListeAllies.addEventListener('click', function(event) {
-		
+
 	});	*/
 
 	//BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = AbsBtn;
 	BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor = BtnAttaquer.cursor = "pointer";
 	stage.update();
-	
+
 	// ******************************************
 	// *********** INITIALISATION ***************
 	// ******************************************
@@ -982,10 +982,10 @@ function start() {
 
 		default:
 			socket.emit('INFO_CASE_CS');
-			labelRetourGoules.text="";
-			txtSalle.text = "";
-			txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
-			socket.emit('INFO_PERSONNAGE_CS');
+		labelRetourGoules.text="";
+		txtSalle.text = "";
+		txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
+		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 		}
 		stage.update();
@@ -1031,6 +1031,7 @@ function start() {
 					contArme.addChild(imgItem);
 					contArme.addEventListener("click", function (event) {
 						SelectedItemEquip = currentItem.id;
+						alert(SelectedItemEquip);
 						stage.update();
 					});
 				}
@@ -1041,6 +1042,7 @@ function start() {
 					contArmure.addChild(imgItem);
 					contArmure.addEventListener("click", function (event) {
 						SelectedItemEquip = currentItem.id;
+						alert(SelectedItemEquip);
 						stage.update();
 					});
 				}
@@ -1113,66 +1115,68 @@ function start() {
 	 * ET return id_item
 	 * 
 	 * ET degats reçus
+	 * 
+	 * ET nbr goules attaquantes
 	 */
-	socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG) {
+	socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		if (type == 'RAMASSER') {
 			switch(codeRetour)
 			{
-				// erreur
-				case -3:
-					txtObjet.text = "";
-					txtObjet.text = ("Erreur inconnue");
-					break;
-					// poids insufisant
-				case -1:
-					txtObjet.text = "";
-					txtObjet.text = ("Impossible de ramasser l'objet : poids max atteint !");
-					break;
-					// objet pas dans case
-				case -2:
-					txtObjet.text = "";
-					txtObjet.text = ("L'objet " + id_item + " n'est plus dans la salle !");
-					break;
-				case -5:
-					txtObjet.text = "";
-					txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
-					// ramassage ok
-					break;
-				default:
-					txtObjet.text = "";
-					txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie");
-					socket.emit('INFO_PERSONNAGE_CS');
-					socket.emit('INFO_CASE_CS');
-					stage.update();
-					break;
+			// erreur
+			case -3:
+				txtObjet.text = "";
+				txtObjet.text = ("Erreur inconnue");
+				break;
+				// poids insufisant
+			case -1:
+				txtObjet.text = "";
+				txtObjet.text = ("Impossible de ramasser l'objet : poids max atteint !");
+				break;
+				// objet pas dans case
+			case -2:
+				txtObjet.text = "";
+				txtObjet.text = ("L'objet " + id_item + " n'est plus dans la salle !");
+				break;
+			case -5:
+				txtObjet.text = "";
+				txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
+				// ramassage ok
+				break;
+			default:
+				txtObjet.text = "";
+			txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Goules restantes");
+			socket.emit('INFO_PERSONNAGE_CS');
+			socket.emit('INFO_CASE_CS');
+			stage.update();
+			break;
 			}
 		}
 		stage.update();
 		if (type == 'DEPOSER') {
 			switch(codeRetour)
 			{
-				// erreur
-				case -3:
-					txtObjet.text = "";
-					txtObjet.text = ("Déséquiper l'objet avant de déposer !");
-					break;
-				case -4:
-					txtObjet.text = "";
-					txtObjet.text = ("Erreur interne !");
-					break;
-					// objet pas dans sac (! pas normal)
-				case -2:
-					txtObjet.text = "";
-					txtObjet.text = ("L'item " + id_item + " n'est plus dans le sac ");
-					break;
-					// dépôt ok
-				default:
-					txtObjet.text = "";
-					txtObjet.text = ("Item " + id_item + "déposé ! Sac : " + codeRetour + " kg");
-					socket.emit('INFO_CASE_CS');
-					socket.emit('INFO_PERSONNAGE_CS');
-					stage.update();
-					break;
+			// erreur
+			case -3:
+				txtObjet.text = "";
+				txtObjet.text = ("Déséquiper l'objet avant de déposer !");
+				break;
+			case -4:
+				txtObjet.text = "";
+				txtObjet.text = ("Erreur interne !");
+				break;
+				// objet pas dans sac (! pas normal)
+			case -2:
+				txtObjet.text = "";
+				txtObjet.text = ("L'item " + id_item + " n'est plus dans le sac ");
+				break;
+				// dépôt ok
+			default:
+				txtObjet.text = "";
+			txtObjet.text = ("Item " + id_item + "déposé ! Sac : " + codeRetour + " kg");
+			socket.emit('INFO_CASE_CS');
+			socket.emit('INFO_PERSONNAGE_CS');
+			stage.update();
+			break;
 			}
 		}
 		stage.update();
@@ -1196,7 +1200,7 @@ function start() {
 			var ProbCache, ProbFouille;
 			ProbCache=(currentCase.probaCache * PersoProbaCache);
 			ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
-			
+
 			labelNbAlies.text=("Aliés dans la salle : " + nbrAllies + "");
 			labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 			labelNbGoules.text=("Goules dans la salle : " + currentCase.nbrGoules + "");
@@ -1243,6 +1247,7 @@ function start() {
 				imgItem.addEventListener("click", function(event){
 					var currentItem = listeItemsCase[event.target.name];
 					SelectedItemCase=currentItem.id;
+					alert(SelectedItemCase);
 					stage.update();
 				});
 
@@ -1318,7 +1323,7 @@ function start() {
 			labelPtsVie.text=("Points de vie :      " + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 			lifeBar.scaleX = (currentPerso.ptSante/currentPerso.ptSanteMax) * lifeBarWidth;
 		}
-		
+
 		// Sécurité pour le remplissage de la barre d'action
 		if(currentPerso.ptActions<=0)
 		{
@@ -1336,7 +1341,7 @@ function start() {
 			labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 			actionBar.scaleX = (currentPerso.ptActions/currentPerso.ptActionsMax) * actionBarWidth;
 		}
-		
+
 		// Sécurité pour le remplissage de la barre de move
 		if(currentPerso.ptDeplacement > currentPerso.ptDeplacementMax)
 		{
@@ -1359,89 +1364,83 @@ function start() {
 
 		switch(currentPerso.mode)
 		{
-		case 0 :  labelMode.text=("");
-
-		/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
+		case 0:
+			/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 		BtnFouiller.x = AbsBtnD;
 		BtnFouiller.y = OrdBtnMode;*/
-		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
-		BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnMode);
-		BtnFouiller.addEventListener('click', function(event) {
-			socket.emit('PERSONNAGE_MODE_CS', 1);
-			socket.emit('INFO_PERSONNAGE_CS');
-		});	
+			var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
+			BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnMode);
+			BtnFouiller.addEventListener('click', function(event) {
+				socket.emit('PERSONNAGE_MODE_CS', 1);
+				socket.emit('INFO_PERSONNAGE_CS');
+			});	
 
-		/*var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
+			/*var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
 		BtnCacher.x = AbsBtnD;
 		BtnCacher.y = BtnFouiller.y + H;*/
-		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
-		BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
-		BtnCacher.addEventListener('click', function(event) {
-			socket.emit('PERSONNAGE_MODE_CS', 2);
-			socket.emit('INFO_PERSONNAGE_CS');
-		});	
+			var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
+			BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
+			BtnCacher.addEventListener('click', function(event) {
+				socket.emit('PERSONNAGE_MODE_CS', 2);
+				socket.emit('INFO_PERSONNAGE_CS');
+			});	
 
-		/*var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
+			/*var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
 		BtnDefendre.x = AbsBtnD;
 		BtnDefendre.y = BtnCacher.y + H;*/
-		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
-		BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
-		BtnDefendre.addEventListener('click', function(event) {
-			socket.emit('PERSONNAGE_MODE_CS', 3);
-			socket.emit('INFO_PERSONNAGE_CS');
-		});
+			var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
+			BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
+			BtnDefendre.addEventListener('click', function(event) {
+				socket.emit('PERSONNAGE_MODE_CS', 3);
+				socket.emit('INFO_PERSONNAGE_CS');
+			});
 
-		BtnFouiller.cursor=BtnCacher.cursor=BtnDefendre.cursor="crosshair";
-		labelBonusArme.text=("");
-		labelBonusArmure.text=("");
+			BtnFouiller.cursor=BtnCacher.cursor=BtnDefendre.cursor="crosshair";
+			labelBonusArme.text=("");
+			labelBonusArmure.text=("");
 
-		break;
+			break;
 
-		case 1 :  /*labelMode.text="";
-		labelMode.text=("Mode Fouille activé");*/
-
-		/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
+		case 1 :
+			/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
 		BtnFouiller.x = AbsBtnD;
 		BtnFouiller.y = OrdBtnMode;*/
-		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleGreen.png");
-		BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnMode);
-		BtnFouiller.addEventListener('click', function(event) {
-			socket.emit('PERSONNAGE_MODE_CS', 1);
-			socket.emit('INFO_PERSONNAGE_CS');
-		});	
+			var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleGreen.png");
+			BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnMode);
+			BtnFouiller.addEventListener('click', function(event) {
+				socket.emit('PERSONNAGE_MODE_CS', 1);
+				socket.emit('INFO_PERSONNAGE_CS');
+			});	
 
-		/*var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
+			/*var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
 		BtnCacher.x = AbsBtnD;
 		BtnCacher.y = BtnFouiller.y + H;*/
-		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
-		BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
-		BtnCacher.addEventListener('click', function(event) {
-			socket.emit('PERSONNAGE_MODE_CS', 2);
-			socket.emit('INFO_PERSONNAGE_CS');
-		});	
+			var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
+			BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
+			BtnCacher.addEventListener('click', function(event) {
+				socket.emit('PERSONNAGE_MODE_CS', 2);
+				socket.emit('INFO_PERSONNAGE_CS');
+			});	
 
-		/*var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
+			/*var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
 		BtnDefendre.x = AbsBtnD;
 		BtnDefendre.y = BtnCacher.y + H;*/
-		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
-		BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
-		BtnDefendre.addEventListener('click', function(event) {
-			socket.emit('PERSONNAGE_MODE_CS', 3);
-			socket.emit('INFO_PERSONNAGE_CS');
-		});	
+			var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
+			BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
+			BtnDefendre.addEventListener('click', function(event) {
+				socket.emit('PERSONNAGE_MODE_CS', 3);
+				socket.emit('INFO_PERSONNAGE_CS');
+			});	
 
-		BtnFouiller.cursor="not-allowed";
-		BtnCacher.cursor=BtnDefendre.cursor="pointer";
+			BtnFouiller.cursor="not-allowed";
+			BtnCacher.cursor=BtnDefendre.cursor="pointer";
 
-		labelBonusArme.text=("");
-		labelBonusArmure.text=("");
+			labelBonusArme.text=("");
+			labelBonusArmure.text=("");
 
-		break;
+			break;
 
 		case 2 :  
-			/*labelMode.text="";
-			labelMode.text=("Mode Caché activé");*/
-
 			/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 			BtnFouiller.x = AbsBtnD;
 			BtnFouiller.y = OrdBtnMode;*/
@@ -1481,9 +1480,6 @@ function start() {
 			break;
 
 		case 3 :  
-			/*labelMode.text="";
-			labelMode.text=("Mode Défense activé");*/
-
 			/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 			BtnFouiller.x = AbsBtnD;
 			BtnFouiller.y = OrdBtnMode;*/
@@ -1523,7 +1519,7 @@ function start() {
 			break;
 		}
 
-		
+
 
 		// CLear de la liste des items de case
 		listeItemsPerso = new Array();
@@ -1567,6 +1563,7 @@ function start() {
 				imgItem.addEventListener("click", function(event){
 					var currentItem = listeItemsPerso[event.target.name];
 					SelectedItemPerso=currentItem.id;
+					alert(SelectedItemPerso);
 					stage.update();
 				});
 
@@ -1601,6 +1598,7 @@ function start() {
 
 			contArme.addEventListener("click", function (event) {
 				SelectedItemEquip = currentPerso.armeEquipee.id;
+				alert(SelectedItemEquip);
 				stage.update();
 			});
 
@@ -1634,6 +1632,7 @@ function start() {
 
 			contArmure.addEventListener("click", function (event) {
 				SelectedItemEquip = currentPerso.armureEquipee.id;
+				alert(SelectedItemEquip);
 				stage.update();
 			});
 
@@ -1650,7 +1649,7 @@ function start() {
 
 		// Affichage label poids du sac
 		//labelPoidsSac.text=("Poids du sac :        " + PoidsSac + "/" + currentPerso.poidsMax);
-		
+
 		labelInventaire.text="";
 		labelInventaire.text=("Inventaire du perso :      "+ PoidsSac + "/" + currentPerso.poidsMax);
 
@@ -1733,7 +1732,7 @@ function start() {
 	 * ET nbr goules attaquantes
 	 */
 	socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbGoulesRest) 
-	{
+			{
 		switch(reponse)
 		{
 		case 1: 
@@ -1761,7 +1760,7 @@ function start() {
 		labelRetourModeG.text = "";
 		labelRetourModeG.text+=("Dégats infligés : " + degatsInfliges +" !\n Il reste " + nbGoulesRest + " goules dans la salle");
 
-	});
+			});
 
 
 
