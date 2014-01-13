@@ -17,6 +17,7 @@ var Personnage_Manager = (function () {
         Personnage_Manager.coutAttaqueEnnemi;
         Personnage_Manager.coutAttaqueGoule;
         Personnage_Manager.coutInterceptionGoule;
+        Personnage_Manager.coutChgtMode;
         
         // --- METHODE DE CLASSE
         Personnage_Manager.build = function (idUser) { return new Personnage_Manager(); };
@@ -26,6 +27,7 @@ var Personnage_Manager = (function () {
             this.coutAttaqueEnnemi = 7;
             this.coutAttaqueGoule = 3;
             this.coutInterceptionGoule = 2;
+            this.coutChgtMode = 2;
         }
         
         // --- METHODES D'INSTANCE
@@ -171,9 +173,9 @@ var Personnage_Manager = (function () {
             	// si en mode defense
             	if (this.personnage.mode == 3) degats * 0.75;
             	
-            	if (degats > 0){
-            		this.personnage.ptSante -= degats;
-            	}
+            	if (degats > 0) this.personnage.ptSante -= degats;
+            	else if (degats < 0) degats = 0;
+            	
             	console.log("PM : DiminuerSante : Baisse de vie : " + degats);
             	return degats;
             },
@@ -191,6 +193,7 @@ var Personnage_Manager = (function () {
             PerteActionParGoules : function()
             {
             	this.personnage.ptActions -= this.coutInterceptionGoule;
+            	if (this.personnage.ptActions < 0) this.personnage.ptActions = 0;
             },
             
             PerteDeplacementParGoules : function()
@@ -345,9 +348,12 @@ var Personnage_Manager = (function () {
             	return this.personnage.mode;
             },
             
-            AucunPtActions : function()
+            TestPtActions : function(typeAction)
             {
-            	if (this.personnage.ptActions <= 0) return true;
+            	if (typeAction == "fouilleRapide" && this.personnage.ptActions - this.coutFouilleRapide < 0) return true;
+            	else if (typeAction == "attaqueGoule" && this.personnage.ptActions - this.coutAttaqueGoule < 0) return true;
+            	else if (typeAction == "attaqueEnnemi" && this.personnage.ptActions - this.coutAttaqueEnnemi < 0) return true;
+            	else if (typeAction == "chgtMode" && this.personnage.ptActions - this.coutChgtMode < 0) return true;
             	else return false;
             },
             

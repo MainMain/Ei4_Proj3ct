@@ -18,7 +18,8 @@ var Item_Manager = (function() {
 
 	function Item_Manager() {
 		// création de la BD "fictive"
-		oItem_BD.Initialiser();
+		this.listeItems = oItem_BD.Initialiser();
+		this.listeItemsEnJeu = oItem_BD.Initialiser();
 		
 		// chargement de tout les objets
 		
@@ -30,7 +31,7 @@ var Item_Manager = (function() {
 		
 		GetItem : function(idItem)
 		{
-			return listeItemsEnJeu[idItem];
+			return this.listeItemsEnJeu[idItem];
 		},
 		
 		GetItemAleatoire : function()
