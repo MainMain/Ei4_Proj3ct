@@ -838,7 +838,7 @@ io.sockets.on('connection', function (socket)
 		
 		// si action de type ramasser
 		if (type == "RAMASSER") 
-		{F
+		{
 			// log
 			console.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
 
@@ -1083,7 +1083,7 @@ io.sockets.on('connection', function (socket)
         // sinon :
         
         // si pu de pts actions
-        if(pManagers[id].AucunPtActions()){
+        if(pManagers[id].TestPtActions("chgtMode")){
         	socket.emit('PERSONNAGE_MODE_SC', mode, -10, 0, 0);
         	return;
         }
@@ -1143,7 +1143,7 @@ io.sockets.on('connection', function (socket)
     	console.log("***************** FOUILLE RAPIDE ******************************");
        
     	// si pu de pts actions
-        if(pManagers[id].AucunPtActions())
+        if(pManagers[id].TestPtActions("fouilleRapide"))
 		{
         	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0, 0, 0, 0);
         	return;
@@ -1253,7 +1253,7 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (idCible) {
         // si pu de pts actions
-        if(pManagers[id].AucunPtActions())
+        if(pManagers[id].TestPtActions("attaqueEnnemi"))
         {
         	socket.emit('ACTION_ATTAQUE_SC', -10, 0, 0, 0, 0);
         	return;
@@ -1339,6 +1339,13 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_GOULE_CS', function () {
     	console.log("******************** ATTAQUE DE GOULES *****************");
+    	
+        // si pu de pts actions
+        if(pManagers[id].TestPtActions("attaqueGoule")){
+        	socket.emit('PERSONNAGE_MODE_SC', -10, 0, 0);
+        	return;
+        }
+        
     	// si pas de goules dans la salle
     	if (cManagers[pManagers[id].GetIdSalleEnCours()].GetNombreGoules() == 0)
     	{

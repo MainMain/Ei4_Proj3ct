@@ -51,7 +51,12 @@ var Case = (function() {
 		 */
 		existItemInSalle : function(item) {
 			this.logAfficherItems();
-			if (this.listeItem.indexOf(item) != -1) {
+			var itemTrouve = false;
+			for (var i = 0; i < this.listeItem.length; i++)
+				{
+					if (this.listeItem[i].id = item.id) itemTrouve = true; 
+				}
+			if (itemTrouve) {
 				console.log("CASE : L'objet (" + item.id + " - " + item.nom
 						+ ") est bien dans la case ! " + this.nom);
 				return true;
