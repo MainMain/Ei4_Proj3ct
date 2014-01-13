@@ -190,7 +190,7 @@ function start() {
 
 	// Abscisse des boutons 
 	var AbsBtn=0;
-	var AbsBtnD=970;
+	var AbsBtnD=950;
 
 	// Ordonnée des boutons
 	var OrdBtn=0;
@@ -310,7 +310,13 @@ function start() {
 	// Placement label Retour Goules
 	var _labelRetourGoulesX = 10;
 	var _labelRetourGoulesY = 570;
-
+	
+	// Placement label Choix Mode
+	var _labelChoixModeX = AbsBtnD+75;
+	var _labelChoixModeY = OrdBtnD-20;
+	alert(_labelChoixModeX);
+	alert(_labelChoixModeY);
+	
 	// Placement Conteneur ArmeEquip
 	var _ContArmeX = _labelArmeX + 125;
 	var _ContArmeY = _labelArmeY-3;
@@ -328,12 +334,12 @@ function start() {
 	var _ContArmureW = 30;
 
 	// Placement Conteneur Map (en fonction de la taille de l'image !!)
-	var _ContMapX = w/2 - 379/2;
+	var _ContMapX = w/2 - 620/2;
 	var _ContMapY = h/2 - 379/2;
 
 	// Dimension Conteneur Map
 	var _ContMapH = 379;
-	var _ContMapW = 379;
+	var _ContMapW = 620;
 
 	// label.lineHeight
 	var _LineHeight = 15;
@@ -398,6 +404,9 @@ function start() {
 	contMap.height = _ContMapH;
 	contMap.width = _ContMapW;
 	stage.addChild(contMap);
+	var shape4 = new createjs.Shape();
+	stage.addChild(shape4);
+	shape4.graphics.setStrokeStyle(4).beginStroke("#850000").drawRect(_ContMapX-2, _ContMapY-2, _ContMapW+2, _ContMapH+2);
 
 	var contPerso = new createjs.Container();
 	contPerso.x = w/2 - 32/2;
@@ -496,6 +505,14 @@ function start() {
 	sacBarContainer.x = 310 +  _EspaceLabelX;
 	sacBarContainer.y = _labelPoidsSacY;
 	stage.addChild(sacBarContainer);
+	
+	// ******************************************
+	// ********** Zones de Boutons	      *******
+	// ******************************************
+	
+	var shapeMode = new createjs.Shape();
+	stage.addChild(shapeMode);
+	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(AbsBtnD-4, OrdBtnD-4, 145, 155);
 
 	// ******************************************
 	//********** Déclaration des labels *******
@@ -505,7 +522,8 @@ function start() {
 	labelObjetCase,	labelInventaire, labelDescribeItem, labelMode, labelRetourMode,
 	labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
 	labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules,
-	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille;
+	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
+	labelChoixMode;
 
 	labelIdSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelIdSalle.lineHeight = _LineHeight;
@@ -542,6 +560,13 @@ function start() {
 	labelInventaire.textBaseline = _TextBaseline;
 	labelInventaire.x = _labelItemPersoX;
 	labelInventaire.y = _labelItemPersoY;
+	
+	labelChoixMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelChoixMode.lineHeight = _LineHeight;
+	labelChoixMode.textBaseline = _TextBaseline;
+	labelChoixMode.x = _labelChoixModeX;
+	labelChoixMode.y = _labelChoixModeY;
+	labelChoixMode.tetx="Passer en Mode :";
 
 	/*labelMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelMode.lineHeight = _LineHeight;
@@ -724,8 +749,8 @@ function start() {
 	// ******************************************
 
 	var BtnSaveBD = stage.addChild(new Button("SAVE BD", ColorBtn));
-	BtnSaveBD.x = 0;
-	BtnSaveBD.y = 450;
+	BtnSaveBD.x = 150;
+	BtnSaveBD.y = 350;
 	BtnSaveBD.addEventListener('click', function(event) {
 		socket.emit('SAVE_BD_DEBUG_CS');
 	});
@@ -1049,6 +1074,7 @@ function start() {
 					txtObjet.text = "";
 					txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
 					// ramassage ok
+					break;
 				default:
 					txtObjet.text = "";
 					txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie");
