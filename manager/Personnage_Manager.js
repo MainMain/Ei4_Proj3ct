@@ -13,10 +13,10 @@ var Personnage_Manager = (function () {
 
         // --- ATTRIBUTS DE CLASSE ---
         Personnage_Manager.personnage;
-        Personnage_Manager.coutFouilleRapide = 4;
-        Personnage_Manager.coutAttaqueEnnemi = 7;
-        Personnage_Manager.coutAttaqueGoule = 3;
-        Personnage_Manager.coutInterceptionGoule = 2;
+        Personnage_Manager.coutFouilleRapide;
+        Personnage_Manager.coutAttaqueEnnemi;
+        Personnage_Manager.coutAttaqueGoule;
+        Personnage_Manager.coutInterceptionGoule;
         
         // --- METHODE DE CLASSE
         Personnage_Manager.build = function (idUser) { return new Personnage_Manager(); };
@@ -26,7 +26,6 @@ var Personnage_Manager = (function () {
             this.coutAttaqueEnnemi = 7;
             this.coutAttaqueGoule = 3;
             this.coutInterceptionGoule = 2;
-            
         }
         
         // --- METHODES D'INSTANCE
@@ -109,8 +108,6 @@ var Personnage_Manager = (function () {
 				}
 				
 				this.personnage.competence = competence;
-				
-				//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
 			},
 			
             Deplacement : function (move, nbrGoules) {
@@ -130,9 +127,6 @@ var Personnage_Manager = (function () {
 					// ajout de l'currentItem au sac du perso
 					this.personnage.ajouterAuSac(item);
 					
-					// save dans la BD
-					//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
-					
 					return true;
             	}
             	return false;
@@ -140,12 +134,7 @@ var Personnage_Manager = (function () {
             
             SupprimerDuSac : function (item) {
             	this.personnage.supprimerDuSac(item);
-            	
-            	// save dans la BD
-				//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
-            
-           
             
             SEquiper : function (currentItem) {
             	// equipe le perso
@@ -164,21 +153,14 @@ var Personnage_Manager = (function () {
     			
     			// desequipage
     			this.personnage.sDesequiperDunItem(item);
-    			
-    			// save dans la BD
-				//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
-				
     			// return
     			return 1;
             },
             
             Utiliser : function (item) {
             	var res = this.personnage.utiliser(item);
-            	if (res == 1)
-            	// save dans la BD
-				//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
-				
-				return res;
+
+            	return res;
             },
             
             DiminuerSante : function (degats) {
@@ -191,7 +173,6 @@ var Personnage_Manager = (function () {
             	
             	if (degats > 0){
             		this.personnage.ptSante -= degats;
-            		//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             	}
             	console.log("PM : DiminuerSante : Baisse de vie : " + degats);
             	return degats;
@@ -200,25 +181,21 @@ var Personnage_Manager = (function () {
             ChangementMode : function(mode)
             {
             	this.personnage.changerMode(mode);
-            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             FouilleRapide : function()
             {
             	this.personnage.ptActions -= this.coutFouilleRapide;
-            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             PerteActionParGoules : function()
             {
             	this.personnage.ptActions -= this.coutInterceptionGoule;
-            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             PerteDeplacementParGoules : function()
             {
             	this.personnage.ptDeplacement -= 1;
-            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
         	
             AddMessage : function(msg)
@@ -231,7 +208,6 @@ var Personnage_Manager = (function () {
             {
             	console.log("PERSONNAGE_MANAGER : Effacement de la liste des messages");
             	this.personnage.listeMsgAtt = new Array();
-            	//oPersonnage_BD.SetPersonnage(this.personnage, this.callbackSetPersonnage);
             },
             
             Attaquer : function(managerPersoEnn)
@@ -326,10 +302,12 @@ var Personnage_Manager = (function () {
             
             TestDeplacementPossible : function(nbrGoules, direction)
             {
+            	console.log("PM : TEST DEPLACEMENT POSSIBLE");
             	// si pu de PM
             	if (this.personnage.ptDeplacement <= 0)
     				return -2;
             	
+            	// force le passage à  1
             	console.log("PM : last mvt : " + this.personnage.dernierMvt);
             	if (
             			direction == "OUEST" && this.personnage.dernierMvt == "EST" ||
@@ -345,6 +323,7 @@ var Personnage_Manager = (function () {
     			
     			//
     			return 1;
+    			
             },
             
             GetPtsDeplacement : function()

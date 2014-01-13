@@ -67,7 +67,12 @@ var Utilisateur_Manager = (function () {
 				var context = this;
 				context.Utilisateur.numEquipe = numEquipe;
             	oUtilisateur_BD.SetUtilisateur(context.Utilisateur, function(reponse) {context.callbackSetEquipe(reponse); });
-			}
+			},
+        	
+        	Save : function()
+        	{
+        		
+        	},
         };
         return Utilisateur_Manager;
         

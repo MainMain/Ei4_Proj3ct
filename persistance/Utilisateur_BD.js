@@ -94,12 +94,12 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 		}
 		else
 		{
-			console.log("Appelle du callBack avec un utilisateur")
+			console.log("Appel du callBack avec un utilisateur"),
 			callbackGetUtilisateur( new oUtilisateur(
-				NewUser[0]._id,NewUser[0].pseudo,NewUser[0].email,
-				NewUser[0].nbrMeurtres,NewUser[0].nbrMeurtresCumule,
-				NewUser[0].nbrFoisTue,NewUser[0].nbrFoisTueCumule,
-				NewUser[0].numEquipe,NewUser[0].personnage));
+				NewUser[0]._id,			NewUser[0].pseudo,NewUser[0].email,
+				NewUser[0].nbrMeurtres,	NewUser[0].nbrMeurtresCumule,
+				NewUser[0].nbrFoisTue,	NewUser[0].nbrFoisTueCumule,
+				NewUser[0].numEquipe,	NewUser[0].personnage));
 		}
 	});
 	
