@@ -214,7 +214,7 @@ function start() {
 	var ColorLabelBonus = ColorGreen;
 
 	// Espacement des labels
-	var _EspaceLabelX = 300;
+	var _EspaceLabelX = 270;
 	var _EspaceLabelY = 20;
 
 	// Espacement items
@@ -230,56 +230,66 @@ function start() {
 
 	// Dimension Conteneur ItemCase
 	var _ContItemCaseH = 32;
-	var _ContItemCaseW = 350;
+	var _ContItemCaseW = 320;
 
 	// Placement label ItemCase
 	var _labelItemCaseX = _ContItemCaseX;
 	var _labelItemCaseY = _ContItemCaseY - 20;
 
 	// Placement label Arme
-	var _labelArmeX = _labelModeX;
+	var _labelArmeX = 750;
 	//var _labelArmeY = _labelModeY + _EspaceLabelY +5;
 	var _labelArmeY = 15;
 
 	// Placement label Armure
-	var _labelArmureX = _labelModeX + 180;
+	var _labelArmureX = _labelArmeX + 180;
 	//var _labelArmureY = _labelArmeY + _EspaceLabelY+10;
 	var _labelArmureY = _labelArmeY;
 
 	// Placement label ItemPerso
-	var _labelItemPersoX = _labelModeX;
-	var _labelItemPersoY = _labelArmureY + _EspaceLabelY+10;
+	var _labelItemPersoX = _labelArmeX;
+	var _labelItemPersoY = _labelArmureY + _EspaceLabelY + 15;
 
 	// Placement Conteneur ItemPerso
-	var _ContItemPersoX = _labelModeX;
+	var _ContItemPersoX = _labelItemPersoX;
 	var _ContItemPersoY = _labelItemPersoY + _EspaceLabelY+5;
 
 	// Dimension Conteneur ItemPerso
 	var _ContItemPersoH = 32;
-	var _ContItemPersoW = 350;
+	var _ContItemPersoW = 320;
+	
+	//------------------- Zone 1 -----------------------------------------------------
 
 	// Placement label Points de vie
 	var _labelPtsVX = 160;
-	var _labelPtsVY = 0;
+	var _labelPtsVY = 20;
+	
+	// Placement label Points de faim
+	var _labelPtsFX = _labelPtsVX;
+	var _labelPtsFY = _labelPtsVY + _EspaceLabelY;
+	
+	//------------------ Zone 2 -------------------------------------------------------
 
 	// Placement label Points d'action
-	var _labelPtsAX = _labelPtsVX;
-	var _labelPtsAY = _labelPtsVY + _EspaceLabelY;
+	var _labelPtsAX = _labelPtsVX + _EspaceLabelX;
+	var _labelPtsAY = _labelPtsVY;
 
 	// Placement label Points de mouvements
-	var _labelPtsMX = _labelPtsVX;
+	var _labelPtsMX = _labelPtsAX;
 	var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 	
+	//------------------
+	
 	// Placement label id Salle en cours
-	var _labelIdSalleX = _labelPtsVX;
+	var _labelIdSalleX = _labelPtsAX;
 	var _labelIdSalleY = _labelPtsMY + _EspaceLabelY;
 
 	// Placement label Points d'Attaque
-	var _labelPtsAtqX = _labelPtsVX + _EspaceLabelX;
-	var _labelPtsAtqY = _labelPtsVY;
+	var _labelPtsAtqX = _labelPtsVX;
+	var _labelPtsAtqY = _labelPtsFY + _EspaceLabelY;
 
 	// Placement label Points de Défense
-	var _labelPtsDefX = _labelPtsVX + _EspaceLabelX;
+	var _labelPtsDefX = _labelPtsVX
 	var _labelPtsDefY = _labelPtsAtqY +_EspaceLabelY;
 
 	// Placement label Poids du Sac
@@ -424,6 +434,7 @@ function start() {
 	// ** Création des barres du perso 			*
 	// ******************************************
 
+	//------------------- Zone 1 -----------------------------------------------------
 	// Barre de vie
 	lifeBarContainer = new createjs.Container();
 
@@ -440,10 +451,32 @@ function start() {
 	frameLifeBar.graphics.setStrokeStyle(1).beginStroke(lifeBarFrameColor).drawRect(-paddingLifeBar/2, -paddingLifeBar/2, lifeBarWidth+paddingLifeBar, lifeBarHeight+paddingLifeBar);
 
 	lifeBarContainer.addChild(lifeBar, frameLifeBar);
-	lifeBarContainer.x = 340;
-	lifeBarContainer.y = 0 ;
+	lifeBarContainer.x = 310;
+	lifeBarContainer.y = _labelPtsVY ;
 	stage.addChild(lifeBarContainer);
+	
+	// Barre de Faim
 
+	faimBarContainer = new createjs.Container();
+
+	faimBarHeight = 10;
+	faimBarWidth = 100;
+	faimBarColor = createjs.Graphics.getRGB(99,0,66);
+	faimBarFrameColor = createjs.Graphics.getRGB(255,255,255);
+
+	faimBar = new createjs.Shape();
+	faimBar.graphics.beginFill(faimBarColor).drawRect(0, 0, 1, faimBarHeight).endFill();
+
+	frameFaimBar = new createjs.Shape();
+	paddingFaimBar = 3;
+	frameFaimBar.graphics.setStrokeStyle(1).beginStroke(faimBarFrameColor).drawRect(-paddingFaimBar/2, -paddingFaimBar/2, faimBarWidth+paddingFaimBar, faimBarHeight+paddingFaimBar);
+
+	faimBarContainer.addChild(faimBar, frameFaimBar);
+	faimBarContainer.x = lifeBarContainer.x;
+	faimBarContainer.y = lifeBarContainer.y + _EspaceLabelY;
+	stage.addChild(faimBarContainer);
+	
+	//------------------- Zone 2 -----------------------------------------------------
 	// Barre d'action
 
 	actionBarContainer = new createjs.Container();
@@ -461,8 +494,8 @@ function start() {
 	frameActionBar.graphics.setStrokeStyle(1).beginStroke(actionBarFrameColor).drawRect(-paddingActionBar/2, -paddingActionBar/2, actionBarWidth+paddingActionBar, actionBarHeight+paddingActionBar);
 
 	actionBarContainer.addChild(actionBar, frameActionBar);
-	actionBarContainer.x = 340;
-	actionBarContainer.y = lifeBarContainer.y + _EspaceLabelY;
+	actionBarContainer.x = 605;
+	actionBarContainer.y = _labelPtsAY;
 	stage.addChild(actionBarContainer);
 
 	// Barre de mouvement
@@ -482,9 +515,11 @@ function start() {
 	frameMoveBar.graphics.setStrokeStyle(1).beginStroke(moveBarFrameColor).drawRect(-paddingMoveBar/2, -paddingMoveBar/2, moveBarWidth+paddingMoveBar, moveBarHeight+paddingMoveBar);
 
 	moveBarContainer.addChild(moveBar, frameMoveBar);
-	moveBarContainer.x = 340;
-	moveBarContainer.y = actionBarContainer.y + _EspaceLabelY;
+	moveBarContainer.x = actionBarContainer.x;
+	moveBarContainer.y = _labelPtsMY;
 	stage.addChild(moveBarContainer);
+	
+	//------------------------------------------------------------------------
 
 	// Barre de Poids du Sac
 
@@ -503,9 +538,11 @@ function start() {
 	frameSacBar.graphics.setStrokeStyle(1).beginStroke(sacBarFrameColor).drawRect(-paddingSacBar/2, -paddingSacBar/2, sacBarWidth+paddingSacBar, sacBarHeight+paddingSacBar);
 
 	sacBarContainer.addChild(sacBar, frameSacBar);
-	sacBarContainer.x = 310 +  _EspaceLabelX;
-	sacBarContainer.y = _labelPoidsSacY;
+	sacBarContainer.x = _labelItemPersoX + 180;
+	sacBarContainer.y = _labelItemPersoY;
 	stage.addChild(sacBarContainer);
+	
+	
 	
 	// ******************************************
 	// ********** Zones de Boutons	      *******
@@ -524,7 +561,7 @@ function start() {
 	labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
 	labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules,
 	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
-	labelChoixMode;
+	labelChoixMode, labelPtsFaim;
 
 	labelIdSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelIdSalle.lineHeight = _LineHeight;
@@ -588,12 +625,23 @@ function start() {
 	labelArmure.x = _labelArmureX;
 	labelArmure.y = _labelArmureY;
 	labelArmure.text="Armure équipée : ";
+	
+	//------------------- Zone 1 -----------------------------------------------------
 
 	labelPtsVie = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsVie.lineHeight = _LineHeight;
 	labelPtsVie.textBaseline = _TextBaseline;
 	labelPtsVie.x = _labelPtsVX;
 	labelPtsVie.y = _labelPtsVY;
+	
+	labelPtsFaim = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPtsFaim.lineHeight = _LineHeight;
+	labelPtsFaim.textBaseline = _TextBaseline;
+	labelPtsFaim.x = _labelPtsFX;
+	labelPtsFaim.y = _labelPtsFY;
+	labelPtsFaim.text="Points d'appétit :";
+	
+	//------------------- Zone 2 -----------------------------------------------------
 
 	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsAction.lineHeight = _LineHeight;
@@ -606,6 +654,8 @@ function start() {
 	labelPtsMove.textBaseline = _TextBaseline;
 	labelPtsMove.x = _labelPtsMX;
 	labelPtsMove.y = _labelPtsMY;
+	
+	//---------------------------------------
 
 	labelPtsAtq = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsAtq.lineHeight = _LineHeight;
@@ -1255,17 +1305,17 @@ function start() {
 		{
 
 			//labelPtsVie.text=("Points de vie :         	 	0/" + currentPerso.ptSanteMax);
-			labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
+			labelPtsVie.text=("Points de vie :       " + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 			lifeBar.scaleX = 0;
 		}
 		else if(currentPerso.ptSante> currentPerso.ptSanteMax)
 		{
-			labelPtsVie.text=("Points de vie:         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
+			labelPtsVie.text=("Points de vie :       " + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 			lifeBar.scaleX = lifeBarWidth;
 		}
 		else
 		{
-			labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
+			labelPtsVie.text=("Points de vie :      " + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 			lifeBar.scaleX = (currentPerso.ptSante/currentPerso.ptSanteMax) * lifeBarWidth;
 		}
 		
@@ -1473,8 +1523,7 @@ function start() {
 			break;
 		}
 
-		labelInventaire.text="";
-		labelInventaire.text="Inventaire du perso :";
+		
 
 		// CLear de la liste des items de case
 		listeItemsPerso = new Array();
@@ -1600,7 +1649,10 @@ function start() {
 		}
 
 		// Affichage label poids du sac
-		labelPoidsSac.text=("Poids du sac :        " + PoidsSac + "/" + currentPerso.poidsMax);
+		//labelPoidsSac.text=("Poids du sac :        " + PoidsSac + "/" + currentPerso.poidsMax);
+		
+		labelInventaire.text="";
+		labelInventaire.text=("Inventaire du perso :      "+ PoidsSac + "/" + currentPerso.poidsMax);
 
 		// Affichage barre poids du sac
 		sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
@@ -1616,6 +1668,7 @@ function start() {
 	 * erreur : -1 si objet pas utilisable
 	 */
 	//socket.on('PERSONNAGE_USE_SC', );
+	// Actualiser le perso
 
 	/******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
