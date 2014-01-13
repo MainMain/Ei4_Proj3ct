@@ -62,6 +62,12 @@ function initialize() {
 	                {src:"public/Boutons/Equiper.png", id:"idBtnEquiper"},
 	                {src:"public/Boutons/FouilleR.png", id:"idBtnFouilleR"},
 	                {src:"public/Boutons/Ramasser.png", id:"idBtnRamasser"},
+	                {src:"public/Boutons/CacheGreen.png", id:"idBtnCacheGreen"},
+	                {src:"public/Boutons/CacheRed.png", id:"idBtnCacheRed"},
+	                {src:"public/Boutons/DefenseGreen.png", id:"idBtnDefenseGreen"},
+	                {src:"public/Boutons/DefenseRed.png", id:"idBtnDefenseRed"},
+	                {src:"public/Boutons/FouilleGreen.png", id:"idBtnFouilleGreen"},
+	                {src:"public/Boutons/FouilleRed.png", id:"idBtnFouilleRed"},
 	                {src:"public/map/0-0.png", id:"0-0"},
 	                {src:"public/map/0-1.png", id:"0-1"},
 	                {src:"public/map/0-2.png", id:"0-2"},
@@ -184,7 +190,7 @@ function start() {
 
 	// Abscisse des boutons 
 	var AbsBtn=0;
-	var AbsBtnD=970;
+	var AbsBtnD=950;
 
 	// Ordonnée des boutons
 	var OrdBtn=0;
@@ -304,7 +310,13 @@ function start() {
 	// Placement label Retour Goules
 	var _labelRetourGoulesX = 10;
 	var _labelRetourGoulesY = 570;
-
+	
+	// Placement label Choix Mode
+	var _labelChoixModeX = AbsBtnD+75;
+	var _labelChoixModeY = OrdBtnD-20;
+	alert(_labelChoixModeX);
+	alert(_labelChoixModeY);
+	
 	// Placement Conteneur ArmeEquip
 	var _ContArmeX = _labelArmeX + 125;
 	var _ContArmeY = _labelArmeY-3;
@@ -322,12 +334,12 @@ function start() {
 	var _ContArmureW = 30;
 
 	// Placement Conteneur Map (en fonction de la taille de l'image !!)
-	var _ContMapX = w/2 - 379/2;
+	var _ContMapX = w/2 - 620/2;
 	var _ContMapY = h/2 - 379/2;
 
 	// Dimension Conteneur Map
 	var _ContMapH = 379;
-	var _ContMapW = 379;
+	var _ContMapW = 620;
 
 	// label.lineHeight
 	var _LineHeight = 15;
@@ -392,6 +404,9 @@ function start() {
 	contMap.height = _ContMapH;
 	contMap.width = _ContMapW;
 	stage.addChild(contMap);
+	var shape4 = new createjs.Shape();
+	stage.addChild(shape4);
+	shape4.graphics.setStrokeStyle(4).beginStroke("#850000").drawRect(_ContMapX-2, _ContMapY-2, _ContMapW+2, _ContMapH+2);
 
 	var contPerso = new createjs.Container();
 	contPerso.x = w/2 - 32/2;
@@ -490,16 +505,25 @@ function start() {
 	sacBarContainer.x = 310 +  _EspaceLabelX;
 	sacBarContainer.y = _labelPoidsSacY;
 	stage.addChild(sacBarContainer);
+	
+	// ******************************************
+	// ********** Zones de Boutons	      *******
+	// ******************************************
+	
+	var shapeMode = new createjs.Shape();
+	stage.addChild(shapeMode);
+	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(AbsBtnD-4, OrdBtnD-4, 145, 155);
 
 	// ******************************************
 	//********** Déclaration des labels *******
 	// ******************************************
 
-	var txtSalle, txtObjet, txtCase, txtObjetEquipe, 
-	labelObjetCase,	labelInventaire, labelDescribeItem, labelMode,
+	var txtSalle, txtObjet, txtCase, txtObjetEquipe, labelRetourFouilleRapide,
+	labelObjetCase,	labelInventaire, labelDescribeItem, labelMode, labelRetourMode,
 	labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
 	labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules,
-	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille;
+	labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
+	labelChoixMode;
 
 	labelIdSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelIdSalle.lineHeight = _LineHeight;
@@ -536,6 +560,13 @@ function start() {
 	labelInventaire.textBaseline = _TextBaseline;
 	labelInventaire.x = _labelItemPersoX;
 	labelInventaire.y = _labelItemPersoY;
+	
+	labelChoixMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelChoixMode.lineHeight = _LineHeight;
+	labelChoixMode.textBaseline = _TextBaseline;
+	labelChoixMode.x = _labelChoixModeX;
+	labelChoixMode.y = _labelChoixModeY;
+	labelChoixMode.tetx="Passer en Mode :";
 
 	/*labelMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelMode.lineHeight = _LineHeight;
@@ -639,7 +670,7 @@ function start() {
 	txtSalle.lineHeight = _LineHeight;
 	txtSalle.textBaseline = _TextBaseline;
 	txtSalle.x = 10;
-	txtSalle.y = 550;
+	txtSalle.y = 500;
 
 	txtObjet = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtObjet.lineHeight = _LineHeight;
@@ -658,6 +689,25 @@ function start() {
 	txtObjetEquipe.textBaseline = _TextBaseline;
 	txtObjetEquipe.x = 10;
 	txtObjetEquipe.y = txtSalle.y - 40;
+	
+	labelRetourFouilleRapide = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourFouilleRapide.lineHeight = _LineHeight;
+	labelRetourFouilleRapide.textBaseline = _TextBaseline;
+	labelRetourFouilleRapide.x = 10;
+	labelRetourFouilleRapide.y = txtSalle.y + 60;
+	
+	labelRetourMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourMode.lineHeight = _LineHeight;
+	labelRetourMode.textBaseline = _TextBaseline;
+	labelRetourMode.x = 10;
+	labelRetourMode.y = txtSalle.y+20;
+	
+	labelRetourModeG = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourModeG.lineHeight = _LineHeight;
+	labelRetourModeG.textBaseline = _TextBaseline;
+	labelRetourModeG.x = 10;
+	labelRetourModeG.y = txtSalle.y+40;
+
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
@@ -699,8 +749,8 @@ function start() {
 	// ******************************************
 
 	var BtnSaveBD = stage.addChild(new Button("SAVE BD", ColorBtn));
-	BtnSaveBD.x = 0;
-	BtnSaveBD.y = 450;
+	BtnSaveBD.x = 150;
+	BtnSaveBD.y = 350;
 	BtnSaveBD.addEventListener('click', function(event) {
 		socket.emit('SAVE_BD_DEBUG_CS');
 	});
@@ -1024,6 +1074,7 @@ function start() {
 					txtObjet.text = "";
 					txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
 					// ramassage ok
+					break;
 				default:
 					txtObjet.text = "";
 					txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie");
@@ -1194,11 +1245,17 @@ function start() {
 			labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 			lifeBar.scaleX = 0;
 		}
+		else if(currentPerso.ptSante> currentPerso.ptSanteMax)
+		{
+			labelPtsVie.text=("Points de vie:         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
+			lifeBar.scaleX = lifeBarWidth;
+		}
 		else
 		{
 			labelPtsVie.text=("Points de vie :         	 	" + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 			lifeBar.scaleX = (currentPerso.ptSante/currentPerso.ptSanteMax) * lifeBarWidth;
 		}
+		
 		// Sécurité pour le remplissage de la barre d'action
 		if(currentPerso.ptActions<=0)
 		{
@@ -1206,11 +1263,17 @@ function start() {
 			labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 			actionBar.scaleX = 0;
 		}
+		else if(currentPerso.ptActions> currentPerso.ptActionsMax)
+		{
+			labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
+			actionBar.scaleX = actionBarWidth;
+		}
 		else
 		{
 			labelPtsAction.text=("Points d'action :	 	 	    	" + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 			actionBar.scaleX = (currentPerso.ptActions/currentPerso.ptActionsMax) * actionBarWidth;
 		}
+		
 		// Sécurité pour le remplissage de la barre de move
 		if(currentPerso.ptDeplacement > currentPerso.ptDeplacementMax)
 		{
@@ -1235,25 +1298,31 @@ function start() {
 		{
 		case 0 :  labelMode.text=("");
 
-		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
+		/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 		BtnFouiller.x = AbsBtnD;
-		BtnFouiller.y = OrdBtnD;
+		BtnFouiller.y = OrdBtnD;*/
+		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
+		BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnD);
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
-		var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
+		/*var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
 		BtnCacher.x = AbsBtnD;
-		BtnCacher.y = BtnFouiller.y + H;
+		BtnCacher.y = BtnFouiller.y + H;*/
+		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
+		BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
 		BtnCacher.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 2);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
-		var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
+		/*var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
 		BtnDefendre.x = AbsBtnD;
-		BtnDefendre.y = BtnCacher.y + H;
+		BtnDefendre.y = BtnCacher.y + H;*/
+		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
+		BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
 		BtnDefendre.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 3);
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1268,25 +1337,31 @@ function start() {
 		case 1 :  /*labelMode.text="";
 		labelMode.text=("Mode Fouille activé");*/
 
-		var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
+		/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
 		BtnFouiller.x = AbsBtnD;
-		BtnFouiller.y = OrdBtnD;
+		BtnFouiller.y = OrdBtnD;*/
+		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleGreen.png");
+		BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnD);
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
-		var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
+		/*var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
 		BtnCacher.x = AbsBtnD;
-		BtnCacher.y = BtnFouiller.y + H;
+		BtnCacher.y = BtnFouiller.y + H;*/
+		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
+		BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
 		BtnCacher.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 2);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 
-		var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
+		/*var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
 		BtnDefendre.x = AbsBtnD;
-		BtnDefendre.y = BtnCacher.y + H;
+		BtnDefendre.y = BtnCacher.y + H;*/
+		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
+		BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
 		BtnDefendre.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 3);
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1304,25 +1379,31 @@ function start() {
 			/*labelMode.text="";
 			labelMode.text=("Mode Caché activé");*/
 
-			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
+			/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 			BtnFouiller.x = AbsBtnD;
-			BtnFouiller.y = OrdBtnD;
+			BtnFouiller.y = OrdBtnD;*/
+			var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
+			BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnD);
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
 			});	
 
-			var BtnCacher = stage.addChild(new Button("Mode Caché", ColorGreen));
+			/*var BtnCacher = stage.addChild(new Button("Mode Caché", ColorGreen));
 			BtnCacher.x = AbsBtnD;
-			BtnCacher.y = BtnFouiller.y + H;
+			BtnCacher.y = BtnFouiller.y + H;*/
+			var BtnCacher = new createjs.Bitmap("public/Boutons/CacheGreen.png");
+			BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
 			BtnCacher.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 2);
 				socket.emit('INFO_PERSONNAGE_CS');
 			});	
 
-			var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
+			/*var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorBtn));
 			BtnDefendre.x = AbsBtnD;
-			BtnDefendre.y = BtnCacher.y + H;
+			BtnDefendre.y = BtnCacher.y + H;*/
+			var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
+			BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
 			BtnDefendre.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 3);
 				socket.emit('INFO_PERSONNAGE_CS');
@@ -1340,25 +1421,31 @@ function start() {
 			/*labelMode.text="";
 			labelMode.text=("Mode Défense activé");*/
 
-			var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
+			/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 			BtnFouiller.x = AbsBtnD;
-			BtnFouiller.y = OrdBtnD;
+			BtnFouiller.y = OrdBtnD;*/
+			var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
+			BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnD);
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
 			});	
 
-			var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
+			/*var BtnCacher = stage.addChild(new Button("Mode Caché", ColorBtn));
 			BtnCacher.x = AbsBtnD;
-			BtnCacher.y = BtnFouiller.y + H;
+			BtnCacher.y = BtnFouiller.y + H;*/
+			var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
+			BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
 			BtnCacher.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 2);
 				socket.emit('INFO_PERSONNAGE_CS');
 			});	
 
-			var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorGreen));
+			/*var BtnDefendre = stage.addChild(new Button("Mode Defense", ColorGreen));
 			BtnDefendre.x = AbsBtnD;
-			BtnDefendre.y = BtnCacher.y + H;
+			BtnDefendre.y = BtnCacher.y + H;*/
+			var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseGreen.png");
+			BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
 			BtnDefendre.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 3);
 				socket.emit('INFO_PERSONNAGE_CS');
@@ -1564,43 +1651,51 @@ function start() {
 	});
 
 
-
-
-
 	/******************************************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
-	 * return 1 si ok
+	 * 
+	 * return mode
+	 * 
+	 * ET return 1 si ok
 	 * erreur : 0 si erreur interne
 	 * erreur : -4 si déja dans ce mode
 	 * erreur : -5 si raté à cause goules
+	 * erreur : -10 si plus de pts actions
 	 * 
 	 * ET return dégats infligés
+	 * 
+	 * ET nbr goules attaquantes
 	 */
-	socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges) 
-			{
+	socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbGoulesRest) 
+	{
 		switch(reponse)
 		{
 		case 1: 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +"  ok !");
+			labelRetourMode.text = "";
+			labelRetourMode.text = ("chgt pour mode " + mode +"  ok !");
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 		case 0 : 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
+			labelRetourMode.text = "";
+			labelRetourMode.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
 			break;
 		case -4 : 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
+			labelRetourMode.text = "";
+			labelRetourMode.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
 			break;
 		case -5: 
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("chgt pour mode " + mode +"  raté à cause des Goules");
+			labelRetourMode.text = "";
+			labelRetourMode.text = ("chgt pour mode " + mode +"  raté à cause des Goules");
+			break;
+		case -10:
+			labelRetourMode.text = "";
+			labelRetourMode.text = ("chgt pour mode " + mode +"  raté ! Plu de points d'action");
 			break;
 		}
-		txtObjetEquipe.text+=("Dégats infligés : " + degatsInfliges +"");
+		labelRetourModeG.text = "";
+		labelRetourModeG.text+=("Dégats infligés : " + degatsInfliges +" !\n Il reste " + nbGoulesRest + " goules dans la salle");
 
-			});
+	});
 
 
 
@@ -1620,31 +1715,31 @@ function start() {
 				      		switch(reponse)
 				      		{
 				      			case  1 : 
-				      				txtObjetEquipe.text = "Fouille ok ! Objet découvert : " + item.nom;
-				      				if (ajouteAuSac == 0) txtObjetEquipe.text += " ! Ajouté à la case";
+				      				labelRetourFouilleRapide.text = "Fouille ok ! Objet découvert : " + item.nom;
+				      				if (ajouteAuSac == 0) labelRetourFouilleRapide.text += " ! Ajouté à la case";
 				      				break;
 				      			case  0 : 
-				      				txtObjetEquipe.text = "Fouille ok ! Objet découvert : " + item.nom;
-				      				txtObjetEquipe.text = ". Mais vous avez été blessé ! " + degatsInfliges;
-				      				if (ajouteAuSac == 0) txtObjetEquipe.text += " ! Ajouté à la case";
+				      				labelRetourFouilleRapide.text = "Fouille ok ! Objet découvert : " + item.nom;
+				      				labelRetourFouilleRapide.text = ". Mais vous avez été blessé ! " + degatsInfliges;
+				      				if (ajouteAuSac == 0) labelRetourFouilleRapide.text += " ! Ajouté à la case";
 				      				break;
 				      			case -1 : 
-				      				txtObjetEquipe.text = "Fouille raté";
+				      				labelRetourFouilleRapide.text = "Fouille raté";
 				      				break;
 				      			case -2 : 
-				      				txtObjetEquipe.text = 
+				      				labelRetourFouilleRapide.text = 
 				      				break;
 				      			case -4 :
-				      				txtObjetEquipe.text = 
+				      				labelRetourFouilleRapide.text = 
 				  					break;
 				      			case -5 : 
-				      				txtObjetEquipe.text = 
+				      				labelRetourFouilleRapide.text = 
 				      				break;
 				      			case -6 :
-				      				txtObjetEquipe.text = 
+				      				labelRetourFouilleRapide.text = 
 				      				break;
 				      			case -7: 
-				      				txtObjetEquipe.text = 
+				      				labelRetourFouilleRapide.text = 
 				      				break;
 				      		}*/
 			});

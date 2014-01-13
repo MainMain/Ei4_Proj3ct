@@ -53,10 +53,12 @@ var cManagers   = new Array();
 oDatabase.Initialiser();
 
 oCase_BD.Initialiser();
+
 idCases = oCase_BD.GetCasesId();
 for(var i in idCases)
 {
-	cManagers[idCases[i]] = new oCase_Manager(idCases[i]);
+	cManagers[idCases[i]] = new oCase_Manager();
+	cManagers[idCases[i]].Load(idCases[i]);
 	console.log("idCases[i] =" + idCases[i]);
 }
 
@@ -651,7 +653,13 @@ io.sockets.on('connection', function (socket)
 		// on regarde le manager de la salle suivante et on teste si zone sure
 		var idNextCase = pManagers[id].GetIdNextSalle(move);
 		//console.log("------------------------------" + cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()));
-		if (idNextCase != -1 && cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()))
+		if (idNextCase == -1)
+		{
+			console.log('SERVER : DEBUG envoi deplacement impossible');
+			socket.emit('MOVE_PERSONNAGE_SC', -1);
+			return;
+		}
+		else if (idNextCase != -1 && cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()))
 		{
 			console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
 			socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
@@ -690,7 +698,8 @@ io.sockets.on('connection', function (socket)
 			console.log('SERVER : deplacement ok envoi de la nouvelle position');
 			
 			// enregistre dans le manager
-			cManagers[pManagers[id].GetIdSalleEnCours()].ChangeCase(pManagers[id].GetIdSalleEnCours());
+			//cManagers[pManagers[id].GetIdSalleEnCours()].ChangeCase(pManagers[id].GetIdSalleEnCours());
+			
 			// récupère la salle en cours
 			//var cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase() = oCase_BD.GetCaseById(pManagers[id].GetIdSalleEnCours());
 			//var cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase() = cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase(pManagers[id].GetIdSalleEnCours());
@@ -838,7 +847,7 @@ io.sockets.on('connection', function (socket)
 		
 		// si action de type ramasser
 		if (type == "RAMASSER") 
-		{
+		{F
 			// log
 			console.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
 
@@ -954,7 +963,8 @@ io.sockets.on('connection', function (socket)
 			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
 		else
 		{
-			var nbrAllies = 0, nbrEnnemis = 0;
+			// nbrAllies = -1 car le personnage qui fait la demande va être compté
+			var nbrAllies = -1, nbrEnnemis = 0;
 			// construction de la liste
 	    	for(var idUser in pManagers) 
 	    	{
@@ -1454,6 +1464,21 @@ io.sockets.on('connection', function (socket)
     	socket.emit('INFO_CASE_ENNEMIS_SC', listeEnn);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
+    /*  
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+     * RECEPTION D'UNE DEMANDE POUR TOUT SAUVEGARDER (DEBUG)
+     * return [actionOk, degats]
+     */
+    socket.on('SAVE_BD_DEBUG_CS', function () {
+    	SauvegardeGlobale();
+    });
     /*
      * 
      *
@@ -1482,7 +1507,44 @@ io.sockets.on('connection', function (socket)
         
         return ans;
     }
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+     * FONCTION DE SAUVEGARDE DE TOUTES LES DONNEES
+     */
+    function SauvegardeGlobale()
+    {
+    	// utilisateurs
+    	for(var idUser in uManagers) 
+    	{
+    		uManagers[idUser].Save();
+    	}
+    	
+    	// personnages
+    	for(var idUser in pManagers) 
+    	{
+    		pManagers[idUser].Save();
+    	}
+    	
+    	// cases
+    	for(var idCase in cManagers) 
+    	{
+    		cManagers[idUser].Save();
+    	}
+    	
+    	// item
+    	for(var idUser in pManagers) 
+    	{
+    		
+    	}
+    }
     /******************************************************************************************************************
      * FONCTION DE TEST SI UNE FOUILLE PERMET DE DECOUVRIR OU ITEM OU UNE PERSONNE
      * return [actionOk, degats]

@@ -7,6 +7,7 @@ var Case = (function() {
 	'use strict';
 
 	// --- ATTRIBUTS DE CLASSE ---
+	Case.idmongo;
 	Case.id;
 	Case.nom;
 	Case.description;
@@ -18,15 +19,16 @@ var Case = (function() {
 	Case.pathImg;
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	Case.build = function(id, nom, description, probaObjet, probaCache,
+	Case.build = function(idmongo, id, nom, description, probaObjet, probaCache,
 			nbrGoules, listeItem) {
-		return new Case(id, nom, description, probaObjet, probaCache,
+		return new Case(idmongo, id, nom, description, probaObjet, probaCache,
 			nbrGoules, listeItem);
 	};
 
 	// --- METHODES DE CLASSE ---
-	function Case(id, nom, description, probaObjet, probaCache,
+	function Case(idmongo, id, nom, description, probaObjet, probaCache,
 			nbrGoules, listeItem, pathImg) {
+		this.idmongo = idmongo;
 		this.id = id;
 		this.nom = nom;
 		this.description = description;
