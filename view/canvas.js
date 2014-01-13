@@ -68,6 +68,8 @@ function initialize() {
 	                {src:"public/Boutons/DefenseRed.png", id:"idBtnDefenseRed"},
 	                {src:"public/Boutons/FouilleGreen.png", id:"idBtnFouilleGreen"},
 	                {src:"public/Boutons/FouilleRed.png", id:"idBtnFouilleRed"},
+	                {src:"public/Boutons/Allies.png", id:"idBtnAllies"},
+	                {src:"public/Boutons/Ennemis.png", id:"idBtnEnnemis"},
 	                {src:"public/map/0-0.png", id:"0-0"},
 	                {src:"public/map/0-1.png", id:"0-1"},
 	                {src:"public/map/0-2.png", id:"0-2"},
@@ -194,7 +196,8 @@ function start() {
 
 	// Ordonnée des boutons
 	var OrdBtn=0;
-	var OrdBtnD=200;
+	var OrdBtnMode=300;
+	var OrdBtnListe = 150;
 
 	// Couleur des boutons
 	var ColorBtn="#850000";
@@ -312,10 +315,8 @@ function start() {
 	var _labelRetourGoulesY = 570;
 	
 	// Placement label Choix Mode
-	var _labelChoixModeX = AbsBtnD+75;
-	var _labelChoixModeY = OrdBtnD-20;
-	alert(_labelChoixModeX);
-	alert(_labelChoixModeY);
+	var _labelChoixModeX = AbsBtnD+5;
+	var _labelChoixModeY = OrdBtnMode-20;
 	
 	// Placement Conteneur ArmeEquip
 	var _ContArmeX = _labelArmeX + 125;
@@ -512,7 +513,7 @@ function start() {
 	
 	var shapeMode = new createjs.Shape();
 	stage.addChild(shapeMode);
-	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(AbsBtnD-4, OrdBtnD-4, 145, 155);
+	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(AbsBtnD-4, OrdBtnMode-4, 145, 155);
 
 	// ******************************************
 	//********** Déclaration des labels *******
@@ -566,7 +567,7 @@ function start() {
 	labelChoixMode.textBaseline = _TextBaseline;
 	labelChoixMode.x = _labelChoixModeX;
 	labelChoixMode.y = _labelChoixModeY;
-	labelChoixMode.tetx="Passer en Mode :";
+	labelChoixMode.text="Passer en Mode :";
 
 	/*labelMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelMode.lineHeight = _LineHeight;
@@ -861,6 +862,18 @@ function start() {
 	BtnFouilleRapide.addEventListener('click', function(event) {
 		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
 	});	
+	
+	var BtnListeAllies = new createjs.Bitmap("public/Boutons/Allies.png");
+	BtnListeAllies.image.onload = setImg(BtnListeAllies, AbsBtnD, OrdBtnListe);
+	/*BtnListeAllies.addEventListener('click', function(event) {
+		
+	});	*/
+	
+	var BtnListeEnnemis = new createjs.Bitmap("public/Boutons/Ennemis.png");
+	BtnListeEnnemis.image.onload = setImg(BtnListeEnnemis, AbsBtnD, OrdBtnListe + H);
+	/*BtnListeAllies.addEventListener('click', function(event) {
+		
+	});	*/
 
 	//BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = AbsBtn;
 	BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor = BtnAttaquer.cursor = "pointer";
@@ -1300,9 +1313,9 @@ function start() {
 
 		/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 		BtnFouiller.x = AbsBtnD;
-		BtnFouiller.y = OrdBtnD;*/
+		BtnFouiller.y = OrdBtnMode;*/
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
-		BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnD);
+		BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnMode);
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1339,9 +1352,9 @@ function start() {
 
 		/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorGreen));
 		BtnFouiller.x = AbsBtnD;
-		BtnFouiller.y = OrdBtnD;*/
+		BtnFouiller.y = OrdBtnMode;*/
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleGreen.png");
-		BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnD);
+		BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnMode);
 		BtnFouiller.addEventListener('click', function(event) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1381,9 +1394,9 @@ function start() {
 
 			/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 			BtnFouiller.x = AbsBtnD;
-			BtnFouiller.y = OrdBtnD;*/
+			BtnFouiller.y = OrdBtnMode;*/
 			var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
-			BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnD);
+			BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnMode);
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
@@ -1423,9 +1436,9 @@ function start() {
 
 			/*var BtnFouiller = stage.addChild(new Button("Mode Fouille", ColorBtn));
 			BtnFouiller.x = AbsBtnD;
-			BtnFouiller.y = OrdBtnD;*/
+			BtnFouiller.y = OrdBtnMode;*/
 			var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
-			BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnD);
+			BtnFouiller.image.onload = setImg(BtnFouiller, AbsBtnD, OrdBtnMode);
 			BtnFouiller.addEventListener('click', function(event) {
 				socket.emit('PERSONNAGE_MODE_CS', 1);
 				socket.emit('INFO_PERSONNAGE_CS');
