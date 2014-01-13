@@ -1140,14 +1140,15 @@ function start() {
 			case -5:
 				txtObjet.text = "";
 				txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
-				// ramassage ok
+				socket.emit('INFO_PERSONNAGE_CS');
 				break;
+				// ramassage ok
 			default:
 				txtObjet.text = "";
-			txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Goules restantes");
-			socket.emit('INFO_PERSONNAGE_CS');
-			socket.emit('INFO_CASE_CS');
-			stage.update();
+				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Goules restantes");
+				socket.emit('INFO_PERSONNAGE_CS');
+				socket.emit('INFO_CASE_CS');
+				stage.update();
 			break;
 			}
 		}
@@ -1235,7 +1236,7 @@ function start() {
 				// Ajout de l'évenement a l'image
 				imgItem.addEventListener('mouseover', function(event) {
 					var currentItem = listeItemsCase[event.target.name];
-					labelDescribeItem.text=("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+					labelDescribeItem.text=("Nom : " + currentItem.nom + " (id : " + currentItem.id + " valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 					stage.update();
 				},false);
 
@@ -1551,7 +1552,7 @@ function start() {
 				// ajout d'un texte quand l'user passera la souris dessus
 				imgItem.addEventListener('mouseover', function(event) {
 					currentItem = listeItemsPerso[event.target.name];
-					labelDescribeItem.text=("Nom : " + currentItem.nom + " (" + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+					labelDescribeItem.text=("Nom : " + currentItem.nom + " (id : "+ currentItem.id + " valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 					stage.update();
 				},false);
 
@@ -1603,7 +1604,7 @@ function start() {
 			});
 
 			contArme.addEventListener('mouseover', function(event) {
-				labelDescribeItem.text=("Nom : " + currentPerso.armeEquipee.nom + " (" + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
+				labelDescribeItem.text=("Nom : " + currentPerso.armeEquipee.nom + " (id : " + currentItem.id + " valeur : " + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
 				stage.update();
 			},false);
 
@@ -1637,7 +1638,7 @@ function start() {
 			});
 
 			contArmure.addEventListener('mouseover', function(event) {
-				labelDescribeItem.text=("Nom : " + currentPerso.armureEquipee.nom + " (" + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
+				labelDescribeItem.text=("Nom : " + currentPerso.armureEquipee.nom + " (id : " + currentItem.id + " valeur : " + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
 				stage.update();
 			},false);
 
