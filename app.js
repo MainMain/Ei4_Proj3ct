@@ -123,9 +123,13 @@ function restrict(req, res, next)
  */
 app.get('/', function fonctionIndex(req, res)
 {
-	optionAccueil.username = req.session.username;
-	optionAccueil.sessionID = req.session.idUser;
+	var s = req.session;
+	
+	optionAccueil.username = s.username;
+	optionAccueil.sessionID = s.idUser;
+	
 	res.render('accueil', optionAccueil);
+	
 	optionAccueil.username = null;
 	optionAccueil.sessionID = null;
 });
@@ -133,62 +137,71 @@ app.get('/', function fonctionIndex(req, res)
 app.get('/jeu', function fonctionIndex(req, res)
 {
 	var s = req.session;
+	var options;
+	
 	if (typeof s.username === "undefined")
 	{
-		optionAccueil.username = s.username;
 		optionAccueil.errorLogin = "Vous devez vous connecter avant de jouer ! ";
 		
 		res.render('accueil', optionAccueil);
+		
+		optionAccueil.errorLogin = null;
 	}
 	else
 	{
+		options = { "username": s.username, "idEquipe": uManagers[s.idUser].GetNumEquipe(), "sessionID" : s.idUser };
+		
+		res.render('game', options);
+		
 		console.log("ID USER = " + s.idUser);
 		console.log("USER MANAGER = " + uManagers[s.idUser]);
-		var options = { "username": s.username, "idEquipe": uManagers[s.idUser].GetNumEquipe(), "sessionID" : s.idUser };
-		res.render('game', options);
 	}
-	optionAccueil.username = null;
-	optionAccueil.errorLogin = null;
 });
 
-app.put('/jeu', function fonctionJeu(req, res)
+app.put('/jeu', restrict, function fonctionJeu(req, res)
 {
 	var b = req.body;
 	var s = req.session;
+	var options = { "username": s.username, "idEquipe": uManagers[s.idUser].GetNumEquipe(), "sessionID" : s.idUser };
+	
 	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")
 	{
 		uManagers[s.idUser].SetNumEquipe(b.equipe);
 		pManagers[s.idUser].SetCompetence(b.competence);
+		options.idEquipe = b.equipe;
 	}
-	var options = { "username": req.session.username, "idEquipe": uManagers[s.idUser].GetNumEquipe(), "sessionID" : s.idUser };
+	
 	res.render('game', options);
 });
 
 app.get('/regles', function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "sessionID" : s.idUser };
+	var options = { "username": s.username, "sessionID" : s.idUser };
+	
 	res.render('regles', options);
 });
 
 app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": req.session.username, "errorLogin": null, "sessionID" : s.idUser, "idEquipe": uManagers[s.idUser].GetNumEquipe() };
+	var options = { "username": s.username, "sessionID" : s.idUser, "idEquipe": uManagers[s.idUser].GetNumEquipe() };
+	
 	res.render('chat-equipe', options);
 });
 
 app.get('/classement', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": req.session.username, "errorLogin": null, "sessionID" : s.idUser };
+	var options = { "username":s.username, "sessionID" : s.idUser };
+	
 	res.render('classement', options);
 });
 
 app.get('/chat-general', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": req.session.username, "errorLogin": null, "sessionID" : s.idUser };
+	var options = { "username": s.username, "sessionID" : s.idUser };
 	res.render('chat', options);
 });
 
@@ -210,21 +223,8 @@ callbackConnexion = function(reponseConnexion, req, res)
 		s.username = b.username;
 		s.idUser = reponseConnexion;
 		
-		console.log("s.idUser =" + s.idUser);
-		
 		optionAccueil.username = s.username;
 		optionAccueil.sessionID = s.idUser;
-		
-		// chargement de son personnage
-		//iManager[s.idUser] = new oItem_Manager();
-		//pManagers[s.idUser] = new oPersonnage_Manager();
-		//uManagers[s.idUser] = new oUtilisateur_Manager();
-		//uManagers[s.idUser].Load(reponseConnexion);
-		//pManagers[s.idUser].Load(reponseConnexion, function()
-		//{
-		//	cManagers[s.idUser] = new oCase_Manager(pManagers[s.idUser].GetIdSalleEnCours());
-		//	console.log("DEBUG : NOM SALLE EN COURS " + cManagers[s.idUser].GetCopieCase().id);
-		//});
 
 		uManagers[s.idUser] = new oUtilisateur_Manager();
 		pManagers[s.idUser] = new oPersonnage_Manager();
@@ -235,20 +235,28 @@ callbackConnexion = function(reponseConnexion, req, res)
 		//cManagers[pManagers[s.idUser].GetIdSalleEnCours()];
 		// redirige à la page d'accueil
 		res.render("accueil", optionAccueil);
+		
+		optionAccueil.sessionID = null;
+		optionAccueil.username = null;
+		
+		console.log("s.idUser =" + s.idUser);
 	}
 	else if(reponseConnexion == -1)
 	{
 		optionAccueil.errorLogin = "Couple Login/Mot de passe incorrect";
+		
 		res.render("accueil", optionAccueil);
+		
+		optionAccueil.errorLogin = null;
 	}
 	else
 	{
 		optionAccueil.errorLogin = "Erreur Interne";
+		
 		res.render("accueil", optionAccueil);
+		
+		optionAccueil.errorLogin = null;
 	}
-	optionAccueil.sessionID = null;
-	optionAccueil.username = null;
-	optionAccueil.errorLogin = null;
 },
 
 app.put('/', function (req, res)
@@ -263,20 +271,27 @@ callbackInscription = function(reponseInscription, req, res)
 	if (reponseInscription == -1)
 	{
 		optionAccueil.InfoInscription = "Login";
+		
 		res.render("accueil", optionAccueil);
+		
+		optionAccueil.InfoInscription = null;
 	}
 	else if(reponseInscription == -2)
 	{
 		optionAccueil.InfoInscription = "Email";
+		
 		res.render("accueil", optionAccueil);
+		
+		optionAccueil.InfoInscription = null;
 	}
 	else
 	{
 		optionAccueil.usernameInscription = b.username;
+		
 		res.render("accueil", optionAccueil);
+		
+		optionAccueil.usernameInscription = null;
 	}
-	optionAccueil.usernameInscription = null;
-	optionAccueil.InfoInscription = null;
 },
 
 app.delete("/", function (req, res)
@@ -295,9 +310,7 @@ server.listen(app.get('port'), function () {
 /*
  * CHARGEMENT DE SOCKET.IO
  */
-var io = require('socket.io').listen(server, {
-    log: false
-});
+var io = require('socket.io').listen(server, { log: false });
 
 /*
  * INITIALISATION DE LA BD
@@ -333,6 +346,8 @@ var io = require('socket.io').listen(server, {
  */
  
  var usersInTeamChat = new Array();
+ var usersInGeneralChat = new Array();
+ 
  
  //Client Connecté au chat d'équipe
 var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
@@ -358,6 +373,7 @@ var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 				usersInTeamChat[id].sockets = new Array();
 				newUser = true;
 			}
+			
 			usersInTeamChat[id].username = user;
 			usersInTeamChat[id].sockets.push(socket);
 			usersInTeamChat[id].numEquipe = numEquipe;
@@ -459,8 +475,7 @@ var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 		}
 	});
 });
-
- var usersInGeneralChat = new Array();
+ 
  
  //Client Connecté au chat général
 var chat = io.of('/chat-general').on('connection', function (socket)
@@ -527,13 +542,6 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 			chat.emit("USER_CONNECTED_SC", users);
 		}
 	});
-	/*
-		//Emis à celui qui se connecte
-		socket.emit('MESSAGE_ALERT', "CHAT 01");
-		
-		//Emis à tout le monde sur le chat !
-		chat.emit('MESSAGE_ALERT',"CHAT 02");
-	*/
 });
 
  
@@ -590,8 +598,9 @@ io.sockets.on('connection', function (socket)
 			}
 		}
 	});
+	
     /*
-     * 
+     *
      *
      *
      *
@@ -1563,9 +1572,6 @@ io.sockets.on('connection', function (socket)
     
 
 });
-
-
-
 
 
 // server.listen(8080);
