@@ -698,6 +698,13 @@ function start() {
 	// ************ Boutons d'action ************
 	// ******************************************
 
+	var BtnSaveBD = stage.addChild(new Button("SAVE BD", ColorBtn));
+	BtnSaveBD.x = 0;
+	BtnSaveBD.y = 450;
+	BtnSaveBD.addEventListener('click', function(event) {
+		socket.emit('SAVE_BD_DEBUG_CS');
+	});
+	
 	//var testBtn = new createjs.Bitmap("public/ButtonGreen.png");
 	//testBtn.image.onload = setImg(testBtn, 150, 250);
 
