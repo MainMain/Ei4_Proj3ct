@@ -859,7 +859,19 @@ io.sockets.on('connection', function (socket)
 			if (existItemInSalle == true)
 			{
 				//console.log("SERVER : poids sac : " + pManagers[id].GetPoidsSac() + " - poids item : " + currentItem.poids + " - poids max : " + myPerso.poidsMax);
-				
+				 // ********* algorithme de calcul de l'impact des goules *********
+		    	var restG = TestGoules();
+		
+		    	if (restG["actionOk"] == 0)
+		    		{
+		    			// log
+		    			console.log("SERVEUR : ramassage raté à cause des goules");
+		    			
+		    			// renvoi de la réponse
+		    			socket.emit('INV_CASE_SC', 'RAMASSER', -5, currentItem.id, restG["degats"], restG["nbrGoulesA"]);
+		    			return;
+		    		}
+		    	// ***************************************************************
 				// demande au manager de perso d'ajouter l'item
 				var r = pManagers[id].AjouterItemAuSac(currentItem);
 				
@@ -871,22 +883,11 @@ io.sockets.on('connection', function (socket)
 					// suppression de l'objet de la case
 					cManagers[pManagers[id].GetIdSalleEnCours()].SupprimerItem(currentItem);
 						
-					 // ********* algorithme de calcul de l'impact des goules *********
-			    	var restG = TestGoules();
-			
-			    	if (restG["actionOk"] == 0)
-			    		{
-			    			// log
-			    			console.log("SERVEUR : chgt de mode ratée à cause des goules");
-			    			
-			    			// renvoi de la réponse
-			    			socket.emit('INV_CASE_SC', 'RAMASSER', -5, currentItem.id, restG["degats"], restG["nbrGoulesA"]);
-			    			return;
-			    		}
-			    	// ***************************************************************
+					
 			    	
 					// return au client
 					socket.emit('INV_CASE_SC', 'RAMASSER', pManagers[id].GetPoidsSac(), currentItem.id, restG["degats"], restG["nbrGoulesA"]);
+					return;
 				}
 				else
 				{
@@ -895,6 +896,7 @@ io.sockets.on('connection', function (socket)
 					
 					// return au client que l'objet ne peut être ajouté (poids insufisant)
 					socket.emit('INV_CASE_SC', 'RAMASSER', -1, currentItem.id, 0, 0);
+					return;
 				}
 			} // fin if (existItemInSalle == true)
 			// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
@@ -902,6 +904,7 @@ io.sockets.on('connection', function (socket)
 			{
 				// return que l'objet n'est pas dans la case
 				socket.emit('INV_CASE_SC', 'RAMASSER', -2, currentItem.id, 0, 0);
+				return;
 			}
 			
 		}

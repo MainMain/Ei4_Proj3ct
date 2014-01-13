@@ -54,7 +54,7 @@ var Case = (function() {
 			var itemTrouve = false;
 			for (var i = 0; i < this.listeItem.length; i++)
 				{
-					if (this.listeItem[i].id = item.id) itemTrouve = true; 
+					if (this.listeItem[i].id == item.id) itemTrouve = true; 
 				}
 			if (itemTrouve) {
 				console.log("CASE : L'objet (" + item.id + " - " + item.nom
