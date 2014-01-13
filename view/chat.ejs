@@ -120,14 +120,14 @@
 
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:8080');
-					
+			var chat = io.connect('http://localhost:8080/chat-general');
+			
 			$( document ).ready(function()
 			{
-				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "chat");
+				chat.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
 			});
 			
-			socket.on('USER_CONNECTED_SC', function(users)
+			chat.on('USER_CONNECTED_SC', function(users)
 			{
 				$("#listUsers").html("");
 				for(var i in users)
@@ -136,7 +136,7 @@
 				}
 			});
 			
-			socket.on('USER_MESSAGE_SC', function(user, message)
+			chat.on('USER_MESSAGE_SC', function(user, message)
 			{
 				$("#msgs").append("<div>" + user + " : " + message + "</div>");
 			});
@@ -150,19 +150,18 @@
 			if(e.keyCode == 13){
 				sendMessage();
 			}
+			});
 			
 			sendMessage = function()
 			{
 				var message = $("#msgTextBox").val();
 				if(message != "")
 				{
-					socket.emit("USER_MESSAGE_CS", '<%= username %>', message);
-					$("#msgs").append("<div> Moi : " + message + "</div>");
+					chat.emit("USER_MESSAGE_CS", '<%= username %>', message);
 				}
 				$("#msgTextBox").val("");
 			}
-})
-			
+
 		</script>
 </body>
 </html>

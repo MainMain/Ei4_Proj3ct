@@ -75,14 +75,54 @@
 	</form>
 
 <div id="content" role="main" class="span12">
-
-	<h1 class="entry-title" align=center>
-		Chat de l'équipe
-	</h1>
-	
-	<!-- Classement -->
-	
-	<!-- #Classement -->
+	<% if(idEquipe == 0) { %>
+		<h1>Bienvenue !</h1>
+		<p>Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spécial de votre personnage.<br>
+		Vous avez le choix entre trois compétences :<br>
+		Vous pouvez être <b>UNE BRUTE</b>: Cela signifie alors que votre personnage a des <b>dégats d'attaque</b> et une <b>défense augmentée</b>. En revanche il aura moins de chance de pouvoir se cacher.<br>
+		Vous pouvez être <b>UN EXPLORATEUR</b>: Dans ce cas là c'est au contraire la <b>probabilité de se cacher</b> vos <b>points de mouvements maximum</b> qui sont augmentés. Par contre faites attention à ne pas vous faire attaquer car vos points de défense sont relativement faibles.<br>
+		Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu celà a un coup, vos dégats sont réduits ainsi que votre probabilité de cache.<br>
+		</p>
+		<form name="formInitPerso" method="POST" action="/jeu">
+			<input type="hidden" name="_method" value="PUT">
+			<select name="equipe">
+				<option value="1">Equipe 1</option>
+				<option value="2">Equipe 2</option>
+			</select>
+			<select name="competence">
+				<option value="brute">Brute (Dégats et Défense augmentés)</option>
+				<option value="explorateur">Explorateur (Probabilité de se cacher et Points de mouvement augmentée)</option>
+				<option value="chercheur">Chercheur (Probabilité de fouille augmentée)</option>
+			</select>
+			<input type="submit" value="Se lancer !" name="submitChoixDepart" />
+		</form>
+	<% } else { %>
+		<h1 class="entry-title" align=center>
+			Chat de l'équipe
+		</h1>
+		
+		<!-- Chat -->
+			<div class="chat span12">
+				<div class="row">
+					<div class="span8 msgArea" id="msgArea">
+						<h1 align=center >Messages :</h1>
+						<div class="msgTextArea" id="msgs">
+							<!-- <textarea readonly align="center" cols=90></textarea> -->
+						</div>
+						<div class="chatContols">
+							<input type="text" placeholder="Votre message" id="msgTextBox"/>
+							<input type="submit" value="Envoyer !" id="msgSubmit"/>
+						</div>
+					</div>
+					<div class="span4 userArea" id="userArea">
+						<h1 align=center >Utilisateurs connectés :</h1>
+						<ul id="listUsers">
+						</ul>
+					</div>
+				</div>
+			</div>
+		<!-- #Chat -->
+	<% } %>
 </div> <!-- #content -->
 
 </div> <!-- #main -->
@@ -103,13 +143,47 @@
 
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:8080');
+			var chat = io.connect('http://localhost:8080/chat-equipe');
 			
 			$( document ).ready(function()
 			{
-				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "chat-equipe");
+				chat.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
 			});
-		
+			
+			chat.on('USER_CONNECTED_SC', function(users)
+			{
+				$("#listUsers").html("");
+				for(var i in users)
+				{
+					$("#listUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
+				}
+			});
+			
+			chat.on('USER_MESSAGE_SC', function(user, message)
+			{
+				$("#msgs").append("<div>" + user + " : " + message + "</div>");
+			});
+			
+			$("#msgSubmit").click(function()
+			{
+				sendMessage();
+			});
+			
+			$('#msgTextBox').keydown(function (e){
+			if(e.keyCode == 13){
+				sendMessage();
+			}
+			});
+			
+			sendMessage = function()
+			{
+				var message = $("#msgTextBox").val();
+				if(message != "")
+				{
+					chat.emit("USER_MESSAGE_CS", '<%= username %>', message);
+				}
+				$("#msgTextBox").val("");
+			}		
 		</script>
 </body>
 </html>

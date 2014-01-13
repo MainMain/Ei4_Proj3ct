@@ -158,8 +158,11 @@ app.put('/jeu', function fonctionJeu(req, res)
 {
 	var b = req.body;
 	var s = req.session;
-	uManagers[s.idUser].SetNumEquipe(b.equipe);
-	pManagers[s.idUser].SetCompetence(b.competence);
+	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")
+	{
+		uManagers[s.idUser].SetNumEquipe(b.equipe);
+		pManagers[s.idUser].SetCompetence(b.competence);
+	}
 	var options = { "username": req.session.username, "idEquipe": uManagers[s.idUser].GetNumEquipe(), "sessionID" : s.idUser };
 	res.render('game', options);
 });
@@ -174,7 +177,7 @@ app.get('/regles', function fonctionIndex(req, res)
 app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": req.session.username, "errorLogin": null, "sessionID" : s.idUser };
+	var options = { "username": req.session.username, "errorLogin": null, "sessionID" : s.idUser, "idEquipe": uManagers[s.idUser].GetNumEquipe() };
 	res.render('chat-equipe', options);
 });
 
@@ -331,6 +334,213 @@ var io = require('socket.io').listen(server, {
  * ********* EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION CLIENT -> SERVEUR
  * *************
  */
+ 
+ var usersInTeamChat = new Array();
+ 
+ //Client Connecté au chat d'équipe
+var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
+{
+	var id = "";
+	
+	socket.on('INFO_USER_CS', function(userID, user)
+	{
+		var users = new Array();
+		var j = 0;
+		var newUser = false;
+		var numEquipe;
+		
+		id = userID;
+		
+		if(uManagers[id])
+		{
+			numEquipe = uManagers[id].GetNumEquipe();
+			
+			if(!usersInTeamChat[id])
+			{
+				usersInTeamChat[id] = new Object();
+				usersInTeamChat[id].sockets = new Array();
+				newUser = true;
+			}
+			usersInTeamChat[id].username = user;
+			usersInTeamChat[id].sockets.push(socket);
+			usersInTeamChat[id].numEquipe = numEquipe;
+		
+			for(var i in usersInTeamChat)
+			{
+				if(usersInTeamChat[i].numEquipe == numEquipe)
+				{
+					users[j] = usersInTeamChat[i].username;
+					j++;			
+				}
+			}
+			if(newUser)
+			{
+				console.log("L'utilisateur " + user + " s'est connecté au chat d'equipe.");
+				for(var i in usersInTeamChat)
+				{
+					if(usersInTeamChat[i].numEquipe == numEquipe)
+					{
+						for(var k in usersInTeamChat[i].sockets)
+						{
+							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+							usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
+						}
+					}
+				}
+			}
+		}
+	});
+	
+	socket.on('USER_MESSAGE_CS', function(user, message)
+	{
+		var numEquipe;
+		if(uManagers[id])
+		{
+			numEquipe = uManagers[id].GetNumEquipe();
+			for(var i in usersInTeamChat)
+			{
+				if(usersInTeamChat[i].numEquipe == numEquipe)
+				{
+					for(var k in usersInTeamChat[i].sockets)
+					{
+						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", user, message);
+					}
+				}
+			}
+		}
+	});
+	
+	
+	socket.on('disconnect', function()
+	{
+		var users = new Array();
+		var j = 0;
+		var numEquipe;
+		
+		if(uManagers[id])
+		{
+			numEquipe = uManagers[id].GetNumEquipe();
+			if(usersInTeamChat[id])
+			{
+				usersInTeamChat[id].sockets.splice(usersInTeamChat[id].sockets.indexOf(socket), 1);
+				if(usersInTeamChat[id].sockets.length == 0)
+				{				
+					for(var i in usersInTeamChat)
+					{
+						if(usersInTeamChat[i].numEquipe == numEquipe)
+						{
+							for(var k in usersInTeamChat[i].sockets)
+							{
+								usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInTeamChat[id].username);
+							}
+						}
+					}
+					console.log("Déconnexion de " + usersInTeamChat[id].username + " du chat");
+					delete usersInTeamChat[id];
+				}
+				
+				for(var i in usersInTeamChat)
+				{
+					if(usersInTeamChat[i].numEquipe == numEquipe)
+					{
+						users[j] = usersInTeamChat[i].username;
+						j++;			
+					}
+				}
+				
+				for(var i in usersInTeamChat)
+				{
+					if(usersInTeamChat[i].numEquipe == numEquipe)
+					{
+						for(var k in usersInTeamChat[i].sockets)
+						{
+							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+							usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
+						}
+					}
+				}
+			}
+		}
+	});
+});
+
+ var usersInGeneralChat = new Array();
+ 
+ //Client Connecté au chat général
+var chat = io.of('/chat-general').on('connection', function (socket)
+{
+	var id = "";
+	socket.on('INFO_USER_CS', function(userID, user)
+	{
+		var users = new Array();
+		var j = 0;
+		var newUser = false;
+		
+		id = userID;
+		
+		if(!usersInGeneralChat[id])
+		{
+			usersInGeneralChat[id] = new Object();
+			usersInGeneralChat[id].sockets = new Array();
+			newUser = true;
+		}
+		usersInGeneralChat[id].username = user;
+		usersInGeneralChat[id].sockets.push(socket);
+	
+		for(var i in usersInGeneralChat)
+		{
+			users[j] = usersInGeneralChat[i].username;
+			j++;
+		}
+		if(newUser)
+		{
+			console.log("L'utilisateur " + user + " s'est connecté au chat.");
+			chat.emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+		}
+		
+		chat.emit('USER_CONNECTED_SC', users);
+	});
+	
+	socket.on('USER_MESSAGE_CS', function(user, message)
+	{
+		chat.emit("USER_MESSAGE_SC", user, message);
+	});
+	
+	
+	socket.on('disconnect', function()
+	{
+		var users = new Array();
+		var j = 0;
+		
+		if(usersInGeneralChat[id])
+		{
+			usersInGeneralChat[id].sockets.splice(usersInGeneralChat[id].sockets.indexOf(socket), 1);
+			if(usersInGeneralChat[id].sockets.length == 0)
+			{
+				chat.emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInGeneralChat[id].username);
+				console.log("Déconnexion de " + usersInGeneralChat[id].username + " du chat");
+				delete usersInGeneralChat[id];
+			}
+			
+			for(var i in usersInGeneralChat)
+			{
+				users[j] = usersInGeneralChat[i].username;
+				console.log("User :" + usersInGeneralChat[i].username);
+				j++;
+			}
+			chat.emit("USER_CONNECTED_SC", users);
+		}
+	});
+	/*
+		//Emis à celui qui se connecte
+		socket.emit('MESSAGE_ALERT', "CHAT 01");
+		
+		//Emis à tout le monde sur le chat !
+		chat.emit('MESSAGE_ALERT',"CHAT 02");
+	*/
+});
+
+ 
 /*
  * CONNEXION D'UN CLIENT
  */
@@ -346,75 +556,43 @@ io.sockets.on('connection', function (socket)
 
 	socket.on('INFO_USER_CS', function(sessionID, username, page)
 	{
-		if(sessionID != "null" && sessionID != "undefined")
+		id = sessionID;
+		user = username;
+		
+		users = new Array();
+		j = 0;
+		
+		if(!usersOnline[id])
 		{
-			id = sessionID;
-			user = username;
-			
-			users = new Array();
-			j = 0;
-			
-			if(!usersOnline[id])
-			{
-				usersOnline[id] = new Object()
-				usersOnline[id].sockets = new Array();
-			}
-			usersOnline[id].username = user;
-			usersOnline[id].page	 = page;
-			usersOnline[id].sockets.push(socket);
-			
-			console.log("Connexion de " + user + " avec l'ID " + id + " à la page " + page);
-			
-			if(page == "chat")
-			{
-				socket.broadcast.emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
-			}
-			
-			for(var i in usersOnline)
-			{
-				if(usersOnline[i].page == "chat")
-				{
-					users[j] = usersOnline[i].username;
-					j++;
-				}
-			}
-			socket.broadcast.emit("USER_CONNECTED_SC", users);
-			socket.emit("USER_CONNECTED_SC", users);
+			usersOnline[id] = new Object()
+			usersOnline[id].sockets = new Array();
+			usersOnline[id].pages = new Array();
 		}
+		usersOnline[id].username = user;
+		usersOnline[id].pages[socket] = page;
+		usersOnline[id].sockets.push(socket);
+		
+		console.log("Connexion de " + user + " à la page " + page);
 	});
 	
 	socket.on('disconnect', function()
 	{
 		if(usersOnline[id])
 		{
+			var user = usersOnline[id].username;
+			var page = usersOnline[id].pages[socket];
+			
 			usersOnline[id].sockets.splice(usersOnline[id].sockets.indexOf(socket), 1);
+			delete usersOnline[id].pages[socket];
+			
+			console.log("Déconnexion de " + user + " de la page " + page);
+			
 			if(usersOnline[id].sockets.length == 0)
 			{
-				if(usersOnline[id].page == "chat")
-				{
-					socket.broadcast.emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersOnline[id].username);
-				}
 				console.log("Déconnexion de " + usersOnline[id].username);
 				delete usersOnline[id];
-			}	
-			
-			users = new Array();
-			j = 0;
-			
-			for(var i in usersOnline)
-			{
-				users[j] = usersOnline[i].username;
-				console.log("User :" + usersOnline[i].username);
-				j++;
 			}
-			socket.broadcast.emit("USER_CONNECTED_SC", users);
-			socket.emit("USER_CONNECTED_SC", users);
 		}
-	});
-	
-	socket.on('USER_MESSAGE_CS', function(user, message)
-	{
-		socket.broadcast.emit("USER_MESSAGE_SC", user, message);
 	});
 	
     /******************************************************************************************************************
