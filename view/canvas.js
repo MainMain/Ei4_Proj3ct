@@ -219,6 +219,12 @@ function game() {
 	// Couleur des labels
 	var ColorLabel = "#fff";
 	var ColorLabelBonus = ColorGreen;
+	
+	// label.lineHeight
+	var _LineHeight = 15;
+
+	// label.textBaseline
+	var _TextBaseline = "top";
 
 	// Espacement des labels
 	var _EspaceLabelX = 300;
@@ -413,12 +419,6 @@ function game() {
 	var _ContMapW = 620;
 	
 	//-----------------------------------------------------------------------------------------
-
-	// label.lineHeight
-	var _LineHeight = 15;
-
-	// label.textBaseline
-	var _TextBaseline = "top";
 
 	// application du background
 	var background = new createjs.Bitmap("public/Background_11.jpg");
@@ -1909,6 +1909,18 @@ function liste()
 	this.listeEnnemis = new Array();
 	this.listeAllies = new Array();
 	
+	// Police des labels
+	var PoliceLabel="14px monospace";
+
+	// Couleur des labels
+	var ColorLabel = "#fff";
+	
+	// label.lineHeight
+	var _LineHeight = 15;
+
+	// label.textBaseline
+	var _TextBaseline = "top";
+	
 	var contListe = new createjs.Container();
 	contListe.x = canvas.width/2 - 620/2;
 	contListe.y = canvas.height/2 - 379/2;
@@ -1927,6 +1939,22 @@ function liste()
 	//background_liste.image.onload = setImg(
 		//background_liste, canvas.width/2 - 620/2, canvas.height/2 - 379/2);
 	
+	var labelAlliesListe, labelEnnemisListe;
+	
+	labelAlliesListe = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelAlliesListe.lineHeight = _LineHeight;
+	labelAlliesListe.textBaseline = _TextBaseline;
+	labelAlliesListe.x = 20;
+	labelAlliesListe.y = 5;
+	labelAlliesListe.text="Liste des Alliés :";
+
+	labelEnnemisListe = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelEnnemisListe.lineHeight = _LineHeight;
+	labelEnnemisListe.textBaseline = _TextBaseline;
+	labelEnnemisListe.x = 20;
+	labelEnnemisListe.y = 145;
+	labelEnnemisListe.text="Liste des Ennemis :";
+	
 	//Conteneur des ALLIES
 	var contListeAllies = new createjs.Container();
 	contListeAllies.x = 20;
@@ -1942,7 +1970,7 @@ function liste()
 	//Conteneur des ENNEMIS
 	var contListeEnnemis = new createjs.Container();
 	contListeEnnemis.x = 20;
-	contListeEnnemis.y = 140;
+	contListeEnnemis.y = 160;
 	contListeEnnemis.height = 100;
 	contListeEnnemis.width = 580;
 	contListe.addChild(contListeEnnemis);
