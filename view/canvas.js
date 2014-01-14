@@ -48,9 +48,9 @@ function initialize() {
 	// *******************************************
 	var manifest = [
 	                {src:"public/BackgroundPreload.jpg", id:"idBackgroundPreload"}, 
-	                {src:"public/Background.jpg", id:"idBackground"},   
+	                {src:"public/Background_liste.jpg", id:"idBackgroundListe"},   
 	                {src:"public/Background_1.jpg", id:"idBackground_1"}, 
-	                {src:"public/Background_11.jpg", id:"idBackground_11"},      
+	                {src:"public/Background_11.jpg", id:"idBackground_11"},    
 	                {src:"public/ButtonRed.png", id:"idButton"},
 	                {src:"public/ButtonGreen.png", id:"idButton2"},
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
@@ -169,19 +169,26 @@ function handleClick() {
 	start();
 }
 
-function start() {
-	// ******* ATTRIBUTS *************************
-	// ** Création de la liste des items de case * 
-	// *******************************************
-
-	this.listeItemsCase = new Array();
-	this.listeItemsPerso = new Array();
-
+function start()
+{
 	// ******************************************
 	// ********** Connexion au serveur  *********
 	// ******************************************
 
 	var socket = io.connect('http://localhost:8080');
+	
+	// Lancement du jeu si connexion ok
+	if(socket.socket.connected)
+		game();
+}
+
+function game() {
+	// ******* ATTRIBUTS *************************
+	// ** Création de la liste des items 		 * 
+	// *******************************************
+
+	this.listeItemsCase = new Array();
+	this.listeItemsPerso = new Array();
 
 	// ******************************************
 	// ** Réglages mise en forme (partie Design)*
@@ -1020,9 +1027,9 @@ function start() {
 	//BtnListeAllies.image.onload = setImg(BtnListeAllies, AbsBtnD, OrdBtnListe);
 	BtnListeAllies.y=0;
 	contBtnsListes.addChild(BtnListeAllies);
-	/*BtnListeAllies.addEventListener('click', function(event) {
-
-	});	*/
+	BtnListeAllies.addEventListener('click', function(event) {
+		liste();
+	});	
 
 	var BtnListeEnnemis = new createjs.Bitmap("public/Boutons/Ennemis.png");
 	//BtnListeEnnemis.image.onload = setImg(BtnListeEnnemis, AbsBtnD, OrdBtnListe + H);
@@ -1852,10 +1859,6 @@ function start() {
 			});
 
 
-
-
-
-
 	/* ET return éventuels dégats infligés
 	 * 
 	 * ET return éventuels item découvert
@@ -1899,6 +1902,75 @@ function start() {
 			});
 
 	stage.update();
+}
+
+function liste()
+{
+	this.listeEnnemis = new Array();
+	this.listeAllies = new Array();
+	
+	var contListe = new createjs.Container();
+	contListe.x = canvas.width/2 - 620/2;
+	contListe.y = canvas.height/2 - 379/2;
+	contListe.height = 379;
+	contListe.width = 620;
+	stage.addChild(contListe);
+	var shape6 = new createjs.Shape();
+	stage.addChild(shape6);
+	shape6.graphics.setStrokeStyle(4).beginStroke("#00FF00").drawRect(
+			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
+	
+	// application du background liste au dessus de la map
+	var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
+	background_liste.alpha=0.95;
+	contListe.addChild(background_liste);
+	//background_liste.image.onload = setImg(
+		//background_liste, canvas.width/2 - 620/2, canvas.height/2 - 379/2);
+	
+	//Conteneur des ALLIES
+	var contListeAllies = new createjs.Container();
+	contListeAllies.x = 20;
+	contListeAllies.y = 20;
+	contListeAllies.height = 100;
+	contListeAllies.width = 580;
+	contListe.addChild(contListeAllies);
+	var shape7 = new createjs.Shape();
+	contListe.addChild(shape7);
+	shape7.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
+			contListeAllies.x-4, contListeAllies.y-4, contListeAllies.width+4, contListeAllies.height+4);
+	
+	//Conteneur des ENNEMIS
+	var contListeEnnemis = new createjs.Container();
+	contListeEnnemis.x = 20;
+	contListeEnnemis.y = 140;
+	contListeEnnemis.height = 100;
+	contListeEnnemis.width = 580;
+	contListe.addChild(contListeEnnemis);
+	var shape8 = new createjs.Shape();
+	contListe.addChild(shape8);
+	shape8.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
+			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
+	
+	// Bouton ANNULER
+	var BtnCancelListe = contListe.addChild(new Button("Cancel", "#850000"));
+	BtnCancelListe.x=330;
+	BtnCancelListe.y=340;
+	BtnCancelListe.addEventListener('click', function (event) {
+		game();
+	});
+	
+	// Bouton ATTAQUER
+	var BtnAttaquerListe = contListe.addChild(new Button("Attaquer", "#850000"));
+	BtnAttaquerListe.x=480;
+	BtnAttaquerListe.y=340;
+	BtnAttaquerListe.addEventListener('click', function (event) {
+		//socket.emit('ACTION_ATTAQUE_GOULE_CS');
+	});
+	
+	BtnCancelListe.cursor=BtnAttaquerListe.cursor="pointer";
+	
+	stage.update();
+	
 }
 
 function setImg(img, X, Y) {
