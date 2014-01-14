@@ -214,7 +214,7 @@ function start() {
 	var ColorLabelBonus = ColorGreen;
 
 	// Espacement des labels
-	var _EspaceLabelX = 270;
+	var _EspaceLabelX = 300;
 	var _EspaceLabelY = 20;
 
 	// Espacement items
@@ -562,7 +562,7 @@ function start() {
 	frameLifeBar.graphics.setStrokeStyle(1).beginStroke(lifeBarFrameColor).drawRect(-paddingLifeBar/2, -paddingLifeBar/2, lifeBarWidth+paddingLifeBar, lifeBarHeight+paddingLifeBar);
 
 	lifeBarContainer.addChild(lifeBar, frameLifeBar);
-	lifeBarContainer.x = 310;
+	lifeBarContainer.x = _labelPtsVX+150;
 	lifeBarContainer.y = _labelPtsVY ;
 	stage.addChild(lifeBarContainer);
 
@@ -605,7 +605,7 @@ function start() {
 	frameActionBar.graphics.setStrokeStyle(1).beginStroke(actionBarFrameColor).drawRect(-paddingActionBar/2, -paddingActionBar/2, actionBarWidth+paddingActionBar, actionBarHeight+paddingActionBar);
 
 	actionBarContainer.addChild(actionBar, frameActionBar);
-	actionBarContainer.x = 605;
+	actionBarContainer.x = _labelPtsAX+175;
 	actionBarContainer.y = _labelPtsAY;
 	stage.addChild(actionBarContainer);
 
@@ -1032,7 +1032,6 @@ function start() {
 
 	});	*/
 
-	//BtnEvents.x = BtnUtiliser.x = BtnRamasseObjet.x = BtnDeposer.x = BtnEquiper.x = BtnDesequiper.x = BtnAttaquer.x = AbsBtn;
 	BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor ="pointer";// BtnAttaquer.cursor = 
 	stage.update();
 
@@ -1079,7 +1078,7 @@ function start() {
 		break;
 
 		case -3: txtSalle.text = "";
-		txtSalle.text = ("Trop de Goules dans cette salle !");
+		txtSalle.text = ("Trop de Zombies dans cette salle !");
 		break;
 
 		case -4:
@@ -1252,7 +1251,7 @@ function start() {
 				// ramassage ok
 			default:
 				txtObjet.text = "";
-				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Goules restantes");
+				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Zombies restants");
 				socket.emit('INFO_PERSONNAGE_CS');
 				socket.emit('INFO_CASE_CS');
 				stage.update();
@@ -1311,7 +1310,7 @@ function start() {
 
 			labelNbAlies.text=("Aliés dans la salle : " + nbrAllies + "");
 			labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
-			labelNbGoules.text=("Goules dans la salle : " + currentCase.nbrGoules + "");
+			labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 			labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
 			labelProbaFouille.text=("Proba de Trouver item : " + ProbFouille + " % (avec multi de " +  PersoProbaFouille + ")");
 			labelNomSalle.text="";
@@ -1740,9 +1739,6 @@ function start() {
 			},false);
 		}
 
-		// Affichage label poids du sac
-		//labelPoidsSac.text=("Poids du sac :        " + PoidsSac + "/" + currentPerso.poidsMax);
-
 		labelInventaire.text="";
 		labelInventaire.text=("Inventaire du perso :      "+ PoidsSac + "/" + currentPerso.poidsMax);
 
@@ -1778,30 +1774,30 @@ function start() {
 		{
 		case 2: 
 			labelRetourGoules.text="";
-			labelRetourGoules.text=("2 Goules tuées ! -" + degatsSubis + " points de vie");
+			labelRetourGoules.text=("2 Zombies tuées ! -" + degatsSubis + " points de vie");
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 
 		case 1: 
 			labelRetourGoules.text="";
-			labelRetourGoules.text=("1 Goule tuée ! -" + degatsSubis + " points de vie");
+			labelRetourGoules.text=("1 Zombie tuée ! -" + degatsSubis + " points de vie");
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 
 		case 0:
 			labelRetourGoules.text="";
-			labelRetourGoules.text=("Attaque de Goule(s) : erreur interne");
+			labelRetourGoules.text=("Attaque de Zombie(s) : erreur interne");
 			break;
 
 		case -1:
 			labelRetourGoules.text="";
-			labelRetourGoules.text=("Attaque de Goule(s) échouée ! -" + degatsSubis + " points de vie");
+			labelRetourGoules.text=("Attaque de Zombie(s) échouée ! -" + degatsSubis + " points de vie");
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 
 		case -2:
 			labelRetourGoules.text="";
-			labelRetourGoules.text=("Pas de Goule dans la salle !");
+			labelRetourGoules.text=("Pas de Zombie dans la salle !");
 			break;
 		}
 		socket.emit('INFO_CASE_CS');
@@ -1824,7 +1820,7 @@ function start() {
 	 * 
 	 * ET nbr goules attaquantes
 	 */
-	socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbGoulesRest) 
+	socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbGoulesAttaq) 
 			{
 		switch(reponse)
 		{
@@ -1843,7 +1839,7 @@ function start() {
 			break;
 		case -5: 
 			labelRetourMode.text = "";
-			labelRetourMode.text = ("chgt pour mode " + mode +"  raté à cause des Goules");
+			labelRetourMode.text = ("chgt pour mode " + mode +"  raté à cause des Zombies");
 			break;
 		case -10:
 			labelRetourMode.text = "";
@@ -1851,7 +1847,7 @@ function start() {
 			break;
 		}
 		labelRetourModeG.text = "";
-		labelRetourModeG.text+=("Dégats infligés : " + degatsInfliges +" !\n Il reste " + nbGoulesRest + " goules dans la salle");
+		labelRetourModeG.text+=("Dégats infligés : " + degatsInfliges +" !\nAttaqué par " + nbGoulesAttaq+ " Zombies !");
 
 			});
 
