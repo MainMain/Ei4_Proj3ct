@@ -1944,12 +1944,31 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 /**************************************************************************************
  * RECEPTION Suite à une DEMANDE POUR UTILISER UN ITEM
- * return 1 si ok
- * erreur : 0 si objet n'est pas dans le sac
- * erreur : -1 si objet pas utilisable
- */
-//socket.on('PERSONNAGE_USE_SC', );
-//Actualiser le perso
+ 	 * 
+	 * renvoi id item
+	 * 
+	 * ET return 1 si ok
+	 * erreur : -1 si objet n'est pas dans le sac
+	 * erreur : -2 si objet pas utilisable
+	 */
+socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
+	switch(codeRetour)
+	{
+	case 1: 
+		alert("objet utilisé !");
+		socket.emit('INFO_PERSONNAGE_CS');
+		break;
+	case -1:
+		alert("objet plus dans le sac !");
+		break;
+
+	case -2:
+		alert("objet inutilisable !");
+		break;
+	}
+	stage.update();
+	
+});
 
 /******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
