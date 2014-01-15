@@ -304,8 +304,7 @@ var Personnage = (function() {
 		 * @method utiliser
 		 */
 		utiliser : function(item) {
-			if (item.type < 4 || item.type > 6)
-				return -1;
+			console.log("PERSONNAGE : utiliser() : utilisation de l'item" + item.nom + " de type : " + item.type + " de valeur " + item.valeur);
 			switch (item.type) 
 			{
 			case 4:
@@ -321,8 +320,8 @@ var Personnage = (function() {
 				if(this.ptDeplacement > this.ptDeplacementMax) this.ptDeplacement = this.ptDeplacementMax;
 				break;
 			}
-			return 1;
-
+			// suppression du sac
+			this.supprimerDuSac(item);
 		},
 
 		/**
@@ -339,7 +338,7 @@ var Personnage = (function() {
 			// calcule le poids du sac + poids item
 			var i = 0;
 			for (i = 0; i < this.sacADos.length; i++) {
-				poids = poids + this.sacADos[i].poids;
+				poids = poids + parseInt(this.sacADos[i].poids);
 			}
 			// if (armeEquipee != null) poids += armeEquipee.poids;
 			// if (armureEquipee != null) poids += armeEquipee.poids;

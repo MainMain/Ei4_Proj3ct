@@ -626,9 +626,12 @@ io.sockets.on('connection', function (socket)
 		// log
 		console.log('SERVER : Déplacement du personnage demandé : ' + move);
 		
+		// get nb allies
+		var ans = GetNbPersonnages_Case();
+    	
 		// -> calcul de goules
 		var nbrGoules = cManagers[pManagers[id].GetIdSalleEnCours()].GetNombreGoules();
-		nbrGoules = nbrGoules - cManagers[pManagers[id].GetIdSalleEnCours()].GetNombreAllies();
+		nbrGoules = nbrGoules - ans["nbAllies"];
 		
 		// test si déplacement possible
 		var testDep = pManagers[id].TestDeplacementPossible(nbrGoules, move);
@@ -661,6 +664,7 @@ io.sockets.on('connection', function (socket)
 		}
 		else if (idNextCase != -1 && cManagers[idNextCase].GetTestZoneSure(uManagers[id].GetNumEquipe()))
 		{
+			
 			console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
 			socket.emit('MOVE_PERSONNAGE_SC', -4, 0);
 			return;
@@ -688,7 +692,14 @@ io.sockets.on('connection', function (socket)
     	//***************************************
     	nbrGoules = 0;
     	/*************************************/
+		// informer
+		this.InformerPersonnages_Case("a quitté la salle.");
+		
+		// traiter
 		var ansDeplacementOk = pManagers[id].Deplacement(move, nbrGoules);
+		
+		// informer
+		this.InformerPersonnages_Case("vient d'entrer dans  salle.");
 		
 		console.log("SERVEUR : code retour ans : " + ansDeplacementOk);
 		// si le déplacement a réussi
@@ -972,28 +983,11 @@ io.sockets.on('connection', function (socket)
 			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
 		else
 		{
-			// nbrAllies = -1 car le personnage qui fait la demande va être compté
-			var nbrAllies = -1, nbrEnnemis = 0;
-			// construction de la liste
-	    	for(var idUser in pManagers) 
-	    	{
-	    		// si le perso en cours est dans la meme salle
-	    		if(pManagers[idUser].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
-	    		{
-	    			// si l'user correspondant au perso est de la meme équipe
-	    			if (uManagers[id].GetNumEquipe() == uManagers[idUser].GetNumEquipe())
-	    			{
-	    				nbrAllies++;
-	    			}
-	    			// sinon et si il n'est pas caché
-	    			else if (pManagers[idUser].GetMode != 2)
-	    			{
-	    				nbrEnnemis++;
-	    			}
-	    		}
-	    	}
+			// obtien le nb de persos
+			var ans = GetNbPersonnages_Case();
 	    	
-			socket.emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase(), nbrAllies, nbrEnnemis);
+			// envoi au client
+			socket.emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase(), ans["nbAllies"],  ans["nbEnnemis"]);
 		}
 		console.log("*******************************************************");
     });
@@ -1025,9 +1019,12 @@ io.sockets.on('connection', function (socket)
      *
 	/**************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR UTILISER UN ITEM
-	 * return 1 si ok
-	 * erreur : 0 si objet n'est pas dans le sac
-	 * erreur : -1 si objet pas utilisable
+	 * 
+	 * renvoi id item
+	 * 
+	 * ET return 1 si ok
+	 * erreur : -1 si objet n'est pas dans le sac
+	 * erreur : -2 si objet pas utilisable
 	 */
     socket.on('PERSONNAGE_USE_CS', function (id_item)
     {
@@ -1037,8 +1034,11 @@ io.sockets.on('connection', function (socket)
 
     	// check si currentItem est bien dans le sac
   		var existItemInSac = pManagers[id].ExistItemInSac(currentItem);
-  		if (existItemInSac == false)
-  		socket.emit('PERSONNAGE_USE_CS', currentItem, 0);
+  		if (existItemInSac == false) 
+  		{
+  			socket.emit('PERSONNAGE_USE_SC', id_item, -1);
+  			return;
+		}
 
     	// le personnage tente d'utiliser l'item
     	var reponse = pManagers[id].Utiliser(currentItem);
@@ -1047,11 +1047,11 @@ io.sockets.on('connection', function (socket)
     	if (reponse == 1) 
     	{
     		console.log("SERVEUR : utilisation de l'item ok");
-    		socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, 1);
+    		socket.emit('PERSONNAGE_USE_SC', id_item, 1);
     	}
     	else{
     		console.log("SERVEUR : impossible d'utiliser cet item !");
-    		socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, -1);
+    		socket.emit('PERSONNAGE_USE_SC', id_item, -2);
     	}
     	console.log("*******************************************************");
     });
@@ -1641,30 +1641,11 @@ io.sockets.on('connection', function (socket)
 				{
 					for(var i in usersOnline[idUser].sockets)
 					{
-						usersOnline[idUser].sockets[i].emit('INFO_PERSONNAGE_SC', pManagers[idUser].GetCopiePerso());
 						
 						//////////////
-						// nbrAllies = -1 car le personnage qui fait la demande va être compté
-						var nbrAllies = -1, nbrEnnemis = 0;
-						// construction de la liste
-				    	for(var idUser2 in pManagers) 
-				    	{
-				    		// si le perso en cours est dans la meme salle
-				    		if(pManagers[idUser2].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
-				    		{
-				    			// si l'user correspondant au perso est de la meme équipe
-				    			if (uManagers[id].GetNumEquipe() == uManagers[idUser2].GetNumEquipe())
-				    			{
-				    				nbrAllies++;
-				    			}
-				    			// sinon et si il n'est pas caché
-				    			else if (pManagers[idUser2].GetMode != 2)
-				    			{
-				    				nbrEnnemis++;
-				    			}
-				    		}
-				    	}
-						usersOnline[idUser].sockets[i].emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase(), nbrAllies, nbrEnnemis);
+						var ans = GetNbPersonnages_Case();
+				    	usersOnline[idUser].sockets[i].emit('INFO_PERSONNAGE_SC', pManagers[idUser].GetCopiePerso());
+						usersOnline[idUser].sockets[i].emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase(), ans["nbAllies"],  ans["nbEnnemis"]);
 					}
 				}
     		
@@ -1707,6 +1688,49 @@ io.sockets.on('connection', function (socket)
     		tmpCManagers[idCase].Save();
     	}
     }
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+     * FONCTION POUR COMPTER LE NOMBRE D'ENNEMIS ET ALLIES DANS UNE CASE
+     */
+    function GetNbPersonnages_Case()
+    {
+    	// nbrAllies = -1 car le personnage qui fait la demande va être compté
+		var nbrAllies = -1, nbrEnnemis = 0;
+		// construction de la liste
+    	for(var idUser2 in pManagers) 
+    	{
+    		// si le perso en cours est dans la meme salle
+    		if(pManagers[idUser2].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
+    		{
+    			// si l'user correspondant au perso est de la meme équipe
+    			if (uManagers[id].GetNumEquipe() == uManagers[idUser2].GetNumEquipe())
+    			{
+    				nbrAllies++;
+    			}
+    			// sinon et si il n'est pas caché
+    			else if (pManagers[idUser2].GetMode != 2)
+    			{
+    				nbrEnnemis++;
+    			}
+    		}
+    	}
+    	
+        var a = {
+            "nbAllies"	: nbrAllies,
+            "nbEnnemis" : nbrEnnemis,
+        };
+    return a;
+    }
+
+    
     /******************************************************************************************************************
      * FONCTION DE TEST SI UNE FOUILLE PERMET DE DECOUVRIR OU ITEM OU UNE PERSONNE
      * return [actionOk, degats]

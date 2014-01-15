@@ -168,11 +168,7 @@ var Case_Manager = (function() {
 		{
 			return this.caseCourante.nbrGoules;
 		},
-		
-		GetNombreAllies : function()
-		{
-			return 0;
-		},
+
 		
 		GetTestZoneSure : function(numEquipe)
 		{

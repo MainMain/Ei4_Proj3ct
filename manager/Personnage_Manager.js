@@ -162,9 +162,13 @@ var Personnage_Manager = (function () {
             },
             
             Utiliser : function (item) {
-            	var res = this.personnage.utiliser(item);
-
-            	return res;
+            	// check type
+            	if (item.type < 4 || item.type > 6)
+    				return -1;
+            	
+            	// utilisation
+            	this.personnage.utiliser(item);
+            	return 1;
             },
             
             DiminuerSante : function (degats) {
@@ -403,7 +407,7 @@ var Personnage_Manager = (function () {
                         this.personnage.id, 		this.personnage.ptSante, 	this.personnage.ptSanteMax,
                         -1,							-1 							-1,
                         -1,							-1, 						-1,
-                        this.personnage.competence, -1, 						this.personnage.mode,
+                 -1,     this.personnage.competence, -1, 						this.personnage.mode,
                         -1,  						-1,  						-1  ,
                         -1,							this.personnage.armeEquipe,	this.personnage.armureEquipe,
                         comPoidsSac,				-1,							-1		));
