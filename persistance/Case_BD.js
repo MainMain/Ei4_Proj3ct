@@ -148,8 +148,7 @@ Case_BD.Initialiser = function() {
 			"public/map/2-2.png");
 	var case9 = new oCase(0, 8, "E19", "Une salle sale", 75, 12, 1, array1,
 			"public/map/0-4.png");
-
-	/*
+/*
 	var caseModel = mongoose.model('Case');
 	caseModel.remove(true, function(err) {
 		if (err) {
