@@ -171,7 +171,7 @@ var Personnage_Manager = (function () {
             	degats -= this.personnage.getValeurArmure();
             	
             	// si en mode defense
-            	if (this.personnage.mode == 3) degats * 0.75;
+            	if (this.personnage.mode == 3) degats *= 0.75;
             	
             	if (degats > 0) this.personnage.ptSante -= degats;
             	else if (degats < 0) degats = 0;
@@ -377,7 +377,13 @@ var Personnage_Manager = (function () {
     		GetIdNextSalle : function(direction)
     		{
     			return oCarte.GetIdSalleSuivante(this.personnage.idSalleEnCours, direction);
-    		}
+    		},
+        	
+        	Save : function()
+        	{
+				var context = this;
+            	oPersonnage_BD.SetPersonnage(context.personnage, context.callbackSetPersonnage);
+        	},
         };
         return Personnage_Manager;
 }());

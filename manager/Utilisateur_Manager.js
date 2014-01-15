@@ -17,10 +17,7 @@ var Utilisateur_Manager = (function () {
         // --- METHODE DE CLASSE
         Utilisateur_Manager.build = function (idUser) { return new Utilisateur_Manager(); };
 
-        function Utilisateur_Manager() { }
-        
-
-        
+        function Utilisateur_Manager() { }        
         
         // --- METHODES D'INSTANCE
         Utilisateur_Manager.prototype =
@@ -71,7 +68,8 @@ var Utilisateur_Manager = (function () {
         	
         	Save : function()
         	{
-        		
+				var context = this;
+            	oUtilisateur_BD.SetUtilisateur(context.Utilisateur, function(reponse) {context.callbackSetEquipe(reponse); });
         	},
         };
         return Utilisateur_Manager;
