@@ -110,19 +110,18 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 Case_BD.Initialiser = function() {
 	// vide la BD
 	
-
+	
 	//
 	console.log("CASE_BD : ajout des cases dans la BD");
-	var array1 = [ oItem_BD.GetItemById(1), oItem_BD.GetItemById(2),
-			oItem_BD.GetItemById(3), oItem_BD.GetItemById(4),
-			oItem_BD.GetItemById(14), oItem_BD.GetItemById(15),
-			oItem_BD.GetItemById(16) ];
-	var array2 = [ oItem_BD.GetItemById(5), oItem_BD.GetItemById(6),
-			oItem_BD.GetItemById(7), oItem_BD.GetItemById(8) ];
-	var array3 = [ oItem_BD.GetItemById(9), oItem_BD.GetItemById(10),
-			oItem_BD.GetItemById(11), oItem_BD.GetItemById(12) ];
-	var array4 = [ oItem_BD.GetItemById(10), oItem_BD.GetItemById(11),
-			oItem_BD.GetItemById(12), oItem_BD.GetItemById(13) ];
+	var array1 = [ oItem_BD.GetItemById(100), oItem_BD.GetItemById(200),
+			oItem_BD.GetItemById(300), oItem_BD.GetItemById(401),
+			oItem_BD.GetItemById(502), oItem_BD.GetItemById(503) ];
+	var array2 = [ oItem_BD.GetItemById(102), oItem_BD.GetItemById(201),
+			oItem_BD.GetItemById(303), oItem_BD.GetItemById(601) ];
+	var array3 = [ oItem_BD.GetItemById(101), oItem_BD.GetItemById(203),
+			oItem_BD.GetItemById(402), oItem_BD.GetItemById(603) ];
+	var array4 = [ oItem_BD.GetItemById(103), oItem_BD.GetItemById(202),
+			oItem_BD.GetItemById(403), oItem_BD.GetItemById(601) ];
 	
 	/*
 	 * this.id = id; this.nom = nom; this.description = description;
@@ -130,6 +129,7 @@ Case_BD.Initialiser = function() {
 	 * this.nbrGoules = nbrGoules; this.listeItem = listeItem; this.pathImg =
 	 * pathImg;
 	 */
+	 
 	var case1 = new oCase(0, 0, "E11", "Une mini salle", 20, 50, 1, array1,
 			"public/map/0-0.png");
 	var case2 = new oCase(0, 1, "E12", "Une petite salle", 24, 54, 2, array2,
@@ -149,8 +149,8 @@ Case_BD.Initialiser = function() {
 	var case9 = new oCase(0, 8, "E19", "Une salle sale", 75, 12, 1, array1,
 			"public/map/0-4.png");
 
-	
-	/*var caseModel = mongoose.model('Case');
+	/*
+	var caseModel = mongoose.model('Case');
 	caseModel.remove(true, function(err) {
 		if (err) {
 			throw err;
@@ -167,7 +167,6 @@ Case_BD.Initialiser = function() {
 	this.Creation(case8);
 	this.Creation(case9);
 	*/
-
 	// this.listeCases = new Array(case1, case2, case3, case4, case5, case6,
 	// case7, case8, case9);// case10, case11);
 },
