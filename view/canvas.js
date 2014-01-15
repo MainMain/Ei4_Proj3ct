@@ -352,23 +352,18 @@ function initialize() {
 	                {src:"public/map/2-1.png", id:"2-1"},
 	                {src:"public/map/2-2.png", id:"2-2"},
 	                {src:"public/persos/perso.gif", id:"idPerso"},
-	                {src:"public/spritesheets/armes/0.png", id:"0"},
-	                {src:"public/spritesheets/armes/1.png", id:"1"},
-	                {src:"public/spritesheets/armes/2.png", id:"2"},
-	                {src:"public/spritesheets/armes/3.png", id:"3"},
-	                {src:"public/spritesheets/armes/4.png", id:"4"},
-	                {src:"public/spritesheets/armes/5.png", id:"5"},
-	                {src:"public/spritesheets/armes/6.png", id:"6"},
-	                {src:"public/spritesheets/armes/7.png", id:"7"},
-	                {src:"public/spritesheets/armes/8.png", id:"8"},
-	                {src:"public/spritesheets/armes/9.png", id:"9"},
-	                {src:"public/spritesheets/armes/10.png", id:"10"},
-	                {src:"public/spritesheets/armes/11.png", id:"11"},
-	                {src:"public/spritesheets/armes/12.png", id:"12"},
-	                {src:"public/spritesheets/armes/13.png", id:"13"},
-	                {src:"public/spritesheets/armes/14.png", id:"14"},
-	                {src:"public/spritesheets/armes/15.png", id:"15"},
-	                {src:"public/spritesheets/armes/16.png", id:"16"},
+	                {src:"public/spritesheets/arme/100.png", id:"100"},
+	                {src:"public/spritesheets/arme/101.png", id:"101"},
+	                {src:"public/spritesheets/arme/102.png", id:"102"},
+	                {src:"public/spritesheets/arme/103.png", id:"103"},
+	                {src:"public/spritesheets/armure/200.png", id:"200"},
+	                {src:"public/spritesheets/armure/201.png", id:"201"},
+	                {src:"public/spritesheets/armure/202.png", id:"202"},
+	                {src:"public/spritesheets/armure/203.png", id:"203"},
+	                {src:"public/spritesheets/odd/300.png", id:"300"},
+	                {src:"public/spritesheets/odd/301.png", id:"301"},
+	                {src:"public/spritesheets/odd/302.png", id:"302"},
+	                {src:"public/spritesheets/odd/303.png", id:"303"},
 	                ];
 
 	// application du background Preload
@@ -681,7 +676,7 @@ function game() {
 
 	actionBarHeight = 10;
 	actionBarWidth = 100;
-	actionBarColor = createjs.Graphics.getRGB(89,0,0);
+	actionBarColor = createjs.Graphics.getRGB(255,0,0);
 	actionBarFrameColor = createjs.Graphics.getRGB(255,255,255);
 
 	actionBar = new createjs.Shape();
@@ -702,7 +697,7 @@ function game() {
 
 	moveBarHeight = 10;
 	moveBarWidth = 100;
-	moveBarColor = createjs.Graphics.getRGB(0,0,204);
+	moveBarColor = createjs.Graphics.getRGB(0,51,255);
 	moveBarFrameColor = createjs.Graphics.getRGB(255,255,255);
 
 	moveBar = new createjs.Shape();
@@ -768,7 +763,7 @@ function game() {
 	labelDescribeItem.x = _labelDescribeItemX;
 	labelDescribeItem.y = _labelDescribeItemY;
 
-	labelInventaire = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelInventaire = stage.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	labelInventaire.lineHeight = _LineHeight;
 	labelInventaire.textBaseline = _TextBaseline;
 	labelInventaire.x = _labelItemPersoX;
@@ -824,7 +819,7 @@ function game() {
 	labelPtsVie.x = _labelPtsVX;
 	labelPtsVie.y = _labelPtsVY;
 
-	labelPtsFaim = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPtsFaim = stage.addChild(new createjs.Text("", PoliceLabel, "#630042"));
 	labelPtsFaim.lineHeight = _LineHeight;
 	labelPtsFaim.textBaseline = _TextBaseline;
 	labelPtsFaim.x = _labelPtsFX;
@@ -833,13 +828,13 @@ function game() {
 
 	//------------------- Zone 2 -----------------------------------------------------
 
-	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, "#590000"));
+	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
 	labelPtsAction.lineHeight = _LineHeight;
 	labelPtsAction.textBaseline = _TextBaseline;
 	labelPtsAction.x = _labelPtsAX;
 	labelPtsAction.y = _labelPtsAY;
 
-	labelPtsMove = stage.addChild(new createjs.Text("", PoliceLabel, "#0000CC"));
+	labelPtsMove = stage.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
 	labelPtsMove.lineHeight = _LineHeight;
 	labelPtsMove.textBaseline = _TextBaseline;
 	labelPtsMove.x = _labelPtsMX;
@@ -904,14 +899,14 @@ function game() {
 	//----------------------- Zone 14 : labels de retour-------------------------
 
 	// Conteneur labels Move
-	txtSalle = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtSalle = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
 	txtSalle.lineHeight = _LineHeight;
 	txtSalle.textBaseline = _TextBaseline;
 	txtSalle.x = 0;
 	txtSalle.y = 0;
 	txtSalle.text="txtSalle";
 	
-	txtCase = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtCase = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
 	txtCase.lineHeight = _LineHeight;
 	txtCase.textBaseline = _TextBaseline;
 	txtCase.x = 0;
@@ -919,21 +914,21 @@ function game() {
 	txtCase.text="txtCase";
 
 	// Conteneur labels Objet
-	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	txtObjet.lineHeight = _LineHeight;
 	txtObjet.textBaseline = _TextBaseline;
 	txtObjet.x = 0;
 	txtObjet.y = 0;
 	txtObjet.text="txtObjet";
 	
-	txtObjetEquipe = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtObjetEquipe = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	txtObjetEquipe.lineHeight = _LineHeight;
 	txtObjetEquipe.textBaseline = _TextBaseline;
 	txtObjetEquipe.x = 0;
 	txtObjetEquipe.y = txtObjet.y + 20;
 	txtObjetEquipe.text="txtObjetEquipe";
 	
-	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
 	labelRetourFouilleRapide.x = 0;
@@ -949,14 +944,14 @@ function game() {
 	labelRetourGoules.text="labelRetourGoules";
 
 	// Conteneur labels Mode
-	labelRetourMode = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourMode = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
 	labelRetourMode.lineHeight = _LineHeight;
 	labelRetourMode.textBaseline = _TextBaseline;
 	labelRetourMode.x = 0;
 	labelRetourMode.y = 0;
 	labelRetourMode.text="labelRetourMode";
 
-	labelRetourModeG = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourModeG = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
 	labelRetourModeG.lineHeight = _LineHeight;
 	labelRetourModeG.textBaseline = _TextBaseline;
 	labelRetourModeG.x = 0;
