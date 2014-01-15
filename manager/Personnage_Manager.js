@@ -112,6 +112,7 @@ var Personnage_Manager = (function () {
 				}
 				
 				this.personnage.competence = competence;
+				this.Save();
 			},
 			
             Deplacement : function (move, nbrGoules) {
