@@ -68,9 +68,18 @@ database.Initialiser = function() {
 	});
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
 	
+	/***** CREATION DU SCHEMA "ITEM" ****/
+	var ItemSchema = new mongoose.Schema({
+		idItem 		: Number,
+		nom    		: String,
+		description : String,
+		poids   	: Number,
+		type   		: Number,
+		valeur 		: Number,
+		imageName	: String,
+	});
 	
-	
-
+	ItemModel = mongoose.model('Item',ItemSchema);
 	
 	/***** CREATION DU SCHEMA "CASE" ****/
 	var CaseSchema = new mongoose.Schema({
@@ -83,43 +92,9 @@ database.Initialiser = function() {
 		listeItem : Array,
 		pathImg : String,
 	});
-	CaseModel = mongoose.model('Case',CaseSchema); 
-	
-
-	//PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
-
-/***** CREATION DU SCHEMA "ITEM" ****/
-	/*var ItemSchema = new mongoose.Schema({
-		nom = String,
-		description = String,
-		poids = Number,
-		type = Number,
-		valeur = Number,
-		imageName = String,
-	});
-	
-	ItemModel = mongoose.model('Item',ItemSchema);
-	
-	var ItemBaseSchema = new mongoose.Schema({
-		nom = String,
-		description = String,
-		poids = Number,
-		type = Number,
-		valeur = Number,
-		imageName = String,
-		indice = Number,
-	});
-	
-	ItemBaseModel = mongoose.model('item',	ItemBaseSchema);
-*/
+	CaseModel = mongoose.model('Case',CaseSchema);
 	
 	console.log("Initialisation Database");
 },
 
-
-
-
-
-
 module.exports = database;
-
