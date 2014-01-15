@@ -321,8 +321,6 @@ var Personnage = (function() {
 				if(this.ptDeplacement > this.ptDeplacementMax) this.ptDeplacement = this.ptDeplacementMax;
 				break;
 			}
-			// maj dans la BD
-			oPersonnage_BD.SetPersonnage(this);
 			return 1;
 
 		},

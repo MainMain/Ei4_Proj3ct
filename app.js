@@ -1531,28 +1531,26 @@ io.sockets.on('connection', function (socket)
      */
     function SauvegardeGlobale()
     {
+		var tmpUManagers = uManagers.slice();
+		var tmpPManagers = pManagers.slice();
+		var tmpCManagers = cManagers.slice();
+		
     	// utilisateurs
-    	for(var idUser in uManagers) 
+    	for(var idUser in tmpUManagers) 
     	{
-    		uManagers[idUser].Save();
+    		tmpUManagers[idUser].Save();
     	}
     	
     	// personnages
-    	for(var idUser in pManagers) 
+    	for(var idUser in tmpPManagers) 
     	{
-    		pManagers[idUser].Save();
+    		tmpPManagers[idUser].Save();
     	}
     	
     	// cases
-    	for(var idCase in cManagers) 
+    	for(var idCase in tmpCManagers) 
     	{
-    		cManagers[idUser].Save();
-    	}
-    	
-    	// item
-    	for(var idUser in pManagers) 
-    	{
-    		
+    		tmpCManagers[idUser].Save();
     	}
     }
     /******************************************************************************************************************
