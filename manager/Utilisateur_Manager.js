@@ -59,6 +59,10 @@ var Utilisateur_Manager = (function () {
         		return this.Utilisateur.pseudo;
         	},
 			
+        	GetIdPersonnage : function()
+        	{
+        		return this.Utilisateur.idPersonnage;
+        	},
 			SetNumEquipe : function(numEquipe)
 			{
 				var context = this;

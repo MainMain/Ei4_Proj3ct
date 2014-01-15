@@ -1275,7 +1275,19 @@ io.sockets.on('connection', function (socket)
 	 * 
 	 * ET nbr goules attaquantes
 	 */
-    socket.on('ACTION_ATTAQUE_CS', function (idCible) {
+    socket.on('ACTION_ATTAQUE_CS', function (idPersonnageCible) {
+    	
+    	// récupèration de l'id de l'user propriétaire de ce perso
+    	var idCible;
+    	for (idUser in uManagers)
+    		{
+    			if (uManagers[idUser].GetIdPersonnage() == idPersonnageCible)
+    			{
+    				idCible = idUser;
+    				break;
+    			}
+    		}
+    	
         // si pu de pts actions
         if(pManagers[id].TestPtActions("attaqueEnnemi"))
         {
@@ -1488,19 +1500,21 @@ io.sockets.on('connection', function (socket)
     			if (uManagers[id].GetNumEquipe() == uManagers[idUser].GetNumEquipe())
     			{
     				//console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
-    				listeAllies[idUser] = (pManagers[idUser].getPersonnageToDisplay());
+    				//listeAllies[idUser] = (pManagers[idUser].getPersonnageToDisplay());
+    				listeAllies.push(pManagers[idUser].getPersonnageToDisplay());
     				console.log("---------- AJOUT DE DU PERSO DE " + uManagers[idUser].GetPseudo());
     			}
     		}
     	}
-    	var size = 0;
+    /*	var size = 0;
     	 for (var key in listeAllies) 
     	    {
     	        if (listeAllies.hasOwnProperty(key)) size++;
     	        console.log("------- key = " + key);
-    	    }
-    	console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des alliés = " + size);
+    	    }*/
+    	//console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des alliés = " + size);
     	socket.emit('INFO_CASE_ALLIES_SC', listeAllies);
+    	//console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des alliés = " + size);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
     /*
@@ -1536,17 +1550,17 @@ io.sockets.on('connection', function (socket)
     			if (uManagers[id].GetNumEquipe() == uManagers[idUser].GetNumEquipe())
     			{
     				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
-    				listeEnn[idUser] = (pManagers[idUser].getPersonnageToDisplay());
+    				listeEnn.push(pManagers[idUser].getPersonnageToDisplay());
     			}
     		}
     	}
-    	var size = 0;
+    /*	var size = 0;
    	 for (var key in listeEnn) 
    	    {
    	        if (listeEnn.hasOwnProperty(key)) size++;
    	        console.log("------- key = " + key);
-   	    }
-   	 console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des ennemis = " + size);
+   	    }*/
+   	 //console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des ennemis = " + size);
     	socket.emit('INFO_CASE_ENNEMIS_SC', listeEnn);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
