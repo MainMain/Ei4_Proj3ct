@@ -2088,33 +2088,37 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, degatsInfliges, item, d
 		});
 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
-	alert("retour ok");
+	//alert("retour ok");
 	var i=0;
 	var iPositionPersoInConteneur=0;
-	/*var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
-	imgPerso.x = 0;
-	contListeAllies.addChild(imgPerso);*/
-	//alert(listeA.length);
-	
-	alert(listeAllies);
-	var size = 0;
-	 for (var key in listeAllies) 
+	//var size = 0;
+	/*for (var key in listeAllies) 
 	    {
 	        if (listeAllies.hasOwnProperty(key)) size++;
 	       alert("------- key = " + key);
 	    }
-	alert(" taille de la liste des alliés = " + size);
+	alert(" taille de la liste des alliés = " + size);*/
 	
 	
 	for(var perso in listeAllies)
 	{
-		alert("for");
 		// mise du perso dans une variable
-		//var persoA = listeA[i];
-
-		// Ajout de l'image à l'ihm
-		var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
-		imgPerso.x = 0;
+		var persoA = listeAllies[i];
+		alert(persoA.id.competence);
+		
+		if(persoA.id.competence=="brute")
+		{
+			var imgPerso = new createjs.Bitmap("public/persos/Brute.gif");
+		}
+		else if(persoA.id.competence=="chercheur")
+		{
+			var imgPerso = new createjs.Bitmap("public/persos/Chercheur.gif");
+		}
+		else if(persoA.id.competence=="explorateur")
+		{
+			var imgPerso = new createjs.Bitmap("public/persos/Explorateur.gif");
+		}
+		imgPerso.x = iPositionPersoInConteneur * SpaceItem;
 		imgPerso.cursor= "pointer";
 
 		// Ajout de l'évenement a l'image
@@ -2136,7 +2140,6 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 			stage.update();
 		});*/
 
-		//imgPerso.x = iPositionPersoInConteneur * SpaceItem;
 		contListeAllies.addChild(imgPerso);
 
 		// position de l'item dans le conteneur

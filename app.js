@@ -1514,6 +1514,7 @@ io.sockets.on('connection', function (socket)
     	    }*/
     	//console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des alliés = " + size);
     	socket.emit('INFO_CASE_ALLIES_SC', listeAllies);
+    	console.log(listeAllies);
     	//console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des alliés = " + size);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
