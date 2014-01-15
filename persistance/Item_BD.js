@@ -56,25 +56,29 @@ Item_BD.GetListItem = function()
 	
 	var file = fs.readFileSync('./persistance/itemListe.txt', "utf8");
 	
-	var lignes = file.split("\n");
+	var lignes = file.split("\r\n");
 	
 	for(var i in lignes)
 	{
-		var infos = lignes[i].split("-");
+		if(lignes != "")
+		{
+			var infos = lignes[i].split("-");
+				
+			var newItem = new ItemModel();
 			
-		var newItem = new ItemModel();
-		
-		newItem.idItem		= infos[0];
-		newItem.nom			= infos[1];
-		newItem.description	= infos[2];
-		newItem.poids		= infos[3];
-		newItem.type		= infos[4];
-		newItem.valeur		= infos[5];
-		newItem.imageName	= infos[6];
-		
-		this.listeItems[infos[0]] = new oItem(infos[0], infos[1], infos[2], infos[3], infos[4], infos[5], infos[6]);
-		
-		newItem.save();
+			newItem.idItem		= infos[0];
+			newItem.nom			= infos[1];
+			newItem.description	= infos[2];
+			newItem.poids		= infos[3];
+			newItem.type		= infos[4];
+			newItem.valeur		= infos[5];
+			newItem.imageName	= infos[6];
+			
+			this.listeItems[infos[0]] = new oItem(infos[0], infos[1], infos[2], infos[3], infos[4], infos[5], infos[6]);
+			
+			newItem.save();
+		}
+
 	}
 	
 	return this.listeItems;

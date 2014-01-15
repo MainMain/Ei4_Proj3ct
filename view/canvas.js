@@ -351,24 +351,7 @@ function initialize() {
 	                {src:"public/map/2-0.png", id:"2-0"},
 	                {src:"public/map/2-1.png", id:"2-1"},
 	                {src:"public/map/2-2.png", id:"2-2"},
-	                {src:"public/persos/perso.gif", id:"idPerso"},
-	                {src:"public/spritesheets/armes/0.png", id:"0"},
-	                {src:"public/spritesheets/armes/1.png", id:"1"},
-	                {src:"public/spritesheets/armes/2.png", id:"2"},
-	                {src:"public/spritesheets/armes/3.png", id:"3"},
-	                {src:"public/spritesheets/armes/4.png", id:"4"},
-	                {src:"public/spritesheets/armes/5.png", id:"5"},
-	                {src:"public/spritesheets/armes/6.png", id:"6"},
-	                {src:"public/spritesheets/armes/7.png", id:"7"},
-	                {src:"public/spritesheets/armes/8.png", id:"8"},
-	                {src:"public/spritesheets/armes/9.png", id:"9"},
-	                {src:"public/spritesheets/armes/10.png", id:"10"},
-	                {src:"public/spritesheets/armes/11.png", id:"11"},
-	                {src:"public/spritesheets/armes/12.png", id:"12"},
-	                {src:"public/spritesheets/armes/13.png", id:"13"},
-	                {src:"public/spritesheets/armes/14.png", id:"14"},
-	                {src:"public/spritesheets/armes/15.png", id:"15"},
-	                {src:"public/spritesheets/armes/16.png", id:"16"},
+	                {src:"public/persos/perso.gif", id:"idPerso"}
 	                ];
 
 	// application du background Preload
