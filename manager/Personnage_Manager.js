@@ -18,6 +18,7 @@ var Personnage_Manager = (function () {
         Personnage_Manager.coutAttaqueGoule;
         Personnage_Manager.coutInterceptionGoule;
         Personnage_Manager.coutChgtMode;
+        Personnage_Manager.coutChgtMode_def;
         
         // --- METHODE DE CLASSE
         Personnage_Manager.build = function (idUser) { return new Personnage_Manager(); };
@@ -28,6 +29,7 @@ var Personnage_Manager = (function () {
             this.coutAttaqueGoule = 3;
             this.coutInterceptionGoule = 2;
             this.coutChgtMode = 2;
+            this.coutChgtMode_def = 1;
         }
         
         // --- METHODES D'INSTANCE
@@ -211,6 +213,7 @@ var Personnage_Manager = (function () {
             {
             	console.log("PERSONNAGE_MANAGER : Effacement de la liste des messages");
             	this.personnage.listeMsgAtt = new Array();
+            	
             },
             
             Attaquer : function(managerPersoEnn)
@@ -247,13 +250,40 @@ var Personnage_Manager = (function () {
             {
             	console.log("PERSONNAGE_MANAGER : Le perso " + this.id + " a été découvert !" );
             	// add msg
-            	this.personnage.listeMsgAtt.push("Vous avez été découvert ! Votre planque est foute !");
+            	this.personnage.listeMsgAtt.push("Vous avez été découvert ! Votre planque est foutue !");
             	this.personnage.mode = 0;
             },
+            
+            MisKo : function(meurtrier)
+            {
+            	// message
+            	this.AddMessage("Vous avez été mis KO par " + meurtrier +
+				" ! Vous avez été ramené dans votre zone sure, mais vous avez perdu tout vos objets.");
+            },
+            
+            SeRetablir : function(numEquipe)
+            {
+        		console.log("SERVEUR : SeRetablir()");
+            	// regain de sante
+            	this.ptSante = 20;
+            },
+            
+    		GoCaseById : function(idCase)
+    		{
+    			console.log("SERVEUR : GoCaseById : " + idCase);
+    			this.personnage.idSalleEnCours = idCase;
+    		},
+            
+            
             /***************** LECTURE *****************/
             GetListMsgAtt : function()
             {
             	return this.personnage.listeMsgAtt;
+            },
+            
+            GetPtsSante : function()
+            {
+            	return this.personange.ptSante;
             },
             
             GetPtsAttaque : function()
@@ -281,6 +311,7 @@ var Personnage_Manager = (function () {
             
             GetCopiePerso : function()
             {
+            	console.log("PERSONNAGE_MANAGER : GetCopiePerso : " + this.personnage.listeMsgAtt.length);
             	return this.personnage;
             },
             
@@ -354,12 +385,13 @@ var Personnage_Manager = (function () {
             	else if (typeAction == "attaqueGoule" && this.personnage.ptActions - this.coutAttaqueGoule < 0) return true;
             	else if (typeAction == "attaqueEnnemi" && this.personnage.ptActions - this.coutAttaqueEnnemi < 0) return true;
             	else if (typeAction == "chgtMode" && this.personnage.ptActions - this.coutChgtMode < 0) return true;
+            	else if (typeAction == "coutChgtMode_def" && this.personnage.ptActions - this.coutChgtMode_def < 0) return true;
             	else return false;
             },
             
             getPersonnageToDisplay : function()
     		{
-    			var comPoidsSac = this.personnage.getPoidsSac() / this.personnage.poidsMax;
+    			var comPoidsSac = this.personnage.getPoidsSac() / this.personnage.poidsMax * 100;
     				
     			console.log("PM : approximation poids sac : " + comPoidsSac +" %");
     			var perso = new oPersonnage(new oPersonnage(

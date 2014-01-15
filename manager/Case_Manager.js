@@ -88,6 +88,7 @@ var Case_Manager = (function() {
 			if (proba > 85) 
 			{
 				this.caseCourante.nbrGoules -= 2;
+				if (this.caseCourante.nbrGoules < 0) this.caseCourante.nbrGoules = 0; // pour ne être inférieur à 0
 				goulesTues = 2;
 			}
 			else
@@ -100,6 +101,7 @@ var Case_Manager = (function() {
 			return goulesTues;
 		},
 		
+
 		/************************* LECTURE *******************************/
 		GetCopieCase : function(idCase)
 		{
