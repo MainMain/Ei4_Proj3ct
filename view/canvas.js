@@ -818,7 +818,7 @@ function game() {
 
 	//------------------- Zone 1 -----------------------------------------------------
 
-	labelPtsVie = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPtsVie = stage.addChild(new createjs.Text("", PoliceLabel, "#009600"));
 	labelPtsVie.lineHeight = _LineHeight;
 	labelPtsVie.textBaseline = _TextBaseline;
 	labelPtsVie.x = _labelPtsVX;
@@ -833,13 +833,13 @@ function game() {
 
 	//------------------- Zone 2 -----------------------------------------------------
 
-	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, "#590000"));
 	labelPtsAction.lineHeight = _LineHeight;
 	labelPtsAction.textBaseline = _TextBaseline;
 	labelPtsAction.x = _labelPtsAX;
 	labelPtsAction.y = _labelPtsAY;
 
-	labelPtsMove = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPtsMove = stage.addChild(new createjs.Text("", PoliceLabel, "#0000CC"));
 	labelPtsMove.lineHeight = _LineHeight;
 	labelPtsMove.textBaseline = _TextBaseline;
 	labelPtsMove.x = _labelPtsMX;
@@ -1141,13 +1141,13 @@ function liste()
 {
 	socket.emit('INFO_CASE_ALLIES_CS');
 
-	var contListe = new createjs.Container();
+	contListe = new createjs.Container();
 	contListe.x = canvas.width/2 - 620/2;
 	contListe.y = canvas.height/2 - 379/2;
 	contListe.height = 379;
 	contListe.width = 620;
 	stage.addChild(contListe);
-	var shape6 = new createjs.Shape();
+	shape6 = new createjs.Shape();
 	stage.addChild(shape6);
 	shape6.graphics.setStrokeStyle(4).beginStroke("#00FF00").drawRect(
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
@@ -1220,10 +1220,6 @@ function liste()
 	/*BtnAttaquerListe.addEventListener('click', function(event) {
 
 						});	*/
-
-	/*socket.on('INFO_CASE_ENNEMIS_SC', function (listeE){
-
-	});*/
 
 	BtnCancelListe.cursor=BtnAttaquerListe.cursor="pointer";
 
@@ -2094,7 +2090,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeA){
 	/*var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
 	imgPerso.x = 0;
 	contListeAllies.addChild(imgPerso);*/
-	alert(listeA);
+	alert(listeA.count());
 	for(var perso in listeA)
 	{
 		alert("for");
@@ -2138,6 +2134,10 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeA){
 	}
 	stage.update();
 });
+
+/*socket.on('INFO_CASE_ENNEMIS_SC', function (listeE){
+
+});*/
 
 
 
