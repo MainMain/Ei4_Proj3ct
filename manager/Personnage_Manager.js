@@ -112,6 +112,7 @@ var Personnage_Manager = (function () {
 				}
 				
 				this.personnage.competence = competence;
+				Save();
 			},
 			
             Deplacement : function (move, nbrGoules) {
@@ -405,9 +406,9 @@ var Personnage_Manager = (function () {
     			console.log("PM : approximation poids sac : " + comPoidsSac +" %");
     			var perso = new oPersonnage(new oPersonnage(
                         this.personnage.id, 		this.personnage.ptSante, 	this.personnage.ptSanteMax,
-                        -1,							-1 							-1,
+                        -1,							-1, 							-1,
                         -1,							-1, 						-1,
-                 -1,     this.personnage.competence, -1, 						this.personnage.mode,
+                      this.personnage.competence, -1, 						this.personnage.mode,
                         -1,  						-1,  						-1  ,
                         -1,							this.personnage.armeEquipe,	this.personnage.armureEquipe,
                         comPoidsSac,				-1,							-1		));

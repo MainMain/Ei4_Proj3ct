@@ -351,6 +351,9 @@ function initialize() {
 	                {src:"public/map/2-0.png", id:"2-0"},
 	                {src:"public/map/2-1.png", id:"2-1"},
 	                {src:"public/map/2-2.png", id:"2-2"},
+	                {src:"public/persos/Brute.gif", id:"idPersoBrute"},
+	                {src:"public/persos/Chercheur.gif", id:"idPersoChercheur"},
+	                {src:"public/persos/Explorateur.gif", id:"idPersoExplorateur"},
 	                {src:"public/persos/perso.gif", id:"idPerso"},
 	                {src:"public/spritesheets/arme/100.png", id:"100"},
 	                {src:"public/spritesheets/arme/101.png", id:"101"},
@@ -2124,6 +2127,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 		// mise du perso dans une variable
 		var persoA = listeAllies[i];
 		alert(persoA.id.competence);
+		var imgPerso = new createjs.Bitmap("public/persos/Brute.gif");		
 		
 		if(persoA.id.competence=="brute")
 		{
