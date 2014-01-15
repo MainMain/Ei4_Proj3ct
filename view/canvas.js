@@ -351,6 +351,7 @@ function initialize() {
 	                {src:"public/map/2-0.png", id:"2-0"},
 	                {src:"public/map/2-1.png", id:"2-1"},
 	                {src:"public/map/2-2.png", id:"2-2"},
+<<<<<<< HEAD
 	                {src:"public/persos/perso.gif", id:"idPerso"},
 	                {src:"public/spritesheets/arme/100.png", id:"100"},
 	                {src:"public/spritesheets/arme/101.png", id:"101"},
@@ -364,6 +365,9 @@ function initialize() {
 	                {src:"public/spritesheets/odd/301.png", id:"301"},
 	                {src:"public/spritesheets/odd/302.png", id:"302"},
 	                {src:"public/spritesheets/odd/303.png", id:"303"},
+=======
+	                {src:"public/persos/perso.gif", id:"idPerso"}
+>>>>>>> a3526fc18236b22ac84bd6c67f67a3799ccb0487
 	                ];
 
 	// application du background Preload

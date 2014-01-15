@@ -883,7 +883,8 @@ io.sockets.on('connection', function (socket)
 					// suppression de l'objet de la case
 					cManagers[pManagers[id].GetIdSalleEnCours()].SupprimerItem(currentItem);
 						
-					
+			        // informer les autres joueurs
+			        InformerPersonnages_Case("a ramassé l'objet " + currentItem.nom);
 			    	
 					// return au client
 					socket.emit('INV_CASE_SC', 'RAMASSER', pManagers[id].GetPoidsSac(), currentItem.id, restG["degats"], restG["nbrGoulesA"]);
@@ -934,6 +935,9 @@ io.sockets.on('connection', function (socket)
 			// suppression de l'item au perso
 			pManagers[id].SupprimerDuSac(currentItem);
 			
+			// informer les autres joueurs
+	        InformerPersonnages_Case("a déposé l'objet " + currentItem.nom);
+	        
 			// return au client
 			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, pManagers[id].GetPoidsSac(), 0, 0);
 			}
@@ -975,7 +979,7 @@ io.sockets.on('connection', function (socket)
 	    		if(pManagers[idUser].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
 	    		{
 	    			// si l'user correspondant au perso est de la meme équipe
-	    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+	    			if (uManagers[id].GetNumEquipe() == uManagers[idUser].GetNumEquipe())
 	    			{
 	    				nbrAllies++;
 	    			}
@@ -1085,14 +1089,22 @@ io.sockets.on('connection', function (socket)
         }
         // si c'est un passage en mode défense
         if (mode == 3) {
-            // changement de mode
-            pManagers[id].ChangementMode(mode);
+        	 if(pManagers[id].TestPtActions("chgtMode_def"))
+        	 {
+             	socket.emit('PERSONNAGE_MODE_SC', mode, -10, 0, 0);
+             	return;
+        	 }
+        	 else
+        	 {
+        		 // changement de mode
+        		 pManagers[id].ChangementMode(mode);
 
-            // réponse ok
-            socket.emit('PERSONNAGE_MODE_SC', mode, 1, 0, 0);
-            return;
+        		 // réponse ok
+        		 socket.emit('PERSONNAGE_MODE_SC', mode, 1, 0, 0);
+        		 return;
+        	 }
         }
-        // sinon :
+        // si c'est un passage dans un autre mode
         
         // si pu de pts actions
         if(pManagers[id].TestPtActions("chgtMode")){
@@ -1215,20 +1227,18 @@ io.sockets.on('connection', function (socket)
         {
         	console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille fructueuse");
         	// tire un item aléatoire
-        	var item = iManager.GetItemAleatoire(function(newItem)
-        	{
-        		// ajout au sac
-        		var res = pManagers[id].AjouterItemAuSac(item);
+        	var item = iManager.GetItemAleatoire();
+        	// ajout au sac
+        	var res = pManagers[id].AjouterItemAuSac(item);
         	        		
-        		// si la res est false, c'est que l'objet na pas pu être ajouté au sac
-        		// donc ajout à la salle
-        		if (!res)
-        			cManagers[pManagers[id].GetIdSalleEnCours()].AjouterItem(item);
-        	        		
-        		console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille fructueuse. Ajout au sac? " + res);
-        		// si la fouille réussie
-        		socket.emit('ACTION_FOUILLE_RAPIDE_SC',  1, item, restG["degats"], res, nbrEnnDecouverts, restG["nbrGoulesA"]); 
-        	});
+        	// si la res est false, c'est que l'objet na pas pu être ajouté au sac
+        	// donc ajout à la salle
+        	if (!res)
+        		cManagers[pManagers[id].GetIdSalleEnCours()].AjouterItem(item);
+        	      		
+        	console.log("SERVEUR : ACTION_FOUILLE_RAPIDE_CS : fouille fructueuse. Ajout au sac? " + res);
+        	// si la fouille réussie
+        	socket.emit('ACTION_FOUILLE_RAPIDE_SC',  1, item, restG["degats"], res, nbrEnnDecouverts, restG["nbrGoulesA"]); 
         }
         else
         {
@@ -1294,6 +1304,29 @@ io.sockets.on('connection', function (socket)
     	
         // combat
         var ans = pManagers[id].Attaquer(pManagers[idCible]);
+        
+        // informer les autres joueurs
+        InformerPersonnages_Case("a attaqué un autre joueur ! ");
+        if (pManagers[id].GetPtsSante() <= 0)
+        	{
+        		// log
+        		console.log("SERVEUR : attaque() : Le joueur " + uManagers[id].GetPseudo() + " vient de mourir");
+        		// traitement de sa mort
+        		pManagers[id].Mourir(uManagers[idCible].GetPseudo());
+        		// informer les autres joueurs de la case
+        		InformerPersonnages_Case("est KO... ");
+        	}
+        if (pManagers[idCible].GetPtsSante() <= 0)
+        	{
+        		// log
+        		console.log("SERVEUR : attaque() : Le joueur " + uManagers[id].GetPseudo() + " vient de mourir");
+        		 // traitement de sa mort
+        		pManagers[idCible].Mourir(uManagers[id].GetPseudo());
+        		// informer les autres joueurs de la case
+        		InformerPersonnages_Case("est KO... ");
+        	}
+        
+        
         // log
         console.log("Attaque de " + id + " -> " + idCible +" : (" + ans.degatsInfliges + ") <-> ("+ans.degatsRecus +")");
         // return
@@ -1375,6 +1408,9 @@ io.sockets.on('connection', function (socket)
     	// goules tuées
     	var goulesTues = cManagers[pManagers[id].GetIdSalleEnCours()].AttaqueGoule();
     	
+    	// informer les perso
+    	InformerPersonnages_Case(" a courageusement tué " + goulesTues + " goules ! ");
+    	
     	console.log("SERVEUR : attaque goules ->  Goules tués : " + goulesTues + " - Degats " + degatsSubis);
     	socket.emit('ACTION_ATTAQUE_GOULE_SC', goulesTues, degatsSubis, 0);
     	console.log("*********************************************************");
@@ -1392,7 +1428,24 @@ io.sockets.on('connection', function (socket)
 	 * RECEPTION D'UN ACCUSE DE LECTURE DES MESSAGES
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function () {
+    	console.log("SERVEUR : Effacement des messages en attente du joueur " + uManagers[id].GetPseudo());
     	pManagers[id].EffacerMessages();
+    	
+    	// si le perso est KO
+    	if (pManagers[id].GetSante() == 0)
+    	{
+
+    		// retablissement de la sante
+    		pManager[id].SeRetablir(uManager[id]);
+    		
+    		// deplacement vers zone sure
+    		if (uManager[id].GetNumEquipe == 1)
+    			pManager[id].GoCaseById(
+    					cManager[pManager[id].GetIdSalleEnCours()].idZoneSure1);
+    		else
+    			pManager[id].GoCaseById(
+    					cManager[pManager[id].GetIdSalleEnCours()].idZoneSure2);
+    	}
     });
     /*
      * 
@@ -1420,17 +1473,25 @@ io.sockets.on('connection', function (socket)
     	for(var idUser in pManagers) 
     	{
     		// si le perso en cours est dans la meme salle
-    		if(pManagers[idUser].GetIdSalleEnCours() == idSalle)
+    		if(id != idUser && pManagers[idUser].GetIdSalleEnCours() == idSalle)
     		{
-    			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
+    			//console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
     			// si l'user correspondant au perso est de la meme équipe
-    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+    			if (uManagers[id].GetNumEquipe() == uManagers[idUser].GetNumEquipe())
     			{
-    				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
-    				listeAllies[uManagers[idUser]] = (pManagers[idUser].getPersonnageToDisplay());
+    				//console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
+    				listeAllies[idUser] = (pManagers[idUser].getPersonnageToDisplay());
+    				console.log("---------- AJOUT DE DU PERSO DE " + uManagers[idUser].GetPseudo());
     			}
     		}
     	}
+    	var size = 0;
+    	 for (var key in listeAllies) 
+    	    {
+    	        if (listeAllies.hasOwnProperty(key)) size++;
+    	        console.log("------- key = " + key);
+    	    }
+    	console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des alliés = " + size);
     	socket.emit('INFO_CASE_ALLIES_SC', listeAllies);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
@@ -1464,13 +1525,20 @@ io.sockets.on('connection', function (socket)
     		{
     			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
     			// si l'user correspondant au perso est de la meme équipe
-    			if (uManagers[idUser].GetNumEquipe() == uManagers[idUser].GetNumEquipe(id))
+    			if (uManagers[id].GetNumEquipe() == uManagers[idUser].GetNumEquipe())
     			{
     				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
     				listeEnn[idUser] = (pManagers[idUser].getPersonnageToDisplay());
     			}
     		}
     	}
+    	var size = 0;
+   	 for (var key in listeEnn) 
+   	    {
+   	        if (listeEnn.hasOwnProperty(key)) size++;
+   	        console.log("------- key = " + key);
+   	    }
+   	 console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des ennemis = " + size);
     	socket.emit('INFO_CASE_ENNEMIS_SC', listeEnn);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
@@ -1516,6 +1584,39 @@ io.sockets.on('connection', function (socket)
         console.log("SERVEUR -> GOULES : action ok ? : " + ans["actionOk"]);
         
         return ans;
+    }
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+     * FONCTION POUR INFORMER LES AUTRES JOUEURS DE LA MEME CASE D'UN EVENEMENT
+     */
+    function InformerPersonnages_Case(evenement)
+    {
+    	// personnages
+    	for(var idUser in pManagers) 
+    	{
+    		// si c'est pas le perso qui à créé l'event et si le perso en cours est dans la meme salle
+    		if(idUser != id && pManagers[idUser].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
+    		{ 
+    			// si l'user correspondant au perso est de la meme équipe
+    			if (uManagers[id].GetNumEquipe() == uManagers[idUser].GetNumEquipe())
+    			{
+    				pManagers[idUser].AddMessage("L'allié " + uManagers[id].GetPseudo() + evenement);
+    			}
+    			// sinon 
+    			else 
+    			{
+    				pManagers[idUser].AddMessage("Un ennemi " + evenement);
+    			}
+    		}
+    	}
     }
     /*
      * 
