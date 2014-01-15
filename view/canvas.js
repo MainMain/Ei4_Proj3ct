@@ -322,7 +322,7 @@ function initialize() {
 	                {src:"public/Background_liste.jpg", id:"idBackgroundListe"},   
 	                {src:"public/Background_1.jpg", id:"idBackground_1"}, 
 	                {src:"public/Background_11.jpg", id:"idBackground_11"},    
-	                {src:"public/blodd.jpg", id:"idBackground_blood"}, 
+	                {src:"public/blood.jpg", id:"idBackground_blood"}, 
 	                {src:"public/ButtonRed.png", id:"idButton"},
 	                {src:"public/ButtonGreen.png", id:"idButton2"},
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
@@ -351,7 +351,6 @@ function initialize() {
 	                {src:"public/map/2-0.png", id:"2-0"},
 	                {src:"public/map/2-1.png", id:"2-1"},
 	                {src:"public/map/2-2.png", id:"2-2"},
-<<<<<<< HEAD
 	                {src:"public/persos/perso.gif", id:"idPerso"},
 	                {src:"public/spritesheets/arme/100.png", id:"100"},
 	                {src:"public/spritesheets/arme/101.png", id:"101"},
@@ -365,9 +364,18 @@ function initialize() {
 	                {src:"public/spritesheets/odd/301.png", id:"301"},
 	                {src:"public/spritesheets/odd/302.png", id:"302"},
 	                {src:"public/spritesheets/odd/303.png", id:"303"},
-=======
-	                {src:"public/persos/perso.gif", id:"idPerso"}
->>>>>>> a3526fc18236b22ac84bd6c67f67a3799ccb0487
+	                {src:"public/spritesheets/potionSoin/400.png", id:"400"},
+	                {src:"public/spritesheets/potionSoin/401.png", id:"401"},
+	                {src:"public/spritesheets/potionSoin/402.png", id:"402"},
+	                {src:"public/spritesheets/potionSoin/403.png", id:"403"},
+	                {src:"public/spritesheets/potionAction/500.png", id:"500"},
+	                {src:"public/spritesheets/potionAction/501.png", id:"501"},
+	                {src:"public/spritesheets/potionAction/502.png", id:"502"},
+	                {src:"public/spritesheets/potionAction/503.png", id:"503"},
+	                {src:"public/spritesheets/potionMouvement/600.png", id:"600"},
+	                {src:"public/spritesheets/potionMouvement/601.png", id:"601"},
+	                {src:"public/spritesheets/potionMouvement/602.png", id:"602"},
+	                {src:"public/spritesheets/potionMouvement/603.png", id:"603"}
 	                ];
 
 	// application du background Preload
@@ -767,7 +775,7 @@ function game() {
 	labelDescribeItem.x = _labelDescribeItemX;
 	labelDescribeItem.y = _labelDescribeItemY;
 
-	labelInventaire = stage.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
+	labelInventaire = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelInventaire.lineHeight = _LineHeight;
 	labelInventaire.textBaseline = _TextBaseline;
 	labelInventaire.x = _labelItemPersoX;
@@ -817,13 +825,13 @@ function game() {
 
 	//------------------- Zone 1 -----------------------------------------------------
 
-	labelPtsVie = stage.addChild(new createjs.Text("", PoliceLabel, "#009600"));
+	labelPtsVie = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsVie.lineHeight = _LineHeight;
 	labelPtsVie.textBaseline = _TextBaseline;
 	labelPtsVie.x = _labelPtsVX;
 	labelPtsVie.y = _labelPtsVY;
 
-	labelPtsFaim = stage.addChild(new createjs.Text("", PoliceLabel, "#630042"));
+	labelPtsFaim = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsFaim.lineHeight = _LineHeight;
 	labelPtsFaim.textBaseline = _TextBaseline;
 	labelPtsFaim.x = _labelPtsFX;
@@ -832,13 +840,13 @@ function game() {
 
 	//------------------- Zone 2 -----------------------------------------------------
 
-	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
+	labelPtsAction = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsAction.lineHeight = _LineHeight;
 	labelPtsAction.textBaseline = _TextBaseline;
 	labelPtsAction.x = _labelPtsAX;
 	labelPtsAction.y = _labelPtsAY;
 
-	labelPtsMove = stage.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
+	labelPtsMove = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelPtsMove.lineHeight = _LineHeight;
 	labelPtsMove.textBaseline = _TextBaseline;
 	labelPtsMove.x = _labelPtsMX;
@@ -962,8 +970,6 @@ function game() {
 	labelRetourModeG.y = labelRetourMode.y + 20;
 	labelRetourModeG.text="labelRetourModeG";
 
-	
-
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
@@ -1014,7 +1020,7 @@ function game() {
 	BtnEvents.image.onload = setImg(BtnEvents, AbsBtn, OrdBtn);
 	/*BtnEvents.addEventListener('click', function(event) {
 
-						});	*/
+		});	*/
 
 	var BtnUtiliser = new createjs.Bitmap("public/Boutons/Utiliser.png");
 	//BtnUtiliser.image.onload = setImg(BtnUtiliser, AbsBtn, BtnEvents.y + H);
@@ -1130,9 +1136,7 @@ function game() {
 	//socket.emit('INFO_CASE_ALLIES_CS');
 	stage.update();
 	// Check message en attente (socket.emit)
-
-
-
+	
 	stage.update();
 }
 
@@ -1494,7 +1498,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		ProbCache=(currentCase.probaCache * PersoProbaCache);
 		ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 
-		labelNbAlies.text=("Aliés dans la salle : " + nbrAllies + "");
+		labelNbAlies.text=("Alliés dans la salle : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
@@ -1528,7 +1532,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 			// Ajout de l'évenement a l'image
 			imgItem.addEventListener('mouseover', function(event) {
 				var currentItem = listeItemsCase[event.target.name];
-				labelDescribeItem.text=("Nom : " + currentItem.nom + " (id : " + currentItem.id + " valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+				labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 				stage.update();
 			},false);
 
@@ -1834,7 +1838,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			// ajout d'un texte quand l'user passera la souris dessus
 			imgItem.addEventListener('mouseover', function(event) {
 				currentItem = listeItemsPerso[event.target.name];
-				labelDescribeItem.text=("Nom : " + currentItem.nom + " (id : "+ currentItem.id + " valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+				labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 				stage.update();
 			},false);
 
@@ -1884,7 +1888,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		});
 
 		contArme.addEventListener('mouseover', function(event) {
-			labelDescribeItem.text=("Nom : " + currentPerso.armeEquipee.nom + " (id : " + currentItem.id + " valeur : " + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
+			labelDescribeItem.text=("Nom : " + currentPerso.armeEquipee.nom + " (valeur : " + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
 			stage.update();
 		},false);
 
@@ -1917,7 +1921,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		});
 
 		contArmure.addEventListener('mouseover', function(event) {
-			labelDescribeItem.text=("Nom : " + currentPerso.armureEquipee.nom + " (id : " + currentItem.id + " valeur : " + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
+			labelDescribeItem.text=("Nom : " + currentPerso.armureEquipee.nom + " (valeur : " + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
 			stage.update();
 		},false);
 
