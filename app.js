@@ -693,13 +693,13 @@ io.sockets.on('connection', function (socket)
     	nbrGoules = 0;
     	/*************************************/
 		// informer
-		this.InformerPersonnages_Case("a quitté la salle.");
-		
+		//InformerPersonnages_Case("a quitté la salle.", function() {
+		InformerPersonnages_Case("a quitté la salle.");
 		// traiter
 		var ansDeplacementOk = pManagers[id].Deplacement(move, nbrGoules);
 		
 		// informer
-		this.InformerPersonnages_Case("vient d'entrer dans  salle.");
+		InformerPersonnages_Case("vient d'entrer dans la salle.");
 		
 		console.log("SERVEUR : code retour ans : " + ansDeplacementOk);
 		// si le déplacement a réussi
@@ -730,6 +730,7 @@ io.sockets.on('connection', function (socket)
 			socket.emit('MOVE_PERSONNAGE_SC', -1);
 		}
 		console.log("*******************************************************");
+		//});
     });
     /*
      * 
