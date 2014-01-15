@@ -322,7 +322,7 @@ function initialize() {
 	                {src:"public/Background_liste.jpg", id:"idBackgroundListe"},   
 	                {src:"public/Background_1.jpg", id:"idBackground_1"}, 
 	                {src:"public/Background_11.jpg", id:"idBackground_11"},    
-	                {src:"public/blodd.jpg", id:"idBackground_blood"}, 
+	                {src:"public/blood.jpg", id:"idBackground_blood"}, 
 	                {src:"public/ButtonRed.png", id:"idButton"},
 	                {src:"public/ButtonGreen.png", id:"idButton2"},
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
@@ -351,7 +351,31 @@ function initialize() {
 	                {src:"public/map/2-0.png", id:"2-0"},
 	                {src:"public/map/2-1.png", id:"2-1"},
 	                {src:"public/map/2-2.png", id:"2-2"},
-	                {src:"public/persos/perso.gif", id:"idPerso"}
+	                {src:"public/persos/perso.gif", id:"idPerso"},
+	                {src:"public/spritesheets/arme/100.png", id:"100"},
+	                {src:"public/spritesheets/arme/101.png", id:"101"},
+	                {src:"public/spritesheets/arme/102.png", id:"102"},
+	                {src:"public/spritesheets/arme/103.png", id:"103"},
+	                {src:"public/spritesheets/armure/200.png", id:"200"},
+	                {src:"public/spritesheets/armure/201.png", id:"201"},
+	                {src:"public/spritesheets/armure/202.png", id:"202"},
+	                {src:"public/spritesheets/armure/203.png", id:"203"},
+	                {src:"public/spritesheets/odd/300.png", id:"300"},
+	                {src:"public/spritesheets/odd/301.png", id:"301"},
+	                {src:"public/spritesheets/odd/302.png", id:"302"},
+	                {src:"public/spritesheets/odd/303.png", id:"303"},
+	                {src:"public/spritesheets/potionSoin/400.png", id:"400"},
+	                {src:"public/spritesheets/potionSoin/401.png", id:"401"},
+	                {src:"public/spritesheets/potionSoin/402.png", id:"402"},
+	                {src:"public/spritesheets/potionSoin/403.png", id:"403"},
+	                {src:"public/spritesheets/potionAction/500.png", id:"500"},
+	                {src:"public/spritesheets/potionAction/501.png", id:"501"},
+	                {src:"public/spritesheets/potionAction/502.png", id:"502"},
+	                {src:"public/spritesheets/potionAction/503.png", id:"503"},
+	                {src:"public/spritesheets/potionMouvement/600.png", id:"600"},
+	                {src:"public/spritesheets/potionMouvement/601.png", id:"601"},
+	                {src:"public/spritesheets/potionMouvement/602.png", id:"602"},
+	                {src:"public/spritesheets/potionMouvement/603.png", id:"603"}
 	                ];
 
 	// application du background Preload
@@ -664,7 +688,7 @@ function game() {
 
 	actionBarHeight = 10;
 	actionBarWidth = 100;
-	actionBarColor = createjs.Graphics.getRGB(89,0,0);
+	actionBarColor = createjs.Graphics.getRGB(255,0,0);
 	actionBarFrameColor = createjs.Graphics.getRGB(255,255,255);
 
 	actionBar = new createjs.Shape();
@@ -685,7 +709,7 @@ function game() {
 
 	moveBarHeight = 10;
 	moveBarWidth = 100;
-	moveBarColor = createjs.Graphics.getRGB(0,0,204);
+	moveBarColor = createjs.Graphics.getRGB(0,51,255);
 	moveBarFrameColor = createjs.Graphics.getRGB(255,255,255);
 
 	moveBar = new createjs.Shape();
@@ -887,14 +911,14 @@ function game() {
 	//----------------------- Zone 14 : labels de retour-------------------------
 
 	// Conteneur labels Move
-	txtSalle = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtSalle = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
 	txtSalle.lineHeight = _LineHeight;
 	txtSalle.textBaseline = _TextBaseline;
 	txtSalle.x = 0;
 	txtSalle.y = 0;
 	txtSalle.text="txtSalle";
 	
-	txtCase = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtCase = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
 	txtCase.lineHeight = _LineHeight;
 	txtCase.textBaseline = _TextBaseline;
 	txtCase.x = 0;
@@ -902,21 +926,21 @@ function game() {
 	txtCase.text="txtCase";
 
 	// Conteneur labels Objet
-	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	txtObjet.lineHeight = _LineHeight;
 	txtObjet.textBaseline = _TextBaseline;
 	txtObjet.x = 0;
 	txtObjet.y = 0;
 	txtObjet.text="txtObjet";
 	
-	txtObjetEquipe = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtObjetEquipe = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	txtObjetEquipe.lineHeight = _LineHeight;
 	txtObjetEquipe.textBaseline = _TextBaseline;
 	txtObjetEquipe.x = 0;
 	txtObjetEquipe.y = txtObjet.y + 20;
 	txtObjetEquipe.text="txtObjetEquipe";
 	
-	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
 	labelRetourFouilleRapide.x = 0;
@@ -932,21 +956,19 @@ function game() {
 	labelRetourGoules.text="labelRetourGoules";
 
 	// Conteneur labels Mode
-	labelRetourMode = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourMode = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
 	labelRetourMode.lineHeight = _LineHeight;
 	labelRetourMode.textBaseline = _TextBaseline;
 	labelRetourMode.x = 0;
 	labelRetourMode.y = 0;
 	labelRetourMode.text="labelRetourMode";
 
-	labelRetourModeG = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourModeG = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
 	labelRetourModeG.lineHeight = _LineHeight;
 	labelRetourModeG.textBaseline = _TextBaseline;
 	labelRetourModeG.x = 0;
 	labelRetourModeG.y = labelRetourMode.y + 20;
 	labelRetourModeG.text="labelRetourModeG";
-
-	
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
@@ -998,7 +1020,7 @@ function game() {
 	BtnEvents.image.onload = setImg(BtnEvents, AbsBtn, OrdBtn);
 	/*BtnEvents.addEventListener('click', function(event) {
 
-						});	*/
+		});	*/
 
 	var BtnUtiliser = new createjs.Bitmap("public/Boutons/Utiliser.png");
 	//BtnUtiliser.image.onload = setImg(BtnUtiliser, AbsBtn, BtnEvents.y + H);
@@ -1114,9 +1136,7 @@ function game() {
 	//socket.emit('INFO_CASE_ALLIES_CS');
 	stage.update();
 	// Check message en attente (socket.emit)
-
-
-
+	
 	stage.update();
 }
 
@@ -1124,13 +1144,13 @@ function liste()
 {
 	socket.emit('INFO_CASE_ALLIES_CS');
 
-	var contListe = new createjs.Container();
+	contListe = new createjs.Container();
 	contListe.x = canvas.width/2 - 620/2;
 	contListe.y = canvas.height/2 - 379/2;
 	contListe.height = 379;
 	contListe.width = 620;
 	stage.addChild(contListe);
-	var shape6 = new createjs.Shape();
+	shape6 = new createjs.Shape();
 	stage.addChild(shape6);
 	shape6.graphics.setStrokeStyle(4).beginStroke("#00FF00").drawRect(
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
@@ -1203,10 +1223,6 @@ function liste()
 	/*BtnAttaquerListe.addEventListener('click', function(event) {
 
 						});	*/
-
-	/*socket.on('INFO_CASE_ENNEMIS_SC', function (listeE){
-
-	});*/
 
 	BtnCancelListe.cursor=BtnAttaquerListe.cursor="pointer";
 
@@ -1482,7 +1498,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		ProbCache=(currentCase.probaCache * PersoProbaCache);
 		ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 
-		labelNbAlies.text=("Aliés dans la salle : " + nbrAllies + "");
+		labelNbAlies.text=("Alliés dans la salle : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
@@ -1516,7 +1532,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 			// Ajout de l'évenement a l'image
 			imgItem.addEventListener('mouseover', function(event) {
 				var currentItem = listeItemsCase[event.target.name];
-				labelDescribeItem.text=("Nom : " + currentItem.nom + " (id : " + currentItem.id + " valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+				labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 				stage.update();
 			},false);
 
@@ -1822,7 +1838,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			// ajout d'un texte quand l'user passera la souris dessus
 			imgItem.addEventListener('mouseover', function(event) {
 				currentItem = listeItemsPerso[event.target.name];
-				labelDescribeItem.text=("Nom : " + currentItem.nom + " (id : "+ currentItem.id + " valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+				labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 				stage.update();
 			},false);
 
@@ -1872,7 +1888,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		});
 
 		contArme.addEventListener('mouseover', function(event) {
-			labelDescribeItem.text=("Nom : " + currentPerso.armeEquipee.nom + " (id : " + currentItem.id + " valeur : " + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
+			labelDescribeItem.text=("Nom : " + currentPerso.armeEquipee.nom + " (valeur : " + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
 			stage.update();
 		},false);
 
@@ -1905,7 +1921,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		});
 
 		contArmure.addEventListener('mouseover', function(event) {
-			labelDescribeItem.text=("Nom : " + currentPerso.armureEquipee.nom + " (id : " + currentItem.id + " valeur : " + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
+			labelDescribeItem.text=("Nom : " + currentPerso.armureEquipee.nom + " (valeur : " + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
 			stage.update();
 		},false);
 
@@ -2077,7 +2093,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeA){
 	/*var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
 	imgPerso.x = 0;
 	contListeAllies.addChild(imgPerso);*/
-	alert(listeA);
+	alert(listeA.count());
 	for(var perso in listeA)
 	{
 		alert("for");
@@ -2121,6 +2137,10 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeA){
 	}
 	stage.update();
 });
+
+/*socket.on('INFO_CASE_ENNEMIS_SC', function (listeE){
+
+});*/
 
 
 

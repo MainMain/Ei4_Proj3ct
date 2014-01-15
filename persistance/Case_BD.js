@@ -148,8 +148,8 @@ Case_BD.Initialiser = function() {
 			"public/map/2-2.png");
 	var case9 = new oCase(0, 8, "E19", "Une salle sale", 75, 12, 1, array1,
 			"public/map/0-4.png");
-/*
-	var caseModel = mongoose.model('Case');
+
+	/*var caseModel = mongoose.model('Case');
 	caseModel.remove(true, function(err) {
 		if (err) {
 			throw err;
@@ -164,8 +164,8 @@ Case_BD.Initialiser = function() {
 	this.Creation(case6);
 	this.Creation(case7);
 	this.Creation(case8);
-	this.Creation(case9);
-	*/
+	this.Creation(case9);*/
+	
 	// this.listeCases = new Array(case1, case2, case3, case4, case5, case6,
 	// case7, case8, case9);// case10, case11);
 },
