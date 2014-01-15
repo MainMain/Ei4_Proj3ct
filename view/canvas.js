@@ -2086,15 +2086,26 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, degatsInfliges, item, d
 			      		}*/
 		});
 
-socket.on('INFO_CASE_ALLIES_SC', function (listeA){
-	//alert("retour ok");
+socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
+	alert("retour ok");
 	var i=0;
-	var iPositionItemInConteneur=0;
+	var iPositionPersoInConteneur=0;
 	/*var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
 	imgPerso.x = 0;
 	contListeAllies.addChild(imgPerso);*/
-	alert(listeA.count());
-	for(var perso in listeA)
+	//alert(listeA.length);
+	
+	alert(listeAllies);
+	var size = 0;
+	 for (var key in listeAllies) 
+	    {
+	        if (listeAllies.hasOwnProperty(key)) size++;
+	       alert("------- key = " + key);
+	    }
+	alert(" taille de la liste des alliés = " + size);
+	
+	
+	for(var perso in listeAllies)
 	{
 		alert("for");
 		// mise du perso dans une variable
