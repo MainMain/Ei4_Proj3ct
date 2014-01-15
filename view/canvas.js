@@ -22,228 +22,250 @@ var SpaceItem = 30;
 //Police des labels
 var PoliceLabel="14px monospace";
 
-// label.lineHeight
+//label.lineHeight
 var _LineHeight = 15;
-// label.textBaseline
+//label.textBaseline
 var _TextBaseline = "top";
 
 //******************************************
-// *  Réglages mise en forme (partie Design)*
-// ******************************************
+//*  Réglages mise en forme (partie Design)*
+//******************************************
 
-// Espacement des boutons
+//Espacement des boutons
 var H=50;
 
-// Abscisse des boutons 
+//Abscisse des boutons 
 var AbsBtn=0;
 var AbsBtnD=950;
 
-// Ordonnée des boutons
+//Ordonnée des boutons
 var OrdBtn=0;
 var OrdBtnsPerso=150;
 var OrdBtnListe = 150;
 
-// Couleur des boutons
+//Couleur des boutons
 var ColorBtn="#850000";
 //var ColorPad="#313131";
 
 var ColorPad=createjs.Graphics.getRGB(0,0,0,0.01);
 var ColorGreen="#008000";
 
-// Couleur des labels
+//Couleur des labels
 var ColorLabel = "#fff";
 var ColorLabelBonus = ColorGreen;
 
-// Espacement des labels
+//Espacement des labels
 var _EspaceLabelX = 300;
 var _EspaceLabelY = 20;
 
-// Placement label Mode Perso
+//Placement label Mode Perso
 var _labelModeX = 440 + _EspaceLabelX;
 var _labelModeY = 0;
 
-// Placement Conteneur ItemCase
+//Placement Conteneur ItemCase
 var _ContItemCaseX = _labelModeX;
 var _ContItemCaseY = 620-75;
 
-// Dimension Conteneur ItemCase
+//Dimension Conteneur ItemCase
 var _ContItemCaseH = 32;
 var _ContItemCaseW = 320;
 
-// Placement label ItemCase
+//Placement label ItemCase
 var _labelItemCaseX = _ContItemCaseX;
 var _labelItemCaseY = _ContItemCaseY - 20;
 
-// Placement label Arme
+//Placement label Arme
 var _labelArmeX = 750;
 //var _labelArmeY = _labelModeY + _EspaceLabelY +5;
 var _labelArmeY = 15;
 
-// Placement label Armure
+//Placement label Armure
 var _labelArmureX = _labelArmeX + 180;
 //var _labelArmureY = _labelArmeY + _EspaceLabelY+10;
 var _labelArmureY = _labelArmeY;
 
-// Placement label ItemPerso
+//Placement label ItemPerso
 var _labelItemPersoX = _labelArmeX;
 var _labelItemPersoY = _labelArmureY + _EspaceLabelY + 15;
 
-// Placement Conteneur ItemPerso
+//Placement Conteneur ItemPerso
 var _ContItemPersoX = _labelItemPersoX;
 var _ContItemPersoY = _labelItemPersoY + _EspaceLabelY+5;
 
-// Dimension Conteneur ItemPerso
+//Dimension Conteneur ItemPerso
 var _ContItemPersoH = 32;
 var _ContItemPersoW = 320;
 
 //------------------- Zone 1 : 1/2 barres perso -----------------------------------------------------
 
-// Placement label Points de vie
+//Placement label Points de vie
 var _labelPtsVX = 160;
 var _labelPtsVY = 20;
 
-// Placement label Points de faim
+//Placement label Points de faim
 var _labelPtsFX = _labelPtsVX;
 var _labelPtsFY = _labelPtsVY + _EspaceLabelY;
 
-// Placement label Points d'Attaque
+//Placement label Points d'Attaque
 var _labelPtsAtqX = _labelPtsVX;
 var _labelPtsAtqY = _labelPtsFY + _EspaceLabelY;
 
-// Placement label Points de Défense
+//Placement label Points de Défense
 var _labelPtsDefX = _labelPtsVX
 var _labelPtsDefY = _labelPtsAtqY +_EspaceLabelY;
 
 //------------------ Zone 2 : 2/2 barres perso -------------------------------------------------------
 
-// Placement label Points d'action
+//Placement label Points d'action
 var _labelPtsAX = _labelPtsVX + _EspaceLabelX;
 var _labelPtsAY = _labelPtsVY;
 
-// Placement label Points de mouvements
+//Placement label Points de mouvements
 var _labelPtsMX = _labelPtsAX;
 var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 
 //---------------------------------------------------------------------------------
 
-// Placement label id Salle en cours
+//Placement label id Salle en cours
 var _labelIdSalleX = _labelPtsAX;
 var _labelIdSalleY = _labelPtsMY + _EspaceLabelY;
 
 
-// Placement label Poids du Sac
+//Placement label Poids du Sac
 /*var _labelPoidsSacX = _labelPtsVX + _EspaceLabelX;
 var _labelPoidsSacY = _labelPtsDefY + _EspaceLabelY; */
 
 //------------------ Zone 9 : Infos Case -------------------------------------------------------
 
-// Placement label Description Item
+//Placement label Description Item
 var _labelDescribeItemX = _ContItemCaseX;
 var _labelDescribeItemY = _ContItemCaseY + 30;
 
-// Placement label Nombre d'Aliés
+//Placement label Nombre d'Aliés
 var _labelNbAliesX = 350;
 var _labelNbAliesY = _labelItemCaseY;
 
-// Placement label Nombre d'Ennemis
+//Placement label Nombre d'Ennemis
 var _labelNbEnnemisX = _labelNbAliesX;
 var _labelNbEnnemisY = _labelNbAliesY + _EspaceLabelY;
 
-// Placement label Nombre de Goules
+//Placement label Nombre de Goules
 var _labelNbGoulesX = _labelNbAliesX;
 var _labelNbGoulesY = _labelNbEnnemisY + _EspaceLabelY;
 
 //------------------ Zone 8 : Proba de la case -------------------------------------------------------
 
-// Placement label Probabilité de Cache
+//Placement label Probabilité de Cache
 var _labelProbaCacheX = _labelNbAliesX;
 var _labelProbaCacheY = _labelNbGoulesY + _EspaceLabelY;
 
-// Placement label Probabilité de Fouille
+//Placement label Probabilité de Fouille
 var _labelProbaFouilleX = _labelNbAliesX;
 var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
 
 //-----------------------------------------------------------------------------------
 
-// Placement label Retour Goules
+//Placement label Retour Goules
 var _labelRetourGoulesX = 10;
 var _labelRetourGoulesY = 580;
 
 //------------------ Zone 13 : Modes-------------------------------------------------------
 
-// Placement Conteneur des boutons de mode
-var _ContModeX = 40;
-var _ContModeY = 140;
+//Placement Conteneur des boutons de mode
+var _ContModeX = 50;
+var _ContModeY = 330;
 var _ContModeW = 140;
 var _ContModeH = 150;
 
-// Placement label Choix Mode
+//Placement label Choix Mode
 var _labelChoixModeX = _ContModeX+5;
 var _labelChoixModeY = _ContModeY-20;
 
 //------------------ Zone 4 : Equipement Perso-------------------------------------------------------
 
-// Placement Conteneur ArmeEquip
+//Placement Conteneur ArmeEquip
 var _ContArmeX = _labelArmeX + 125;
 var _ContArmeY = _labelArmeY-3;
 
-// Dimension Conteneur ArmeEquip
+//Dimension Conteneur ArmeEquip
 var _ContArmeH = 30;
 var _ContArmeW = 30;
 
-// Placement Conteneur ArmureEquip
+//Placement Conteneur ArmureEquip
 var _ContArmureX = _labelArmureX + 135;
 var _ContArmureY = _labelArmureY-3;
 
-// Dimension Conteneur ArmureEquip
+//Dimension Conteneur ArmureEquip
 var _ContArmureH = 30;
 var _ContArmureW = 30;
 
 //------------------ Zone 8 : Listes-------------------------------------------------------
 
-// Placement Conteneur des Boutons liste
-var _ContBtnsListesX = 40;
-var _ContBtnsListesY = 340;
+//Placement Conteneur des Boutons liste
+var _ContBtnsListesX = 50;
+var _ContBtnsListesY = 510;
 var _ContBtnsListesW = 140;
 var _ContBtnsListesH = 100;
 
-// Placement label Choix Mode
+//Placement label Choix Mode
 var _labelBtnsListesX = _ContBtnsListesX+2;
 var _labelBtnsListesY = _ContBtnsListesY-20;
 
 //------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
-// Placement Conteneur des Boutons liste
+//Placement Conteneur des Boutons liste
 var _ContBtnsInvPersoX = 910;
 var _ContBtnsInvPersoY = 140;
 var _ContBtnsInvPersoW = 140;
 var _ContBtnsInvPersoH = 150;
 
-// Placement label Choix Mode
+//Placement label Choix Mode
 var _labelBtnsInvPersoX = _ContBtnsInvPersoX-5;
 var _labelBtnsInvPersoY = _ContBtnsInvPersoY-20;
 
 //------------------------- Zone 6 : Btns Inv Case ---------------------------------------
-// Placement Conteneur des Boutons liste
+//Placement Conteneur des Boutons liste
 var _ContBtnsInvCaseX = _ContBtnsInvPersoX ;
 var _ContBtnsInvCaseY = 340;
 var _ContBtnsInvCaseW = 140;
 var _ContBtnsInvCaseH = 150;
 
-// Placement label Choix Mode
+//Placement label Choix Mode
 var _labelBtnsInvCaseX = _ContBtnsInvCaseX-5;
 var _labelBtnsInvCaseY = _ContBtnsInvCaseY-20;
 
 //------------------ Zone 12 : Map -------------------------------------------------------
 
-// Placement Conteneur Map (en fonction de la taille de l'image !!)
+//Placement Conteneur Map (en fonction de la taille de l'image !!)
 var _ContMapX = 1100/2 - 620/2;
 var _ContMapY = 620/2 - 379/2;
 
-// Dimension Conteneur Map
+//Dimension Conteneur Map
 var _ContMapH = 379;
 var _ContMapW = 620;
 
-//-----------------------------------------------------------------------------------------
+//------------------- Zone 14 : Labels de retour------------------------------------------------------
+
+var _ContLabelsMoveX = 10;
+var _ContLabelsMoveY = 120;
+var _ContLabelsMoveW = 220;
+var _ContLabelsMoveH = 40;
+
+var _ContLabelsObjetX = 10;
+var _ContLabelsObjetY = _ContLabelsMoveY + 50;
+var _ContLabelsObjetW = 220;
+var _ContLabelsObjetH = 60;
+
+var _ContLabelsAtqX = 10;
+var _ContLabelsAtqY = _ContLabelsObjetY + 70;
+var _ContLabelsAtqW = 220;
+var _ContLabelsAtqH = 20;
+
+var _ContLabelsModeX = 10;
+var _ContLabelsModeY = _ContLabelsAtqY + 30;
+var _ContLabelsModeW = 220;
+var _ContLabelsModeH = 40;
+
+//-------------- Déclaration des labels----------------------------------------------
 
 var txtSalle, txtObjet, txtCase, txtObjetEquipe, labelRetourFouilleRapide,
 labelObjetCase,	labelInventaire, labelDescribeItem, labelRetourMode,
@@ -255,9 +277,11 @@ labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFa
 var labelAlliesListe, labelEnnemisListe, labelDescribeAllie, labelDescribeEnnemi;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode, contBtnsListes,
-contBtnsInvPerso, contBtnsInvCase, contListe, contListeAllies, contListeEnnemis;
+contBtnsInvPerso, contBtnsInvCase, contListe, contListeAllies, contListeEnnemis,
+contLabelsMove, contLabelsObjet, contLabelsAtq, contLabelsMode;
 
-var shape, shape1, shape2, shape3, shape4, shape6, shape7, shape8, shapeMode;
+var shape, shape1, shape2, shape3, shape4, shape6, shape7, shape8, shapeMode,
+shapeLabelsMove, shapeLabelsObjet, shapeLabelsAtq, shapeLabelsMode;
 
 var _EpaisseurBpPad = 50;
 
@@ -298,6 +322,7 @@ function initialize() {
 	                {src:"public/Background_liste.jpg", id:"idBackgroundListe"},   
 	                {src:"public/Background_1.jpg", id:"idBackground_1"}, 
 	                {src:"public/Background_11.jpg", id:"idBackground_11"},    
+	                {src:"public/blodd.jpg", id:"idBackground_blood"}, 
 	                {src:"public/ButtonRed.png", id:"idButton"},
 	                {src:"public/ButtonGreen.png", id:"idButton2"},
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
@@ -423,7 +448,7 @@ function start()
 	// ******************************************
 
 	//var socket = io.connect('http://localhost:8080');
-	
+
 	// Lancement du jeu si connexion ok
 	if(socket.socket.connected)
 		game();
@@ -509,7 +534,7 @@ function game() {
 	// insertion du Perso
 	imgPerso = new createjs.Bitmap("public/persos/perso.gif");
 	contPerso.addChild(imgPerso);
-	
+
 	//------------------------- Zone 13 : Modes-----------------------------------------------
 	contMode = new createjs.Container();
 	contMode.x = _ContModeX;
@@ -521,7 +546,7 @@ function game() {
 	stage.addChild(shapeMode);
 	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_ContModeX-4, _ContModeY-4, _ContModeW+5, _ContModeH+5);
-	
+
 	//------------------------- Zone 8 : Btns Listes---------------------------------------
 	contBtnsListes = new createjs.Container();
 	contBtnsListes.x = _ContBtnsListesX;
@@ -533,7 +558,7 @@ function game() {
 	stage.addChild(shapeBtnsListes);
 	shapeBtnsListes.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_ContBtnsListesX-4, _ContBtnsListesY-4, _ContBtnsListesW+5, _ContBtnsListesH+5);
-	
+
 	//------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
 	contBtnsInvPerso = new createjs.Container();
 	contBtnsInvPerso.x = _ContBtnsInvPersoX;
@@ -545,7 +570,7 @@ function game() {
 	stage.addChild(shapeBtnsInvPerso);
 	shapeBtnsInvPerso.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_ContBtnsInvPersoX-4, _ContBtnsInvPersoY-4, _ContBtnsInvPersoW+5, _ContBtnsInvPersoH+5);
-	
+
 	//------------------------- Zone 6 : Btns Inv Case ---------------------------------------
 	contBtnsInvCase = new createjs.Container();
 	contBtnsInvCase.x = _ContBtnsInvCaseX;
@@ -557,6 +582,51 @@ function game() {
 	stage.addChild(shapeBtnsInvCase);
 	shapeBtnsInvCase.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_ContBtnsInvCaseX-4, _ContBtnsInvCaseY-4, _ContBtnsInvCaseW+5, _ContBtnsInvCaseH+5);
+	
+	//------------------------- Zone 14 : Labels de retour ---------------------------------------
+	contLabelsMove = new createjs.Container();
+	contLabelsMove.x = _ContLabelsMoveX;
+	contLabelsMove.y = _ContLabelsMoveY;
+	contLabelsMove.height = _ContLabelsMoveH;
+	contLabelsMove.width = _ContLabelsMoveW;
+	stage.addChild(contLabelsMove);
+	shapeLabelsMove = new createjs.Shape();
+	stage.addChild(shapeLabelsMove);
+	shapeLabelsMove.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+			_ContLabelsMoveX-4, _ContLabelsMoveY-4, _ContLabelsMoveW+5, _ContLabelsMoveH+5);
+	
+	contLabelsObjet = new createjs.Container();
+	contLabelsObjet.x = _ContLabelsObjetX;
+	contLabelsObjet.y = _ContLabelsObjetY;
+	contLabelsObjet.height = _ContLabelsObjetH;
+	contLabelsObjet.width = _ContLabelsObjetW;
+	stage.addChild(contLabelsObjet);
+	shapeLabelsObjet = new createjs.Shape();
+	stage.addChild(shapeLabelsObjet);
+	shapeLabelsObjet.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+			_ContLabelsObjetX-4, _ContLabelsObjetY-4, _ContLabelsObjetW+5, _ContLabelsObjetH+5);
+	
+	contLabelsAtq = new createjs.Container();
+	contLabelsAtq.x = _ContLabelsAtqX;
+	contLabelsAtq.y = _ContLabelsAtqY;
+	contLabelsAtq.height = _ContLabelsAtqH;
+	contLabelsAtq.width = _ContLabelsAtqW;
+	stage.addChild(contLabelsAtq);
+	shapeLabelsAtq = new createjs.Shape();
+	stage.addChild(shapeLabelsAtq);
+	shapeLabelsAtq.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+			_ContLabelsAtqX-4, _ContLabelsAtqY-4, _ContLabelsAtqW+5, _ContLabelsAtqH+5);
+	
+	contLabelsMode = new createjs.Container();
+	contLabelsMode.x = _ContLabelsModeX;
+	contLabelsMode.y = _ContLabelsModeY;
+	contLabelsMode.height = _ContLabelsModeH;
+	contLabelsMode.width = _ContLabelsModeW;
+	stage.addChild(contLabelsMode);
+	shapeLabelsMode = new createjs.Shape();
+	stage.addChild(shapeLabelsMode);
+	shapeLabelsMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+			_ContLabelsModeX-4, _ContLabelsModeY-4, _ContLabelsModeW+5, _ContLabelsModeH+5);
 
 	// ******************************************
 	// ** Création des barres du perso 			*
@@ -710,21 +780,21 @@ function game() {
 	labelChoixMode.x = _labelChoixModeX;
 	labelChoixMode.y = _labelChoixModeY;
 	labelChoixMode.text="Passer en Mode :";
-	
+
 	labelBtnsListes = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelBtnsListes.lineHeight = _LineHeight;
 	labelBtnsListes.textBaseline = _TextBaseline;
 	labelBtnsListes.x = _labelBtnsListesX;
 	labelBtnsListes.y = _labelBtnsListesY;
 	labelBtnsListes.text="Afficher liste :";
-	
+
 	labelBtnsInvPerso = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelBtnsInvPerso.lineHeight = _LineHeight;
 	labelBtnsInvPerso.textBaseline = _TextBaseline;
 	labelBtnsInvPerso.x = _labelBtnsInvPersoX;
 	labelBtnsInvPerso.y = _labelBtnsInvPersoY;
 	labelBtnsInvPerso.text="Action sur Perso :";
-	
+
 	labelBtnsInvCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelBtnsInvCase.lineHeight = _LineHeight;
 	labelBtnsInvCase.textBaseline = _TextBaseline;
@@ -830,69 +900,75 @@ function game() {
 	labelProbaFouille.textBaseline = _TextBaseline;
 	labelProbaFouille.x = _labelProbaFouilleX;
 	labelProbaFouille.y = _labelProbaFouilleY;
-	
-	//----------------------- Infos de retour-------------------------
 
-	txtSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	//----------------------- Zone 14 : labels de retour-------------------------
+
+	// Conteneur labels Move
+	txtSalle = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtSalle.lineHeight = _LineHeight;
 	txtSalle.textBaseline = _TextBaseline;
-	txtSalle.x = 10;
-	txtSalle.y = 450;
+	txtSalle.x = 0;
+	txtSalle.y = 0;
 	txtSalle.text="txtSalle";
-
-	txtObjet = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	txtObjet.lineHeight = _LineHeight;
-	txtObjet.textBaseline = _TextBaseline;
-	txtObjet.x = txtSalle.x;
-	txtObjet.y = txtSalle.y -20;
-	txtObjet.text="txtObjet";
-
-	txtCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	
+	txtCase = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtCase.lineHeight = _LineHeight;
 	txtCase.textBaseline = _TextBaseline;
-	txtCase.x = 10;
-	txtCase.y = txtSalle.y - 1;
+	txtCase.x = 0;
+	txtCase.y = txtSalle.y + 20;
 	txtCase.text="txtCase";
 
-	txtObjetEquipe = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	// Conteneur labels Objet
+	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	txtObjet.lineHeight = _LineHeight;
+	txtObjet.textBaseline = _TextBaseline;
+	txtObjet.x = 0;
+	txtObjet.y = 0;
+	txtObjet.text="txtObjet";
+	
+	txtObjetEquipe = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtObjetEquipe.lineHeight = _LineHeight;
 	txtObjetEquipe.textBaseline = _TextBaseline;
-	txtObjetEquipe.x = 10;
-	txtObjetEquipe.y = txtSalle.y - 40;
+	txtObjetEquipe.x = 0;
+	txtObjetEquipe.y = txtObjet.y + 20;
 	txtObjetEquipe.text="txtObjetEquipe";
-
-	labelRetourFouilleRapide = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	
+	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
-	labelRetourFouilleRapide.x = 10;
-	labelRetourFouilleRapide.y = txtSalle.y+60;
+	labelRetourFouilleRapide.x = 0;
+	labelRetourFouilleRapide.y = txtObjetEquipe.y + 20;
 	labelRetourFouilleRapide.text="labelRetourFouilleRapide";
 
-	labelRetourMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	labelRetourMode.lineHeight = _LineHeight;
-	labelRetourMode.textBaseline = _TextBaseline;
-	labelRetourMode.x = 10;
-	labelRetourMode.y = txtSalle.y+20;
-	labelRetourMode.text="labelRetourMode";
-
-	labelRetourModeG = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	labelRetourModeG.lineHeight = _LineHeight;
-	labelRetourModeG.textBaseline = _TextBaseline;
-	labelRetourModeG.x = 10;
-	labelRetourModeG.y = txtSalle.y+40;
-	labelRetourModeG.text="labelRetourModeG";
-	
-	labelRetourGoules = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	// Conteneur labels Attaque
+	labelRetourGoules = contLabelsAtq.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourGoules.lineHeight = _LineHeight;
 	labelRetourGoules.textBaseline = _TextBaseline;
-	labelRetourGoules.x = _labelRetourGoulesX;
-	labelRetourGoules.y = _labelRetourGoulesY;
+	labelRetourGoules.x = 0;
+	labelRetourGoules.y = 0;
 	labelRetourGoules.text="labelRetourGoules";
+
+	// Conteneur labels Mode
+	labelRetourMode = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourMode.lineHeight = _LineHeight;
+	labelRetourMode.textBaseline = _TextBaseline;
+	labelRetourMode.x = 0;
+	labelRetourMode.y = 0;
+	labelRetourMode.text="labelRetourMode";
+
+	labelRetourModeG = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourModeG.lineHeight = _LineHeight;
+	labelRetourModeG.textBaseline = _TextBaseline;
+	labelRetourModeG.x = 0;
+	labelRetourModeG.y = labelRetourMode.y + 20;
+	labelRetourModeG.text="labelRetourModeG";
+
+	
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
-	
+
 	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
 	BtnHaut.y = _ContMapY;
 	BtnHaut.x = _ContMapX;
@@ -1012,13 +1088,6 @@ function game() {
 
 	});
 
-
-	/*var BtnAttaquer = new createjs.Bitmap("public/Boutons/Attaquer.png");
-	BtnAttaquer.image.onload = setImg(BtnAttaquer, AbsBtn, OrdBtn+H);
-	/*BtnAttaquer.addEventListener('click', function(event) {
-
-						});	*/
-
 	var BtnAtqGoules = new createjs.Bitmap("public/Boutons/AttaquerZ.png");
 	BtnAtqGoules.image.onload = setImg(BtnAtqGoules, AbsBtn, OrdBtn + H);
 	BtnAtqGoules.addEventListener('click', function(event) {
@@ -1063,7 +1132,7 @@ function game() {
 	stage.update();
 	// Check message en attente (socket.emit)
 
-	
+
 
 	stage.update();
 }
@@ -1082,14 +1151,15 @@ function liste()
 	stage.addChild(shape6);
 	shape6.graphics.setStrokeStyle(4).beginStroke("#00FF00").drawRect(
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
-	
+
 	// application du background liste au dessus de la map
 	var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
+	//var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=0.95;
 	contListe.addChild(background_liste);
 	//background_liste.image.onload = setImg(
-		//background_liste, canvas.width/2 - 620/2, canvas.height/2 - 379/2);
-	
+	//background_liste, canvas.width/2 - 620/2, canvas.height/2 - 379/2);
+
 	labelAlliesListe = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelAlliesListe.lineHeight = _LineHeight;
 	labelAlliesListe.textBaseline = _TextBaseline;
@@ -1103,13 +1173,13 @@ function liste()
 	labelEnnemisListe.x = 20;
 	labelEnnemisListe.y = 145;
 	labelEnnemisListe.text="Liste des Ennemis :";
-	
+
 	labelDescribeAllie = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelDescribeAllie.lineHeight = _LineHeight;
 	labelDescribeAllie.textBaseline = _TextBaseline;
 	labelDescribeAllie.x = 20;
 	labelDescribeAllie.y = 300;
-	
+
 	//Conteneur des ALLIES
 	contListeAllies = new createjs.Container();
 	contListeAllies.x = 20;
@@ -1121,7 +1191,7 @@ function liste()
 	contListe.addChild(shape7);
 	shape7.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
 			contListeAllies.x-4, contListeAllies.y-4, contListeAllies.width+4, contListeAllies.height+4);
-	
+
 	//Conteneur des ENNEMIS
 	contListeEnnemis = new createjs.Container();
 	contListeEnnemis.x = 20;
@@ -1133,7 +1203,7 @@ function liste()
 	contListe.addChild(shape8);
 	shape8.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
 			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
-	
+
 	// Bouton ANNULER
 	var BtnCancelListe = contListe.addChild(new Button("Cancel", "#850000"));
 	BtnCancelListe.x=330;
@@ -1141,23 +1211,24 @@ function liste()
 	BtnCancelListe.addEventListener('click', function (event) {
 		game();
 	});
-	
+
 	// Bouton ATTAQUER
-	var BtnAttaquerListe = contListe.addChild(new Button("Attaquer", "#850000"));
+	var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
 	BtnAttaquerListe.x=480;
 	BtnAttaquerListe.y=340;
-	BtnAttaquerListe.addEventListener('click', function (event) {
-		//socket.emit('ACTION_ATTAQUE_GOULE_CS');
-	});
-	
+	contListe.addChild(BtnAttaquerListe);
+	/*BtnAttaquerListe.addEventListener('click', function(event) {
+
+						});	*/
+
 	/*socket.on('INFO_CASE_ENNEMIS_SC', function (listeE){
-		
+
 	});*/
-	
+
 	BtnCancelListe.cursor=BtnAttaquerListe.cursor="pointer";
-	
+
 	stage.update();
-	
+
 }
 
 function setImg(img, X, Y) {
@@ -1168,8 +1239,8 @@ function setImg(img, X, Y) {
 }
 
 //******************************************
-// ********* RECEPTION SERVEUR **************
-// ******************************************
+//********* RECEPTION SERVEUR **************
+//******************************************
 
 /******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
@@ -1202,13 +1273,11 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 	txtSalle.text = ("Trop de Zombies dans cette salle !");
 	break;
 
-	case -4:
-		txtSalle.text = "";
-		txtSalle.text = ("Impossible de pénétrer dans la Maison de l'ennemi!");
-		break;
+	case -4: txtSalle.text = "";
+	txtSalle.text = ("Impossible de pénétrer dans la Maison de l'ennemi!");
+	break;
 
-	default:
-		socket.emit('INFO_CASE_CS');
+	default: socket.emit('INFO_CASE_CS');
 	labelRetourGoules.text="";
 	txtSalle.text = "";
 	txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
@@ -1372,10 +1441,10 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			// ramassage ok
 		default:
 			txtObjet.text = "";
-			txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Zombies restants");
-			socket.emit('INFO_PERSONNAGE_CS');
-			socket.emit('INFO_CASE_CS');
-			stage.update();
+		txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Zombies restants");
+		socket.emit('INFO_PERSONNAGE_CS');
+		socket.emit('INFO_CASE_CS');
+		stage.update();
 		break;
 		}
 	}
@@ -1502,7 +1571,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-	
+
 	this.listeItemsPerso = new Array();
 
 	var PoidsSac=0;
@@ -1880,7 +1949,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
  * erreur : -1 si objet pas utilisable
  */
 //socket.on('PERSONNAGE_USE_SC', );
-// Actualiser le perso
+//Actualiser le perso
 
 /******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
@@ -2031,7 +2100,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeA){
 		alert("for");
 		// mise du perso dans une variable
 		//var persoA = listeA[i];
-		
+
 		// Ajout de l'image à l'ihm
 		var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
 		imgPerso.x = 0;
@@ -2061,7 +2130,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeA){
 
 		// position de l'item dans le conteneur
 		iPositionPersoInConteneur++;
-		
+
 		i++;
 
 		// Update l'ihm

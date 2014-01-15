@@ -11,7 +11,7 @@ var server      = http.createServer(app);
 
 
 /*
- * 
+ *
  */
 // require model
 var oDatabase = require('./model/database');
@@ -33,6 +33,9 @@ var oItem_Manager        = require('./manager/Item_Manager');
 var oCase_Manager        = require('./manager/Case_Manager');
 var oUtilisateur_Manager = require('./manager/Utilisateur_Manager');
 
+//Initialisation de la base de données
+oDatabase.Initialiser();
+
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(6, 6);
 
@@ -48,9 +51,6 @@ var pManagers   = new Array();
 
 //Indice = idCase || Valeur = caseManager de la case
 var cManagers   = new Array();
-
-//Initialisation de la base de données
-oDatabase.Initialiser();
 
 oCase_BD.Initialiser();
 
@@ -1651,7 +1651,7 @@ io.sockets.on('connection', function (socket)
     	// cases
     	for(var idCase in tmpCManagers) 
     	{
-    		tmpCManagers[idUser].Save();
+    		tmpCManagers[idCase].Save();
     	}
     }
     /******************************************************************************************************************

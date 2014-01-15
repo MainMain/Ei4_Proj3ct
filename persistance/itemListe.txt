@@ -1,0 +1,24 @@
+100-Epée rouillée-Une petite épée complétement rouillée-10-1-10-/public/spritesheets/arme/100.png
+200-Armure de cuir-Une armure en cuir-20-2-13-/public/spritesheets/armure/200.png
+300-Planche de bois-Du bon bois bien solide !-5-3-5-/public/spritesheets/odd/
+400-Petite potion-Une potion à l'allure bizarre...-5-4-23-/public/spritesheets/potionSoin/
+500-Canette de redBull-Une canette de Redbull cabossée-3-5-5-/public/spritesheets/potionAction/
+600-Pilule rouge-Une pilule suspecte...-1-6-14-/public/spritesheets/potionMouvement/
+101-Epée de fer-Une épée standard-10-1-4-epeeFer.jpg
+201-Armure de fer-Une armure en fer-20-2-13-armureFer.jpg
+301-Planche de fer-Du fer bon marché!-5-3-7-plancheFer.jpg
+401-Moyenne potion-Une potion à l'allure bizarre...-10-4-23-petitePotion.jpg
+501-Flasque de redBull-Une Flasque de Redbull-3-5-5-flasqueRedBull.jpg
+601-Pilule jaune-Une pilule jaune...-1-6-12-piluleRouge.jpg
+102-Epée en argent-Une grande épée en argent-10-1-10-epeeRouillee.jpg
+202-Armure en argent-Une armure en argent-20-2-7-armureArgent.jpg
+302-Planche d'argent-Pour couper le pain-5-3-12-plancheArgent.jpg
+402-Grande potion-Ca c'est d'la potion !-15-4-23-petitePotion.jpg
+502-Pack de redBull-UN GROS PAAAACK !-10-5-5-packRedBull.jpg
+602-Pilule transparente-Où elle est passée?-1-6-10-piluleTransparente.jpg
+103-Epée en or-Une épée qui doit couter bien cher-10-1-10-epeeRouillee.jpg
+203-Armure en or-Bien lourd ça !-120-2-13-armureOr.jpg
+303-Planche d'or-Un lingot écrasé quoi...-5-3-54-plancheOr.jpg
+403-Géante potion-On pourrait nager dedans !-25-4-100-geantePotion.jpg
+503-Pack de bière-Tant qu'a faire...-10-5-50-packBiere.jpg
+603-Pilule bleue-Ce n'est peut être pas une bonne idée.-2-6-54-piluleBleue.jpg
