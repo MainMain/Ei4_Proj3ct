@@ -683,8 +683,7 @@ io.sockets.on('connection', function (socket)
 			return;
 		}
     	// ***************************************************************
-
-        
+		
         // TEST déplacement du personnage
     	//***************************************
     	nbrGoules = 0;
@@ -697,6 +696,9 @@ io.sockets.on('connection', function (socket)
 		{
 			console.log('SERVER : deplacement ok envoi de la nouvelle position');
 			
+			// mise en mode "oisif"
+	        pManagers[id].InitialiserMode();
+	        
 			// enregistre dans le manager
 			//cManagers[pManagers[id].GetIdSalleEnCours()].ChangeCase(pManagers[id].GetIdSalleEnCours());
 			
@@ -1302,6 +1304,9 @@ io.sockets.on('connection', function (socket)
     		}
     	// ***************************************************************
     	
+    	// mise en mode "oisif"
+        pManagers[id].InitialiserMode();
+        
         // combat
         var ans = pManagers[id].Attaquer(pManagers[idCible]);
         
@@ -1398,6 +1403,9 @@ io.sockets.on('connection', function (socket)
     		return;
     	}
     	
+    	// mise en mode "oisif"
+        pManagers[id].InitialiserMode();
+        
     	// calcul des dégats subis
     	var ans = cManagers[pManagers[id].GetIdSalleEnCours()].AttaqueDeGoules();
     	var degatsSubis = pManagers[id].DiminuerSante(ans["degats"]);
@@ -1615,6 +1623,37 @@ io.sockets.on('connection', function (socket)
     			{
     				pManagers[idUser].AddMessage("Un ennemi " + evenement);
     			}
+    			if(usersOnline[idUser])
+				{
+					for(var i in usersOnline[idUser].sockets)
+					{
+						usersOnline[idUser].sockets[i].emit('INFO_PERSONNAGE_SC', pManagers[idUser].GetCopiePerso());
+						
+						//////////////
+						// nbrAllies = -1 car le personnage qui fait la demande va être compté
+						var nbrAllies = -1, nbrEnnemis = 0;
+						// construction de la liste
+				    	for(var idUser2 in pManagers) 
+				    	{
+				    		// si le perso en cours est dans la meme salle
+				    		if(pManagers[idUser2].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
+				    		{
+				    			// si l'user correspondant au perso est de la meme équipe
+				    			if (uManagers[id].GetNumEquipe() == uManagers[idUser2].GetNumEquipe())
+				    			{
+				    				nbrAllies++;
+				    			}
+				    			// sinon et si il n'est pas caché
+				    			else if (pManagers[idUser2].GetMode != 2)
+				    			{
+				    				nbrEnnemis++;
+				    			}
+				    		}
+				    	}
+						usersOnline[idUser].sockets[i].emit('INFO_CASE_SC', cManagers[pManagers[id].GetIdSalleEnCours()].GetCopieCase(), nbrAllies, nbrEnnemis);
+					}
+				}
+    		
     		}
     	}
     }
@@ -1668,7 +1707,7 @@ io.sockets.on('connection', function (socket)
                 socket.emit('USER_CONNECTED_CS', false);
             else
                 socket.emit('USER_CONNECTED_CS', true);
-        });
+        }); 
     });*/
     
     

@@ -273,6 +273,11 @@ var Personnage_Manager = (function () {
     			console.log("SERVEUR : GoCaseById : " + idCase);
     			this.personnage.idSalleEnCours = idCase;
     		},
+    		
+    		InitialiserMode : function()
+    		{
+    			this.personnage.mode = 0;
+    		},
             
             
             /***************** LECTURE *****************/

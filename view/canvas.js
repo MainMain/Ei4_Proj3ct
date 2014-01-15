@@ -1555,6 +1555,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
+	alert(currentPerso.listeMsgAtt.length);
 	this.listeItemsPerso = new Array();
 
 	var PoidsSac=0;
