@@ -167,7 +167,7 @@ var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
 
 // Placement label Retour Goules
 var _labelRetourGoulesX = 10;
-var _labelRetourGoulesY = 570;
+var _labelRetourGoulesY = 580;
 
 //------------------ Zone 13 : Modes-------------------------------------------------------
 
@@ -686,12 +686,6 @@ function game() {
 	labelNomSalle.x = _labelIdSalleX;
 	labelNomSalle.y = _labelIdSalleY + 20;
 
-	labelRetourGoules = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	labelRetourGoules.lineHeight = _LineHeight;
-	labelRetourGoules.textBaseline = _TextBaseline;
-	labelRetourGoules.x = _labelRetourGoulesX;
-	labelRetourGoules.y = _labelRetourGoulesY;
-
 	labelObjetCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelObjetCase.lineHeight = _LineHeight;
 	labelObjetCase.textBaseline = _TextBaseline;
@@ -836,55 +830,69 @@ function game() {
 	labelProbaFouille.textBaseline = _TextBaseline;
 	labelProbaFouille.x = _labelProbaFouilleX;
 	labelProbaFouille.y = _labelProbaFouilleY;
+	
+	//----------------------- Infos de retour-------------------------
 
 	txtSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtSalle.lineHeight = _LineHeight;
 	txtSalle.textBaseline = _TextBaseline;
 	txtSalle.x = 10;
-	txtSalle.y = 500;
+	txtSalle.y = 450;
+	txtSalle.text="txtSalle";
 
 	txtObjet = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtObjet.lineHeight = _LineHeight;
 	txtObjet.textBaseline = _TextBaseline;
 	txtObjet.x = txtSalle.x;
 	txtObjet.y = txtSalle.y -20;
+	txtObjet.text="txtObjet";
 
 	txtCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtCase.lineHeight = _LineHeight;
 	txtCase.textBaseline = _TextBaseline;
-	txtCase.x = 400;
-	txtCase.y = 190;
+	txtCase.x = 10;
+	txtCase.y = txtSalle.y - 1;
+	txtCase.text="txtCase";
 
 	txtObjetEquipe = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	txtObjetEquipe.lineHeight = _LineHeight;
 	txtObjetEquipe.textBaseline = _TextBaseline;
 	txtObjetEquipe.x = 10;
 	txtObjetEquipe.y = txtSalle.y - 40;
+	txtObjetEquipe.text="txtObjetEquipe";
 
 	labelRetourFouilleRapide = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
 	labelRetourFouilleRapide.x = 10;
-	labelRetourFouilleRapide.y = txtSalle.y + 60;
+	labelRetourFouilleRapide.y = txtSalle.y+60;
+	labelRetourFouilleRapide.text="labelRetourFouilleRapide";
 
 	labelRetourMode = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourMode.lineHeight = _LineHeight;
 	labelRetourMode.textBaseline = _TextBaseline;
 	labelRetourMode.x = 10;
 	labelRetourMode.y = txtSalle.y+20;
+	labelRetourMode.text="labelRetourMode";
 
 	labelRetourModeG = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelRetourModeG.lineHeight = _LineHeight;
 	labelRetourModeG.textBaseline = _TextBaseline;
 	labelRetourModeG.x = 10;
 	labelRetourModeG.y = txtSalle.y+40;
-
+	labelRetourModeG.text="labelRetourModeG";
+	
+	labelRetourGoules = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelRetourGoules.lineHeight = _LineHeight;
+	labelRetourGoules.textBaseline = _TextBaseline;
+	labelRetourGoules.x = _labelRetourGoulesX;
+	labelRetourGoules.y = _labelRetourGoulesY;
+	labelRetourGoules.text="labelRetourGoules";
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
 	
-
 	var BtnHaut = stage.addChild(new ButtonPad("", ColorPad, _ContMapW, _EpaisseurBpPad));
 	BtnHaut.y = _ContMapY;
 	BtnHaut.x = _ContMapX;
@@ -939,7 +947,7 @@ function game() {
 	contBtnsInvPerso.addChild(BtnUtiliser);
 	BtnUtiliser.addEventListener('click', function(event) {
 		if (SelectedItemPerso == -1) {
-			alert("Selectionner Item avant de l'utiliser");
+			//alert("Selectionner Item avant de l'utiliser");
 		} else {
 			socket.emit('PERSONNAGE_USE_CS', SelectedItemPerso);
 			SelectedItemPerso = -1;
@@ -952,7 +960,7 @@ function game() {
 	contBtnsInvCase.addChild(BtnRamasseObjet);
 	BtnRamasseObjet.addEventListener('click', function (event) {
 		if (SelectedItemCase == -1) {
-			alert("Selectionner Item avant de Ramasser");
+			//alert("Selectionner Item avant de Ramasser");
 		} else {
 			socket.emit('INV_CASE_CS', "RAMASSER", SelectedItemCase);
 			SelectedItemCase = -1;
@@ -965,7 +973,7 @@ function game() {
 	contBtnsInvCase.addChild(BtnDeposer);
 	BtnDeposer.addEventListener('click', function (event) {
 		if (SelectedItemPerso == -1) {
-			alert("Selectionner Item avant de Déposer");
+			//alert("Selectionner Item avant de Déposer");
 		} else {
 			socket.emit('INV_CASE_CS', "DEPOSER", SelectedItemPerso);
 			SelectedItemPerso = -1;
@@ -977,9 +985,8 @@ function game() {
 	BtnEquiper.y=BtnUtiliser.y + H;
 	contBtnsInvPerso.addChild(BtnEquiper);
 	BtnEquiper.addEventListener('click', function (event) {
-		//alert("click button");
 		if (SelectedItemPerso == -1) {
-			alert("Selectionner Item avant de s'équiper");
+			//alert("Selectionner Item avant de s'équiper");
 		} else {
 			socket.emit('INV_PERSONNAGE_CS', "EQUIPER", SelectedItemPerso);
 			SelectedItemEquip = -1;
@@ -995,7 +1002,7 @@ function game() {
 	contBtnsInvPerso.addChild(BtnDesequiper);
 	BtnDesequiper.addEventListener('click', function (event) {
 		if (SelectedItemEquip == -1) {
-			alert("Selectionner Item avant de se déséquiper");
+			//alert("Selectionner Item avant de se déséquiper");
 		}
 		else{
 			socket.emit('INV_PERSONNAGE_CS', "DESEQUIPER", SelectedItemEquip);
