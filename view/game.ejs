@@ -28,6 +28,22 @@
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="http://code.createjs.com/preloadjs-0.4.0.min.js"></script>
 		
+		<!-- Script nécessaires pour le serveur -->
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+
+		<script>
+			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+			//var socket = io.connect('http://localhost:8080');
+			var socket = io.connect('http://192.168.1.13');
+			
+			$( document ).ready(function()
+			{
+				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "Jeu");
+			});
+		
+		</script>
+		
 		<script>
 			var createjs = window;
 		</script>
@@ -173,19 +189,6 @@
 			window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')
 		</script>
 
-		<!-- Script nécessaires pour le serveur -->
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
 
-		<script>
-			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:8080');
-			
-			$( document ).ready(function()
-			{
-				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "Jeu");
-			});
-		
-		</script>
 	</body>
 </html>
