@@ -1346,9 +1346,9 @@ io.sockets.on('connection', function (socket)
         
         
         // log
-        console.log("Attaque de " + id + " -> " + idCible +" : (" + ans.degatsInfliges + ") <-> ("+ans.degatsRecus +")");
+        console.log("Attaque de " + id + " -> " + idCible +" : (" +  ans.degatsInfliges + ") <-> ("+ans["degatsRecus"] +")");
         // return
-        socket.emit('ACTION_ATTAQUE_SC', 1, degatsInfliges, degatsRecus, restG["degats"], restG["nbrGoulesA"]);
+        socket.emit('ACTION_ATTAQUE_SC', 1, ans["degatsInfliges"],  ans["degatsRecus"], restG["degats"], restG["nbrGoulesA"]);
     });
     /*
      * 
@@ -1515,7 +1515,7 @@ io.sockets.on('connection', function (socket)
     	    }*/
     	//console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des alliés = " + size);
     	socket.emit('INFO_CASE_ALLIES_SC', listeAllies);
-    	console.log(listeAllies);
+    	//console.log(listeAllies);
     	//console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des alliés = " + size);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
@@ -1563,6 +1563,7 @@ io.sockets.on('connection', function (socket)
    	        console.log("------- key = " + key);
    	    }*/
    	 //console.log("SERVEUR : INFO_CASE_ALLIES_CS : taille de la liste des ennemis = " + size);
+    	//console.log(listeEnn);
     	socket.emit('INFO_CASE_ENNEMIS_SC', listeEnn);
     	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });

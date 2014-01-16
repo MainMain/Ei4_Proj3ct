@@ -205,15 +205,17 @@ var Personnage = (function() {
 		getValeurArme : function()
 		{
 			var att;
-			if (this.armeEquipee == null) att = 5;
+			if (this.armeEquipee == null) att = 1;
 			else att = this.armeEquipee.valeur;
-			return (this.att * this.multiPtsAttaque);
+			
+			console.log("PERSONNAGE : Valeur Arme : " + att );
+			return (att * this.multiPtsAttaque);
 		},
 		
 		getValeurArmure : function()
 		{
 			var def;
-			if (this.armureEquipee == null) def = 0;
+			if (this.armureEquipee == null) def = 1;
 			else def = this.armureEquipee.valeur;
 			
 			console.log("PERSONNAGE : Valeur Armure : " + def );

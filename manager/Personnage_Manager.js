@@ -142,7 +142,7 @@ var Personnage_Manager = (function () {
             },
             
             SEquiper : function (currentItem) {
-            	if (currentItem.type != 1 || currentItem.type != 2)
+            	if (currentItem.type < 1 || currentItem.type > 2)
             		return -3;
             	// equipe le perso
             	var reponse = this.personnage.sEquiperDunItem(currentItem);
@@ -231,17 +231,25 @@ var Personnage_Manager = (function () {
             	// diminution ptAction
             	this.personnage.ptActions -= this.coutAttaqueEnnemi;
             	
-            	degatsInfliges = this.personnage.GetPtsAttaque() - this.managerPersoEnn.GetPtsDefense();
-            	degatsRecus = this.managerPersoEnn.GetPtsAttaque() - this.personnage.GetPtsDefense();
+            	console.log(" - " +this.GetPtsAttaque()+ " - " +managerPersoEnn.GetPtsDefense()+ " - " +managerPersoEnn.GetPtsAttaque() +" - " +this.GetPtsDefense());
+            	degatsInfliges = this.GetPtsAttaque() - managerPersoEnn.GetPtsDefense();
+            	degatsRecus = managerPersoEnn.GetPtsAttaque() - this.GetPtsDefense();
             	
+            	//parse
+            	degatsInfliges = parseInt(degatsInfliges);
+            	degatsRecus = parseInt(degatsRecus);
+            	
+            	// diminution de la sante
             	this.DiminuerSante(degatsRecus);
             	managerPersoEnn.DiminuerSante(degatsInfliges);
+            	
+            	
             	managerPersoEnn.AddMessage("Attaqué par un ennemi ! Degats subis : " + degatsInfliges
             			+ " -degats infligés en riposte : " + degatsRecus);
             	
                 var a = {
                     "degatsRecus"	: degatsRecus,
-                    "degatsInflges" : degatsInfliges,
+                    "degatsInfliges" : degatsInfliges,
                 };
                 return a;
             },
@@ -295,17 +303,17 @@ var Personnage_Manager = (function () {
             
             GetPtsSante : function()
             {
-            	return this.personange.ptSante;
+            	return this.personnage.ptSante;
             },
             
             GetPtsAttaque : function()
             {
-            	return this.personnage.armeEquipe.valeur * this.personnage.multiPtsAttaque;
+            	return this.personnage.getValeurArme();
             },
             
             GetPtsDefense : function()
             {
-            	return this.personnage.armureEquipee.valeur * this.personnage.multiPtsDefense;
+            	return this.personnage.getValeurArmure();
             },
             
             ExistItemInSac : function (currentItem) {

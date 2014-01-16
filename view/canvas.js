@@ -254,17 +254,17 @@ var _ContLabelsMoveH = 20;
 var _ContLabelsObjetX = 10;
 var _ContLabelsObjetY = _ContLabelsMoveY + 30;
 var _ContLabelsObjetW = 220;
-var _ContLabelsObjetH = 40;
+var _ContLabelsObjetH = 60;
 
 var _ContLabelsAtqX = 10;
-var _ContLabelsAtqY = _ContLabelsObjetY + 50;
+var _ContLabelsAtqY = _ContLabelsObjetY + 70;
 var _ContLabelsAtqW = 220;
 var _ContLabelsAtqH = 20;
 
 var _ContLabelsModeX = 10;
 var _ContLabelsModeY = _ContLabelsAtqY + 30;
 var _ContLabelsModeW = 220;
-var _ContLabelsModeH = 60;
+var _ContLabelsModeH = 80;
 
 //-------------- Déclaration des labels----------------------------------------------
 
@@ -916,7 +916,7 @@ function game() {
 	txtSalle.textBaseline = _TextBaseline;
 	txtSalle.x = 0;
 	txtSalle.y = 0;
-	txtSalle.text="txtSalle";
+	//txtSalle.text="txtSalle";
 	
 	// Conteneur labels Objet
 	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
@@ -930,8 +930,8 @@ function game() {
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
 	labelRetourFouilleRapide.x = 0;
-	labelRetourFouilleRapide.y = txtObjet.y + 20;
-	labelRetourFouilleRapide.text="labelRetourFouilleRapide";
+	labelRetourFouilleRapide.y = txtObjet.y + 40;
+	//labelRetourFouilleRapide.text="labelRetourFouilleRapide";
 
 	// Conteneur labels Attaque
 	labelRetourGoules = contLabelsAtq.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -939,7 +939,7 @@ function game() {
 	labelRetourGoules.textBaseline = _TextBaseline;
 	labelRetourGoules.x = 0;
 	labelRetourGoules.y = 0;
-	labelRetourGoules.text="labelRetourGoules";
+	//labelRetourGoules.text="labelRetourGoules";
 
 	// Conteneur labels Mode
 	labelRetourMode = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
@@ -947,14 +947,14 @@ function game() {
 	labelRetourMode.textBaseline = _TextBaseline;
 	labelRetourMode.x = 0;
 	labelRetourMode.y = 0;
-	labelRetourMode.text="labelRetourMode";
+	//labelRetourMode.text="labelRetourMode";
 
 	labelRetourModeG = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
 	labelRetourModeG.lineHeight = _LineHeight;
 	labelRetourModeG.textBaseline = _TextBaseline;
 	labelRetourModeG.x = 0;
-	labelRetourModeG.y = labelRetourMode.y + 20;
-	labelRetourModeG.text="labelRetourModeG";
+	labelRetourModeG.y = labelRetourMode.y + 40;
+	//labelRetourModeG.text="labelRetourModeG";
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
@@ -1232,6 +1232,48 @@ function setImg(img, X, Y) {
 //******************************************
 
 /******************************************************************************************************************
+ * RECEPTION D'UNE DEMANDE POUR ATTAQUER UN AUTRE JOUEUR
+ * return 1 si ok
+ * erreur : 0 si erreur interne
+ * erreur : -1 si joueur n'est plus dans la caase
+ * erreur : -5 si raté à cause goules
+ * erreur : -10 si plus de pts actions
+ * 
+ * ET return dégats infligés
+ * 
+ * ET return dégats reçus (ennemi)
+ * 
+ * ET return dégats reçues (goules)
+ * 
+ * ET nbr goules attaquantes
+ */
+socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbGoules){
+	switch(codeRetour)
+	{
+		case 0:
+			alert("erreur interne");
+			break;
+		case 1:
+			alert("attaque ok");
+			break;
+		case -1:
+			alert("attaque : joueur plu dans la case");
+			break;
+		case -5:
+			alert("attaque ratée à cause des goules");
+			break;
+		case -10:
+			alert("attaque plu de pts d'actions");
+			break;
+	}
+	alert("dagats infligés : "+degatsI);
+	alert("dagats recus ennemi : "+degatsRecusE);
+	alert("dagats recus goules : "+degatsRecusG);
+	alert("nbr goules attaqués: "+nbGoules);
+	
+});
+
+/******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
  * la case avec MOVE_PERSONNAGE_SC 
  * return : usersOnline[username].cManager.GetCopieCase() si ok
@@ -1300,7 +1342,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 		switch (codeRetour) {
 		case 0:
 			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
+			txtObjet.text = ("Item pas dans le sac !");
 			//alert("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
 			break;
 
@@ -1332,7 +1374,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 			}
 			// log
 			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " ok !");
+			txtObjet.text = ("Equipement de l'objet ok");
 
 			stage.update();
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1341,21 +1383,21 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 		case -1:
 			//alert("-1");
 			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " raté : arme déja équipée");
+			txtObjet.text = ("Arme déja équipée");
 			//alert("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
 			break;
 
 		case -2:
 			//alert("-2");
 			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " raté : armure déja équipée");
+			txtObjet.text = ("Armure déja équipée");
 			//alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
 			break;
 
 		case -3:
 			alert("-3");
 			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " raté : l'objet n'est pas équipable");
+			txtObjet.text = ("L'objet n'est pas équipable");
 			//alert("Equipement de l'item " + currentItem.id + " raté : l'objet n'est pas équipable");
 			break;
 
@@ -1363,7 +1405,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 	} else if (type == "DEQUIPER") {
 		if (codeRetour == -4) {
 			txtObjet.text = "";
-			txtObjet.tetx = ("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
+			txtObjet.tetx = ("Déséquipement impossible, vous n'en êtes pas équipé");
 		} else if (codeRetour == 1) {
 			// Si déquipe arme
 			// efface l'arme
@@ -1414,16 +1456,16 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			// poids insufisant
 		case -1:
 			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet : poids max atteint !");
+			txtObjet.text = ("Impossible de ramasser l'objet,\npoids max atteint !");
 			break;
 			// objet pas dans case
 		case -2:
 			txtObjet.text = "";
-			txtObjet.text = ("L'objet " + id_item + " n'est plus dans la salle !");
+			txtObjet.text = ("Impossible de ramasser l'objet,\nplus dans la salle !");
 			break;
 		case -5:
 			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
+			txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies !\n- " + DegatsG + " points de vie !");
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 			// ramassage ok
@@ -1443,7 +1485,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		// erreur
 		case -3:
 			txtObjet.text = "";
-			txtObjet.text = ("Déséquiper l'objet avant de déposer !");
+			txtObjet.text = ("Déséquipez avant de déposer !");
 			break;
 		case -4:
 			txtObjet.text = "";
@@ -1452,12 +1494,12 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			// objet pas dans sac (! pas normal)
 		case -2:
 			txtObjet.text = "";
-			txtObjet.text = ("L'item " + id_item + " n'est plus dans le sac ");
+			txtObjet.text = ("L'item n'est plus dans le sac ");
 			break;
 			// dépôt ok
 		default:
 			txtObjet.text = "";
-		txtObjet.text = ("Item " + id_item + "déposé ! Sac : " + codeRetour + " kg");
+		txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
 		socket.emit('INFO_CASE_CS');
 		socket.emit('INFO_PERSONNAGE_CS');
 		stage.update();
@@ -1560,7 +1602,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
-	alert(currentPerso.listeMsgAtt.length);
+	//alert(currentPerso.listeMsgAtt.length);
 	this.listeItemsPerso = new Array();
 	
 	// insertion de l'image du Perso
@@ -1591,7 +1633,8 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	if(currentPerso.armeEquipee != null)
 	{
-		PointsAttaque = currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
+		//PointsAttaque = currentPerso.getValeurArme() ;
+		PointsAttaque =  currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
 	}
 	else
 	{
@@ -1606,6 +1649,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		PointsDefense = currentPerso.multiPtsDefense;
 	}
+		//PointsDefense = currentPerso.getValeurArmure();
 
 	// Mise à jour des labels
 	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
@@ -2052,24 +2096,24 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbGoule
 	{
 	case 1: 
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +"  ok !");
+		labelRetourMode.text = ("Changement de mode ok !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case 0 : 
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
+		labelRetourMode.text = ("Changement de mode raté !\nErreur interne");
 		break;
 	case -4 : 
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
+		labelRetourMode.text = ("Changement de mode mode raté !\nDéja dans ce mode");
 		break;
 	case -5: 
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +"  raté à cause des Zombies");
+		labelRetourMode.text = ("Changement de mode raté !\nFaute aux Zombies");
 		break;
 	case -10:
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +"  raté ! Plu de points d'action");
+		labelRetourMode.text = ("Changement de mode raté !\nPlus de points d'action");
 		break;
 	}
 	labelRetourModeG.text = "";
@@ -2144,6 +2188,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 		
 		this.listePersoAllies.push(persoA);
 		
+		//alert(persoA.id.competence);
 		if(persoA.id.competence=="brute")
 		{
 			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
@@ -2162,17 +2207,19 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
 			imgPerso.cursor= "pointer";
 		}
-		imgPerso.name=i;
+		imgPerso.name = i;
 		
-		var currentPerso=persoA;
+		//var currentPerso=persoA;
 		//currentPerso.name=i;
 		
 		// Ajout de l'évenement a l'image
 		// ajout d'un texte quand l'user passera la souris dessus
 		imgPerso.addEventListener('mouseover', function(event) {
-			currentPerso =  listeAllies[event.target.name];
-			
+			var currentPerso =  listeAllies[event.target.name];
+			//alert("Arme equipée : " + currentPerso.id.idArmeEquipee);
 			// Texte de description du Mode
+			
+			alert(currentPerso.id.idArmeEquipee);
 			switch(currentPerso.id.mode)
 			{
 				case 0: ModePerso="";
@@ -2253,9 +2300,12 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 	contListeEnnemis.removeAllChildren();
 	
 	var imgPerso;
+	//var currentPerso;
 	listePersoEnnemis = new Array();
 	
-	for(var perso in listeEnn)
+	alert("longueur liste enn = " + listeEnn.length);
+	
+	for(var i = 0; i < listeEnn.length; i++)
 	{
 		// mise du perso dans une variable
 		var persoE = listeEnn[i];
@@ -2285,15 +2335,16 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
 			imgPerso.cursor= "pointer";
 		}
-		imgPerso.name=i;
-		
-		var currentPerso=persoE;
+		imgPerso.name = i;
+		// 	var currentPerso=persoE;
 		//currentPerso.name=i;
 		
 		// Ajout de l'évenement a l'image
 		// ajout d'un texte quand l'user passera la souris dessus
 		imgPerso.addEventListener('mouseover', function(event) {
-			currentPerso =  listeEnn[event.target.name];
+			//alert("event target name = " + event.target.name);
+			//alert(listeEnn[event.target.name]);
+			var currentPerso =  listeEnn[event.target.name];
 			
 			// Calcul du pourcentage de vie
 			PourcentVie = currentPerso.id.ptSante / currentPerso.id.ptSanteMax * 100;
@@ -2406,7 +2457,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 		},false);
 
 		imgPerso.addEventListener("click", function(event){
-			currentPerso =  listeEnn[event.target.name];
+			var currentPerso =  listeEnn[event.target.name];
 			SelectedPerso=currentPerso.id.id;
 			//alert(SelectedPerso);
 			stage.update();
@@ -2417,12 +2468,11 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 		// position de l'item dans le conteneur
 		iPositionPersoInConteneur++;
 
-		i++;
-
 		// Update l'ihm
 		stage.update();
 	}
 	stage.update();
+	socket.emit('INFO_PERSONNAGE_CS');
 });
 
 
