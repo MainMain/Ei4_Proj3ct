@@ -249,26 +249,26 @@ var _ContMapW = 620;
 var _ContLabelsMoveX = 10;
 var _ContLabelsMoveY = 120;
 var _ContLabelsMoveW = 220;
-var _ContLabelsMoveH = 40;
+var _ContLabelsMoveH = 20;
 
 var _ContLabelsObjetX = 10;
-var _ContLabelsObjetY = _ContLabelsMoveY + 50;
+var _ContLabelsObjetY = _ContLabelsMoveY + 30;
 var _ContLabelsObjetW = 220;
-var _ContLabelsObjetH = 60;
+var _ContLabelsObjetH = 40;
 
 var _ContLabelsAtqX = 10;
-var _ContLabelsAtqY = _ContLabelsObjetY + 70;
+var _ContLabelsAtqY = _ContLabelsObjetY + 50;
 var _ContLabelsAtqW = 220;
 var _ContLabelsAtqH = 20;
 
 var _ContLabelsModeX = 10;
 var _ContLabelsModeY = _ContLabelsAtqY + 30;
 var _ContLabelsModeW = 220;
-var _ContLabelsModeH = 40;
+var _ContLabelsModeH = 60;
 
 //-------------- Déclaration des labels----------------------------------------------
 
-var txtSalle, txtObjet, txtCase, txtObjetEquipe, labelRetourFouilleRapide,
+var txtSalle, txtObjet, labelRetourFouilleRapide,
 labelObjetCase,	labelInventaire, labelDescribeItem, labelRetourMode,
 labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
 labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules,
@@ -918,33 +918,19 @@ function game() {
 	txtSalle.y = 0;
 	txtSalle.text="txtSalle";
 	
-	txtCase = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
-	txtCase.lineHeight = _LineHeight;
-	txtCase.textBaseline = _TextBaseline;
-	txtCase.x = 0;
-	txtCase.y = txtSalle.y + 20;
-	txtCase.text="txtCase";
-
 	// Conteneur labels Objet
 	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	txtObjet.lineHeight = _LineHeight;
 	txtObjet.textBaseline = _TextBaseline;
 	txtObjet.x = 0;
 	txtObjet.y = 0;
-	txtObjet.text="txtObjet";
-	
-	txtObjetEquipe = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
-	txtObjetEquipe.lineHeight = _LineHeight;
-	txtObjetEquipe.textBaseline = _TextBaseline;
-	txtObjetEquipe.x = 0;
-	txtObjetEquipe.y = txtObjet.y + 20;
-	txtObjetEquipe.text="txtObjetEquipe";
+	txtObjet.text="";
 	
 	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
 	labelRetourFouilleRapide.x = 0;
-	labelRetourFouilleRapide.y = txtObjetEquipe.y + 20;
+	labelRetourFouilleRapide.y = txtObjet.y + 20;
 	labelRetourFouilleRapide.text="labelRetourFouilleRapide";
 
 	// Conteneur labels Attaque
@@ -1304,8 +1290,8 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 	//alert("retour button ok");
 
 	if (codeRetour == 0) {
-		txtObjetEquipe.text = "";
-		txtObjetEquipe.text = ("L'item " + currentItem.id + " n'est plus dans le sac ");
+		txtObjet.text = "";
+		txtObjet.text = ("L'item " + currentItem.id + " n'est plus dans le sac ");
 		// quitte la fonction
 		return;
 	}
@@ -1313,9 +1299,8 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 		//alert("LOG CODE : " + codeRetour);
 		switch (codeRetour) {
 		case 0:
-			//alert("0");
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
+			txtObjet.text = "";
+			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
 			//alert("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
 			break;
 
@@ -1346,8 +1331,8 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 				});
 			}
 			// log
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " ok !");
+			txtObjet.text = "";
+			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " ok !");
 
 			stage.update();
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1355,44 +1340,44 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 
 		case -1:
 			//alert("-1");
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : arme déja équipée");
+			txtObjet.text = "";
+			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " raté : arme déja équipée");
 			//alert("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
 			break;
 
 		case -2:
 			//alert("-2");
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : armure déja équipée");
+			txtObjet.text = "";
+			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " raté : armure déja équipée");
 			//alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
 			break;
 
 		case -3:
-			//alert("-3");
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : l'objet n'est pas équipable");
+			alert("-3");
+			txtObjet.text = "";
+			txtObjet.text = ("Equipement de l'item " + currentItem.nom + " raté : l'objet n'est pas équipable");
 			//alert("Equipement de l'item " + currentItem.id + " raté : l'objet n'est pas équipable");
 			break;
 
 		}
 	} else if (type == "DEQUIPER") {
 		if (codeRetour == -4) {
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.tetx = ("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
+			txtObjet.text = "";
+			txtObjet.tetx = ("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
 		} else if (codeRetour == 1) {
 			// Si déquipe arme
 			// efface l'arme
 			contArme.removeAllChildren();
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Arme déséquipée !");
+			txtObjet.text = "";
+			txtObjet.text = ("Arme déséquipée !");
 			socket.emit('INFO_PERSONNAGE_CS');					
 		}
 		// Si déquipe armure
 		else if (codeRetour == 2) {
 			// efface armure
 			contArmure.removeAllChildren();
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Armure déséquipée !");
+			txtObjet.text = "";
+			txtObjet.text = ("Armure déséquipée !");
 			socket.emit('INFO_PERSONNAGE_CS');
 		}
 	}
@@ -1493,8 +1478,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 	if (currentCase == "ERREUR_CASE")
 	{
 		//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
-		txtCase.text="";
-		txtCase.text=("CLIENT :: nom case = " + "ERREUR_CASE");
+		txtSalle.text="";
+		txtSalle.text=("CLIENT :: nom case = " + "ERREUR_CASE");
 	}
 	else {
 
@@ -1978,15 +1963,21 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
 	switch(codeRetour)
 	{
 	case 1: 
-		alert("objet utilisé !");
+		//alert("objet utilisé !");
+		txtObjet.text="";
+		txtObjet.text=("objet utilisé !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -1:
-		alert("objet plus dans le sac !");
+		//alert("objet plus dans le sac !");
+		txtObjet.text="";
+		txtObjet.text=("objet plus dans le sac !");
 		break;
 
 	case -2:
-		alert("objet inutilisable !");
+		//alert("objet inutilisable !");
+		txtObjet.text="";
+		txtObjet.text=("objet inutilisable !");
 		break;
 	}
 	stage.update();
