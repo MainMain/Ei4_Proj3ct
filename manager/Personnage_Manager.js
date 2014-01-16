@@ -127,7 +127,7 @@ var Personnage_Manager = (function () {
             },
             
             AjouterItemAuSac : function (item) {
-            	if ((this.personnage.getPoidsSac() + item.poids) < this.personnage.poidsMax)
+            	if ((this.personnage.getPoidsSac() + item.poids) <= this.personnage.poidsMax)
             	{
 					// ajout de l'currentItem au sac du perso
 					this.personnage.ajouterAuSac(item);
@@ -142,6 +142,8 @@ var Personnage_Manager = (function () {
             },
             
             SEquiper : function (currentItem) {
+            	if (currentItem.type != 1 || currentItem.type != 2)
+            		return -3;
             	// equipe le perso
             	var reponse = this.personnage.sEquiperDunItem(currentItem);
             	// si equipage ok, on enregistre
