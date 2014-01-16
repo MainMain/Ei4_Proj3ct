@@ -1270,7 +1270,8 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 	alert("dagats recus ennemi : "+degatsRecusE);
 	alert("dagats recus goules : "+degatsRecusG);
 	alert("nbr goules attaqués: "+nbGoules);
-	
+	socket.emit('INFO_PERSONNAGE_CS');
+	socket.emit('INFO_CASE_CS');
 });
 
 /******************************************************************************************************************
