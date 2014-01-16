@@ -1325,26 +1325,11 @@ io.sockets.on('connection', function (socket)
         
         // informer les autres joueurs
         InformerPersonnages_Case("a attaqué un autre joueur ! ");
-        if (pManagers[id].GetPtsSante() <= 0)
-        	{
-        		// log
-        		console.log("SERVEUR : attaque() : Le joueur " + uManagers[id].GetPseudo() + " vient de mourir");
-        		// traitement de sa mort
-        		pManagers[id].Mourir(uManagers[idCible].GetPseudo());
-        		// informer les autres joueurs de la case
-        		InformerPersonnages_Case("est KO... ");
-        	}
-        if (pManagers[idCible].GetPtsSante() <= 0)
-        	{
-        		// log
-        		console.log("SERVEUR : attaque() : Le joueur " + uManagers[id].GetPseudo() + " vient de mourir");
-        		 // traitement de sa mort
-        		pManagers[idCible].Mourir(uManagers[id].GetPseudo());
-        		// informer les autres joueurs de la case
-        		InformerPersonnages_Case("est KO... ");
-        	}
         
-        
+        // voir s'il y a des mots
+        if (pManagers[id].GetPtsSante() <= 0) MettreKo(id, idCible);
+        if (pManagers[idCible].GetPtsSante() <= 0) MettreKo(idCible, id);
+
         // log
         console.log("Attaque de " + id + " -> " + idCible +" : (" +  ans.degatsInfliges + ") <-> ("+ans["degatsRecus"] +")");
         // return
@@ -1455,17 +1440,8 @@ io.sockets.on('connection', function (socket)
     	// si le perso est KO
     	if (pManagers[id].GetSante() == 0)
     	{
-
     		// retablissement de la sante
     		pManager[id].SeRetablir(uManager[id]);
-    		
-    		// deplacement vers zone sure
-    		if (uManager[id].GetNumEquipe == 1)
-    			pManager[id].GoCaseById(
-    					cManager[pManager[id].GetIdSalleEnCours()].idZoneSure1);
-    		else
-    			pManager[id].GoCaseById(
-    					cManager[pManager[id].GetIdSalleEnCours()].idZoneSure2);
     	}
     });
     /*
@@ -1549,7 +1525,7 @@ io.sockets.on('connection', function (socket)
     		{
     			console.log("------ id salle : " + pManagers[idUser].GetIdSalleEnCours());
     			// si l'user correspondant au perso est de la meme équipe
-    			if (uManagers[id].GetNumEquipe() == uManagers[idUser].GetNumEquipe())
+    			if (uManagers[id].GetNumEquipe() != uManagers[idUser].GetNumEquipe())
     			{
     				console.log("------ num equipe : " + uManagers[idUser].GetNumEquipe());
     				listeEnn.push(pManagers[idUser].getPersonnageToDisplay());
@@ -1732,8 +1708,47 @@ io.sockets.on('connection', function (socket)
         };
     return a;
     }
-
-    
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+     * FONCTION POUR COMPTER LE NOMBRE D'ENNEMIS ET ALLIES DANS UNE CASE
+     */
+  
+    /*
+     * 
+     * 
+     * 
+     * 
+     * 
+     *
+    /******************************************************************************************************************
+     * FONCTION POUR FAIRE METTRE KO UN JOUEUR
+     */
+    function MettreKo(idUserKo, idUserTueur)
+    {
+		// log
+		console.log("SERVEUR : attaque() : Le joueur " + uManagers[idUserKo].GetPseudo() + " vient de mourir");
+		
+		// transfert de son inventaire
+		pManagers[idUserKo].TransfererInventaire();
+		
+		// traitement de sa mort
+    	if (uManagers[idUserKo].GetNumEquipe == 1)
+    		pManagers[idUserKo].GoCaseById(cManagers[pManagers[idUserKo].GetIdSalleEnCours()].idZoneSure1);
+    	else
+    		pManagers[idUserKo].MisKo(uManagers[idUserTueur].GetPseudo(), cManagers[pManagers[idUserKo].GetIdSalleEnCours()].idZoneSure2);
+    	
+    	
+		// informer les autres joueurs de la case
+		InformerPersonnages_Case("est KO... ");
+    }
     /******************************************************************************************************************
      * FONCTION DE TEST SI UNE FOUILLE PERMET DE DECOUVRIR OU ITEM OU UNE PERSONNE
      * return [actionOk, degats]

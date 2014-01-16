@@ -25,7 +25,7 @@ var Personnage_Manager = (function () {
 
         function Personnage_Manager() {
             this.coutFouilleRapide = 4;
-            this.coutAttaqueEnnemi = 7;
+            this.coutAttaqueEnnemi = 5;
             this.coutAttaqueGoule = 3;
             this.coutInterceptionGoule = 2;
             this.coutChgtMode = 2;
@@ -176,17 +176,11 @@ var Personnage_Manager = (function () {
             
             DiminuerSante : function (degats) {
             	console.log("PM : DiminuerSante : Degats recus : " + degats);
-            	// diminution des degats grace à l'armure
-            	degats -= this.personnage.getValeurArmure();
             	
-            	// si en mode defense
-            	if (this.personnage.mode == 3) degats *= 0.75;
+            	var degatsReels = this.personnage.prendreDesDegats(degats);
             	
-            	if (degats > 0) this.personnage.ptSante -= degats;
-            	else if (degats < 0) degats = 0;
-            	
-            	console.log("PM : DiminuerSante : Baisse de vie : " + degats);
-            	return degats;
+            	console.log("PM : DiminuerSante : Baisse de vie : " + degatsReels);
+            	return degatsReels;
             },
             
             ChangementMode : function(mode)
@@ -225,23 +219,27 @@ var Personnage_Manager = (function () {
             
             Attaquer : function(managerPersoEnn)
             {
-            	var degatsRecus;
-            	var degatsInfliges;
+            	var degatsRecus = 0;
+            	var degatsInfliges = 0;
             	
             	// diminution ptAction
             	this.personnage.ptActions -= this.coutAttaqueEnnemi;
             	
             	console.log(" - " +this.GetPtsAttaque()+ " - " +managerPersoEnn.GetPtsDefense()+ " - " +managerPersoEnn.GetPtsAttaque() +" - " +this.GetPtsDefense());
+            	
+            	//// ATTAQUE SUR CIBLE
             	degatsInfliges = this.GetPtsAttaque() - managerPersoEnn.GetPtsDefense();
-            	degatsRecus = managerPersoEnn.GetPtsAttaque() - this.GetPtsDefense();
-            	
-            	//parse
             	degatsInfliges = parseInt(degatsInfliges);
-            	degatsRecus = parseInt(degatsRecus);
-            	
             	// diminution de la sante
-            	this.DiminuerSante(degatsRecus);
             	managerPersoEnn.DiminuerSante(degatsInfliges);
+            	
+            	// ATTAQUE RIPOSTE
+            	if (managerPersoEnn.GetPtsSante > 0)
+            	{
+            		degatsRecus = managerPersoEnn.GetPtsAttaque() - this.GetPtsDefense();
+            		degatsRecus = parseInt(degatsRecus);
+            		this.DiminuerSante(degatsRecus);
+            	}
             	
             	
             	managerPersoEnn.AddMessage("Attaqué par un ennemi ! Degats subis : " + degatsInfliges
@@ -269,8 +267,15 @@ var Personnage_Manager = (function () {
             	this.personnage.mode = 0;
             },
             
-            MisKo : function(meurtrier)
+            MisKo : function(meurtrier, zoneSure)
             {
+            	console.log("Un joueur a été mis KO par " + meurtrier);
+            	
+            	// deplacement zone sure
+            	this.personnage.idSalleEnCours = zoneSure;
+            	
+            	this.mode = 0;
+            	
             	// message
             	this.AddMessage("Vous avez été mis KO par " + meurtrier +
 				" ! Vous avez été ramené dans votre zone sure, mais vous avez perdu tout vos objets.");
@@ -283,18 +288,21 @@ var Personnage_Manager = (function () {
             	this.ptSante = 20;
             },
             
-    		GoCaseById : function(idCase)
+    		/*GoCaseById : function(idCase)
     		{
     			console.log("SERVEUR : GoCaseById : " + idCase);
     			this.personnage.idSalleEnCours = idCase;
-    		},
+    		},*/
     		
     		InitialiserMode : function()
     		{
     			this.personnage.mode = 0;
     		},
             
-            
+            TransfererInventaire : function(caseDestination)
+            {
+            	
+            },
             /***************** LECTURE *****************/
             GetListMsgAtt : function()
             {
@@ -401,11 +409,11 @@ var Personnage_Manager = (function () {
             
             TestPtActions : function(typeAction)
             {
-            	if (typeAction == "fouilleRapide" && this.personnage.ptActions - this.coutFouilleRapide < 0) return true;
-            	else if (typeAction == "attaqueGoule" && this.personnage.ptActions - this.coutAttaqueGoule < 0) return true;
-            	else if (typeAction == "attaqueEnnemi" && this.personnage.ptActions - this.coutAttaqueEnnemi < 0) return true;
-            	else if (typeAction == "chgtMode" && this.personnage.ptActions - this.coutChgtMode < 0) return true;
-            	else if (typeAction == "coutChgtMode_def" && this.personnage.ptActions - this.coutChgtMode_def < 0) return true;
+            	if (typeAction == "fouilleRapide" && this.personnage.ptActions - this.coutFouilleRapide <= 0) return true;
+            	else if (typeAction == "attaqueGoule" && this.personnage.ptActions - this.coutAttaqueGoule <= 0) return true;
+            	else if (typeAction == "attaqueEnnemi" && this.personnage.ptActions - this.coutAttaqueEnnemi <= 0) return true;
+            	else if (typeAction == "chgtMode" && this.personnage.ptActions - this.coutChgtMode <= 0) return true;
+            	else if (typeAction == "coutChgtMode_def" && this.personnage.ptActions - this.coutChgtMode_def <= 0) return true;
             	else return false;
             },
             

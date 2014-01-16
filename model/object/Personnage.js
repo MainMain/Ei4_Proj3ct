@@ -326,6 +326,24 @@ var Personnage = (function() {
 			this.supprimerDuSac(item);
 		},
 
+		prendreDesDegats : function(degats)
+		{
+			// diminution des degats grace à l'armure
+			degats -= this.getValeurArmure();
+			
+			// si en mode defense
+        	if (this.mode == 3) degats *= 0.75;
+        	
+        	if (degats > 0) 
+        		this.ptSante -= degats;
+        	else if (degats < 0) 
+        		degats = 0;
+        	
+        	if (this.ptSante < 0) 
+        		this.ptSante = 0;
+        	
+        	return degats;
+		},
 		/**
 		 * LECTURE
 		 * 
