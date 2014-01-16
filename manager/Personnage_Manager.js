@@ -402,13 +402,13 @@ var Personnage_Manager = (function () {
             getPersonnageToDisplay : function()
     		{
     			var comPoidsSac = this.personnage.getPoidsSac() / this.personnage.poidsMax * 100;
-    				
+    				comPoidsSac=comPoidsSac.toFixed(2);
     			console.log("PM : approximation poids sac : " + comPoidsSac +" %");
     			var perso = new oPersonnage(new oPersonnage(
                         this.personnage.id, 		this.personnage.ptSante, 	this.personnage.ptSanteMax,
-                        -1,							-1, 							-1,
                         -1,							-1, 						-1,
-                      this.personnage.competence, -1, 						this.personnage.mode,
+                        -1,							-1, 						-1,
+                      this.personnage.competence, 	-1, 						this.personnage.mode,
                         -1,  						-1,  						-1  ,
                         -1,							this.personnage.armeEquipe,	this.personnage.armureEquipe,
                         comPoidsSac,				-1,							-1		));
