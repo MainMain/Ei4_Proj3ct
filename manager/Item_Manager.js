@@ -10,57 +10,42 @@ var oItem_BD = require('./../persistance/Item_BD');
 var Item_Manager = (function() {
 	'use strict';
 
+	Item_Manager.listeItems;
     
 	// --- METHODE DE CLASSE
 	Item_Manager.build = function(idUser) {return new Item_Manager();};
 
 	function Item_Manager() {
-		oItem_BD.Initialiser();
+		// création de la BD "fictive"
+		this.listeItems = oItem_BD.GetListItem();
+		
+		// cast certaines propriétés en int
+		for (var id in this.listeItems)
+		{
+			this.listeItems[id].poids = parseInt(this.listeItems[id].poids);
+			this.listeItems[id].type = parseInt(this.listeItems[id].type);
+			this.listeItems[id].valeur = parseInt(this.listeItems[id].valeur);
+		}
 		console.log("IMANAGER : Actif !");
 	}
+	
 	// --- METHODES D'INSTANCE
-	Item_Manager.prototype = {
-
+	Item_Manager.prototype = 
+	{
 		GetItem : function(idItem)
 		{
-			return oItem_BD.GetItemById(idItem);
+			return this.listeItems[idItem];
 		},
 		
 		GetItemAleatoire : function()
 		{
 			// tirer un id aléatoire
-			var max = oItem_BD.NbrItemDifferents();
+			var max = listeItems.count();
 			var id = Math.floor(Math.random() * max);
 			
-			// récupère item
-			var newItem;
-			this.GetItem(id, function(item)
-					{
-						// l'ajouter à la BD
-						this.AjouterItemAuJeu(newItem);
-						
-						newItem = item;
-						// pour tests
-						var newItem = new oItem(16, 	"Item q", 		"qqqqq", 	1, 	0, 21,	"public/spritesheets/armes/16.png");
-					
-					});
-			
-			
-			
 			// return l'item
-			return newItem;
-		},
-		
-		AjouterItemAuJeu : function(item)
-		{
-			//oItem_BD.NewItem(item, function(){});
-		},
-		
-		SupprimerItemDuJeu : function(item)
-		{ 
-			oItem_BD.DestroyItem(item, function(){});
-		},
-
+			return this.GetItem(id);
+		}
 	};
 	return Item_Manager;
 }());

@@ -1,100 +1,81 @@
 // includes
+var fs = require('fs');
 var oItem = require('../model/object/Item');
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
+
 var async = require('async');
+
+
+this.listeItems;
+
 
 /**
  * ITEM : COMMUNICATION SERVEUR <-> BD
  * 
  * @class Item_BD
  */
- 
-	
+
 function Item_BD() {
 	if (false === (this instanceof Item_BD)) {
 		return new Item_BD();
 	}
 };
 
-// **** EXEMPLE CREATION ITEM ****	
+// **** EXEMPLE CREATION ITEM ****
 
-// var item1 = new oItem(0, 	"Item a",		"aaaaa", 	3, 	0, 	10, "epee.jpg");
-
-// ******************************
+// var item1 = new oItem(0, "Item a", "aaaaa", 3, 0, 10, "epee.jpg");
 
 /**
- * ENVOIE LE NOMBRE D'ITEMS DIFFERENTS DANS LE JEU
+ *	RENVOIE UN ITEM PAR ID
+ *
+ * @method GetItemById
+ */
+Item_BD.GetItemById = function(idItem)
+{
+	return this.listeItems[idItem];
+},
+
+/**
+ * CREE UNE LISTE D'ITEMS
  * 
- * @method NbrItemDifferents
+ * @method GetListItem
  */
- 
-Item_BD.NbrItemDifferents = function() {
-
-},
-
-/**
- * ENVOIE UN ITEM POUR L'ENLEVER DE LA TABLE DES ITEMS DE JEU
- * 
- * @method DestroyItem
- */
- 
-Item_BD.DestroyItem = function(itemToDestroy) {
-	// envoi un item à rajouter (ou modifier si son id existe déja)
-	var id = itemToDestroy.id;
-},
-
-/**
- * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
- * retourn -1 si l'item n'est pas trouvé dans la bd
- * @method GetItem
- */
-Item_BD.GetItem = function(idItem) {
+Item_BD.GetListItem = function()
+{
+	console.log("ITEM_BD : Initialisation liste item");
 	
+	var ItemModel = mongoose.model('Item');
 	
-	
-},
-/*
-Item_BD.NewItem = function(idItem,callbackNewItem) {
-	
-	ItemBaseModel = mongoose.model('ItemBase');
-	ItemModel = mongoose.model('Item');
-	
-	var indexBD = Math.floor(Math.random()*20);
-	
-	ItemBaseModel.find({index : indexBD},function{(err, newItem)
+	ItemModel.remove(true, function(err)
+	{
 		if (err)
 		{
-			throw (err);
+			throw err;
 		}
-		
-		if (typeof newItem[0] === "undefined")
+		console.log('Items supprimés !');
+	});
+	
+	this.listeItems = new Array();
+	
+
+	ItemBaseModel = mongoose.model('ItemBase');
+	ItemModel = mongoose.model('Item');
+
+	var file = fs.readFileSync('./persistance/itemListe.txt', "utf8");
+
+	
+	var lignes = file.split("\r\n");
+	
+	for(var i in lignes)
+	{
+		if(lignes != "")
 		{
-			callbackNewItem(-1);	
-		}
-		else 
-		{
-			ItemModel.nom = newItem.nom;
-			ItemModel.description = newItem.description;
-			ItemModel.poids = newItem.poids;
-			ItemModel.type = newItem.type;
-			ItemModel.valeur = newItem.valeur;
-			ItemModel.imageName = newItem.imageName;
-			
-			ItemModel.save(function (err)
-			{
-				if (err)
-				{
-					throw err;
-				}
-				else
-				{
-					console.log('Un item a été créé');
-					callbackNewItem(ItemModel._id,ItemModel.nom,ItemModel.description
-					ItemModel.poids,ItemModel.type,ItemModel.valeur,ItemModel.imageName);
-				}
+			var infos = lignes[i].split("-");
 				
+			var newItem = new ItemModel();
 			
+
 			});
 		}
 		
@@ -103,82 +84,7 @@ Item_BD.NewItem = function(idItem,callbackNewItem) {
 	
 
 },
-*/
 
-
-
-/**
- * CREE LA LISTE DES ITEM DE BASE
- *
- *@method InitItemBase
- */
- Item_BD.InitItemBase = function() {
-	console.log("ITEM_BD : creation des items de base");
-	var ItemBaseModel = mongoose.model('ItemBase');
-	
-	var ItemBaseTosave = new ItemBaseModel();
-	var ItemArray = Array();
-	
-	var fs = require('fs');
-	var file = fs.readFileSync("Persistance/itemListe.txt","utf8");
-	var atributitem=new Array();	
-	var ligne = file.split('\n');
-	
-	
-	for (i = 0; i < ligne.length ; i++)
-	{
-		atributitem[i] = ligne[i].split('-');
-		
-		ItemBaseTosave.nom = atributitem[i][0];
-		ItemBaseTosave.description = atributitem[i][1];
-		ItemBaseTosave.poids = atributitem[i][2];
-		ItemBaseTosave.type = atributitem[i][3];
-		ItemBaseTosave.valeur = atributitem[i][4];
-		ItemBaseTosave.imageName = atributitem[i][5];
-		ItemBaseTosave.indice = atributitem[i][6];
-	
-		
-		ItemArray.unshift(ItemBaseTosave);
-		console.log(ItemArray);
-		//console.log(ItemArray[i]);
-		//console.log("dans le for :" + ItemArray[10]);
-	}
-			//console.log(ItemArray);
-
-			//console.log("appelle fonction :" +ItemArray[10]);
-			mySave(ItemArray[10]);
-},
-
-
-mySave = function(ItemArray)
-{
-			//console.log("BITRE :" + ItemArray +"\n" );
-		ItemArray.save(function(err)
-		{
-			if(err)
-			{
-				throw err;
-			}
-			
-			//console.log("dans save :" + ItemArray +"\n" );
-		});
-	//if(i >= 0)
-	//{
-		//var item = ItemArray[i];
-		//item.save(function(err)
-		//{
-			//if(err)
-			//{
-				//throw err;
-			//}
-			//else
-			//{
-				//console.log("BITRE :" + ItemArray[i].nom +"\n"+i );
-				//mySave(ItemArray, i - 1);
-			//}
-		//});
-	//}
-},
 
 //********************************* TO TRASH SOON ***********************
 //--- ATTRIBUTS DE CLASSE ---
@@ -189,6 +95,7 @@ Item_BD.listeItems;
  * 
  * @method Initialiser
  */
+ /*
 Item_BD.Initialiser = function() {
 	console.log("ITEM_BD : initialisation liste item");
 	// id, nom, description, poids, type, valeur, imageName
@@ -231,8 +138,24 @@ Item_BD.GetItemById = function(id_item)
 		{
 		console.log("ITEM_BD : WARNING -> return null");
 		return null;
-		}
-},
 
+			newItem.idItem		= infos[0];
+			newItem.nom			= infos[1];
+			newItem.description	= infos[2];
+			newItem.poids		= infos[3];
+			newItem.type		= infos[4];
+			newItem.valeur		= infos[5];
+			newItem.imageName	= infos[6];
+			
+			this.listeItems[infos[0]] = new oItem(infos[0], infos[1], infos[2], infos[3], infos[4], infos[5], infos[6]);
+			
+			newItem.save();
+
+		}
+
+	}
+	
+	return this.listeItems;
+}
 
 module.exports = Item_BD;

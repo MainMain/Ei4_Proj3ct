@@ -21,7 +21,8 @@ p.initialize = function(label, color, width, height) {
 	text.textAlign = "center";
 	
 	this.background = new createjs.Shape();
-	this.background.graphics.beginStroke("#FFF").beginFill(color).drawRect(0,0,width,height,10);
+	//this.background.graphics.beginStroke("#FFF").beginFill(color).drawRect(0,0,width,height,10);
+	this.background.graphics.beginStroke(color).beginFill(color).drawRect(0,0,width,height,10);
 	
 	text.x = width/2;
 	text.y = height/2;

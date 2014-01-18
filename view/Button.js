@@ -16,7 +16,7 @@ p.initialize = function(label, color) {
 	this.label = label;
 	if (!color) { color = "#CCC"; }
 	
-	var text = new createjs.Text(label, "14px Arial", "#000");
+	var text = new createjs.Text(label, "14px Arial", "#FFF");
 	text.textBaseline = "top";
 	text.textAlign = "center";
 	

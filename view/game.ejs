@@ -14,7 +14,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 		<!-- Put your title here! -->
-		<title>Accueil</title>
+		<title>Ei4_Proj3ct</title>
 
 		<meta name="description" content="">
 
@@ -27,6 +27,22 @@
 		<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.2.0.min.js"></script>
 		<script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="http://code.createjs.com/preloadjs-0.4.0.min.js"></script>
+		
+		<!-- Script nécessaires pour le serveur -->
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+
+		<script>
+			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+			//var socket = io.connect('http://192.168.1.12:8080');
+			var socket = io.connect('http://localhost:8080');
+			
+			$( document ).ready(function()
+			{
+				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "Jeu");
+			});
+		
+		</script>
 		
 		<script>
 			var createjs = window;
@@ -71,7 +87,7 @@
 		<script type="text/javascript" src="/view/Button.js"></script>
 		<script type="text/javascript" src="/view/ButtonMove.js"></script>
 		<script type="text/javascript" src="/view/ButtonPad.js"></script>
-		<script type="text/javascript" src="/view/canvas_uptodate.js"></script>
+		<script type="text/javascript" src="/view/canvas.js"></script>
 
 		<!-- Load Open Sans and Merriweather from Google Fonts
 		For optimal performance, customize it to load the styles you need:
@@ -95,7 +111,7 @@
 		<header id="master-header" class="clearfix" role="banner">
 
 			<hgroup>
-				<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
+				<h1 id="site-title"><a href="/" title="">Ei4 Proj3ct</a></h1>
 				<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
 			</hgroup>
 
@@ -113,7 +129,7 @@
 			<li class="current span2">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">
-					<li><a href="chat-equipe">Chat</a></li>
+					<li><a href="chat-equipe">Chat de l'équipe</a></li>
 				</ul>
 			</li>
 			<li class="span2"><a href="classement">Classement</a></li>
@@ -129,6 +145,13 @@
 
 			<div id="content" role="main" class="span12">
 				<% if(idEquipe == 0) { %>
+					<h1>Bienvenue !</h1>
+					<p>Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spécial de votre personnage.<br>
+					Vous avez le choix entre trois compétences :<br>
+					Vous pouvez être <b>UNE BRUTE</b>: Cela signifie alors que votre personnage a des <b>dégats d'attaque</b> et une <b>défense augmentée</b>. En revanche il aura moins de chance de pouvoir se cacher.<br>
+					Vous pouvez être <b>UN EXPLORATEUR</b>: Dans ce cas là c'est au contraire la <b>probabilité de se cacher</b> vos <b>points de mouvements maximum</b> qui sont augmentés. Par contre faites attention à ne pas vous faire attaquer car vos points de défense sont relativement faibles.<br>
+					Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu celà a un coup, vos dégats sont réduits ainsi que votre probabilité de cache.<br>
+					</p>
 					<form name="formInitPerso" method="POST" action="/jeu">
 						<input type="hidden" name="_method" value="PUT">
 						<select name="equipe">
@@ -136,17 +159,16 @@
 							<option value="2">Equipe 2</option>
 						</select>
 						<select name="competence">
-							<option value="1">Brute (Dégats augmentés)</option>
-							<option value="2">JE SAIS PAS(Défense augmentés)</option>
-							<option value="3">Ninja (Probabilité de se cacher augmentée)</option>
-							<option value="4">Voleur (Probabilité de fouille augmentée)</option>
+							<option value="brute">Brute (Dégats et Défense augmentés)</option>
+							<option value="explorateur">Explorateur (Probabilité de se cacher et Points de mouvement augmentée)</option>
+							<option value="chercheur">Chercheur (Probabilité de fouille augmentée)</option>
 						</select>
 						<input type="submit" value="Se lancer !" name="submitChoixDepart" />
 					</form>
 				<% } else { %>
 					<h1 class="entry-title" align=center> Plateau de jeu </h1>
 					<!-- Canvas -->
-					<canvas id="myCanvas" width="1100" height="620" style="border:1px solid #000000;">
+					<canvas id="myCanvas" style="display:block; margin:-25px; border:1px solid #FFFFFF;" width="1100" height="620">
 					
 					</canvas>
 				<% } %>
@@ -167,30 +189,6 @@
 			window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')
 		</script>
 
-		<!-- Script nécessaires pour le serveur -->
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
 
-
-		<script>
-			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:8080');
-			
-			/*
-			 * RECEPTION DES INFORMATIONS SUR LA DECONNEXION
-			 */
-			socket.on('DECONNEXION_SC', function(reponseDeconnexion) {
-				if (reponseDeconnexion == 1) {
-					$("#LogoutForm").hide();
-				} else {
-					$("#LogoutForm").html("Erreur interne !");
-				}
-			});
-
-			$("#SubmitLogout").click(function(e) {
-				socket.emit('DECONNEXION_CS');
-			});
-
-		</script>
 	</body>
 </html>

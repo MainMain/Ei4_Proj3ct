@@ -7,6 +7,7 @@ var Case = (function() {
 	'use strict';
 
 	// --- ATTRIBUTS DE CLASSE ---
+	Case.idmongo;
 	Case.id;
 	Case.nom;
 	Case.description;
@@ -15,17 +16,19 @@ var Case = (function() {
 	//Case.objetsAuSol;
 	Case.nbrGoules;
 	Case.listeItem;
+	Case.pathImg;
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	Case.build = function(id, nom, description, probaObjet, probaCache,
+	Case.build = function(idmongo, id, nom, description, probaObjet, probaCache,
 			nbrGoules, listeItem) {
-		return new Case(id, nom, description, probaObjet, probaCache,
+		return new Case(idmongo, id, nom, description, probaObjet, probaCache,
 			nbrGoules, listeItem);
 	};
 
 	// --- METHODES DE CLASSE ---
-	function Case(id, nom, description, probaObjet, probaCache,
+	function Case(idmongo, id, nom, description, probaObjet, probaCache,
 			nbrGoules, listeItem, pathImg) {
+		this.idmongo = idmongo;
 		this.id = id;
 		this.nom = nom;
 		this.description = description;
@@ -48,7 +51,12 @@ var Case = (function() {
 		 */
 		existItemInSalle : function(item) {
 			this.logAfficherItems();
-			if (this.listeItem.indexOf(item) != -1) {
+			var itemTrouve = false;
+			for (var i = 0; i < this.listeItem.length; i++)
+				{
+					if (this.listeItem[i].id == item.id) itemTrouve = true; 
+				}
+			if (itemTrouve) {
 				console.log("CASE : L'objet (" + item.id + " - " + item.nom
 						+ ") est bien dans la case ! " + this.nom);
 				return true;
@@ -67,6 +75,7 @@ var Case = (function() {
 		ajouterItem : function(item) {
 			this.listeItem.push(item);
 			console.log("CASE : suppression de l'item " + item.nom + " a la case " + this.nom);
+			this.logAfficherItems();
 		},
 
 		/**
@@ -89,6 +98,7 @@ var Case = (function() {
 			}
 			// supprime de la liste
 			this.listeItem.splice(i, 1);
+			this.logAfficherItems();
 		},
 
 		/*

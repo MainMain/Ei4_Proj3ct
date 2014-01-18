@@ -14,21 +14,41 @@ var Case_Manager = (function() {
 
     // --- ATTRIBUTS DE CLASSE ---
 	Case_Manager.caseCourante;
+    Case_Manager.idZoneSure1;
+    Case_Manager.idZoneSure2;
     
 	// --- METHODE DE CLASSE
-	Case_Manager.build = function(idUser) {return new Case_Manager();};
+	Case_Manager.build = function() {return new Case_Manager();};
 
-	function Case_Manager(idCase) {
-		// FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
-		oCarte.Initialiser(3, 4);
-		oCase_BD.Initialiser();
-		console.log("CASE MANAGER : id case : " + idCase);
-		this.caseCourante = oCase_BD.GetCaseById(idCase);
-		console.log("CMANAGER : Actif !");
+	function Case_Manager() 
+	{
+		this.idZoneSure1 = 0;
+		this.idZoneSure2 = 5;
 	}
 	// --- METHODES D'INSTANCE
 	Case_Manager.prototype = {
-
+		callbackInitCase : function(reponse) {
+			if (reponse == -1)
+				console.log("!!!!! WARNING : CMANAGER : erreur lecture ");
+			else if (reponse == -2)
+				console.log("!!!!! WARNING :CMANAGER : erreur lecture ");
+			else
+			{
+				this.caseCourante = reponse;
+				console.log("CMANAGER : lecture ok");
+				console.log("CMANAGER case -> id : " + this.caseCourante.id + " : Actif ! Nom : "
+						+ this.caseCourante.nom + " Image : " 
+						+ this.caseCourante.pathImg +" Nbr Goules : "
+						+ this.caseCourante.nbrGoules +" Description : "
+						+ this.caseCourante.description +" ProbaObjet : "
+						+ this.caseCourante.probaObjet);
+				for (var i = 0; i < this.caseCourante.listeItems; i++)
+					{
+						console.log("Objet : " + this.listeItems[i].nom);
+					}
+			}
+		},
+		
 		callbackSetCase : function(reponse) {
 			if (reponse == -1)
 				console.log("!!!!! WARNING : CMANAGER : erreur ecriture ");
@@ -38,26 +58,50 @@ var Case_Manager = (function() {
 				console.log("CMANAGER : ecriture ok");
 		},
 		
+		Load : function(idCase)
+		{
+			console.log("CASE MANAGER : création de la case : " + idCase);
+			// chargement de la case
+			var context = this;
+			this.caseCourante = oCase_BD.GetCaseById(idCase,  function(reponse) {context.callbackInitCase(reponse); });
+		},
 
 		/************************* ECRITURE *******************************/
 		AjouterItem : function(item)
 		{
 			// ajoute de l'objet case
 			this.caseCourante.ajouterItem(item);
-			
-			// écrit les nouveautés dans la BD
-			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
 		},
 		
 		SupprimerItem : function(item)
 		{
 			// suprime de l'objet case
 			this.caseCourante.supprimerItem(item);
-			
-			// écrit les nouveautés dans la BD
-			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
 		},
 		
+		AttaqueGoule : function()
+		{
+			// détermine si on tue une ou deux goules
+			var proba = Math.floor(Math.random() * 100);
+			var goulesTues;
+			
+			if (proba > 85) 
+			{
+				this.caseCourante.nbrGoules -= 2;
+				if (this.caseCourante.nbrGoules < 0) this.caseCourante.nbrGoules = 0; // pour ne être inférieur à 0
+				goulesTues = 2;
+			}
+			else
+			{
+				this.caseCourante.nbrGoules -= 1;
+				goulesTues = 1;
+			}
+			
+			// return nbr goules tués
+			return goulesTues;
+		},
+		
+
 		/************************* LECTURE *******************************/
 		GetCopieCase : function(idCase)
 		{
@@ -70,46 +114,76 @@ var Case_Manager = (function() {
 			return this.caseCourante.existItemInSalle(item);
 		},
 		
-		ChangeCase : function(idCase)
+		AttaqueDeGoules : function()
 		{
-			this.caseCourante = oCase_BD.GetCaseById(idCase);
-		},
-		
-		DegatsParGoules : function()
-		{
-			var degatsGoules = Math.floor(Math.random() * 2);
+			// attaque des goules
+			var degatsGoules = Math.floor(Math.random() * 4 + 1);
 			var nbrGoulesAttaquantes = Math.floor(Math.random() * this.caseCourante.nbrGoules);
+			var total = degatsGoules * nbrGoulesAttaquantes;
+			console.log("CASE_MAN : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total);
 			
-			return degatsGoules * nbrGoulesAttaquantes;
+			// action raté ou non
+			var chance = Math.floor(Math.random()  * 10);
+			chance -= nbrGoulesAttaquantes * 0.3;
+			var actionOk;
+			if (chance >= 5) actionOk = false;
+			else actionOk = true;
+			
+			if (this.caseCourante.nbrGoules == 0) actionOk = true;
+			
+			//console.log("CM - Attaque de goules : total : " + total);
+			 var a = {
+		            "degats"	: total,
+		            "nbrGoulesA" : nbrGoulesAttaquantes,
+		            "actionOk" 	: actionOk,
+		        };
+		    return a;
 		},
 		
-		ActionRateeParGoules : function()
+		Fouille : function(probaObjetPerso)
 		{
-			var chance = Math.floor(Math.random()  * 2);
-			if (chance >= 1)
-				return false;
-			else
-				return true;
+			var proba = Math.floor(Math.random() * 100);
+			var probaObjetCase = this.caseCourante.probaObjet * probaObjetPerso;
+
+			console.log("CASE_MANAGER : Fouille() : proba = "+proba+" - probaObjetCase  => brut = "+this.caseCourante.probaObjet+" - net = "+probaObjetCase);
+			if (proba < probaObjetCase) return true;
+			else return false;
 		},
 		
-		Fouille : function()
+		DecouverteEnnemi : function(probaObjetPerso, probaCacheEnn)
 		{
-			return true;
+
+			console.log("CASE_MANAGER : DecouverteEnnemi() : proba "+ this.caseCourante.probaObjet +" - multi :" +probaObjetPerso);
+			
+			var proba = Math.floor(Math.random() * 100);
+			var probaDecouverte = this.caseCourante.probaObjet * probaObjetPerso;
+			var probaDecouverte2 = probaDecouverte / probaCacheEnn;
+			
+			console.log("CASE_MANAGER : DecouverteEnnemi() : proba = "+proba+" - probaDecouverte  => brut = "+probaDecouverte+" - net = "+probaDecouverte2);
+			if (proba < probaDecouverte) return true;
+			else return false;
 		},
 		
 		GetNombreGoules : function()
 		{
 			return this.caseCourante.nbrGoules;
 		},
-		
-		GetNombreAllies : function()
-		{
-			return 0;
-		},
+
 		
 		GetTestZoneSure : function(numEquipe)
 		{
-			return false;
+			console.log("CASE_MANAGER : GetTestZoneSure()/ numEquipe = "+numEquipe + " id case destination : " + this.caseCourante.id + "id zone sure 2 = " + this.idZoneSure2);
+			if ( 
+					(numEquipe == 1 && this.caseCourante.id == this.idZoneSure2) ||
+					(numEquipe == 2 && this.caseCourante.id == this.idZoneSure1))
+				return true;
+			else
+				return false;	
+		},
+		
+		Save : function()
+		{
+			oCase_BD.SetCase(this.caseCourante, this.callbackSetCase);
 		},
 
 	};

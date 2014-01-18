@@ -29,11 +29,25 @@ Carte.Initialiser = function(largeur, hauteur) {
 	this.hauteur = hauteur;
 	
 	console.log("CARTE : Initialisation carte");
-	this.matrice = new Array([-1,-1,-1,-1],
-							 [-1, 0, 1,-1],
-							 [-1, 2, 3,-1],
-							 [-1,-1,-1,-1]);
-	console.log("CARTE : First line : " + this.matrice);
+	/*this.matrice = new Array([-1,-1,-1,-1,-1],
+							 [-1, 0,-1, 1,-1],
+							 [-1, 1, 2, 3,-1],
+							 [-1, 4, 5, 6,-1],
+							 [-1,-1,-1,-1,-1]);*/
+	this.matrice=new Array(hauteur);
+	for (i=0; i <hauteur; i++)
+	{
+		this.matrice[i]=new Array(largeur);
+	}
+	this.matrice[0]=([-1,-1,-1,-1,-1]);
+	this.matrice[1]=([-1, 0,-1, 1,-1]);
+	this.matrice[2]=([-1, 2, 3, 4,-1]);
+	this.matrice[3]=([-1, 5, 6, 7,-1]);
+	this.matrice[4]=([-1,-1,-1,-1,-1]);
+	
+	console.log("MATRICE : " + this.matrice);
+	
+	//console.log("CARTE : " + this.matrice);
 	
 	// récupérer la matrice de la BD
 	/*this.matrice = [];
@@ -69,8 +83,8 @@ Carte.GetIdSalleByCoord = function(x, y) {
  * @method GetIdSalleByCoord
  */
 Carte.GetCoordSalleById = function(idSalle) {
-	for (var i = 0; i < 9; i++) {
-		for (var j = 0; j < 9; j++) {
+	for (var i = 0; i < 5; i++) {
+		for (var j = 0; j < 5; j++) {
 			if (this.matrice[i][j] == idSalle) {
 				var tuple = {
 					x : i,
@@ -98,13 +112,13 @@ Carte.GetIdSalleSuivante = function(idSalleEnCours, direction) {
 	console.log("CARTE : DEBUG GetIdSalleSuivante : x = " + tuple.x + " y = "
 			+ tuple.y + " direction = " + direction);
 	if (direction.toUpperCase() == 'NORD') {
-		return this.GetIdSalleByCoord((tuple.x), tuple.y - 1);
+		return this.GetIdSalleByCoord(tuple.x -1, tuple.y);
 	} else if (direction.toUpperCase() == 'SUD') {
-		return this.GetIdSalleByCoord(tuple.x, tuple.y + 1);
-	} else if (direction.toUpperCase() == 'EST') {
 		return this.GetIdSalleByCoord(tuple.x + 1, tuple.y);
+	} else if (direction.toUpperCase() == 'EST') {
+		return this.GetIdSalleByCoord(tuple.x, tuple.y + 1);
 	} else if (direction.toUpperCase() == 'OUEST') {
-		return this.GetIdSalleByCoord(tuple.x - 1, tuple.y);
+		return this.GetIdSalleByCoord(tuple.x, tuple.y - 1);
 	}
 	console.log("## WARNING ## CARTE :: return -1 (Carte.js)");
 	return -1;

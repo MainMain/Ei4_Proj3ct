@@ -69,30 +69,31 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                 idArmure = personnageToSave.armureEquipee.id;
 
             console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
-
+            console.log("PERSONNAGE_BD : SetPersonnage() : last mvt :  " + personnageToSave.dernierMvt);
+            
             PersonnageModel.update({
                     _id: personnageToSave.id
                 }, {
-                    ptSante: personnageToSave.ptSante,
-                    ptSanteMax: personnageToSave.ptSanteMax,
-                    ptAction: personnageToSave.ptActions,
-                    ptActionMax: personnageToSave.ptActionsMax,
-                    ptDeplacement: personnageToSave.ptDeplacement,
-                    ptDeplacementMax: personnageToSave.ptDeplacementMax,
-                    poidsMax: personnageToSave.poidsMax,
-                    gouleLimite: personnageToSave.goulesMax,
-                    competence: personnageToSave.competence,
-                    idSalleEnCours: personnageToSave.idSalleEnCours,
-                    mode : personnageToSave.mode,
-            		multiPtsAttaque : personnageToSave.multiPtsAttaque,
-            		multiPtsDefense : personnageToSave.multiPtsDefense,
-            	    multiProbaCache : personnageToSave.multiProbaCache,
+                    ptSante: 			personnageToSave.ptSante,
+                    ptSanteMax: 		personnageToSave.ptSanteMax,
+                    ptAction: 			personnageToSave.ptActions,
+                    ptActionMax: 		personnageToSave.ptActionsMax,
+                    ptDeplacement: 		personnageToSave.ptDeplacement,
+                    ptDeplacementMax: 	personnageToSave.ptDeplacementMax,
+                    poidsMax: 			personnageToSave.poidsMax,
+                    gouleLimite: 		personnageToSave.goulesMax,
+                    competence: 		personnageToSave.competence,
+                    idSalleEnCours: 	personnageToSave.idSalleEnCours,
+                    mode : 				personnageToSave.mode,
+            		multiPtsAttaque : 	personnageToSave.multiPtsAttaque,
+            		multiPtsDefense : 	personnageToSave.multiPtsDefense,
+            	    multiProbaCache : 	personnageToSave.multiProbaCache,
             	    multiProbaFouille : personnageToSave.multiProbaFouille,
-                    idArmeEquipee: idArme,
-                    idArmureEquipee: idArmure,
-                    sacADos: personnageToSave.sacADos,		
-                    dernierMvt : String,
-            		listeMsgAtt : Array,
+                    idArmeEquipee: 		idArme,
+                    idArmureEquipee: 	idArmure,
+                    sacADos: 			personnageToSave.sacADos,		
+                    dernierMvt : 		personnageToSave.dernierMvt,
+            		listeMsgAtt : 		personnageToSave.listeMsgAtt,
                 },
                 function (err) {
                     if (err) {
@@ -164,13 +165,14 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                     console.log('PERSONNAGE_BD : id salle perso récupéré : ' + perso[0].idSalleEnCours);
                     // conversion des id "ArmeEquipee" et "ArmureEquipee" en objet
                     var arme = null, armure = null;
+					console.log("idArmeEquipee = " + perso[0].idArmeEquipee);
                     if (perso[0].idArmeEquipee != null)
                     	 arme = oItem_BD.GetItemById(perso[0].idArmeEquipee);
                     if (perso[0].idArmureEquipee != null)
                    	 armure	 = oItem_BD.GetItemById(perso[0].idArmureEquipee);
                     callbackGetPersonnageByIdUser(new oPersonnage(
                         perso[0].id, 				perso[0].ptSante, 			perso[0].ptSanteMax,
-                        perso[0].ptAction,		 	perso[0].ptActionMax, 		perso[0].ptDeplacement+30,
+                        perso[0].ptAction,		 	perso[0].ptActionMax, 		perso[0].ptDeplacement,
                         perso[0].ptDeplacementMax,	perso[0].poidsMax, 			perso[0].gouleLimite,
                         perso[0].competence, 		perso[0].idSalleEnCours, 	perso[0].mode, 
                         perso[0].multiPtsAttaque,  	perso[0].multiPtsDefense,  	perso[0].multiProbaCache,  

@@ -17,10 +17,7 @@ var Utilisateur_Manager = (function () {
         // --- METHODE DE CLASSE
         Utilisateur_Manager.build = function (idUser) { return new Utilisateur_Manager(); };
 
-        function Utilisateur_Manager() { }
-        
-
-        
+        function Utilisateur_Manager() { }        
         
         // --- METHODES D'INSTANCE
         Utilisateur_Manager.prototype =
@@ -56,13 +53,28 @@ var Utilisateur_Manager = (function () {
         	{
         		return this.Utilisateur.numEquipe;
         	},
+        	
+        	GetPseudo : function()
+        	{
+        		return this.Utilisateur.pseudo;
+        	},
 			
+        	GetIdPersonnage : function()
+        	{
+        		return this.Utilisateur.idPersonnage;
+        	},
 			SetNumEquipe : function(numEquipe)
 			{
 				var context = this;
 				context.Utilisateur.numEquipe = numEquipe;
             	oUtilisateur_BD.SetUtilisateur(context.Utilisateur, function(reponse) {context.callbackSetEquipe(reponse); });
-			}
+			},
+        	
+        	Save : function()
+        	{
+				var context = this;
+            	oUtilisateur_BD.SetUtilisateur(context.Utilisateur, function(reponse) {context.callbackSetEquipe(reponse); });
+        	},
         };
         return Utilisateur_Manager;
         

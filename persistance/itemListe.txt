@@ -1,0 +1,24 @@
+100-Ep�e rouill�e-Une petite �p�e compl�tement rouill�e-10-1-10-/public/spritesheets/arme/100.png
+101-Ep�e de fer-Une �p�e standard-10-1-4-/public/spritesheets/arme/101.png
+102-Ep�e en argent-Une grande �p�e en argent-10-1-10-/public/spritesheets/arme/102.png
+103-Ep�e en or-Une �p�e qui doit couter bien cher-10-1-10-/public/spritesheets/arme/103.png
+200-Armure de cuir-Une armure en cuir-20-2-13-/public/spritesheets/armure/200.png
+201-Armure de fer-Une armure en fer-20-2-13-/public/spritesheets/armure/201.png
+202-Armure en argent-Une armure en argent-20-2-7-/public/spritesheets/armure/202.png
+203-Armure en or-Bien lourd �a !-120-2-13-/public/spritesheets/armure/203.png
+300-Planche de bois-Du bon bois bien solide !-5-3-5-/public/spritesheets/odd/300.png
+301-Planche de fer-Du fer bon march�!-5-3-7-/public/spritesheets/odd/301.png
+302-Planche d'argent-Pour couper le pain-5-3-12-/public/spritesheets/odd/302.png
+303-Planche d'or-Un lingot �cras� quoi...-5-3-54-/public/spritesheets/odd/303.png
+400-Petite potion de soin-Rends 10 points de sant�-5-4-10-/public/spritesheets/potionSoin/400.png
+401-Moyenne potion de soin-Rends 25 points de sant�-10-4-25-/public/spritesheets/potionSoin/401.png
+402-Grande potion de soin-Rends 50 points de sant�-15-4-50-/public/spritesheets/potionSoin/402.png
+403-G�ante potion de soin-Rends 100 points de sant�-25-4-100-/public/spritesheets/potionSoin/403.png
+500-Petite potion d'action-Rends 2 points d'actions-3-5-2-/public/spritesheets/potionAction/500.png
+501-Moyenne potion d'action-Rends 5 points d'actions-3-5-5-/public/spritesheets/potionAction/501.png
+502-Grande potion d'action-Rends 10 points d'actions-10-5-10-/public/spritesheets/potionAction/502.png
+503-G�ante potion d'action-Rends 20 points d'actions-10-5-20-/public/spritesheets/potionAction/503.png
+600-Petite potion de mouvement-Rends 1 points de mouvement-1-6-1-/public/spritesheets/potionMouvement/600.png
+601-Moyenne potion de mouvement-Rends 5 points de mouvement-1-6-5-/public/spritesheets/potionMouvement/601.png
+602-Grande potion de mouvement-Rends 10 points de mouvement-1-6-10-/public/spritesheets/potionMouvement/602.png
+603-G�ante potion de mouvement-Rends 15 points de mouvement-2-6-15-/public/spritesheets/potionMouvement/603.png

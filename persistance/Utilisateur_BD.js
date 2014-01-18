@@ -94,12 +94,12 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 		}
 		else
 		{
-			console.log("Appelle du callBack avec un utilisateur")
+			console.log("Appel du callBack avec un utilisateur"),
 			callbackGetUtilisateur( new oUtilisateur(
-				NewUser[0]._id,NewUser[0].pseudo,NewUser[0].email,
-				NewUser[0].nbrMeurtres,NewUser[0].nbrMeurtresCumule,
-				NewUser[0].nbrFoisTue,NewUser[0].nbrFoisTueCumule,
-				NewUser[0].numEquipe,NewUser[0].personnage));
+				NewUser[0]._id,			NewUser[0].pseudo,NewUser[0].email,
+				NewUser[0].nbrMeurtres,	NewUser[0].nbrMeurtresCumule,
+				NewUser[0].nbrFoisTue,	NewUser[0].nbrFoisTueCumule,
+				NewUser[0].numEquipe,	NewUser[0].personnage));
 		}
 	});
 	
@@ -185,7 +185,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 				var PersonnageModel = mongoose.model('Personnage');
 				var NewPerso = new PersonnageModel();
 				
-				NewPerso = oPersonnageDB.Creation(80,20,15,30,4,"voleur");
+				NewPerso = oPersonnageDB.Creation(100,20,15,30,4,"");
 				
 				console.log('BASE DE DONNEES : ID du perso cree ' + NewPerso._id);
 				NewUser.personnage = NewPerso._id;
@@ -247,6 +247,24 @@ Utilisateur_BD.test = function()
 	console.log("COUCOU");
 },
  
+ Utilisateur_BD.GetUsersId = function(callback)
+ {
+	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
+	var tabId = new Array();
+	
+	Utilisateurmodel.find({}, function(err, users)
+	{
+		if(err)
+		{
+			throw err;
+		}
+		for(var i in users)
+		{
+			tabId[i] = users[i].id;
+		}
+		callback(tabId);
+	});
+ },
 
  
  module.exports = Utilisateur_BD;

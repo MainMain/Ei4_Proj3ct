@@ -69,20 +69,31 @@ database.Initialiser = function() {
 	});
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
 	
+	/***** CREATION DU SCHEMA "ITEM" ****/
+	var ItemSchema = new mongoose.Schema({
+		idItem 		: Number,
+		nom    		: String,
+		description : String,
+		poids   	: Number,
+		type   		: Number,
+		valeur 		: Number,
+		imageName	: String,
+	});
 	
-	
-
+	ItemModel = mongoose.model('Item',ItemSchema);
 	
 	/***** CREATION DU SCHEMA "CASE" ****/
 	var CaseSchema = new mongoose.Schema({
+		id : Number,
 		nom : String,
 		description : String,
 		probaObjet : Number,
 		probaCache : Number,
 		nbrGoules : Number,
-		itemsAuSol : Array,
+		listeItem : Array,
 		pathImg : String,
 	});
+
 	CaseModel = mongoose.model('Case',CaseSchema); 
 	
 
@@ -112,17 +123,14 @@ database.Initialiser = function() {
 	
 	ItemBaseModel = mongoose.model('ItemBase',	ItemBaseSchema);
 	
-	oItem.InitItemBase();
 	
+	
+
+
+	CaseModel = mongoose.model('Case',CaseSchema);
 
 	
 	console.log("Initialisation Database");
 },
 
-
-
-
-
-
 module.exports = database;
-

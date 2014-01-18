@@ -14,7 +14,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 		<!-- Put your title here! -->
-		<title>Accueil</title>
+		<title>Règles du jeu</title>
 
 		<meta name="description" content="">
 
@@ -45,7 +45,7 @@
 		<header id="master-header" class="clearfix" role="banner">
 
 			<hgroup>
-				<h1 id="site-title"><a href="index.html" title="">Ei4 Proj3ct</a></h1>
+				<h1 id="site-title"><a href="/" title="">Ei4 Proj3ct</a></h1>
 				<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
 			</hgroup>
 
@@ -58,17 +58,17 @@
 			<nav class="main-navigation clearfix span12" role="navigation">
 				<h3 class="assistive-text">Menu principal</h3>
 				<ul>
-					<li class="current span2">
+					<li class="span2">
 						<a href="/">Accueil</a>
 					</li>
-					<li class="span2">
+					<li class="current span2">
 						<a href="regles">But du jeu</a>
 					</li>
 					<li class="span2">
 						<a href="jeu">Jeu</a>
 						<ul class="sub-menu">
 							<li>
-								<a href="chat-equipe">Chat</a>
+								<li><a href="chat-equipe">Chat de l'équipe</a></li>
 							</li>
 						</ul>
 					</li>
@@ -263,7 +263,12 @@
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			var socket = io.connect('http://localhost:8080');
-
+			
+			$( document ).ready(function()
+			{
+				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "regles");
+			});
+		
 		</script>
 	</body>
 </html>
