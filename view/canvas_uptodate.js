@@ -608,6 +608,7 @@ function start() {
 						socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 						});*/
 
+
 	var _EpaisseurBpPad = 20;
 	var BtnHaut = stage.addChild(new ButtonPad("H", ColorPad, map.image.width, _EpaisseurBpPad));
 	BtnHaut.y = map.y - _EpaisseurBpPad;
@@ -753,6 +754,7 @@ function start() {
 	// ******************************************
 
 	// AFFICHAGE DE L'IVENTAIRE DE CASE ET PERSO
+	alert("DEMANDE");
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
 	stage.update();
@@ -886,7 +888,7 @@ function start() {
 	 * @method INFO_CASE_SC
 	 */
 	socket.on('INFO_CASE_SC', function(currentCase) {
-
+	alert("INFO_C");
 		if (currentCase == "ERREUR_CASE")
 		{
 			//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
@@ -1037,7 +1039,7 @@ function start() {
 	 * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
 	 */
 	socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-
+	alert("INFO_P");
 		var PoidsSac=0;
 		var PointsAttaque, PointsDefense;
 		var PointsMove;

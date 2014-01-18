@@ -1,6 +1,8 @@
 // includes
 var oItem = require('../model/object/Item');
 var oDatabase = require('../model/database');
+var mongoose = require('mongoose');
+var async = require('async');
 
 /**
  * ITEM : COMMUNICATION SERVEUR <-> BD
@@ -105,21 +107,78 @@ Item_BD.NewItem = function(idItem,callbackNewItem) {
 
 
 
+/**
+ * CREE LA LISTE DES ITEM DE BASE
+ *
+ *@method InitItemBase
+ */
+ Item_BD.InitItemBase = function() {
+	console.log("ITEM_BD : creation des items de base");
+	var ItemBaseModel = mongoose.model('ItemBase');
+	
+	var ItemBaseTosave = new ItemBaseModel();
+	var ItemArray = Array();
+	
+	var fs = require('fs');
+	var file = fs.readFileSync("Persistance/itemListe.txt","utf8");
+	var atributitem=new Array();	
+	var ligne = file.split('\n');
+	
+	
+	for (i = 0; i < ligne.length ; i++)
+	{
+		atributitem[i] = ligne[i].split('-');
+		
+		ItemBaseTosave.nom = atributitem[i][0];
+		ItemBaseTosave.description = atributitem[i][1];
+		ItemBaseTosave.poids = atributitem[i][2];
+		ItemBaseTosave.type = atributitem[i][3];
+		ItemBaseTosave.valeur = atributitem[i][4];
+		ItemBaseTosave.imageName = atributitem[i][5];
+		ItemBaseTosave.indice = atributitem[i][6];
+	
+		
+		ItemArray.unshift(ItemBaseTosave);
+		console.log(ItemArray);
+		//console.log(ItemArray[i]);
+		//console.log("dans le for :" + ItemArray[10]);
+	}
+			//console.log(ItemArray);
+
+			//console.log("appelle fonction :" +ItemArray[10]);
+			mySave(ItemArray[10]);
+},
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+mySave = function(ItemArray)
+{
+			//console.log("BITRE :" + ItemArray +"\n" );
+		ItemArray.save(function(err)
+		{
+			if(err)
+			{
+				throw err;
+			}
+			
+			//console.log("dans save :" + ItemArray +"\n" );
+		});
+	//if(i >= 0)
+	//{
+		//var item = ItemArray[i];
+		//item.save(function(err)
+		//{
+			//if(err)
+			//{
+				//throw err;
+			//}
+			//else
+			//{
+				//console.log("BITRE :" + ItemArray[i].nom +"\n"+i );
+				//mySave(ItemArray, i - 1);
+			//}
+		//});
+	//}
+},
 
 //********************************* TO TRASH SOON ***********************
 //--- ATTRIBUTS DE CLASSE ---

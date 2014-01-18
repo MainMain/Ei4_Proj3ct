@@ -590,6 +590,7 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
+		console.log("SERVEUR : Reception demande info P");
 		socket.emit('INFO_PERSONNAGE_SC', pManager.GetCopiePerso());
     });
 

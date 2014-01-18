@@ -115,6 +115,7 @@ Case_BD.Initialiser = function() {
 	var case11 = new oCase(10, "E21", "Une salle sale", 75, 12, 4, array1);
 	
 	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9, case10, case11);
+	
 },
 
 

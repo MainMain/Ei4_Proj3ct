@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var oItem = require('../Persistance/Item_BD');
 
 /**
  * Modélisation d'une base de donnée
@@ -85,32 +86,35 @@ database.Initialiser = function() {
 	CaseModel = mongoose.model('Case',CaseSchema); 
 	
 
-	//PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 
+ 
 
 /***** CREATION DU SCHEMA "ITEM" ****/
-	/*var ItemSchema = new mongoose.Schema({
-		nom = String,
-		description = String,
-		poids = Number,
-		type = Number,
-		valeur = Number,
-		imageName = String,
+	var ItemSchema = new mongoose.Schema({
+		nom : String,
+		description : String,
+		poids : Number,
+		type : Number,
+		valeur : Number,
+		imageName : String,
 	});
 	
 	ItemModel = mongoose.model('Item',ItemSchema);
 	
 	var ItemBaseSchema = new mongoose.Schema({
-		nom = String,
-		description = String,
-		poids = Number,
-		type = Number,
-		valeur = Number,
-		imageName = String,
-		indice = Number,
+		nom : String,
+		description : String,
+		poids : Number,
+		type : Number,
+		valeur : Number,
+		imageName : String,
+		indice : Number,
 	});
 	
 	ItemBaseModel = mongoose.model('ItemBase',	ItemBaseSchema);
-*/
+	
+	oItem.InitItemBase();
+	
+
 	
 	console.log("Initialisation Database");
 },
