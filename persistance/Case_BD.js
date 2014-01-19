@@ -21,8 +21,35 @@ function Case_BD() {
  * 
  * @method SetCase
  */
+Case_BD.SetCase = function(caseToSave, callSetCase) {
+	var CaseModel = mongoose.model('Case');
+	var newCase = new CaseModel();
 
-/*
+	newCase.id = caseToSave.id;
+	newCase.nom = caseToSave.nom;
+	newCase.description = caseToSave.description;
+	newCase.probaObjet = caseToSave.probaObjet;
+	newCase.probaCache = caseToSave.probaCache;
+	newCase.nbrGoules = caseToSave.nbrGoules;
+	newCase.listeItem = caseToSave.listeItem;
+	newCase.pathImg = caseToSave.pathImg;
+
+	newCase.save(function(err)
+	{
+		if (err)
+		{
+			callSetCase(-1);
+			console.log("CASE_BD : Creation() : ERREUR ");
+			
+			throw err;
+		}
+		
+		callSetCase(1);
+		console.log('CASE_BD : Creation de case réussie !');
+	});
+},
+
+/**
  * CREATION D'UNE NOUVELLE CASE DANS LA BD
  * 
  * @method Creation
@@ -66,11 +93,13 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 		
 		if (err) {throw err;}
 		
-		if (typeof currentCase[0] === "undefined") {
+		if (typeof currentCase[0] === "undefined")
+		{
 			console.log("Get Case : undefined");
-			callbackGetCase(-1);
-			
-		} else {
+			callbackGetCase(idCase, -1);
+		}
+		else
+		{
 			// case récupérée
 			var caseRecup = new oCase(currentCase[0]._id,
 					currentCase[0].id, 			currentCase[0].nom,
@@ -82,7 +111,7 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 			console.log("CASE_BD : GetCase() : CALLBACK");
 
 			// renvoi de la case
-			callbackGetCase(caseRecup);
+			callbackGetCase(idCase, caseRecup);
 		}
 	});
 },

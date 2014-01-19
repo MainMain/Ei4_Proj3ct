@@ -1374,7 +1374,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 	} else if (type == "DEQUIPER") {
 		if (codeRetour == -4) {
 			txtObjetEquipe.text = "";
-			txtObjetEquipe.tetx = ("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
+			txtObjetEquipe.text = ("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
 		} else if (codeRetour == 1) {
 			// Si déquipe arme
 			// efface l'arme

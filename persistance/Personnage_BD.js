@@ -48,7 +48,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
 
         if (typeof perso[0] === "undefined") {
             console.log("PERSONNAGE_BD : SetPersonnage() : undefined ! ");
-            //callbackSetPersonnage(-1)
+            callbackSetPersonnage(-1)
         } else {
             console.log("PERSONNAGE_BD : SetPersonnage() : personnage trouvé dans la BD ! ");
 
@@ -96,7 +96,9 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                     if (err) {
                         throw err;
                     }
+					
                     console.log('Pseudos modifiés !');
+					callbackSetPersonnage(1);
                 }
             );
         }
@@ -139,7 +141,7 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
         }
         if (typeof user[0] === "undefined") {
             console.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé l'user ! ");
-            callbackGetPersonnageByIdUser(-1);
+            callbackGetPersonnageByIdUser(idUtilisateur, -1);
         } else {
             PersonnageModel.find({_id: user[0].personnage}, function (err, perso) 
             {
@@ -154,7 +156,7 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
 
                 if (typeof perso[0] === "undefined") {
                     console.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé le perso ! ");
-                    callbackGetPersonnageByIdUser(-2);
+                    callbackGetPersonnageByIdUser(idUtilisateur, -2);
 
                 } else {
                     console.log('PERSONNAGE_BD : id perso récupéré : ' + perso[0].id);
@@ -166,7 +168,7 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                     	 arme = oItem_BD.GetItemById(perso[0].idArmeEquipee);
                     if (perso[0].idArmureEquipee != null)
                    	 armure	 = oItem_BD.GetItemById(perso[0].idArmureEquipee);
-                    callbackGetPersonnageByIdUser(new oPersonnage(
+                    callbackGetPersonnageByIdUser(idUtilisateur, new oPersonnage(
                         perso[0].id, 				perso[0].ptSante, 			perso[0].ptSanteMax,
                         perso[0].ptAction,		 	perso[0].ptActionMax, 		perso[0].ptDeplacement,
                         perso[0].ptDeplacementMax,	perso[0].poidsMax, 			perso[0].gouleLimite,

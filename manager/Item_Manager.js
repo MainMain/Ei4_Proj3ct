@@ -2,45 +2,35 @@
 var oItem = require('../model/object/Item');
 var oItem_BD = require('./../persistance/Item_BD');
 
-/**
- * PERSONNAGE MANAGER : RELIE LE SERVEUR AUX CASES ET GERE LES SAUVEGARDES
- *
- * @class Item_Manager
- */
-var Item_Manager = (function() {
-	'use strict';
+var oPersonnage_Manager  = require('./Personnage_Manager');
+var oCase_Manager        = require('./Case_Manager');
+var oUtilisateur_Manager = require('./Utilisateur_Manager');
 
-	Item_Manager.listeItems;
-    
-	// --- METHODE DE CLASSE
-	Item_Manager.build = function(idUser) {return new Item_Manager();};
+this.listeItems;
 
-	function Item_Manager() {
-		// création de la BD "fictive"
-		this.listeItems = oItem_BD.GetListItem();
-		
-		console.log("IMANAGER : Actif !");
-	}
+function Item_Manager(){}
+
+Item_Manager.Load = function()
+{
+	this.listeItems = new Array();
+	this.listeItems = oItem_BD.GetListItem();
 	
-	// --- METHODES D'INSTANCE
-	Item_Manager.prototype = 
-	{
-		GetItem : function(idItem)
-		{
-			return this.listeItems[idItem];
-		},
-		
-		GetItemAleatoire : function()
-		{
-			// tirer un id aléatoire
-			var max = listeItems.count();
-			var id = Math.floor(Math.random() * max);
-			
-			// return l'item
-			return this.GetItem(id);
-		}
-	};
-	return Item_Manager;
-}());
+	console.log("IMANAGER : Actif !");
+},
+
+Item_Manager.GetItem = function(idItem)
+{
+	return this.listeItems[idItem];
+},
+
+Item_Manager.GetItemAleatoire = function()
+{
+	// tirer un id aléatoire
+	var max = listeItems.count();
+	var id = Math.floor(Math.random() * max);
+	
+	// return l'item
+	return this.GetItem(id);
+}
 
 module.exports = Item_Manager;

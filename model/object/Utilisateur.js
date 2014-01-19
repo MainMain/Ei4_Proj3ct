@@ -62,6 +62,21 @@ var Utilisateur = (function() {
 			this.nbrFoisTue += 1;
 			this.nbrFoisTueCumule += 1;
 		},
+		
+		getNumEquipe : function()
+		{
+			return this.numEquipe;
+		},
+		
+		getPseudo : function()
+		{
+			return this.pseudo;
+		},
+		
+		getIdPersonnage : function()
+		{
+			return this.idPersonnage;
+		},
 
 	};
 	// On pense à retourner le constructeur (afin de pouvoir construire des
