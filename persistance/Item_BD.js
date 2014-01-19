@@ -68,19 +68,15 @@ Item_BD.GetListItem = function()
 			{
 				var newItem = new ItemModel();
 				
-				var poids	= parseInt(infos[3]);
-				var type	= parseInt(infos[4]);
-				var valeur	= parseInt(infos[5]);
-				
 				newItem.idItem		= infos[0];
 				newItem.nom			= infos[1];
 				newItem.description	= infos[2];
-				newItem.poids		= poids;
-				newItem.type		= type;
-				newItem.valeur		= valeur;
+				newItem.poids		= infos[3];
+				newItem.type		= infos[4];
+				newItem.valeur		= infos[5];
 				newItem.imageName	= infos[6];
 				
-				this.listeItems[infos[0]] = new oItem(infos[0], infos[1], infos[2], poids, type, valeur, infos[6]);
+				this.listeItems[infos[0]] = new oItem(infos[0], infos[1], infos[2], infos[3], infos[4], infos[5], infos[6]);
 				
 				newItem.save();
 			}

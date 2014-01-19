@@ -12,6 +12,7 @@ var listeItemsPerso;
 var SelectedItemCase = -1;
 var SelectedItemPerso = -1;
 var SelectedItemEquip = -1;
+var SelectedPerso = -1;
 var PersoProbaCache=1;
 var PersoProbaFouille=1;
 
@@ -248,10 +249,10 @@ var _ContMapW = 620;
 var _ContLabelsMoveX = 10;
 var _ContLabelsMoveY = 120;
 var _ContLabelsMoveW = 220;
-var _ContLabelsMoveH = 40;
+var _ContLabelsMoveH = 20;
 
 var _ContLabelsObjetX = 10;
-var _ContLabelsObjetY = _ContLabelsMoveY + 50;
+var _ContLabelsObjetY = _ContLabelsMoveY + 30;
 var _ContLabelsObjetW = 220;
 var _ContLabelsObjetH = 60;
 
@@ -263,29 +264,33 @@ var _ContLabelsAtqH = 20;
 var _ContLabelsModeX = 10;
 var _ContLabelsModeY = _ContLabelsAtqY + 30;
 var _ContLabelsModeW = 220;
-var _ContLabelsModeH = 40;
+var _ContLabelsModeH = 80;
 
 //-------------- Déclaration des labels----------------------------------------------
 
-var txtSalle, txtObjet, txtCase, txtObjetEquipe, labelRetourFouilleRapide,
+var txtSalle, txtObjet, labelRetourFouilleRapide,
 labelObjetCase,	labelInventaire, labelDescribeItem, labelRetourMode,
 labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
 labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules,
 labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
 
-var labelAlliesListe, labelEnnemisListe, labelDescribeAllie, labelDescribeEnnemi;
+var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage;
 
-var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode, contBtnsListes,
+var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
+contBtnsListes,
 contBtnsInvPerso, contBtnsInvCase, contListe, contListeAllies, contListeEnnemis,
-contLabelsMove, contLabelsObjet, contLabelsAtq, contLabelsMode;
+contLabelsMove, contLabelsObjet, contLabelsAtq, contLabelsMode, contMessage;
 
 var shape, shape1, shape2, shape3, shape4, shape6, shape7, shape8, shapeMode,
-shapeLabelsMove, shapeLabelsObjet, shapeLabelsAtq, shapeLabelsMode;
+shapeLabelsMove, shapeLabelsObjet, shapeLabelsAtq, shapeLabelsMode, shapeMessage;
 
 var _EpaisseurBpPad = 50;
 
-var imgPerso, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase;
+var ListeMessages;
+
+var imgPerso, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsListes, 
+shapeBtnsInvPerso, shapeBtnsInvCase;
 
 onload = initialize;
 
@@ -342,6 +347,7 @@ function initialize() {
 	                {src:"public/Boutons/FouilleRed.png", id:"idBtnFouilleRed"},
 	                {src:"public/Boutons/Allies.png", id:"idBtnAllies"},
 	                {src:"public/Boutons/Ennemis.png", id:"idBtnEnnemis"},
+	                {src:"public/Boutons/Annuler.png", id:"idBtnAnnuler"},
 	                {src:"public/map/0-0.png", id:"0-0"},
 	                {src:"public/map/0-1.png", id:"0-1"},
 	                {src:"public/map/0-2.png", id:"0-2"},
@@ -351,7 +357,10 @@ function initialize() {
 	                {src:"public/map/2-0.png", id:"2-0"},
 	                {src:"public/map/2-1.png", id:"2-1"},
 	                {src:"public/map/2-2.png", id:"2-2"},
-	                {src:"public/persos/perso.gif", id:"idPerso"},
+	                {src:"public/spritesheets/persos/Brute.gif", id:"idPersoBrute"},
+	                {src:"public/spritesheets/persos/Chercheur.gif", id:"idPersoChercheur"},
+	                {src:"public/spritesheets/persos/Explorateur.gif", id:"idPersoExplorateur"},
+	                {src:"public/spritesheets/persos/perso.gif", id:"idPerso"},
 	                {src:"public/spritesheets/arme/100.png", id:"100"},
 	                {src:"public/spritesheets/arme/101.png", id:"101"},
 	                {src:"public/spritesheets/arme/102.png", id:"102"},
@@ -538,10 +547,6 @@ function game() {
 	contPerso.width = 32;
 	stage.addChild(contPerso);
 
-	// insertion du Perso
-	imgPerso = new createjs.Bitmap("public/persos/perso.gif");
-	contPerso.addChild(imgPerso);
-
 	//------------------------- Zone 13 : Modes-----------------------------------------------
 	contMode = new createjs.Container();
 	contMode.x = _ContModeX;
@@ -723,6 +728,50 @@ function game() {
 	moveBarContainer.x = actionBarContainer.x;
 	moveBarContainer.y = _labelPtsMY;
 	stage.addChild(moveBarContainer);
+	
+	//------------------ Zone 8 : Proba de la case -------------------------------------------------------
+	
+	// Barre de proba Cache
+
+	cacheBarContainer = new createjs.Container();
+
+	cacheBarHeight = 10;
+	cacheBarWidth = 100;
+	cacheBarColor = createjs.Graphics.getRGB(102,102,51);
+	cacheBarFrameColor = createjs.Graphics.getRGB(255,255,255);
+
+	cacheBar = new createjs.Shape();
+	cacheBar.graphics.beginFill(cacheBarColor).drawRect(0, 0, 1, cacheBarHeight).endFill();
+
+	frameCacheBar = new createjs.Shape();
+	paddingCacheBar = 3;
+	frameCacheBar.graphics.setStrokeStyle(1).beginStroke(cacheBarFrameColor).drawRect(-paddingCacheBar/2, -paddingCacheBar/2, cacheBarWidth+paddingCacheBar, cacheBarHeight+paddingCacheBar);
+
+	cacheBarContainer.addChild(cacheBar, frameCacheBar);
+	cacheBarContainer.x = _labelProbaCacheX + 200;
+	cacheBarContainer.y = _labelProbaCacheY;
+	stage.addChild(cacheBarContainer);
+	
+	// Barre de proba Fouille
+
+	fouilleBarContainer = new createjs.Container();
+
+	fouilleBarHeight = 10;
+	fouilleBarWidth = 100;
+	fouilleBarColor = createjs.Graphics.getRGB(255,153,0);
+	fouilleBarFrameColor = createjs.Graphics.getRGB(255,255,255);
+
+	fouilleBar = new createjs.Shape();
+	fouilleBar.graphics.beginFill(fouilleBarColor).drawRect(0, 0, 1, fouilleBarHeight).endFill();
+
+	frameFouilleBar = new createjs.Shape();
+	paddingFouilleBar = 3;
+	frameFouilleBar.graphics.setStrokeStyle(1).beginStroke(fouilleBarFrameColor).drawRect(-paddingFouilleBar/2, -paddingFouilleBar/2, fouilleBarWidth+paddingFouilleBar, fouilleBarHeight+paddingFouilleBar);
+
+	fouilleBarContainer.addChild(fouilleBar, frameFouilleBar);
+	fouilleBarContainer.x = _labelProbaFouilleX + 200;
+	fouilleBarContainer.y = _labelProbaFouilleY;
+	stage.addChild(fouilleBarContainer);
 
 	//------------------------- Zone 4 : Equipement perso-----------------------------------------------
 
@@ -916,36 +965,22 @@ function game() {
 	txtSalle.textBaseline = _TextBaseline;
 	txtSalle.x = 0;
 	txtSalle.y = 0;
-	txtSalle.text="txtSalle";
+	//txtSalle.text="txtSalle";
 	
-	txtCase = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
-	txtCase.lineHeight = _LineHeight;
-	txtCase.textBaseline = _TextBaseline;
-	txtCase.x = 0;
-	txtCase.y = txtSalle.y + 20;
-	txtCase.text="txtCase";
-
 	// Conteneur labels Objet
 	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	txtObjet.lineHeight = _LineHeight;
 	txtObjet.textBaseline = _TextBaseline;
 	txtObjet.x = 0;
 	txtObjet.y = 0;
-	txtObjet.text="txtObjet";
-	
-	txtObjetEquipe = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
-	txtObjetEquipe.lineHeight = _LineHeight;
-	txtObjetEquipe.textBaseline = _TextBaseline;
-	txtObjetEquipe.x = 0;
-	txtObjetEquipe.y = txtObjet.y + 20;
-	txtObjetEquipe.text="txtObjetEquipe";
+	txtObjet.text="";
 	
 	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
 	labelRetourFouilleRapide.x = 0;
-	labelRetourFouilleRapide.y = txtObjetEquipe.y + 20;
-	labelRetourFouilleRapide.text="labelRetourFouilleRapide";
+	labelRetourFouilleRapide.y = txtObjet.y + 40;
+	//labelRetourFouilleRapide.text="labelRetourFouilleRapide";
 
 	// Conteneur labels Attaque
 	labelRetourGoules = contLabelsAtq.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -953,7 +988,7 @@ function game() {
 	labelRetourGoules.textBaseline = _TextBaseline;
 	labelRetourGoules.x = 0;
 	labelRetourGoules.y = 0;
-	labelRetourGoules.text="labelRetourGoules";
+	//labelRetourGoules.text="labelRetourGoules";
 
 	// Conteneur labels Mode
 	labelRetourMode = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
@@ -961,14 +996,14 @@ function game() {
 	labelRetourMode.textBaseline = _TextBaseline;
 	labelRetourMode.x = 0;
 	labelRetourMode.y = 0;
-	labelRetourMode.text="labelRetourMode";
+	//labelRetourMode.text="labelRetourMode";
 
 	labelRetourModeG = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
 	labelRetourModeG.lineHeight = _LineHeight;
 	labelRetourModeG.textBaseline = _TextBaseline;
 	labelRetourModeG.x = 0;
-	labelRetourModeG.y = labelRetourMode.y + 20;
-	labelRetourModeG.text="labelRetourModeG";
+	labelRetourModeG.y = labelRetourMode.y + 40;
+	//labelRetourModeG.text="labelRetourModeG";
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
@@ -1090,7 +1125,6 @@ function game() {
 			SelectedItemEquip = -1;
 			SelectedItemPerso = -1;
 		}
-
 	});
 
 	var BtnAtqGoules = new createjs.Bitmap("public/Boutons/AttaquerZ.png");
@@ -1119,11 +1153,19 @@ function game() {
 	//BtnListeEnnemis.image.onload = setImg(BtnListeEnnemis, AbsBtnD, OrdBtnListe + H);
 	BtnListeEnnemis.y=BtnListeAllies.y + H;
 	contBtnsListes.addChild(BtnListeEnnemis);
-	/*BtnListeAllies.addEventListener('click', function(event) {
+	BtnListeEnnemis.addEventListener('click', function(event) {
+		if(ListeMessages != null)
+		{
+			//alert("Nouveaux messages");
+			message(ListeMessages);
+		}
+		else
+		{
+			alert("Pas de nouveaux messages");
+		}
+	});
 
-	});	*/
-
-	BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor ="pointer";// BtnAttaquer.cursor = 
+	BtnListeAllies.cursor=BtnListeEnnemis.cursor=BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor ="pointer";// BtnAttaquer.cursor = 
 	stage.update();
 
 	// ******************************************
@@ -1135,14 +1177,53 @@ function game() {
 	socket.emit('INFO_CASE_CS');
 	//socket.emit('INFO_CASE_ALLIES_CS');
 	stage.update();
-	// Check message en attente (socket.emit)
+	//Check message en attente (socket.emit)
 	
+	stage.update();
+}
+
+function message(ListeMsg)
+{
+	contMessage = new createjs.Container();
+	contMessage.x = canvas.width/2 - 620/2;
+	contMessage.y = canvas.height/2 - 379/2;
+	contMessage.height = 379;
+	contMessage.width = 620;
+	stage.addChild(contMessage);
+	shapeMessage = new createjs.Shape();
+	stage.addChild(shapeMessage);
+	shapeMessage.graphics.setStrokeStyle(4).beginStroke("#006600").drawRect(
+			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);
+	
+	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
+	contMessage.addChild(background_message);
+	
+	labelMessage = contMessage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelMessage.lineHeight = _LineHeight;
+	labelMessage.textBaseline = _TextBaseline;
+	labelMessage.x = 20;
+	labelMessage.y = 5;
+	labelMessage.text=ListeMsg;
+
+	var BtnCancelMessage = new createjs.Bitmap("public/Boutons/Annuler.png");
+	BtnCancelMessage.x=330;
+	BtnCancelMessage.y=330;
+	contMessage.addChild(BtnCancelMessage);
+	BtnCancelMessage.addEventListener('click', function (event) {
+		stage.removeChild(contMessage);
+		ListeMessages=null;
+		game();
+	});	
+	
+	BtnCancelMessage.cursor="pointer";
+
 	stage.update();
 }
 
 function liste()
 {
 	socket.emit('INFO_CASE_ALLIES_CS');
+	socket.emit('INFO_CASE_ENNEMIS_CS');
 
 	contListe = new createjs.Container();
 	contListe.x = canvas.width/2 - 620/2;
@@ -1152,16 +1233,14 @@ function liste()
 	stage.addChild(contListe);
 	shape6 = new createjs.Shape();
 	stage.addChild(shape6);
-	shape6.graphics.setStrokeStyle(4).beginStroke("#00FF00").drawRect(
+	shape6.graphics.setStrokeStyle(4).beginStroke("#999900").drawRect(
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
 
 	// application du background liste au dessus de la map
-	var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
-	//var background_liste = new createjs.Bitmap("public/blood.jpg");
+	//var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
+	var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=0.95;
 	contListe.addChild(background_liste);
-	//background_liste.image.onload = setImg(
-	//background_liste, canvas.width/2 - 620/2, canvas.height/2 - 379/2);
 
 	labelAlliesListe = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelAlliesListe.lineHeight = _LineHeight;
@@ -1177,11 +1256,11 @@ function liste()
 	labelEnnemisListe.y = 145;
 	labelEnnemisListe.text="Liste des Ennemis :";
 
-	labelDescribeAllie = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	labelDescribeAllie.lineHeight = _LineHeight;
-	labelDescribeAllie.textBaseline = _TextBaseline;
-	labelDescribeAllie.x = 20;
-	labelDescribeAllie.y = 300;
+	labelDescribePerso = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelDescribePerso.lineHeight = _LineHeight;
+	labelDescribePerso.textBaseline = _TextBaseline;
+	labelDescribePerso.x = 20;
+	labelDescribePerso.y = 280;
 
 	//Conteneur des ALLIES
 	contListeAllies = new createjs.Container();
@@ -1208,29 +1287,40 @@ function liste()
 			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
 
 	// Bouton ANNULER
-	var BtnCancelListe = contListe.addChild(new Button("Cancel", "#850000"));
+	/*var BtnCancelListe = contListe.addChild(new Button("Cancel", "#850000"));
 	BtnCancelListe.x=330;
-	BtnCancelListe.y=340;
+	BtnCancelListe.y=340;*/
+	var BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
+	BtnCancelListe.x=330;
+	BtnCancelListe.y=330;
+	contListe.addChild(BtnCancelListe);
 	BtnCancelListe.addEventListener('click', function (event) {
+		stage.removeChild(contListe);
 		game();
 	});
 
 	// Bouton ATTAQUER
 	var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
 	BtnAttaquerListe.x=480;
-	BtnAttaquerListe.y=340;
+	BtnAttaquerListe.y=330;
 	contListe.addChild(BtnAttaquerListe);
-	/*BtnAttaquerListe.addEventListener('click', function(event) {
-
-						});	*/
-
+	BtnAttaquerListe.addEventListener('click', function(event) {
+		if (SelectedPerso == -1) {
+			alert("Selectionner Ennemi avant d'attaquer !");
+		}
+		else{
+			socket.emit('ACTION_ATTAQUE_CS', SelectedPerso);
+			SelectedPerso = -1;
+		}
+	});
+	
 	BtnCancelListe.cursor=BtnAttaquerListe.cursor="pointer";
 
 	stage.update();
-
 }
 
-function setImg(img, X, Y) {
+function setImg(img, X, Y) 
+{
 	stage.addChild(img);	
 	img.x = X;
 	img.y = Y;
@@ -1240,6 +1330,49 @@ function setImg(img, X, Y) {
 //******************************************
 //********* RECEPTION SERVEUR **************
 //******************************************
+
+/******************************************************************************************************************
+ * RECEPTION D'UNE DEMANDE POUR ATTAQUER UN AUTRE JOUEUR
+ * return 1 si ok
+ * erreur : 0 si erreur interne
+ * erreur : -1 si joueur n'est plus dans la caase
+ * erreur : -5 si raté à cause goules
+ * erreur : -10 si plus de pts actions
+ * 
+ * ET return dégats infligés
+ * 
+ * ET return dégats reçus (ennemi)
+ * 
+ * ET return dégats reçues (goules)
+ * 
+ * ET nbr goules attaquantes
+ */
+socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbGoules){
+	switch(codeRetour)
+	{
+		case 0:
+			alert("erreur interne");
+			break;
+		case 1:
+			alert("attaque ok");
+			break;
+		case -1:
+			alert("attaque : joueur plu dans la case");
+			break;
+		case -5:
+			alert("attaque ratée à cause des goules");
+			break;
+		case -10:
+			alert("attaque plu de pts d'actions");
+			break;
+	}
+	alert("dagats infligés : "+degatsI);
+	alert("dagats recus ennemi : "+degatsRecusE);
+	alert("dagats recus goules : "+degatsRecusG);
+	alert("nbr goules attaqués: "+nbGoules);
+	socket.emit('INFO_PERSONNAGE_CS');
+	socket.emit('INFO_CASE_CS');
+});
 
 /******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
@@ -1300,8 +1433,8 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 	//alert("retour button ok");
 
 	if (codeRetour == 0) {
-		txtObjetEquipe.text = "";
-		txtObjetEquipe.text = ("L'item " + currentItem.id + " n'est plus dans le sac ");
+		txtObjet.text = "";
+		txtObjet.text = ("L'item " + currentItem.id + " n'est plus dans le sac ");
 		// quitte la fonction
 		return;
 	}
@@ -1309,9 +1442,8 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 		//alert("LOG CODE : " + codeRetour);
 		switch (codeRetour) {
 		case 0:
-			//alert("0");
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
+			txtObjet.text = "";
+			txtObjet.text = ("Item pas dans le sac !");
 			//alert("Equipement de l'item " + currentItem.nom + " raté : Item pas dans sac !");
 			break;
 
@@ -1342,8 +1474,8 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 				});
 			}
 			// log
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " ok !");
+			txtObjet.text = "";
+			txtObjet.text = ("Equipement de l'objet ok");
 
 			stage.update();
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -1351,44 +1483,45 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 
 		case -1:
 			//alert("-1");
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : arme déja équipée");
+			txtObjet.text = "";
+			txtObjet.text = ("Arme déja équipée");
 			//alert("Equipement de l'item " + currentItem.id + " raté : arme déja équipée");
 			break;
 
 		case -2:
 			//alert("-2");
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : armure déja équipée");
+			txtObjet.text = "";
+			txtObjet.text = ("Armure déja équipée");
 			//alert("Equipement de l'item " + currentItem.id + " raté : armure déja équipée");
 			break;
 
 		case -3:
-			//alert("-3");
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Equipement de l'item " + currentItem.nom + " raté : l'objet n'est pas équipable");
+			alert("-3");
+			txtObjet.text = "";
+			txtObjet.text = ("L'objet n'est pas équipable");
 			//alert("Equipement de l'item " + currentItem.id + " raté : l'objet n'est pas équipable");
 			break;
 
 		}
 	} else if (type == "DEQUIPER") {
-		if (codeRetour == -4) {
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Impossible de se déséquiper de l'item " + currentItem.id + ", vous n'en êtes pas équipé");
+		if (codeRetour == -4)
+		{
+			txtObjet.text = "";
+			txtObjet.tetx = ("Déséquipement impossible, vous n'en êtes pas équipé");
 		} else if (codeRetour == 1) {
 			// Si déquipe arme
 			// efface l'arme
 			contArme.removeAllChildren();
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Arme déséquipée !");
+			txtObjet.text = "";
+			txtObjet.text = ("Arme déséquipée !");
 			socket.emit('INFO_PERSONNAGE_CS');					
 		}
 		// Si déquipe armure
 		else if (codeRetour == 2) {
 			// efface armure
 			contArmure.removeAllChildren();
-			txtObjetEquipe.text = "";
-			txtObjetEquipe.text = ("Armure déséquipée !");
+			txtObjet.text = "";
+			txtObjet.text = ("Armure déséquipée !");
 			socket.emit('INFO_PERSONNAGE_CS');
 		}
 	}
@@ -1425,16 +1558,16 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			// poids insufisant
 		case -1:
 			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet : poids max atteint !");
+			txtObjet.text = ("Impossible de ramasser l'objet,\npoids max atteint !");
 			break;
 			// objet pas dans case
 		case -2:
 			txtObjet.text = "";
-			txtObjet.text = ("L'objet " + id_item + " n'est plus dans la salle !");
+			txtObjet.text = ("Impossible de ramasser l'objet,\nplus dans la salle !");
 			break;
 		case -5:
 			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies ! - " + DegatsG + " points de vie !");
+			txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies !\n- " + DegatsG + " points de vie !");
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 			// ramassage ok
@@ -1454,7 +1587,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		// erreur
 		case -3:
 			txtObjet.text = "";
-			txtObjet.text = ("Déséquiper l'objet avant de déposer !");
+			txtObjet.text = ("Déséquipez avant de déposer !");
 			break;
 		case -4:
 			txtObjet.text = "";
@@ -1463,12 +1596,12 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			// objet pas dans sac (! pas normal)
 		case -2:
 			txtObjet.text = "";
-			txtObjet.text = ("L'item " + id_item + " n'est plus dans le sac ");
+			txtObjet.text = ("L'item n'est plus dans le sac ");
 			break;
 			// dépôt ok
 		default:
 			txtObjet.text = "";
-		txtObjet.text = ("Item " + id_item + "déposé ! Sac : " + codeRetour + " kg");
+		txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
 		socket.emit('INFO_CASE_CS');
 		socket.emit('INFO_PERSONNAGE_CS');
 		stage.update();
@@ -1484,13 +1617,14 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
  * @method INFO_CASE_SC
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
+	//socket.emit('CHECK_MSG_ATT_CS');	
 	this.listeItemsCase = new Array();
 
 	if (currentCase == "ERREUR_CASE")
 	{
 		//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
-		txtCase.text="";
-		txtCase.text=("CLIENT :: nom case = " + "ERREUR_CASE");
+		txtSalle.text="";
+		txtSalle.text=("CLIENT :: nom case = " + "ERREUR_CASE");
 	}
 	else {
 
@@ -1501,11 +1635,14 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelNbAlies.text=("Alliés dans la salle : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
-		labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
-		labelProbaFouille.text=("Proba de Trouver item : " + ProbFouille + " % (avec multi de " +  PersoProbaFouille + ")");
+		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %     (x " +  PersoProbaCache + ")");
+		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %     (x " +  PersoProbaFouille + ")");
 		labelNomSalle.text="";
 		labelNomSalle.text=("Nom salle : "+currentCase.nom+"");
-
+		
+		cacheBar.scaleX = (ProbCache/100) * cacheBarWidth;
+		fouilleBar.scaleX = (ProbFouille/100) * fouilleBarWidth;
+		
 		labelObjetCase.text="";
 		labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
 
@@ -1570,9 +1707,29 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-
-	alert(currentPerso.listeMsgAtt.length);
+	
+	//socket.emit('CHECK_MSG_ATT_CS');
+	
 	this.listeItemsPerso = new Array();
+	
+	// insertion de l'image du Perso
+	if(currentPerso.competence=="brute")
+	{
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
+	}
+	else if(currentPerso.competence=="chercheur")
+	{
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur.gif");
+	}
+	else if(currentPerso.competence=="explorateur")
+	{
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur.gif");
+	}
+	else
+	{
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/perso.gif");
+	}
+	contPerso.addChild(imgPerso);
 
 	var PoidsSac=0;
 	var PointsAttaque, PointsDefense;
@@ -1583,7 +1740,8 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	if(currentPerso.armeEquipee != null)
 	{
-		PointsAttaque = currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
+		//PointsAttaque = currentPerso.getValeurArme() ;
+		PointsAttaque =  currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
 	}
 	else
 	{
@@ -1598,6 +1756,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		PointsDefense = currentPerso.multiPtsDefense;
 	}
+		//PointsDefense = currentPerso.getValeurArmure();
 
 	// Mise à jour des labels
 	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
@@ -1838,7 +1997,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			// Ajout de l'évenement a l'image
 			// ajout d'un texte quand l'user passera la souris dessus
 			imgItem.addEventListener('mouseover', function(event) {
-				currentItem = listeItemsPerso[event.target.name];
+				var currentItem = listeItemsPerso[event.target.name];
 				labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 				stage.update();
 			},false);
@@ -1937,19 +2096,49 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
-
+	
+	if(currentPerso.listeMsgAtt.length > 0)
+	{
+		ListeMessages=currentPerso.listeMsgAtt;
+	}
+	
 	// Update l'ihm
 	stage.update();
 });
 
 /**************************************************************************************
  * RECEPTION Suite à une DEMANDE POUR UTILISER UN ITEM
- * return 1 si ok
- * erreur : 0 si objet n'est pas dans le sac
- * erreur : -1 si objet pas utilisable
- */
-//socket.on('PERSONNAGE_USE_SC', );
-//Actualiser le perso
+ 	 * 
+	 * renvoi id item
+	 * 
+	 * ET return 1 si ok
+	 * erreur : -1 si objet n'est pas dans le sac
+	 * erreur : -2 si objet pas utilisable
+	 */
+socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
+	switch(codeRetour)
+	{
+	case 1: 
+		//alert("objet utilisé !");
+		txtObjet.text="";
+		txtObjet.text=("objet utilisé !");
+		socket.emit('INFO_PERSONNAGE_CS');
+		break;
+	case -1:
+		//alert("objet plus dans le sac !");
+		txtObjet.text="";
+		txtObjet.text=("objet plus dans le sac !");
+		break;
+
+	case -2:
+		//alert("objet inutilisable !");
+		txtObjet.text="";
+		txtObjet.text=("objet inutilisable !");
+		break;
+	}
+	stage.update();
+	
+});
 
 /******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
@@ -2019,24 +2208,24 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbGoule
 	{
 	case 1: 
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +"  ok !");
+		labelRetourMode.text = ("Changement de mode ok !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case 0 : 
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +" raté ! : Erreur interne");
+		labelRetourMode.text = ("Changement de mode raté !\nErreur interne");
 		break;
 	case -4 : 
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +"  raté ! : déja dans ce mode");
+		labelRetourMode.text = ("Changement de mode mode raté !\nDéja dans ce mode");
 		break;
 	case -5: 
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +"  raté à cause des Zombies");
+		labelRetourMode.text = ("Changement de mode raté !\nFaute aux Zombies");
 		break;
 	case -10:
 		labelRetourMode.text = "";
-		labelRetourMode.text = ("chgt pour mode " + mode +"  raté ! Plu de points d'action");
+		labelRetourMode.text = ("Changement de mode raté !\nPlus de points d'action");
 		break;
 	}
 	labelRetourModeG.text = "";
@@ -2088,55 +2277,111 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, degatsInfliges, item, d
 		});
 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
-	alert("retour ok");
+	//alert("retour ok");
 	var i=0;
 	var iPositionPersoInConteneur=0;
-	/*var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
-	imgPerso.x = 0;
-	contListeAllies.addChild(imgPerso);*/
-	//alert(listeA.length);
 	
-	alert(listeAllies);
-	var size = 0;
-	 for (var key in listeAllies) 
-	    {
-	        if (listeAllies.hasOwnProperty(key)) size++;
-	       alert("------- key = " + key);
-	    }
-	alert(" taille de la liste des alliés = " + size);
+	this.listePersoAllies = new Array();
+	contListeAllies.removeAllChildren();
 	
+	var imgPerso;
+	listePersoAllies = new Array();
 	
 	for(var perso in listeAllies)
 	{
-		alert("for");
 		// mise du perso dans une variable
-		//var persoA = listeA[i];
-
-		// Ajout de l'image à l'ihm
-		var imgPerso = new createjs.Bitmap("public/persos/perso.gif");
-		imgPerso.x = 0;
-		imgPerso.cursor= "pointer";
-
+		var persoA = listeAllies[i];
+		
+		var ModePerso;
+		var DescriptionSac;
+		var PourcentVie;
+		var DescriptionVie;
+		var PourcentSac;
+		
+		this.listePersoAllies.push(persoA);
+		
+		if(persoA.id.competence=="brute")
+		{
+			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
+			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
+			imgPerso.cursor= "pointer";
+		}
+		else if(persoA.id.competence=="chercheur")
+		{
+			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur.gif");
+			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
+			imgPerso.cursor= "pointer";
+		}
+		else if(persoA.id.competence=="explorateur")
+		{
+			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur.gif");
+			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
+			imgPerso.cursor= "pointer";
+		}
+		imgPerso.name = i;
+		
 		// Ajout de l'évenement a l'image
 		// ajout d'un texte quand l'user passera la souris dessus
-		/*imgPerso.addEventListener('mouseover', function(event) {
-			//currentPerso = listeA[event.target.name];
-			labelDescribeAllie.text=("Perso Allie");
+		imgPerso.addEventListener('mouseover', function(event) {
+			var currentPerso =  listeAllies[event.target.name];
+			// Texte de description du Mode
+			switch(currentPerso.id.mode)
+			{
+				case 0: ModePerso="";
+					ModePerso="Normal";
+				break;
+				case 1: ModePerso="";
+					ModePerso="Fouille";
+				break;
+				case 2: ModePerso="";
+					ModePerso="Caché";
+				break;
+				case 3: ModePerso="";
+					ModePerso="Défense";
+				break;
+			}
+		
+			alert("armeEquip : "+currentPerso.id.armeEquipee);
+			//alert("arumureEquip : "+currentPerso.id.idArmureEquipee);
+			
+			if(currentPerso.id.idArmeEquipee!=null && currentPerso.id.idArmureEquipee!=null)
+			{
+				labelDescribePerso.text=("Competence : "+currentPerso.id.competence+
+						"\nMode : "+ModePerso+
+						"\nSanté : "+currentPerso.id.ptSante+" / "+currentPerso.id.ptSanteMax+
+						"\nSac rempli à : "+currentPerso.id.sacADos+" %"+
+						"\nArme Equipee : "+currentPerso.id.armeEquipe+" "+currentPerso.id.armeEquipe.valeur+
+						"\nArmure Equipée :"+currentPerso.id.armureEquipe+" "+currentPerso.id.armureEquipe.valeur+"");
+			}
+			else if(currentPerso.id.idArmeEquipee==null && currentPerso.id.idArmureEquipee==null)
+			{
+				labelDescribePerso.text=("Competence : "+currentPerso.id.competence+
+						"\nMode : "+ModePerso+
+						"\nSanté : "+currentPerso.id.ptSante+" / "+currentPerso.id.ptSanteMax+
+						"\nSac rempli à : "+currentPerso.id.sacADos+" %"+
+						"\nCe joueur n'est pas équipé !");
+			}
+			else
+			{
+				labelDescribePerso.text=("Competence : "+currentPerso.id.competence+
+						"\nMode : "+ModePerso+
+						"\nSanté : "+currentPerso.id.ptSante+" / "+currentPerso.id.ptSanteMax+
+						"\nSac rempli à : "+currentPerso.id.sacADos+" %"+
+						"\nCe joueur est équipé !");
+			}
 			stage.update();
 		},false);
 
 		imgPerso.addEventListener('mouseout', function(event){
-			labelDescribeItem.text="";
+			labelDescribePerso.text="";
 			stage.update();
-		},false);*/
+		},false);
 
 		/*imgPerso.addEventListener("click", function(event){
-			//var currentPerso= listeA[event.target.name];
-			//SelectedPerso=currentItem.id;
+			var currentPerso= listePersoAllies[event.target.name];
 			stage.update();
 		});*/
 
-		//imgPerso.x = iPositionPersoInConteneur * SpaceItem;
 		contListeAllies.addChild(imgPerso);
 
 		// position de l'item dans le conteneur
@@ -2150,9 +2395,184 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 	stage.update();
 });
 
-/*socket.on('INFO_CASE_ENNEMIS_SC', function (listeE){
+socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
+	var i=0;
+	var iPositionPersoInConteneur=0;
+	
+	this.listePersoEnnemis = new Array();
+	contListeEnnemis.removeAllChildren();
+	
+	var imgPerso;
+	//var currentPerso;
+	listePersoEnnemis = new Array();
+	
+	alert("longueur liste enn = " + listeEnn.length);
+	
+	for(var i = 0; i < listeEnn.length; i++)
+	{
+		// mise du perso dans une variable
+		var persoE = listeEnn[i];
+		
+		var ModePerso;
+		var DescriptionSac;
+		var PourcentVie;
+		var DescriptionVie;
+		
+		this.listePersoEnnemis.push(persoE);
+		
+		if(persoE.id.competence=="brute")
+		{
+			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
+			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
+			imgPerso.cursor= "pointer";
+		}
+		else if(persoE.id.competence=="chercheur")
+		{
+			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur.gif");
+			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
+			imgPerso.cursor= "pointer";
+		}
+		else if(persoE.id.competence=="explorateur")
+		{
+			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur.gif");
+			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
+			imgPerso.cursor= "pointer";
+		}
+		imgPerso.name = i;
+		
+		// Ajout de l'évenement a l'image
+		// ajout d'un texte quand l'user passera la souris dessus
+		imgPerso.addEventListener('mouseover', function(event) {
+			var currentPerso =  listeEnn[event.target.name];
+			alert("armeEquip : "+currentPerso.id.idArmeEquipee);
+			// Calcul du pourcentage de vie
+			PourcentVie = currentPerso.id.ptSante / currentPerso.id.ptSanteMax * 100;
+			// Texte de Description de la vie
+			if(PourcentVie>=0 && PourcentVie<20)
+			{
+				DescriptionVie="";
+				DescriptionVie="Ce joueur n'a pas l'air très en forme";
+			}
+			else if(PourcentVie>=20 && PourcentVie<40)
+			{
+				DescriptionVie="";
+				DescriptionVie="Ce joueur n'a pas l'air peu en forme";
+			}
+			else if(PourcentVie>=40 && PourcentVie<60)
+			{
+				DescriptionVie="";
+				DescriptionVie="Ce joueur a l'air en forme";
+			}
+			else if(PourcentVie>=60 && PourcentVie<80)
+			{
+				DescriptionVie="";
+				DescriptionVie="Ce joueur a l'air très en forme";
+			}
+			else if(PourcentVie>=80 && PourcentVie<=100)
+			{
+				DescriptionVie="";
+				DescriptionVie="Ce joueur a l'air au top de sa forme";
+			}
+			
+			// Texte de description du poids du sac
+			if(currentPerso.id.sacADos>=0 && currentPerso.id.sacADos<20)
+			{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur n'a pas l'air très chargé !";
+			}
+			else if(currentPerso.id.sacADos>=20 && currentPerso.id.sacADos<40)
+			{
+				DescriptionSac="";
+				DescriptionSac="Ce joueur a l'air peu chargé !";
+			}
+			else if(currentPerso.id.sacADos>=40 && currentPerso.id.sacADos<60)
+			{
+				DescriptionSac="";
+				DescriptionSac="Ce joueur a l'air chargé !";
+			}
+			else if(currentPerso.id.sacADos>=60 && currentPerso.id.sacADos<80)
+			{
+				DescriptionSac="";
+				DescriptionSac="Ce joueur a l'air très chargé !";
+			}
+			else if(currentPerso.id.sacADos>=80 && currentPerso.id.sacADos<=100)
+			{
+				DescriptionSac="";
+				DescriptionSac="Ce joueur a l'air surchargé !";
+			}
+			
+			// Texte de description du Mode
+			switch(currentPerso.id.mode)
+			{
+				case 0: ModePerso="";
+					ModePerso="Normal";
+				break;
+				case 1: ModePerso="";
+					ModePerso="Fouille";
+				break;
+				case 2: ModePerso="";
+					ModePerso="Caché";
+				break;
+				case 3: ModePerso="";
+					ModePerso="Défense";
+				break;
+			}
+		
+		/*alert("armeEquip : "+currentPerso.id.armeEquipe);
+		alert("arumureEquip : "+currentPerso.id.armureEquipe);*/
+			
+			if(currentPerso.id.idArmeEquipee!=null && currentPerso.id.idArmureEquipee!=null)
+			{
+				labelDescribePerso.text=("Competence : "+currentPerso.id.competence+
+						"\nMode : "+ModePerso+
+						"\n"+DescriptionVie+
+						"\n"+DescriptionSac+
+						"\nArme Equipee : "+currentPerso.id.armeEquipe+" "+currentPerso.id.armeEquipe.valeur+
+						"\nArmure Equipée :"+currentPerso.id.armureEquipe+" "+currentPerso.id.armureEquipe.valeur+"");
+			}
+			else if(currentPerso.id.idArmeEquipee==null && currentPerso.id.idArmureEquipee==null)
+			{
+				labelDescribePerso.text=("Competence : "+currentPerso.id.competence+
+						"\nMode : "+ModePerso+
+						"\n"+DescriptionVie+
+						"\n"+DescriptionSac+
+						"\nCe joueur n'est pas équipé !");
+			
+			}
+			else
+			{
+				labelDescribePerso.text=("Competence : "+currentPerso.id.competence+
+						"\nMode : "+ModePerso+
+						"\n"+DescriptionVie+
+						"\n"+DescriptionSac+
+						"\nCe joueur est équipé !");
+			}
+			stage.update();
+		},false);
 
-});*/
+		imgPerso.addEventListener('mouseout', function(event){
+			labelDescribePerso.text="";
+			stage.update();
+		},false);
+
+		imgPerso.addEventListener("click", function(event){
+			var currentPerso =  listeEnn[event.target.name];
+			SelectedPerso=currentPerso.id.id;
+			//alert(SelectedPerso);
+			stage.update();
+		});
+
+		contListeEnnemis.addChild(imgPerso);
+
+		// position de l'item dans le conteneur
+		iPositionPersoInConteneur++;
+
+		// Update l'ihm
+		stage.update();
+	}
+	stage.update();
+	socket.emit('INFO_PERSONNAGE_CS');
+});
 
 
 

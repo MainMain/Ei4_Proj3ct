@@ -43,21 +43,23 @@ Utilisateur_Manager.Load = function()
 
 Utilisateur_Manager.LoadUser = function(idUser)
 {
+	var context = this;
 	oUtilisateur_BD.GetUtilisateur(idUser, function(reponse)
 	{
 		if(reponse == -1 || reponse == -2)
 		{
 			console.log("!!!!! WARNING : UMANAGER : Erreur ecriture pour l'id user " + idUser);
-			this.listeUtilisateurs[idUser] = null;
+			context.listeUtilisateurs[idUser] = null;
 		}
 		else
 		{
-			this.listeUtilisateurs[idUser] = reponse;
+			console.log("Reponse = " + reponse);
+			context.listeUtilisateurs[idUser] = reponse;
 		}
 	});
 },
 
-Utilisateur_Manager.exist = function(id)
+Utilisateur_Manager.exist = function(idUser)
 {
 	if(this.listeUtilisateurs[idUser])
 	{

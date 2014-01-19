@@ -198,7 +198,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 					}
 					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
 						
-					callbackInscription(1, req, res);
+					callbackInscription(NewUser._id, req, res);
 				});
 			}
 		});

@@ -14,6 +14,14 @@ Item_Manager.Load = function()
 {
 	this.listeItems = new Array();
 	this.listeItems = oItem_BD.GetListItem();
+		
+	// cast certaines propriétés en int
+	for (var id in this.listeItems)
+	{
+		this.listeItems[id].poids = parseInt(this.listeItems[id].poids);
+		this.listeItems[id].type = parseInt(this.listeItems[id].type);
+		this.listeItems[id].valeur = parseInt(this.listeItems[id].valeur);
+	}
 	
 	console.log("IMANAGER : Actif !");
 },

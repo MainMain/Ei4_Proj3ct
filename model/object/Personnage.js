@@ -334,7 +334,7 @@ var Personnage = (function() {
 			var att;
 			if (this.armeEquipee == null)
 			{
-				att = 5;
+				att = 1;
 			}
 			else
 			{
@@ -348,13 +348,12 @@ var Personnage = (function() {
 			var def;
 			if (this.armureEquipee == null)
 			{
-				def = 0;
+				def = 1;
 			}
 			else
 			{
 				def = this.armureEquipee.valeur;
 			}
-			
 			console.log("PERSONNAGE : Valeur Armure : " + def );
 			return (def * this.multiPtsDefense);
 		},
@@ -517,6 +516,7 @@ var Personnage = (function() {
 		{
 			var type = parseInt(item.type);
 			var valeur = parseInt(item.valeur);
+			console.log("PERSONNAGE : utiliser() : utilisation de l'item" + item.nom + " de type : " + type + " de valeur " + valeur);
 			
 			if (type < 4 || type > 6)
 			{
@@ -545,6 +545,8 @@ var Personnage = (function() {
 				default:
 					break;
 			}
+			// suppression du sac
+			this.supprimerDuSac(item);
 			return 1;
 		},
 		
@@ -558,6 +560,24 @@ var Personnage = (function() {
 			this.listeMsgAtt = new Array();
 		},
 
+		prendreDesDegats : function(degats)
+		{
+			// diminution des degats grace à l'armure
+			degats -= this.getValeurArmure();
+			
+			// si en mode defense
+        	if (this.mode == 3) degats *= 0.75;
+        	
+        	if (degats > 0) 
+        		this.ptSante -= degats;
+        	else if (degats < 0) 
+        		degats = 0;
+        	
+        	if (this.ptSante < 0) 
+        		this.ptSante = 0;
+        	
+        	return degats;
+		},
 		/**
 		 * LECTURE
 		 * 
@@ -572,7 +592,7 @@ var Personnage = (function() {
 			// calcule le poids du sac + poids item
 			var i = 0;
 			for (i = 0; i < this.sacADos.length; i++) {
-				poids = poids + this.sacADos[i].poids;
+				poids = poids + parseInt(this.sacADos[i].poids);
 			}
 			// if (armeEquipee != null) poids += armeEquipee.poids;
 			// if (armureEquipee != null) poids += armeEquipee.poids;

@@ -240,8 +240,8 @@ callbackInscription = function(reponseInscription, req, res)
 	{
 		optionAccueil.usernameInscription = b.username;
 		
-		oUtilisateur_Manager.LoadUser(s.idUser);
-		oPersonnage_Manager.LoadUser(s.idUser);
+		oUtilisateur_Manager.LoadUser(reponseInscription);
+		oPersonnage_Manager.LoadUser(reponseInscription);
 		
 		res.render("accueil", optionAccueil);
 		
@@ -580,7 +580,7 @@ io.sockets.on('connection', function (socket)
 		console.log("*******************************************************");
 		// log
 		console.log('SERVER : Déplacement du personnage demandé : ' + move);
-		
+    	
 		// -> calcul de goules
 		var nbrGoules = oCase_Manager.GetNombreGoules(oPersonnage_Manager.GetIdSalleEnCours(idUser));
 		nbrGoules = nbrGoules - oCase_Manager.GetNombreAllies(oPersonnage_Manager.GetIdSalleEnCours(idUser));
@@ -616,6 +616,7 @@ io.sockets.on('connection', function (socket)
 		}
 		else if (oCase_Manager.GetTestZoneSure(idNextCase, oUtilisateur_Manager.GetNumEquipe(idUser)))
 		{
+			
 			console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
 			socket.emit('MOVE_PERSONNAGE_SC', -4);
 			return;
@@ -643,7 +644,13 @@ io.sockets.on('connection', function (socket)
     	//***************************************
     	nbrGoules = 0;
     	/*************************************/
+		// informer
+		InformerPersonnages_Case("a quitté la salle.");
+		// traiter
 		var ansDeplacementOk = oPersonnage_Manager.Deplacement(idUser, move, nbrGoules);
+		
+		// informer
+		InformerPersonnages_Case("vient d'entrer dans la salle.");
 		
 		console.log("SERVEUR : code retour ans : " + ansDeplacementOk);
 		// si le déplacement a réussi
@@ -679,6 +686,7 @@ io.sockets.on('connection', function (socket)
 			socket.emit('MOVE_PERSONNAGE_SC', -2);
 		}
 		console.log("*******************************************************");
+		//});
     });
     /*
      * 
@@ -973,9 +981,12 @@ io.sockets.on('connection', function (socket)
      *
 	/**************************************************************************************
 	 * RECEPTION D'UNE DEMANDE POUR UTILISER UN ITEM
-	 * return 1 si ok
-	 * erreur : 0 si objet n'est pas dans le sac
-	 * erreur : -1 si objet pas utilisable
+	 * 
+	 * renvoi id item
+	 * 
+	 * ET return 1 si ok
+	 * erreur : -1 si objet n'est pas dans le sac
+	 * erreur : -2 si objet pas utilisable
 	 */
     socket.on('PERSONNAGE_USE_CS', function (id_item)
     {
@@ -985,9 +996,10 @@ io.sockets.on('connection', function (socket)
 
     	// check si currentItem est bien dans le sac
   		var existItemInSac = oPersonnage_Manager.ExistItemInSac(idUser, currentItem);
+		
   		if (existItemInSac == false)
 		{
-			socket.emit('PERSONNAGE_USE_CS', currentItem, 0);
+			socket.emit('PERSONNAGE_USE_CS', currentItem, -1);
 		}
 		else
 		{
@@ -1003,7 +1015,7 @@ io.sockets.on('connection', function (socket)
 			else
 			{
 				console.log("SERVEUR : impossible d'utiliser cet item !");
-				socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, -1);
+				socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, -2);
 			}
 		}
 		console.log("*******************************************************");
@@ -1246,6 +1258,7 @@ io.sockets.on('connection', function (socket)
         
         // informer les autres joueurs
         InformerPersonnages_Case("a attaqué un autre joueur ! ");
+		/*
         if (oPersonnage_Manager.GetPtsSante(idUser) <= 0)
 		{
 			// log
@@ -1254,12 +1267,17 @@ io.sockets.on('connection', function (socket)
 			oPersonnage_Manager.Mourir(oUtilisateur_Manager.GetPseudo(idUser));
 			// informer les autres joueurs de la case
 			InformerPersonnages_Case("est KO... ");
-		}        
+		}
+		*/
         
+        // voir s'il y a des mots
+        if (pManagers[id].GetPtsSante() <= 0) MettreKo(id, idCible);
+        if (pManagers[idCible].GetPtsSante() <= 0) MettreKo(idCible, id);
+
         // log
         console.log("Attaque de " + idUser + " -> " + idCible +" : (" + ans.degatsInfliges + ") <-> ("+ans.degatsRecus +")");
         // return
-        socket.emit('ACTION_ATTAQUE_SC', 1, degatsInfliges, degatsRecus, restG["degats"], restG["nbrGoulesA"]);
+        socket.emit('ACTION_ATTAQUE_SC', 1, ans["degatsInfliges"],  ans["degatsRecus"], restG["degats"], restG["nbrGoulesA"]);
     });
     /*
      * 
@@ -1543,6 +1561,88 @@ io.sockets.on('connection', function (socket)
 		oUtilisateur_Manager.Save();
 		oPersonnage_Manager.Save();
 		oCase_Manager.Save();
+    }
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+     * FONCTION POUR COMPTER LE NOMBRE D'ENNEMIS ET ALLIES DANS UNE CASE
+     */
+    function GetNbPersonnages_Case()
+    {
+    	// nbrAllies = -1 car le personnage qui fait la demande va être compté
+		var nbrAllies = -1, nbrEnnemis = 0;
+		// construction de la liste
+    	for(var idUser2 in pManagers) 
+    	{
+    		// si le perso en cours est dans la meme salle
+    		if(pManagers[idUser2].GetIdSalleEnCours() == pManagers[id].GetIdSalleEnCours())
+    		{
+    			// si l'user correspondant au perso est de la meme équipe
+    			if (uManagers[id].GetNumEquipe() == uManagers[idUser2].GetNumEquipe())
+    			{
+    				nbrAllies++;
+    			}
+    			// sinon et si il n'est pas caché
+    			else if (pManagers[idUser2].GetMode != 2)
+    			{
+    				nbrEnnemis++;
+    			}
+    		}
+    	}
+    	
+        var a = {
+            "nbAllies"	: nbrAllies,
+            "nbEnnemis" : nbrEnnemis,
+        };
+    return a;
+    }
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+     * FONCTION POUR COMPTER LE NOMBRE D'ENNEMIS ET ALLIES DANS UNE CASE
+     */
+  
+    /*
+     * 
+     * 
+     * 
+     * 
+     * 
+     *
+    /******************************************************************************************************************
+     * FONCTION POUR FAIRE METTRE KO UN JOUEUR
+     */
+    function MettreKo(idUserKo, idUserTueur)
+    {
+		// log
+		console.log("SERVEUR : attaque() : Le joueur " + uManagers[idUserKo].GetPseudo() + " vient de mourir");
+		
+		// transfert de son inventaire
+		pManagers[idUserKo].TransfererInventaire();
+		
+		// traitement de sa mort
+    	if (uManagers[idUserKo].GetNumEquipe == 1)
+    		pManagers[idUserKo].GoCaseById(cManagers[pManagers[idUserKo].GetIdSalleEnCours()].idZoneSure1);
+    	else
+    		pManagers[idUserKo].MisKo(uManagers[idUserTueur].GetPseudo(), cManagers[pManagers[idUserKo].GetIdSalleEnCours()].idZoneSure2);
+    	
+    	
+		// informer les autres joueurs de la case
+		InformerPersonnages_Case("est KO... ");
     }
     /******************************************************************************************************************
      * FONCTION DE TEST SI UNE FOUILLE PERMET DE DECOUVRIR OU ITEM OU UNE PERSONNE

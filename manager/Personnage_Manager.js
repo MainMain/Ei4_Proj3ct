@@ -58,15 +58,16 @@ Personnage_Manager.Load = function()
 
 Personnage_Manager.LoadUser = function(idUser)
 {
+	var context = this;
 	oPersonnage_BD.GetPersonnageByIdUser(idUser, function(reponse)
 	{
 		if (reponse == -1 || reponse == -2)
 		{
-			this.listePersonnages[idUser] = null;
+			context.listePersonnages[idUser] = null;
 		}
 		else
 		{
-			this.listePersonnages[idUser] = reponse;
+			context.listePersonnages[idUser] = reponse;
 		}
 	});     	
 },
@@ -247,7 +248,6 @@ Personnage_Manager.ChercherEnnemi = function(idUser)
 			if(oCase_Manager.DecouverteEnnemi(Personnage_Manager.GetIdSalleEnCours(idUser), Personnage_Manager.GetMultiFouille(idUser), Personnage_Manager.GetMultiCache(i)))
 			{
 				ennemiDecouvert += 1;
-				
 				Personnage_Manager.Decouvert(i);
 			}
 		}
