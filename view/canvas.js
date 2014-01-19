@@ -275,18 +275,22 @@ labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules
 labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
 
-var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelDescribePerso;
+var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage;
 
-var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode, contBtnsListes,
+var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
+contBtnsListes,
 contBtnsInvPerso, contBtnsInvCase, contListe, contListeAllies, contListeEnnemis,
-contLabelsMove, contLabelsObjet, contLabelsAtq, contLabelsMode;
+contLabelsMove, contLabelsObjet, contLabelsAtq, contLabelsMode, contMessage;
 
 var shape, shape1, shape2, shape3, shape4, shape6, shape7, shape8, shapeMode,
-shapeLabelsMove, shapeLabelsObjet, shapeLabelsAtq, shapeLabelsMode;
+shapeLabelsMove, shapeLabelsObjet, shapeLabelsAtq, shapeLabelsMode, shapeMessage;
 
 var _EpaisseurBpPad = 50;
 
-var imgPerso, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase;
+var ListeMessages;
+
+var imgPerso, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsListes, 
+shapeBtnsInvPerso, shapeBtnsInvCase;
 
 onload = initialize;
 
@@ -343,6 +347,7 @@ function initialize() {
 	                {src:"public/Boutons/FouilleRed.png", id:"idBtnFouilleRed"},
 	                {src:"public/Boutons/Allies.png", id:"idBtnAllies"},
 	                {src:"public/Boutons/Ennemis.png", id:"idBtnEnnemis"},
+	                {src:"public/Boutons/Annuler.png", id:"idBtnAnnuler"},
 	                {src:"public/map/0-0.png", id:"0-0"},
 	                {src:"public/map/0-1.png", id:"0-1"},
 	                {src:"public/map/0-2.png", id:"0-2"},
@@ -723,6 +728,50 @@ function game() {
 	moveBarContainer.x = actionBarContainer.x;
 	moveBarContainer.y = _labelPtsMY;
 	stage.addChild(moveBarContainer);
+	
+	//------------------ Zone 8 : Proba de la case -------------------------------------------------------
+	
+	// Barre de proba Cache
+
+	cacheBarContainer = new createjs.Container();
+
+	cacheBarHeight = 10;
+	cacheBarWidth = 100;
+	cacheBarColor = createjs.Graphics.getRGB(102,102,51);
+	cacheBarFrameColor = createjs.Graphics.getRGB(255,255,255);
+
+	cacheBar = new createjs.Shape();
+	cacheBar.graphics.beginFill(cacheBarColor).drawRect(0, 0, 1, cacheBarHeight).endFill();
+
+	frameCacheBar = new createjs.Shape();
+	paddingCacheBar = 3;
+	frameCacheBar.graphics.setStrokeStyle(1).beginStroke(cacheBarFrameColor).drawRect(-paddingCacheBar/2, -paddingCacheBar/2, cacheBarWidth+paddingCacheBar, cacheBarHeight+paddingCacheBar);
+
+	cacheBarContainer.addChild(cacheBar, frameCacheBar);
+	cacheBarContainer.x = _labelProbaCacheX + 200;
+	cacheBarContainer.y = _labelProbaCacheY;
+	stage.addChild(cacheBarContainer);
+	
+	// Barre de proba Fouille
+
+	fouilleBarContainer = new createjs.Container();
+
+	fouilleBarHeight = 10;
+	fouilleBarWidth = 100;
+	fouilleBarColor = createjs.Graphics.getRGB(255,153,0);
+	fouilleBarFrameColor = createjs.Graphics.getRGB(255,255,255);
+
+	fouilleBar = new createjs.Shape();
+	fouilleBar.graphics.beginFill(fouilleBarColor).drawRect(0, 0, 1, fouilleBarHeight).endFill();
+
+	frameFouilleBar = new createjs.Shape();
+	paddingFouilleBar = 3;
+	frameFouilleBar.graphics.setStrokeStyle(1).beginStroke(fouilleBarFrameColor).drawRect(-paddingFouilleBar/2, -paddingFouilleBar/2, fouilleBarWidth+paddingFouilleBar, fouilleBarHeight+paddingFouilleBar);
+
+	fouilleBarContainer.addChild(fouilleBar, frameFouilleBar);
+	fouilleBarContainer.x = _labelProbaFouilleX + 200;
+	fouilleBarContainer.y = _labelProbaFouilleY;
+	stage.addChild(fouilleBarContainer);
 
 	//------------------------- Zone 4 : Equipement perso-----------------------------------------------
 
@@ -1076,7 +1125,6 @@ function game() {
 			SelectedItemEquip = -1;
 			SelectedItemPerso = -1;
 		}
-
 	});
 
 	var BtnAtqGoules = new createjs.Bitmap("public/Boutons/AttaquerZ.png");
@@ -1105,11 +1153,19 @@ function game() {
 	//BtnListeEnnemis.image.onload = setImg(BtnListeEnnemis, AbsBtnD, OrdBtnListe + H);
 	BtnListeEnnemis.y=BtnListeAllies.y + H;
 	contBtnsListes.addChild(BtnListeEnnemis);
-	/*BtnListeAllies.addEventListener('click', function(event) {
+	BtnListeEnnemis.addEventListener('click', function(event) {
+		if(ListeMessages != null)
+		{
+			//alert("Nouveaux messages");
+			message(ListeMessages);
+		}
+		else
+		{
+			alert("Pas de nouveaux messages");
+		}
+	});
 
-	});	*/
-
-	BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor ="pointer";// BtnAttaquer.cursor = 
+	BtnListeAllies.cursor=BtnListeEnnemis.cursor=BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor ="pointer";// BtnAttaquer.cursor = 
 	stage.update();
 
 	// ******************************************
@@ -1121,8 +1177,46 @@ function game() {
 	socket.emit('INFO_CASE_CS');
 	//socket.emit('INFO_CASE_ALLIES_CS');
 	stage.update();
-	// Check message en attente (socket.emit)
+	//Check message en attente (socket.emit)
 	
+	stage.update();
+}
+
+function message(ListeMsg)
+{
+	contMessage = new createjs.Container();
+	contMessage.x = canvas.width/2 - 620/2;
+	contMessage.y = canvas.height/2 - 379/2;
+	contMessage.height = 379;
+	contMessage.width = 620;
+	stage.addChild(contMessage);
+	shapeMessage = new createjs.Shape();
+	stage.addChild(shapeMessage);
+	shapeMessage.graphics.setStrokeStyle(4).beginStroke("#006600").drawRect(
+			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);
+	
+	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
+	contMessage.addChild(background_message);
+	
+	labelMessage = contMessage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelMessage.lineHeight = _LineHeight;
+	labelMessage.textBaseline = _TextBaseline;
+	labelMessage.x = 20;
+	labelMessage.y = 5;
+	labelMessage.text=ListeMsg;
+
+	var BtnCancelMessage = new createjs.Bitmap("public/Boutons/Annuler.png");
+	BtnCancelMessage.x=330;
+	BtnCancelMessage.y=330;
+	contMessage.addChild(BtnCancelMessage);
+	BtnCancelMessage.addEventListener('click', function (event) {
+		stage.removeChild(contMessage);
+		ListeMessages=null;
+		game();
+	});	
+	
+	BtnCancelMessage.cursor="pointer";
+
 	stage.update();
 }
 
@@ -1139,12 +1233,12 @@ function liste()
 	stage.addChild(contListe);
 	shape6 = new createjs.Shape();
 	stage.addChild(shape6);
-	shape6.graphics.setStrokeStyle(4).beginStroke("#00FF00").drawRect(
+	shape6.graphics.setStrokeStyle(4).beginStroke("#999900").drawRect(
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
 
 	// application du background liste au dessus de la map
-	var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
-	//var background_liste = new createjs.Bitmap("public/blood.jpg");
+	//var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
+	var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=0.95;
 	contListe.addChild(background_liste);
 
@@ -1193,17 +1287,22 @@ function liste()
 			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
 
 	// Bouton ANNULER
-	var BtnCancelListe = contListe.addChild(new Button("Cancel", "#850000"));
+	/*var BtnCancelListe = contListe.addChild(new Button("Cancel", "#850000"));
 	BtnCancelListe.x=330;
-	BtnCancelListe.y=340;
+	BtnCancelListe.y=340;*/
+	var BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
+	BtnCancelListe.x=330;
+	BtnCancelListe.y=330;
+	contListe.addChild(BtnCancelListe);
 	BtnCancelListe.addEventListener('click', function (event) {
+		stage.removeChild(contListe);
 		game();
 	});
 
 	// Bouton ATTAQUER
 	var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
 	BtnAttaquerListe.x=480;
-	BtnAttaquerListe.y=340;
+	BtnAttaquerListe.y=330;
 	contListe.addChild(BtnAttaquerListe);
 	BtnAttaquerListe.addEventListener('click', function(event) {
 		if (SelectedPerso == -1) {
@@ -1220,7 +1319,8 @@ function liste()
 	stage.update();
 }
 
-function setImg(img, X, Y) {
+function setImg(img, X, Y) 
+{
 	stage.addChild(img);	
 	img.x = X;
 	img.y = Y;
@@ -1516,6 +1616,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
  * @method INFO_CASE_SC
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
+	//socket.emit('CHECK_MSG_ATT_CS');	
 	this.listeItemsCase = new Array();
 
 	if (currentCase == "ERREUR_CASE")
@@ -1533,11 +1634,14 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelNbAlies.text=("Alliés dans la salle : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
-		labelProbaCache.text=("Proba de Cache : " + ProbCache + " % (avec multi de " +  PersoProbaCache + ")");
-		labelProbaFouille.text=("Proba de Trouver item : " + ProbFouille + " % (avec multi de " +  PersoProbaFouille + ")");
+		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %     (x " +  PersoProbaCache + ")");
+		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %     (x " +  PersoProbaFouille + ")");
 		labelNomSalle.text="";
 		labelNomSalle.text=("Nom salle : "+currentCase.nom+"");
-
+		
+		cacheBar.scaleX = (ProbCache/100) * cacheBarWidth;
+		fouilleBar.scaleX = (ProbFouille/100) * fouilleBarWidth;
+		
 		labelObjetCase.text="";
 		labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
 
@@ -1602,8 +1706,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-
-	//alert(currentPerso.listeMsgAtt.length);
+	
+	//socket.emit('CHECK_MSG_ATT_CS');
+	
 	this.listeItemsPerso = new Array();
 	
 	// insertion de l'image du Perso
@@ -1990,7 +2095,12 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
-
+	
+	if(currentPerso.listeMsgAtt.length > 0)
+	{
+		ListeMessages=currentPerso.listeMsgAtt;
+	}
+	
 	// Update l'ihm
 	stage.update();
 });
@@ -2189,7 +2299,6 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 		
 		this.listePersoAllies.push(persoA);
 		
-		//alert(persoA.id.competence);
 		if(persoA.id.competence=="brute")
 		{
 			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
@@ -2210,17 +2319,11 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 		}
 		imgPerso.name = i;
 		
-		//var currentPerso=persoA;
-		//currentPerso.name=i;
-		
 		// Ajout de l'évenement a l'image
 		// ajout d'un texte quand l'user passera la souris dessus
 		imgPerso.addEventListener('mouseover', function(event) {
 			var currentPerso =  listeAllies[event.target.name];
-			//alert("Arme equipée : " + currentPerso.id.idArmeEquipee);
 			// Texte de description du Mode
-			
-			alert(currentPerso.id.idArmeEquipee);
 			switch(currentPerso.id.mode)
 			{
 				case 0: ModePerso="";
@@ -2237,8 +2340,8 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 				break;
 			}
 		
-			/*alert("armeEquip : "+currentPerso.id.idArmeEquipee);
-			alert("arumureEquip : "+currentPerso.id.idArmureEquipee);*/
+			alert("armeEquip : "+currentPerso.id.armeEquipee);
+			//alert("arumureEquip : "+currentPerso.id.idArmureEquipee);
 			
 			if(currentPerso.id.idArmeEquipee!=null && currentPerso.id.idArmureEquipee!=null)
 			{
@@ -2273,12 +2376,10 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 			stage.update();
 		},false);
 
-		imgPerso.addEventListener("click", function(event){
-			//alert("click");
+		/*imgPerso.addEventListener("click", function(event){
 			var currentPerso= listePersoAllies[event.target.name];
-			//SelectedPerso=currentItem.id;
 			stage.update();
-		});
+		});*/
 
 		contListeAllies.addChild(imgPerso);
 
@@ -2337,16 +2438,12 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 			imgPerso.cursor= "pointer";
 		}
 		imgPerso.name = i;
-		// 	var currentPerso=persoE;
-		//currentPerso.name=i;
 		
 		// Ajout de l'évenement a l'image
 		// ajout d'un texte quand l'user passera la souris dessus
 		imgPerso.addEventListener('mouseover', function(event) {
-			//alert("event target name = " + event.target.name);
-			//alert(listeEnn[event.target.name]);
 			var currentPerso =  listeEnn[event.target.name];
-			
+			alert("armeEquip : "+currentPerso.id.idArmeEquipee);
 			// Calcul du pourcentage de vie
 			PourcentVie = currentPerso.id.ptSante / currentPerso.id.ptSanteMax * 100;
 			// Texte de Description de la vie
