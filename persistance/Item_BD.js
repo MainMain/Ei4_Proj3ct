@@ -5,6 +5,7 @@ var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
 
 this.listeItems;
+this.nbrItem;
 
 /**
  * ITEM : COMMUNICATION SERVEUR <-> BD
@@ -32,6 +33,12 @@ Item_BD.GetItemById = function(idItem)
 	return this.listeItems[idItem];
 },
 
+
+Item_BD.GetNbrItem = function()
+{
+	return this.nbrItem;
+},
+
 /**
  * CREE UNE LISTE D'ITEMS
  * 
@@ -53,8 +60,9 @@ Item_BD.GetListItem = function()
 	});
 	
 	this.listeItems = new Array();
+	this.nbrItem = 0;
 	
-	var file = fs.readFileSync('./persistance/itemListe.txt', "utf8");
+	var file = fs.readFileSync('./persistance/itemListe.txt', "utf-8");
 	
 	var lignes = file.split("\r\n");
 	
@@ -77,6 +85,7 @@ Item_BD.GetListItem = function()
 				newItem.imageName	= infos[6];
 				
 				this.listeItems[infos[0]] = new oItem(infos[0], infos[1], infos[2], infos[3], infos[4], infos[5], infos[6]);
+				this.nbrItem += 1;
 				
 				newItem.save();
 			}

@@ -59,15 +59,15 @@ Personnage_Manager.Load = function()
 Personnage_Manager.LoadUser = function(idUser)
 {
 	var context = this;
-	oPersonnage_BD.GetPersonnageByIdUser(idUser, function(reponse)
+	oPersonnage_BD.GetPersonnageByIdUser(idUser, function(id, reponse)
 	{
 		if (reponse == -1 || reponse == -2)
 		{
-			context.listePersonnages[idUser] = null;
+			context.listePersonnages[id] = null;
 		}
 		else
 		{
-			context.listePersonnages[idUser] = reponse;
+			context.listePersonnages[id] = reponse;
 		}
 	});     	
 },
@@ -114,7 +114,20 @@ Personnage_Manager.SetCompetence = function(idUser, competence)
 		
 		this.listePersonnages[idUser].setgoulesMax(3);
 	}
-	this.listePersonnages[idUser].setcompetence(competence);
+	this.listePersonnages[idUser].setCompetence(competence);
+	
+	oPersonnage_BD.SetPersonnage(this.listePersonnages[idUser], function(reponse)
+	{
+		if (reponse == -1)
+		{
+			console.log("!!!!! WARNING : PMANAGER : erreur ecriture du perso de " + idUser);
+		}
+		else
+		{
+			console.log("UMANAGER : MAJ du perso de " + idUser + " OK !");
+		}
+	});
+	
 },
 
 Personnage_Manager.Deplacement = function (idUser, move, nbrGoules)
@@ -156,11 +169,17 @@ Personnage_Manager.Utiliser = function (idUser, item)
 Personnage_Manager.subirDegats = function (idUser, degats)
 {
 	return this.listePersonnages[idUser].subirDegats(degats);
+	console.log("PMANGER : Subir Dégats : " + this.listePersonnages[idUser].getPtSante());
 },
 
 Personnage_Manager.ChangementMode = function(idUser, mode)
 {
 	return this.listePersonnages[idUser].changerMode(mode);
+},
+
+Personnage_Manager.estMort = function(idUser)
+{
+	return this.listePersonnages[idUser].getPtSante() == 0;
 },
 
 Personnage_Manager.FouilleRapide = function(idUser)
@@ -180,22 +199,22 @@ Personnage_Manager.EffacerMessages = function(idUser)
 },
 
 Personnage_Manager.Attaquer = function(idUser, idUserEnnemi)
-{
-	var degatsRecus;
-	var degatsInfliges;
+{	
+	var attA = this.listePersonnages[idUser].getValeurAttaque();
+	
+	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
+	
+	var a = { "degatsRecus"	: attB, "degatsInfliges" : attA};
 	
 	// diminution ptAction
 	this.listePersonnages[idUser].Attaquer(this.coutAttaqueEnnemi);
 	
-	degatsInfliges = this.listePersonnages[idUser].GetPtsAttaque() - this.listePersonnages[idUserEnnemi].GetPtsDefense();
-	degatsRecus = this.listePersonnages[idUserEnnemi].GetPtsAttaque() - this.listePersonnages[idUser].GetPtsDefense();
+	this.listePersonnages[idUser].subirDegats(attB);
+	this.listePersonnages[idUserEnnemi].subirDegats(attA);
 	
-	this.subirDegats(idUser, degatsRecus);
-	this.subirDegats(idUserEnnemi, degatsInfliges);
+	this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + attB + " - degats infligés en riposte : " + attA);
 	
-	this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + degatsInfliges + " - degats infligés en riposte : " + degatsRecus);
-	
-	return { "degatsRecus"	: degatsRecus, "degatsInflges" : degatsInfliges};
+	return a;
 },
 
 Personnage_Manager.AttaquerGoule = function(idUser)
@@ -203,12 +222,17 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	this.listePersonnages[idUser].diminuerPointAction(this.coutAttaqueGoule);
 },
 
+Personnage_Manager.TransfererInventaire = function(idUser)
+{
+	
+},
+
 Personnage_Manager.Decouvert = function(idUser)
 {
 	console.log("PERSONNAGE_MANAGER : Le perso " + idUser + " a été découvert !" );
 	
 	this.listePersonnages[idUser].changerMode(0);
-	this.addMessage("Vous avez été découvert ! Votre planque est foutue !");
+	this.AddMessage(idUser, "Vous avez été découvert ! Votre planque est foutue !");
 },
 
 Personnage_Manager.MisKo = function(idUser, meurtrier)
@@ -247,7 +271,7 @@ Personnage_Manager.ChercherEnnemi = function(idUser)
 		{
 			if(oCase_Manager.DecouverteEnnemi(Personnage_Manager.GetIdSalleEnCours(idUser), Personnage_Manager.GetMultiFouille(idUser), Personnage_Manager.GetMultiCache(i)))
 			{
-				ennemiDecouvert += 1;
+				nbrEnnemiDecouvert += 1;
 				Personnage_Manager.Decouvert(i);
 			}
 		}
@@ -268,16 +292,16 @@ Personnage_Manager.GetCopiePerso = function(idUser)
 
 Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 {
-	var a = { "nbrAllies"	: -1, "nbrEnnemis" : 0}
+	var a = { "nbrAllies"	: -1, "nbrEnnemis" : 0};
 	for(var i in this.listePersonnages)
 	{
-		if(this.listePersonnages[idUser].getIdSalleEnCours() == this.listePersonnages[i].getIdSalleEnCours() && this.listePersonnages[i].GetMode() != 2)
+		if(this.listePersonnages[idUser].getIdSalleEnCours() == this.listePersonnages[i].getIdSalleEnCours())
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
 				a.nbrAllies += 1;
 			}
-			else
+			else if(this.listePersonnages[i].GetMode() != 2)
 			{
 				a.nbrEnnemis += 1;
 			}
@@ -288,7 +312,7 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 
 Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
 {
-	var a = { "Allies"	: new Array(), "Ennemis" : new Array()}
+	var a = { "Allies"	: new Array(), "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
 		if(this.listePersonnages[idUser].getIdSalleEnCours() == this.listePersonnages[i].getIdSalleEnCours())
@@ -297,7 +321,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
 			{
 				a.Allies.push(i);
 			}
-			else
+			else if(this.listePersonnages[i].GetMode() != 2)
 			{
 				a.Ennemis.push(i);
 			}
@@ -306,16 +330,32 @@ Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
 	return a;
 },
 
+Personnage_Manager.GetPersonnagesDansSalle = function(idCase)
+{
+	var a = new Array();
+	for(var i in this.listePersonnages)
+	{
+		if(this.listePersonnages[i].getIdSalleEnCours() == idCase)
+		{
+			a.push(i);
+		}
+	}
+	return a;
+},
+
 Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 {
-	var a = { "Allies"	: new Array(), "Ennemis" : new Array()}
+	var a = { "Allies"	: new Array(), "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
 		if(this.listePersonnages[idUser].getIdSalleEnCours() == this.listePersonnages[i].getIdSalleEnCours())
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
-				a.Allies.push(Personnage_Manager.getPersonnageToDisplay(i));
+				if(i != idUser)
+				{
+					a.Allies.push(Personnage_Manager.getPersonnageToDisplay(i));
+				}
 			}
 			else
 			{
@@ -366,18 +406,59 @@ Personnage_Manager.ExistItemInSac = function(idUser, item)
 
 Personnage_Manager.PerteActionParGoules = function(idUser)
 {
-	this.listePersonnage[idUser].diminuerPointAction(this.coutInterceptionGoule);
+	this.listePersonnages[idUser].diminuerPointAction(this.coutInterceptionGoule);
 },
 
 Personnage_Manager.TestPtActions = function(idUser, typeAction)
 {
 	var ptActions = this.listePersonnages[idUser].getPtActions();
-	if (typeAction == "fouilleRapide" && ptActions - this.coutFouilleRapide < 0) return true;
-	else if (typeAction == "attaqueGoule" && ptActions - this.coutAttaqueGoule < 0) return true;
-	else if (typeAction == "attaqueEnnemi" && ptActions - this.coutAttaqueEnnemi < 0) return true;
-	else if (typeAction == "chgtMode" && ptActions - this.coutChgtMode < 0) return true;
-	else if (typeAction == "coutChgtMode_def" && ptActions - this.coutChgtMode_def < 0) return true;
-	else return false;
+	
+	var ok = false;
+	
+	console.log("PMANGER : ptActions :  " + ptActions);
+	console.log("PMANGER : typeAction : " + typeAction);
+	
+	if(ptActions == 0)
+	{
+		ok = true;
+	}
+	switch(typeAction)
+	{
+		case "fouilleRapide":
+			if(ptActions - this.coutFouilleRapide < 0)
+			{
+				ok = true;
+			}
+			break;
+		case "attaqueGoule":
+			if(ptActions - this.coutAttaqueGoule < 0)
+			{
+				ok = true;
+			}
+			break;
+		case "attaqueEnnemi":
+			if(ptActions - this.coutAttaqueEnnemi < 0)
+			{
+				ok = true;
+			}
+			break;
+		case "chgtMode":
+			if(ptActions - this.coutChgtMode < 0)
+			{
+				ok = true;
+			}
+			break;
+		case "coutChgtMode_def":
+			if(ptActions - this.coutChgtMode_def < 0)
+			{
+				ok = true;
+			}
+			break;
+		default:
+			ok = true;
+			break;
+	}
+	return ok;
 },
 
 Personnage_Manager.getPersonnageToDisplay = function(idUser)
@@ -386,10 +467,10 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser)
 		
 	console.log("PM : approximation poids sac : " + comPoidsSac +" %");
 	var perso = new oPersonnage(
-			idUser, 									this.listePersonnages[idUser].getPtSante(),		this.listePersonnages[idUser].getPtSanteMax(),
-			-1,											-1 												-1,
+			this.listePersonnages[idUser].getIdPerso(), 									this.listePersonnages[idUser].getPtSante(),		this.listePersonnages[idUser].getPtSanteMax(),
+			-1,											-1, 												-1,
 			-1,											-1, 											-1,
-			this.listePersonnages[idUser].getCompetence,-1, 											this.listePersonnages[idUser].GetMode(),
+			this.listePersonnages[idUser].getCompetence(),-1, 											this.listePersonnages[idUser].GetMode(),
 			-1,  										-1,  											-1,
 			-1,											this.listePersonnages[idUser].getArmeEquipe(),	this.listePersonnages[idUser].getArmureEquipe(),
 			comPoidsSac,								-1,												-1);

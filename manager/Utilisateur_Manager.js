@@ -44,17 +44,18 @@ Utilisateur_Manager.Load = function()
 Utilisateur_Manager.LoadUser = function(idUser)
 {
 	var context = this;
-	oUtilisateur_BD.GetUtilisateur(idUser, function(reponse)
+	oUtilisateur_BD.GetUtilisateur(idUser, function(IdReponse, userReponse)
 	{
-		if(reponse == -1 || reponse == -2)
+		if(userReponse == -1 || userReponse == -2)
 		{
-			console.log("!!!!! WARNING : UMANAGER : Erreur ecriture pour l'id user " + idUser);
-			context.listeUtilisateurs[idUser] = null;
+			console.log("!!!!! WARNING : UMANAGER : Erreur ecriture pour l'id user " + IdReponse);
+			context.listeUtilisateurs[IdReponse] = null;
 		}
 		else
 		{
-			console.log("Reponse = " + reponse);
-			context.listeUtilisateurs[idUser] = reponse;
+			console.log("IdReponse = " + IdReponse);
+			console.log("userReponse = " + userReponse);
+			context.listeUtilisateurs[IdReponse] = userReponse;
 		}
 	});
 },
@@ -108,7 +109,8 @@ Utilisateur_Manager.findIdUser = function(idPersonnage)
 {
 	for(var i in this.listeUtilisateurs)
 	{
-		if(Utilisateur_Manager.GetIdPersonnage(i) == idPersonnage)
+		console.log(this.listeUtilisateurs[i].getIdPersonnage() + " == " + idPersonnage);
+		if(this.listeUtilisateurs[i].getIdPersonnage() == idPersonnage)
 		{
 			return i;
 		}

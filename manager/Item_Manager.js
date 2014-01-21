@@ -7,6 +7,7 @@ var oCase_Manager        = require('./Case_Manager');
 var oUtilisateur_Manager = require('./Utilisateur_Manager');
 
 this.listeItems;
+this.nbrItems;
 
 function Item_Manager(){}
 
@@ -14,6 +15,7 @@ Item_Manager.Load = function()
 {
 	this.listeItems = new Array();
 	this.listeItems = oItem_BD.GetListItem();
+	this.nbrItems	= oItem_BD.GetNbrItem();
 		
 	// cast certaines propriétés en int
 	for (var id in this.listeItems)
@@ -34,11 +36,22 @@ Item_Manager.GetItem = function(idItem)
 Item_Manager.GetItemAleatoire = function()
 {
 	// tirer un id aléatoire
-	var max = listeItems.count();
-	var id = Math.floor(Math.random() * max);
+	var itemNumber	= Math.floor(Math.random() * this.nbrItems);
+	var c = 0;
+	var id = 100;
+	
+	
+	for(var i in this.listeItems)
+	{
+		if(c == itemNumber)
+		{
+			id = i;
+		}
+		c += 1;
+	}
 	
 	// return l'item
-	return this.GetItem(id);
-}
+	return this.listeItems[id];
+},
 
 module.exports = Item_Manager;

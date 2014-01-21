@@ -71,6 +71,12 @@ var Personnage = (function() {
 		this.dernierMvt = dernierMvt;
 		this.listeMsgAtt = listeMsgAtt;
 		
+		
+		
+		console.log("PERSONNAGE : this.goulesMax : " + this.goulesMax);
+		console.log("PERSONNAGE : this.competence : " + this.competence);
+		console.log("PERSONNAGE : this.idSalleEnCours : " + this.idSalleEnCours);
+		
 		console.log("PERSONNAGE : Nouveau personnage crée");
 	}
 
@@ -182,7 +188,8 @@ var Personnage = (function() {
 		 * 
 		 * @method supprimerDuSac
 		 */
-		supprimerDuSac : function(item) {
+		supprimerDuSac : function(item)
+		{
 			console.log("PERSONNAGE : suppression de l'item " + item.nom
 					+ " du personnage " + this.id);
 			this.logAfficherSacADos();
@@ -201,7 +208,6 @@ var Personnage = (function() {
 		
 		subirDegats : function(degats)
 		{
-			// diminution des degats grace à l'armure
 			degats -= this.getValeurArmure();
 			
 			// si en mode defense
@@ -223,6 +229,10 @@ var Personnage = (function() {
 		diminuerPointAction : function(coutAction)
 		{
 			this.ptActions -= coutAction;
+			if(this.ptActions < 0)
+			{
+				this.ptActions = 0;
+			}
 		},
 		
 		setptSante : function(newPtSante)
@@ -310,9 +320,14 @@ var Personnage = (function() {
 			this.goulesMax = goulesMax;
 		},
 		
-		setcompetence : function(competence)
+		setCompetence : function(competence)
 		{
 			this.competence = competence;
+		},
+		
+		getCompetence : function()
+		{
+			return this.competence;
 		},
 
 		/*
@@ -335,12 +350,15 @@ var Personnage = (function() {
 			if (this.armeEquipee == null)
 			{
 				att = 1;
+				console.log("VALEUR ATTAQUE : " + att);
+				att+=1;
+				console.log("VALEUR ATTAQUE : " + att);
 			}
 			else
 			{
 				att = this.armeEquipee.valeur;
 			}
-			return (this.att * this.multiPtsAttaque);
+			return (att * this.multiPtsAttaque);
 		},
 		
 		getValeurArmure : function()
@@ -419,7 +437,8 @@ var Personnage = (function() {
 		 * 
 		 * @method existItemInSac
 		 */
-		existItemInSac : function(item) {
+		existItemInSac : function(item)
+		{
 			this.logAfficherSacADos();
 			var bool = false;
 			for (var i = 0; i < this.sacADos.length; i++)
@@ -559,25 +578,7 @@ var Personnage = (function() {
 		{
 			this.listeMsgAtt = new Array();
 		},
-
-		prendreDesDegats : function(degats)
-		{
-			// diminution des degats grace à l'armure
-			degats -= this.getValeurArmure();
-			
-			// si en mode defense
-        	if (this.mode == 3) degats *= 0.75;
-        	
-        	if (degats > 0) 
-        		this.ptSante -= degats;
-        	else if (degats < 0) 
-        		degats = 0;
-        	
-        	if (this.ptSante < 0) 
-        		this.ptSante = 0;
-        	
-        	return degats;
-		},
+		
 		/**
 		 * LECTURE
 		 * 
@@ -657,7 +658,7 @@ var Personnage = (function() {
 		 */
 		getPtActions : function()
 		{
-			return this.ptAction;
+			return this.ptActions;
 		},
 
 		/**
@@ -678,6 +679,11 @@ var Personnage = (function() {
 		getIdSalleEnCours : function()
 		{
 			return this.idSalleEnCours;
+		},
+		
+		getIdPerso : function()
+		{
+			return this.id;
 		},
 		
 		/**
@@ -703,6 +709,11 @@ var Personnage = (function() {
 		GetMode : function()
 		{
 			return this.mode;
+		},
+		
+		GetSac : function()
+		{
+			return this.sacADos;
 		},
 		
 		/**
