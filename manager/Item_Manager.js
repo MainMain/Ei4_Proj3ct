@@ -6,6 +6,9 @@ var oPersonnage_Manager  = require('./Personnage_Manager');
 var oCase_Manager        = require('./Case_Manager');
 var oUtilisateur_Manager = require('./Utilisateur_Manager');
 
+// inclusion des règles
+var GameRules	= require('../model/GameRules');
+
 this.listeItems;
 this.nbrItems;
 
@@ -13,6 +16,7 @@ function Item_Manager(){}
 
 Item_Manager.Load = function()
 {
+	// création des listes
 	this.listeItems = new Array();
 	this.listeItems = oItem_BD.GetListItem();
 	this.nbrItems	= oItem_BD.GetNbrItem();

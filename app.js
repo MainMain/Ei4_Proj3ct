@@ -583,7 +583,8 @@ io.sockets.on('connection', function (socket)
     	
 		// -> calcul de goules
 		var nbrGoules = oCase_Manager.GetNombreGoules(oPersonnage_Manager.GetIdSalleEnCours(idUser));
-		nbrGoules = nbrGoules - oCase_Manager.GetNombreAllies(oPersonnage_Manager.GetIdSalleEnCours(idUser));
+		var nbrPersoInCase = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
+		nbrGoules = nbrGoules - nbrPersoInCase.nbrAllies;
 		
 		// test si déplacement possible
 		var testDep = oPersonnage_Manager.TestDeplacementPossible(idUser, nbrGoules, move);
@@ -951,7 +952,7 @@ io.sockets.on('connection', function (socket)
 		else
 		{
 			var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
-			var res	= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser, numEquipe);
+			var res	= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
 	    	
 			socket.emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)), res.nbrAllies, res.nbrEnnemis);
 		}
@@ -1226,11 +1227,11 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (idPersonnageCible)
 	{
-		console.log("SERVER : idPersonnageCible attaque : " + idPersonnageCible);
+		console.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
     	// récupèration de l'id de l'user propriétaire de ce perso
     	var idCible = oUtilisateur_Manager.findIdUser(idPersonnageCible);
 		
-		console.log("SERVER : idCible attaque : " + idCible);
+		console.log("SERVER : idCible attaqué : " + idCible);
 		
         // si pu de pts actions
         if(oPersonnage_Manager.TestPtActions(idUser, "attaqueEnnemi"))
@@ -1531,7 +1532,7 @@ io.sockets.on('connection', function (socket)
 				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
 				for(var j in usersOnline[id].sockets)
 				{
-					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(idUser));
+					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
 					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)), res.nbrAllies, res.nbrEnnemis);
 				}
 			}
