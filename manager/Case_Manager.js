@@ -105,6 +105,15 @@ Case_Manager.ExistItem = function(idCase, item)
 
 Case_Manager.AttaqueDeGoules = function(idCase)
 {
+	var a = {
+		"degats"	: 0,
+		"nbrGoulesA" : 0,
+		"actionOk" 	: true,
+	};
+	
+	// si pas de goules, on quitte 
+	if (this.listeCases[idCase].getNbrGoules() == 0) return a;
+	
 	// génère la puissance des goules
 	var degatsGoules = GameRules.goules_GetPtsAttaque();
 	// calcul le nombre de goules attaquantes
@@ -118,12 +127,10 @@ Case_Manager.AttaqueDeGoules = function(idCase)
 	// s'il y a interception, action ratée
 	if (GameRules.goules_proba_Interception()) actionOk = false;
 	else actionOk = true;
-	
-	// si le nombre de goule est de zéro, l'action est automatiquement ok
-	if (this.listeCases[idCase].getNbrGoules() == 0) actionOk = true;
+
 	
 	// return les données
-	var a = {
+	a = {
 			"degats"	: total,
 			"nbrGoulesA" : nbrGoulesAttaquantes,
 			"actionOk" 	: actionOk,

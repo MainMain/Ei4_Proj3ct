@@ -707,9 +707,7 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
-
 		var monPerso = oPersonnage_Manager.GetCopiePerso(idUser);
-		
 		socket.emit('INFO_PERSONNAGE_SC', monPerso);
     });
     /*
@@ -794,7 +792,7 @@ io.sockets.on('connection', function (socket)
 	 * 
 	 * ET return éventuels item découvert
 	 * 
-	 * ET return éventuel dégats infligés
+	 * ET return éventuel dégats subis
 	 * 
 	 * ET return 1 si objet ajouté au sac, 0 si a la salle
 	 * 
@@ -806,26 +804,41 @@ io.sockets.on('connection', function (socket)
     {
     	console.log("***************** FOUILLE RAPIDE ******************************");
        
-    	var reponse = oPersonnageManager.fouilleRapide(id);
+    	var reponse = oPersonnage_Manager.fouilleRapide(idUser);
     	
     	switch(reponse.codeRetour)
     	{
     		case 1 : 
+    			console.log("SERVEUR : Fouille Rapide() : Fouille réussie ! Objet découvert : " + reponse.itemDecouvert.nom);
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', 1, reponse.itemDecouvert,
+    					reponse.degatSubis, 0, reponse.nbrEnnemisDecouverts, reponse.nbrGoulesA);
     			break;
     		case -1 : 
+    			console.log("SERVEUR : Fouille Rapide() : Fouille ratée !");
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -1, null, reponse.degatSubis, 0, 
+    					reponse.nbrEnnemisDecouverts, reponse.nbrGoulesA);
     			break;
+    			
     		case -5 : 
+    			console.log("SERVEUR : Fouille Rapide() : Intercepté par goule !");
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, reponse.degatSubis, 
+    					0, 0, reponse.nbrGoulesA);
     			break;
+    			
     		case -10 : 
+    			console.log("SERVEUR : Fouille Rapide() : Pas assez de PA !");
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0, 0, 0, 0);
     			break;
+    		default :
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', 0, null, 0, 0, 0, 0);
+    		break;
     	}
+    	console.log("***************************************************************");
     	
     	
     	
     	
-    	
-    	
+    	/*
     	
     	// si pu de pts actions
         if(!oPersonnage_Manager.TestPtActions(idUser, "fouilleRapide"))
@@ -883,7 +896,7 @@ io.sockets.on('connection', function (socket)
         	socket.emit('ACTION_FOUILLE_RAPIDE_SC',  -1, null, restG["degats"], null, nbrEnnDecouverts, restG["nbrGoulesA"]); 
         }
         console.log("*****************************************************************");
-        
+        */
     });
     /*
      * 
@@ -1105,6 +1118,28 @@ io.sockets.on('connection', function (socket)
 	{
     	SauvegardeGlobale();
     });
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+     * FONCTION POUR RAFRAICHIR LE PERSO ET LA CASE DU PERSO EN COURS
+     * return [actionOk, degats]
+     */
+    function Rafraichir()
+    {
+    	var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
+		for(var j in usersOnline[id].sockets)
+		{
+			socket.emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
+			socket.emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)), res.nbrAllies, res.nbrEnnemis);
+		}
+    }
     /*
      * 
      *

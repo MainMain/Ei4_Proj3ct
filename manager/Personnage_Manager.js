@@ -473,9 +473,10 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	var codeRetour = 0;
 	var itemDecouvert;
 	var nbrEnnDecouverts = 0;
-	
+	var idSalle = this.GetIdSalleEnCours(idUser);;
+		
 	// tests pts actions
-    if(oPersonnage_Manager.TestPtActions(idUser, "fouilleRapide"))
+    if(!this.TestPtActions(idUser, "fouilleRapide"))
 	{
 		reponseServeur.codeRetour = - 10;
     	return reponseServeur;
@@ -484,6 +485,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	// Calcul des dégats de goules et nombre de goules attaquantes
 	resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
 	
+	// remplissage de la structure de réponse
 	reponseServeur.degatSubis = this.subirDegats(idUser, resultatGoules["degats"]);
 	reponseServeur.nbrGoulesA = resultatGoules.nbrGoulesA;
 	
