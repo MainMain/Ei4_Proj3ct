@@ -76,11 +76,11 @@ Item_BD.GetListItem = function()
 			var newItem = new ItemModel();
 			
 
-			});
+			
 		}
 		
 		
-	});
+	}
 	
 
 },
@@ -156,6 +156,6 @@ Item_BD.GetItemById = function(id_item)
 	}
 	
 	return this.listeItems;
-}
+},
 
 module.exports = Item_BD;

@@ -1006,13 +1006,13 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
-<<<<<<< HEAD
-		console.log("SERVEUR : Reception demande info P");
-		socket.emit('INFO_PERSONNAGE_SC', pManager.GetCopiePerso());
-=======
+
+		//console.log("SERVEUR : Reception demande info P");
+		//socket.emit('INFO_PERSONNAGE_SC', pManager.GetCopiePerso());
+
 		console.log("USER OBJECT = -" + usersOnline[id] + "-");
 		socket.emit('INFO_PERSONNAGE_SC', pManagers[id].GetCopiePerso());
->>>>>>> 36c04c0278989d22446737b0d261d994f8cb9261
+
     });
     /*
      * 
