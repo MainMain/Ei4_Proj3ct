@@ -1287,10 +1287,7 @@ function liste()
 			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
 
 	// Bouton ANNULER
-	/*var BtnCancelListe = contListe.addChild(new Button("Cancel", "#850000"));
-	BtnCancelListe.x=330;
-	BtnCancelListe.y=340;*/
-	var BtnCancelListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
+	var BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
 	BtnCancelListe.x=330;
 	BtnCancelListe.y=330;
 	contListe.addChild(BtnCancelListe);
@@ -2345,8 +2342,8 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 				break;
 			}
 		
-			//alert("armeEquip : "+currentPerso.armeEquipee);
-			//alert("arumureEquip : "+currentPerso.idArmureEquipee);
+			alert("armeEquip : "+currentPerso.idArmeEquipee);
+			alert("arumureEquip : "+currentPerso.idArmureEquipee);
 			
 			if(currentPerso.idArmeEquipee!=null && currentPerso.idArmureEquipee!=null)
 			{
