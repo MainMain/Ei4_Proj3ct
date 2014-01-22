@@ -2086,7 +2086,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		}
 	}
 	catch (e) {
-		alert("Page inexistante");
+		//alert("Page inexistante");
 	}
 
 
@@ -2422,20 +2422,21 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 				labelDescribePerso.text += "\nArme Equipée : " + currentPerso.armeEquipee.nom + " " + currentPerso.armeEquipee.valeur;
 			}
 			else
-
+			{
 				labelDescribePerso.text += "\nPas d'arme équipée.";
-		}
+			}
 
-		if(currentPerso.armureEquipee!=null)
-		{
-			labelDescribePerso.text += "\nArmure Equipée :" + currentPerso.armureEquipee.nom + " " + currentPerso.armureEquipee.valeur;
-		}
-		else
-		{
-			labelDescribePerso.text += "\nPas d'armure équipée.";
-		}
-		stage.update();
-	},false);
+
+			if(currentPerso.armureEquipee!=null)
+			{
+				labelDescribePerso.text += "\nArmure Equipée :" + currentPerso.armureEquipee.nom + " " + currentPerso.armureEquipee.valeur;
+			}
+			else
+			{
+				labelDescribePerso.text += "\nPas d'armure équipée.";
+			}
+			stage.update();
+		},false);
 
 		imgPerso.addEventListener('mouseout', function(event){
 			labelDescribePerso.text="";
@@ -2446,9 +2447,9 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 
 		// position de l'item dans le conteneur
 		iPositionPersoInConteneur++;
-		}
-stage.update();
-});
+	}
+	stage.update();
+		});
 
 socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		{
