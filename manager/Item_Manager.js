@@ -2,10 +2,6 @@
 var oItem = require('../model/object/Item');
 var oItem_BD = require('./../persistance/Item_BD');
 
-var oPersonnage_Manager  = require('./Personnage_Manager');
-var oCase_Manager        = require('./Case_Manager');
-var oUtilisateur_Manager = require('./Utilisateur_Manager');
-
 // inclusion des règles
 var GameRules	= require('../model/GameRules');
 

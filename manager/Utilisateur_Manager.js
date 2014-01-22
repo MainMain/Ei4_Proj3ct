@@ -34,12 +34,12 @@ Utilisateur_Manager.Load = function()
 			{
 				if(reponse == -1 || reponse == -2)
 				{
-					console.log("!!!!! WARNING : UMANAGER : Erreur ecriture pour l'id user " + id);
+					console.log("/!\ UTILISATEUR_MANAGER : Erreur ecriture pour l'id user " + id);
 					context.listeUtilisateurs[id] = null;
 				}
 				else
 				{
-					console.log("UMANAGER : user loaded : " + id);
+					console.log("UTILISATEUR_MANAGER : user loaded : " + id);
 					context.listeUtilisateurs[id] = reponse;
 				}
 			});
@@ -54,7 +54,7 @@ Utilisateur_Manager.LoadUser = function(idUser)
 	{
 		if(userReponse == -1 || userReponse == -2)
 		{
-			console.log("!!!!! WARNING : UMANAGER : Erreur ecriture pour l'id user " + IdReponse);
+			console.log("/!\ UTILISATEUR_MANAGER : Erreur ecriture pour l'id user " + IdReponse);
 			context.listeUtilisateurs[IdReponse] = null;
 		}
 		else
@@ -62,6 +62,7 @@ Utilisateur_Manager.LoadUser = function(idUser)
 			console.log("IdReponse = " + IdReponse);
 			console.log("userReponse = " + userReponse);
 			context.listeUtilisateurs[IdReponse] = userReponse;
+			
 		}
 	});
 },

@@ -525,7 +525,7 @@ io.sockets.on('connection', function (socket)
 		
 		if(!usersOnline[idUser])
 		{
-			usersOnline[idUser] = new Object()
+			usersOnline[idUser] = new Object();
 			usersOnline[idUser].sockets = new Array();
 			usersOnline[idUser].pages = new Array();
 		}

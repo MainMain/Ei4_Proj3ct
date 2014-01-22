@@ -50,7 +50,7 @@ var Case = (function() {
 		 * @method existItemInSalle
 		 */
 		existItemInSalle : function(item) {
-			this.logAfficherItems();
+			//this.logAfficherItems();
 			var itemTrouve = false;
 			for (var i = 0; i < this.listeItem.length; i++)
 				{
@@ -75,7 +75,7 @@ var Case = (function() {
 		ajouterItem : function(item) {
 			this.listeItem.push(item);
 			console.log("CASE : suppression de l'item " + item.nom + " a la case " + this.nom);
-			this.logAfficherItems();
+			//this.logAfficherItems();
 		},
 
 		/**
@@ -88,7 +88,7 @@ var Case = (function() {
 		supprimerItem : function(item) {
 			console.log("CASE : suppression de l'objet " + item.nom
 					+ " de la case " + this.nom);
-			this.logAfficherItems();
+			//this.logAfficherItems();
 			var index;
 			for (var i = 0; i < this.listeItem.length; i++) {
 				if (this.listeItem[i].id == item.id) {
@@ -98,7 +98,7 @@ var Case = (function() {
 			}
 			// supprime de la liste
 			this.listeItem.splice(i, 1);
-			this.logAfficherItems();
+			//this.logAfficherItems();
 		},
 		
 		AttaqueGoule : function(nbrGoules)
