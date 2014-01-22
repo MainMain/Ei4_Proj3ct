@@ -125,14 +125,6 @@ Personnage_Manager.SetCompetence = function(idUser, competence)
 	
 },
 
-
-
-
-
-
-
-
-
 /////////////////////////////////////////// EN RAPPORT AVEC LES MESSAGES DU JOUEUR //////////////////////////////////
 Personnage_Manager.AddMessage = function(idUser, msg)
 {
@@ -152,31 +144,79 @@ Personnage_Manager.EffacerMessages = function(idUser)
 
 /////////////////////////////////////////// EN RAPPORT AVEC LES ATTAQUES DU JOUEUR //////////////////////////////////
 Personnage_Manager.Attaquer = function(idUser, idUserEnnemi)
-{	
-	// détermination des valeurs d'attaque
+{
+	// recuperation des personnages
+	var persoUser = this.listePersonnages[idUser];
+	var persoEnn = this.listePersonnages[idUserEnnemi];
+	
+	// logins
+	var loginUser = oUtilisateur_Manager.GetPseudo(idUser);
+	var loginEnn = oUtilisateur_Manager.GetPseudo(idUserEnnemi);
+	
+	var degatsInfligesParA;
+	var degatsInfligesParB;
+	
+	var idSalle = this.GetIdSalleEnCours(idUser);
+	
+	// création de données de retour
+	var reponseServeur = {"reponseAttaque" : 0, "degatsRecus" : 0, "degatsInfliges" : 0, "degatSubisParGoules" : 0, "nbrGoules" : 0};
+	
 	var attA = this.listePersonnages[idUser].getValeurAttaque();
 	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
 	
-	// diminution ptAction
-	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueEnnemi());
-	
-	// degats infligés
-	var degatsInfligesParA = this.listePersonnages[idUserEnnemi].subirDegats(attA);
-	var degatsInfligesParB = 0;
-	// si l'ennemi est encore vivant, il riposte
-	if (this.listePersonnages[idUserEnnemi].ptSante > 0)
+	if(!this.TestPtActions(idUser, "attaqueEnnemi"))
 	{
-		degatsInfligesParB = this.listePersonnages[idUser].subirDegats(attB);
-		
+		reponseServeur.reponseAttaque = -10;
 	}
-	console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + degatsInfligesParA + " <-> degatsRecus : " + degatsInfligesParB);
-	// création de données de retour
-	var a = { "degatsRecus"	: degatsInfligesParB, "degatsInfliges" : degatsInfligesParA};
+	else
+	{
+		if(!this.MemeSalle(idUser, idUserEnnemi))
+		{
+			reponseServeur.reponseAttaque = -1;
+		}
+		else
+		{
+			resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
+			
+			reponseServeur.degatSubisParGoules = this.subirDegats(idUser, resultatGoules["degats"]);
+			reponseServeur.nbrGoules = resultatGoules.nbrGoulesA;
+			
+			//Si action pas ok à cause des goules
+			if(!resultatGoules.actionOk)
+			{
+				reponseServeur.reponseAttaque = -5;
+			}
+			else
+			{
+				// diminution ptAction
+				this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueEnnemi());
+
+				this.InitialiserMode(idUser);
+				// degats infligés
+				reponseServeur.degatsInfliges = this.listePersonnages[idUserEnnemi].subirDegats(attA);
+
+				// si l'ennemi est encore vivant, il riposte
+				if (!this.estMort(idUserEnnemi))
+				{
+					reponseServeur.degatsRecus = this.listePersonnages[idUser].subirDegats(attB);
+				}
+				
+				// vérifie s'il y a des morts
+				if (persoUser.estMort()) this.TuerJoueur(idUser, loginEnn);
+				if (persoEnn.estMort()) this.TuerJoueur(idUserEnnemi, loginUser);
+
+				reponseServeur.reponseAttaque = 1;
+				
+				// ajout du message
+				this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + degatsInfligesParA + " - degats infligés en riposte : " + degatsInfligesParB);
+
+				console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + degatsInfligesParA + " <-> degatsRecus : " + degatsInfligesParB);
+				
+			}
+		}
+	}
 	
-	// ajout du message
-	this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + degatsInfligesParA + " - degats infligés en riposte : " + degatsInfligesParB);
-	
-	return a;
+	return reponseServeur;
 },
 
 Personnage_Manager.AttaquerGoule = function(idUser)
@@ -184,27 +224,117 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueGoule());
 },
 
-//DiminuerSante
 Personnage_Manager.subirDegats = function (idUser, degats)
 {
-	console.log("PERSONNAGE_MANAGER : Subir Dégats() : " + this.listePersonnages[idUser].getPtSante());
+	console.log("PERSONNAGE_MANAGER : Subir Dégats() : pts de santé restants : " + this.listePersonnages[idUser].getPtSante());
 	return this.listePersonnages[idUser].subirDegats(degats);
 },
 
 
-
-
-
-
 /////////////////////////////////////////// EN RAPPORT AVEC LES ACTIONS DU JOUEUR //////////////////////////////////
-Personnage_Manager.Deplacement = function (idUser, move, nbrGoules)
+Personnage_Manager.Deplacement = function (idUser, move)
 {
-	// deplace le personnage
-	var reponse = this.listePersonnages[idUser].deplacement(move, nbrGoules);
+	var nbrGoules = oCase_Manager.GetNombreGoules(this.GetIdSalleEnCours(idUser));
+	var a = this.GetNbrAlliesEnemisDansSalle(idUser);
+	var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
+	var idZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
 	
-	console.log("PMANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
+	nbrGoules -= a.nbrAllies;
+	
+	// deplace le personnage
+	var reponse = this.listePersonnages[idUser].deplacement(move, nbrGoules, idZoneSureEnnemi);
+	
+	console.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
+	
+	if(reponse > -1)
+	{
+		return oCase_Manager.GetCopieCase(reponse);
+	}
 	
 	return reponse;
+},
+
+Personnage_Manager.ramasserDeposer = function(idUser, type, item)
+{
+	var o_____O = this.GetIdSalleEnCours(idUser);
+	
+	var resultatGoules;
+	
+	var reponseServeur = {"reponseAction" : 0, "degatSubis" : 0, "nbrGoulesA" : 0};
+	
+	//Si item existe
+	if(item)
+	{
+		if(type == "RAMASSER")
+		{
+			//Si item existe dans la case
+			if(oCase_Manager.ExistItem(o_____O, item))
+			{
+				//Si PAS place dans sac
+				if(!this.testPoidsOk(idUser, item))
+				{
+					reponseServeur.reponseAction = -1;
+				}
+				else
+				{
+					//Calcul des dégats de goules et nombre de goules attaquantes
+					resultatGoules = oCase_Manager.AttaqueDeGoules(o_____O);
+					
+					reponseServeur.degatSubis	= this.subirDegats(idUser, resultatGoules["degats"]);
+					reponseServeur.nbrGoulesA	= resultatGoules.nbrGoulesA;
+					
+					//Si action pas ok à cause des goules
+					if(!resultatGoules.actionOk)
+					{
+						reponseServeur.reponseAction = -5;
+					}
+					else
+					{
+						//Sinon on ajoute l'item au sac et on le supprime de la salle
+						this.AjouterItemAuSac(idUser, item);
+						oCase_Manager.SupprimerItem(o_____O, item);
+						
+						reponseServeur.reponseAction = this.GetPoidsSac(idUser);
+					}
+				}
+			}
+			else
+			{
+				reponseServeur.reponseAction = -2;
+			}
+		}
+		else if (type == "DEPOSER")
+		{			
+			if(this.IsItemEquipee(idUser, item))
+			{
+				reponseServeur.reponseAction = -3;
+			}
+			else
+			{
+				if(!this.ExistItemInSac(idUser, item))
+				{
+					reponseServeur.reponseAction = -2;
+				}
+				else
+				{
+					oCase_Manager.AjouterItem(o_____O, item);
+					
+					this.SupprimerDuSac(idUser, item);
+					
+					reponseServeur.reponseAction = this.GetPoidsSac(idUser);
+				}
+			}
+		}
+	}
+	else
+	{
+		reponseServeur.reponseAction = -4;
+	}
+	return reponseServeur;
+},
+
+Personnage_Manager.deposer = function(idUser, item)
+{
 },
 
 Personnage_Manager.AjouterItemAuSac = function (idUser, item)
@@ -223,12 +353,12 @@ Personnage_Manager.ChercherEnnemi = function(idUser)
 	var nbrEnnemiDecouvert = 0;
 	for(var i in this.listePersonnages)
 	{
-		if( Personnage_Manager.MemeSalle(idUser, i) && !oUtilisateur_Manager.MemeEquipe(idUser, i) && this.listePersonnages[i].GetMode() == 2)
+		if( this.MemeSalle(idUser, i) && !oUtilisateur_Manager.MemeEquipe(idUser, i) && this.listePersonnages[i].GetMode() == 2)
 		{
-			if(oCase_Manager.DecouverteEnnemi(Personnage_Manager.GetIdSalleEnCours(idUser), Personnage_Manager.GetMultiFouille(idUser), Personnage_Manager.GetMultiCache(i)))
+			if(oCase_Manager.DecouverteEnnemi(this.GetIdSalleEnCours(idUser), this.GetMultiFouille(idUser), this.GetMultiCache(i)))
 			{
 				nbrEnnemiDecouvert += 1;
-				Personnage_Manager.Decouvert(i);
+				this.Decouvert(i);
 			}
 		}
 	}
@@ -243,18 +373,35 @@ Personnage_Manager.Decouvert = function(idUser)
 	this.AddMessage(idUser, "Vous avez été découvert ! Votre planque est foutue !");
 },
 
-Personnage_Manager.SEquiper = function (idUser, currentItem)
+Personnage_Manager.equiper = function (idUser, id_item)
 {
-	return this.listePersonnages[idUser].sEquiper(currentItem);
+	var item = oItem_Manager.GetItem(id_item);
+	if(item)
+	{
+		return this.listePersonnages[idUser].equiper(item);
+	}
+	else
+	{
+		return 0;
+	}
 },
 
-Personnage_Manager.SeDesequiper = function (idUser, item)
+Personnage_Manager.desequiper = function (idUser, id_item)
 {
-	return this.listePersonnages[idUser].seDesequiper(item);
+	var item = oItem_Manager.GetItem(id_item);
+	if(item)
+	{
+		return this.listePersonnages[idUser].desequiper(item);
+	}
+	else
+	{
+		return 0;
+	}
 },
 
-Personnage_Manager.Utiliser = function (idUser, item)
+Personnage_Manager.Utiliser = function (idUser, id_item)
 {
+	var item = oItem_Manager.GetItem(id_item);
 	return this.listePersonnages[idUser].utiliser(item);
 },
 
@@ -265,12 +412,123 @@ Personnage_Manager.InitialiserMode = function(idUser)
 
 Personnage_Manager.ChangementMode = function(idUser, mode)
 {
-	return this.listePersonnages[idUser].changerMode(mode);
+	var reponseServeur = {"reponseChangement" : 0, "degatsSubis" : 0, "nbrGoules" : 0};
+	var resultatGoules;
+	var idCase = this.GetIdSalleEnCours(idUser);
+	
+	if(this.GetMode(idUser) == mode)
+	{
+		reponseServeur.reponseChangement = -4;
+	}
+	else
+	{
+		if(mode == 3)
+		{
+			if(!this.TestPtActions(idUser, "chgtMode_def"))
+			{
+				reponseServeur.reponseChangement = -10;
+			}
+			else
+			{
+				this.listePersonnages[idUser].changerMode(mode);
+				reponseServeur.reponseChangement = 1;
+			}
+		}
+		else
+		{
+			if(!this.TestPtActions(idUser, "chgtMode"))
+			{
+				reponseServeur.reponseChangement = -10;
+			}
+
+			resultatGoules = oCase_Manager.AttaqueDeGoules(idCase);
+
+			reponseServeur.degatsSubis	= this.subirDegats(idUser, resultatGoules["degats"]);
+			reponseServeur.nbrGoules	= resultatGoules.nbrGoulesA;
+
+			if(!resultatGoules.actionOk)
+			{
+				reponseServeur.reponseChangement = -5;
+			}
+			else
+			{
+				this.listePersonnages[idUser].changerMode(mode);
+				reponseServeur.reponseChangement = 1;
+			}
+		}
+	}
+	return reponseServeur;
 },
 
-Personnage_Manager.FouilleRapide = function(idUser)
+Personnage_Manager.fouilleRapide = function(idUser)
 {
-	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_FouilleRapide());
+	//this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_FouilleRapide());
+	
+	var resultatGoules;
+	var degatSubis;
+	var reponseRamassage;
+	var reponseServeur = {"degatSubis" : 0, "codeRetour" : 1, 
+		"itemDecouvert" : null, "nbrGoulesA" : 0, "itemDansSac" : 0, 
+		"nbrEnnemisDecouverts" : 0};
+	var codeRetour = 0;
+	var itemDecouvert;
+	var nbrEnnDecouverts = 0;
+	
+	// tests pts actions
+    if(oPersonnage_Manager.TestPtActions(idUser, "fouilleRapide"))
+	{
+		reponseServeur.codeRetour = - 10;
+    	return reponseServeur;
+    }
+			
+	// Calcul des dégats de goules et nombre de goules attaquantes
+	resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
+	
+	reponseServeur.degatSubis = this.subirDegats(idUser, resultatGoules["degats"]);
+	reponseServeur.nbrGoulesA = resultatGoules.nbrGoulesA;
+	
+	//Si action pas ok à cause des goules
+	if(!resultatGoules.actionOk)
+	{
+		reponseServeur.codeRetour = -5;
+		// diminution pt actions
+		this.PerteActionParGoules(idUser);
+		return reponseServeur;
+	}
+	// diminution des pts d'action
+	
+	
+	// id case du perso
+	var idCase = this.listePersonnages[idUser].getIdSalleEnCours();
+	// multi du perso
+	var multiFouille = this.listePersonnages[idUser].getMultiFouille();
+	
+	// calcul de decouverte d'un item
+	if (oCase_Manager.Fouille(idCase, multiFouille))
+	{
+		reponseServeur.codeRetour = 1;
+		// création d'un item
+		itemDecouvert = oItem_Manager.GetItemAleatoire();
+		reponseServeur.itemDecouvert = itemDecouvert;
+		
+		// essai d'ajout au sac (calcul de poids)
+		if (this.listePersonnages[idUser].getPoidsSac() - itemDecouvert.poids > 0)
+		{
+			this.AjouterItemAuSac(idUser, itemDecouvert);
+			reponseServeur.itemDansSac = true;
+		}
+		else
+		{
+			oCase_Manager.AjouterItem(idCase, itemDecouvert);
+			reponseServeur.itemDansSac = false;
+		}
+		return reponseServeur;
+	}
+	else
+	{
+		reponseServeur.codeRetour = -1;
+	   	return reponseServeur;
+	}
 },
 
 
@@ -283,32 +541,41 @@ Personnage_Manager.FouilleRapide = function(idUser)
 /////////////////////////////////////////// EN RAPPORT AVEC LA MORT DU JOUEUR //////////////////////////////////
 Personnage_Manager.MisKo = function(idUser, meurtrier)
 {
-	this.AddMessage(idUser, "Vous avez été mis KO par " + meurtrier + " ! Vous avez été ramené dans votre zone sure, mais vous avez perdu tout vos objets.");
+	
 },
 
-Personnage_Manager.Mourir = function(idUser)
+Personnage_Manager.TuerJoueur = function(idTue, loginTueur)
 {
-
+	// log
+	console.log("PERSONNAGE_MANAGER : Mourir() : mort du personnage " + oUtilisateur_Manager.GetPseudo(idTue)+ " par : " + loginTueur);
+	
+	// recupère le perso tue
+	var currentPerso = this.listePersonnages[idTue];
+	
+	// ajout du message 
+	this.AddMessage(idTue, "Vous avez été mis KO par " + loginTueur + " ! Vous avez été ramené dans votre zone sure, mais vous avez perdu tout vos objets.");
+	
+	// mettre son inventaire dans la case
+	for (var i = 0; i < currentPerso.GetSac().length; i++)
+	{
+		// transfert de l'item en cours dans la case
+		oCase_Manager.AjouterItem(currentPerso.getIdSalleEnCours(), currentPerso.GetSac()[i]);
+	}
+	
+	// vider son inventaire
+	currentPerso.viderInventaire();
 },
 
 SeRetablir = function(idUser)
 {
 	console.log("SERVEUR : SeRetablir()");
 	
-	this.listePersonnages[idUser].setptSante(20);
-},
-
-Personnage_Manager.goZoneSure = function(idUser)
-{
-	this.listePersonnages[idUser].goCase(Case_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
-},
-
-Personnage_Manager.TransfererInventaire = function(idUser)
-{
+	// ajout de points de santé
+	this.listePersonnages[idUser].setPtsSante(20);
 	
+	// go a la zone sure
+	this.listePersonnages[idUser].setIdCase(Case_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
 },
-
-
 
 
 
@@ -316,14 +583,20 @@ Personnage_Manager.TransfererInventaire = function(idUser)
 /*
  * FONCTIONS DE LECTURE
  */
+ 
+Personnage_Manager.testPoidsOk = function(idUser, item)
+{
+	return this.listePersonnages[idUser].testPoidsOk(item);
+},
+
 Personnage_Manager.estMort = function(idUser)
 {
-	return (this.listePersonnages[idUser].getPtSante() == 0);
+	return (this.listePersonnages[idUser].getPtSante() <= 0);
 },
 
 Personnage_Manager.MemeSalle = function(idUser1, idUser2)
 {
-	return Personnage_Manager.GetIdSalleEnCours(idUser1) == Personnage_Manager.GetIdSalleEnCours(idUser2);
+	return this.GetIdSalleEnCours(idUser1) == this.GetIdSalleEnCours(idUser2);
 },
 
 Personnage_Manager.GetCopiePerso = function(idUser)
@@ -395,12 +668,12 @@ Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 			{
 				if(i != idUser)
 				{
-					a.Allies.push(Personnage_Manager.getPersonnageToDisplay(i));
+					a.Allies.push(this.getPersonnageToDisplay(i));
 				}
 			}
 			else
 			{
-				a.Ennemis.push(Personnage_Manager.getPersonnageToDisplay(i));
+				a.Ennemis.push(this.getPersonnageToDisplay(i));
 			}
 		}
 	}
@@ -454,34 +727,34 @@ Personnage_Manager.TestPtActions = function(idUser, typeAction)
 {
 	var ptActions = this.listePersonnages[idUser].getPtActions();
 	
-	var ok = false;
+	var ok = true;
 	
 	console.log("PMANGER : ptActions :  " + ptActions);
 	console.log("PMANGER : typeAction : " + typeAction);
 	
 	if(ptActions == 0)
 	{
-		ok = true;
+		ok = false;
 	}
 	switch(typeAction)
 	{
 		case "fouilleRapide":
-			if(ptActions - GameRules.coutPA_FouilleRapide() < 0) ok = true;
+			if(ptActions - GameRules.coutPA_FouilleRapide() < 0) ok = false;
 			break;
 		case "attaqueGoule":
-			if(ptActions - GameRules.coutPA_AttaqueGoule() < 0) ok = true;
+			if(ptActions - GameRules.coutPA_AttaqueGoule() < 0) ok = false;
 			break;
 		case "attaqueEnnemi":
-			if(ptActions - GameRules.coutPA_AttaqueEnnemi() < 0)ok = true;
+			if(ptActions - GameRules.coutPA_AttaqueEnnemi() < 0)ok = false;
 			break;
 		case "chgtMode":
-			if(ptActions - GameRules.coutPA_ChgtMode() < 0) ok = true;
+			if(ptActions - GameRules.coutPA_ChgtMode() < 0) ok = false;
 			break;
 		case "chgtMode_def":
-			if(ptActions - GameRules.coutPA_ChgtMode_def() < 0) ok = true;
+			if(ptActions - GameRules.coutPA_ChgtMode_def() < 0) ok = false;
 			break;
 		default:
-			ok = true;
+			ok = false;
 			break;
 	}
 	return ok;
@@ -498,7 +771,7 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser)
 			-1,											-1, 											-1,
 			this.listePersonnages[idUser].getCompetence(),-1, 											this.listePersonnages[idUser].GetMode(),
 			-1,  										-1,  											-1,
-			-1,											this.listePersonnages[idUser].getArmeEquipe(),	this.listePersonnages[idUser].getArmureEquipe(),
+			-1,											this.listePersonnages[idUser].getArmeEquipee(),	this.listePersonnages[idUser].getArmureEquipee(),
 			comPoidsSac,								-1,												-1);
 	return perso;
 },

@@ -1,5 +1,8 @@
 var oCarte = require('../../model/object/Carte');
 
+//inclusion des règles
+var GameRules	= require('../../model/GameRules');
+
 /**
  * Modélisation d'un personnage
  * 
@@ -87,7 +90,7 @@ var Personnage = (function() {
 		 * ECRITURE
 		 * 
 		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE 
-		 * return : 1 si ok 
+		 * return : idNewCase si ok 
 		 * erreur : -1 si déplacement impossible (pas de case dans la direction)
 		 * erreur : -2 si pas de pts mouvement
 		 * erreur : -3 si trop de goules
@@ -98,7 +101,7 @@ var Personnage = (function() {
 		 * 
 		 * @method deplacement
 		 */
-		deplacement : function(direction, nbrGoules)
+		deplacement : function(direction, nbrGoules, idZoneSureEnnemi)
 		{
 			//console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
 			
@@ -138,24 +141,27 @@ var Personnage = (function() {
 				//console.log("PERSONNAGE : Déplacement impossible ! ");
 				return -1;
 			} 
-			else 
+			
+			if(ansIdSalle == idZoneSureEnnemi)
 			{
-				// Décrémente les points de déplacement
-				this.ptDeplacement--;
-				
-				//  on modifie l'id de salle du perso
-				this.idSalleEnCours = ansIdSalle;
-
-				// on gère son dernier mouvement
-				this.dernierMvt = direction;
-				
-				// Affiche sur le log
-				//console.log('PERSONNAGE : Deplacement vers : ' + direction);
-				//console.log('PERSONNAGE : Déplacement ok - nvlle salle '+ this.idSalleEnCours);
-				
-				// return
-				return 1;
+				console.log("PERSONNAGE : Déplacement impossible ! Zone sure Ennemi");
+				return -4
 			}
+			
+			// Décrémente les points de déplacement
+			this.ptDeplacement--;
+			
+			//  on modifie l'id de salle du perso
+			this.idSalleEnCours = ansIdSalle;
+			
+			//Passe en mode oisif
+			this.mode = 0;
+
+			// on gère son dernier mouvement
+			this.dernierMvt = direction;
+			
+			// return
+			return this.idSalleEnCours;
 		},
 
 		/**
@@ -168,17 +174,15 @@ var Personnage = (function() {
 		 */
 		ajouterAuSac : function(item)
 		{
-			if ((this.getPoidsSac() + item.poids) > this.poidsMax)
-			{
-				return -1;
-			}
-			else
-			{
-				this.sacADos.push(item);
-			}
-			//console.log("PERSONNAGE : ajout de l'item " + item.nom + " au personnage " + this.id);
-			this.logAfficherSacADos();
+			if ((this.getPoidsSac() + item.poids) > this.poidsMax) return -1;
+			
+			this.sacADos.push(item);
 			return 1;
+		},
+		
+		testPoidsOk : function(item)
+		{
+			return (this.getPoidsSac() + item.poids) <= this.poidsMax;
 		},
 
 		/**
@@ -235,7 +239,7 @@ var Personnage = (function() {
 			}
 		},
 		
-		setptSante : function(newPtSante)
+		setPtsSante : function(newPtSante)
 		{
 			if(ptSante >= this.ptSanteMax)
 			{
@@ -383,18 +387,21 @@ var Personnage = (function() {
 		
 		changerMode : function(mode)
 		{
-			if(this.ptActions <= 0)
+			if(mode == 3)
 			{
-				return -1;
+				this.ptActions -= GameRules.coutPA_ChgtMode_def();
+			}
+			else
+			{
+				this.ptActions -= GameRules.coutPA_ChgtMode();
 			}
 			
-			this.ptActions--;
 			this.mode = mode;
 			
 			return 1;
 		},
 		
-		goCase : function(idCase)
+		setIdCase : function(idCase)
 		{
 			this.idSalleEnCours = idCase;
 		},
@@ -460,69 +467,48 @@ var Personnage = (function() {
 		 * une arme équipée erreur : -2 si déja une armure équipée erreur : -3
 		 * si ni une arme, ni une armure
 		 */
-		sEquiper : function(item)
+		equiper : function(item)
 		{
 			switch(item.type)
 			{
 				case 1:
-					if(this.armeEquipee != null)
-					{
-						return -1;
-					}
-					else
-					{
-						this.armeEquipee = item;
-					}
-					break;
+					this.armeEquipee = item;
+					return 1;
 				case 2:
-					if(this.armureEquipee != null)
-					{
-						return -2;
-					}
-					else
-					{
-						this.armureEquipee = item;
-					}
-					break;
+					this.armureEquipee = item;
+					return 2;
 				default:
 					return -3;
 			}
-			return 1;
 		},
 		/**
 		 * ECRITURE FONCTION POUR SE DEQUIPER D'UN ITEM
 		 * 
 		 */
-		seDesequiper : function(item)
+		desequiper : function(item)
 		{
-			//console.log("PERSONNAGE : Déséquipement !");
 			if(this.isItemEquipee(item))
 			{
 				if (item.type == 1)
+				{
 					this.armeEquipee = null;
+					return 1;
+				}
 				else if (item.type == 2)
+				{
 					this.armureEquipee = null;
-				return 1;
+					return 2;
+				}
 			}
-			return -1;
+			return -4;
 		},
             
 		isItemEquipee : function(item)
 		{
-			if (this.armeEquipee != null)
-			{
-				if (this.armeEquipee.id == item.id)
-				{
-					return true;
-				}
-			}
-			if (this.armureEquipee != null)
-			{
-				if (this.armureEquipee.id == item.id)
-				{
-					return true;
-				}
-			}
+			if (this.armeEquipee != null && this.armeEquipee.id == item.id) return true;
+			
+			if (this.armureEquipee != null && this.armureEquipee.id == item.id) return true;
+			
 			return false;
 		},
 		
@@ -536,6 +522,11 @@ var Personnage = (function() {
 			var type = parseInt(item.type);
 			var valeur = parseInt(item.valeur);
 			//console.log("PERSONNAGE : utiliser() : utilisation de l'item" + item.nom + " de type : " + type + " de valeur " + valeur);
+			
+			if(!this.existItemInSac(item))
+			{
+				return -2;
+			}
 			
 			if (type < 4 || type > 6)
 			{
@@ -579,6 +570,13 @@ var Personnage = (function() {
 			this.listeMsgAtt = new Array();
 		},
 		
+		viderInventaire : function()
+		{
+			this.sacADos = new Array();
+			this.armeEquipee = null;
+			this.armureEquipee = null;
+		},
+		
 		/**
 		 * LECTURE
 		 * 
@@ -614,21 +612,21 @@ var Personnage = (function() {
 		/**
 		 * Retourne l'arme equipe par le personnage
 		 * 
-		 * @method getArmeEquipe
+		 * @method getArmeEquipee
 		 */
-		getArmeEquipe : function()
+		getArmeEquipee : function()
 		{
-			return this.armeEquipe;
+			return this.armeEquipee;
 		},
 
 		/**
 		 * Retourne l'armure equipe par le personnage
 		 * 
-		 * @method getArmureEquipe
+		 * @method getArmureEquipee
 		 */
-		getArmureEquipe : function()
+		getArmureEquipee : function()
 		{
-			return this.armureEquipe;
+			return this.armureEquipee;
 		},
 		
 		/**
@@ -696,7 +694,7 @@ var Personnage = (function() {
 			return this.listeMsgAtt;
 		},
 		
-		GetMultiFouille : function()
+		getMultiFouille : function()
 		{
 			return this.multiProbaFouille;
 		},
@@ -714,6 +712,11 @@ var Personnage = (function() {
 		GetSac : function()
 		{
 			return this.sacADos;
+		},
+		
+		estMort : function()
+		{
+			return (this.ptSante == 0);
 		},
 		
 	};

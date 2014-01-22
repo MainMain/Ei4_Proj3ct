@@ -151,7 +151,7 @@ Case_Manager.DecouverteEnnemi = function(idCase, probaObjetPerso, probaCacheEnn)
 	var probaDecouverte = this.listeCases[idCase].probaObjet * probaObjetPerso;
 	var probaDecouverte2 = probaDecouverte / probaCacheEnn;
 	
-	console.log("CASE_MANAGER : DecouverteEnnemi() : proba = " + proba + " - probaDecouverte  => brut = " + probaDecouverte + " - net = " + probaDecouverte2);
+	console.log("CASE_MANAGER : DecouverteEnnemi() : proba cache = " + proba + " - probaDecouverte  => brut = " + probaDecouverte + " - net = " + probaDecouverte2);
 	if (proba < probaDecouverte) return true;
 	else return false;
 },
@@ -160,24 +160,28 @@ Case_Manager.GetNombreGoules = function(idCase)
 {
 	return this.listeCases[idCase].getNbrGoules();
 },
-/*
-Case_Manager.GetNombreAllies = function()
-{
-	return 0;
-},*/
 
-/*Case_Manager.getZoneSure = function(numEquipe)
+Case_Manager.getZoneSure = function(numEquipe)
 {
 	if(numEquipe == 1)
 	{
 		return GameRules.idZoneSure_1();
 	}
 	return GameRules.idZoneSure_2();
-},*/
+},
+
+Case_Manager.GetIdZoneSureEnnemi = function(numEquipe)
+{
+	if(numEquipe == 1)
+	{
+		return GameRules.idZoneSure_2();
+	}
+	return GameRules.idZoneSure_1();
+},
 
 Case_Manager.GetTestZoneSure = function(idCase, numEquipe)
 {
-	console.log("CASE_MANAGER : GetTestZoneSure() : numEquipe = " + numEquipe + " id case destination : " + this.listeCases[idCase].id);
+	console.log("CASE_MANAGER : GetTestZoneSure() : numEquipe = " + numEquipe + " id case destination : " + idCase);
 	if ( 
 			(numEquipe == 1 && idCase == GameRules.idZoneSure_2()) ||
 			(numEquipe == 2 && idCase == GameRules.idZoneSure_1()))
@@ -194,7 +198,7 @@ Case_Manager.Save = function()
 		console.log("CASE_MANAGER : Save() : Sauvegarde de la case [id="+idCase);
 		oCase_BD.SetCase(this.listeCases[idCase], function(reponse)
 		{
-		
+			console.log("Enregistrement de case ok !");
 		});
 	}
 },

@@ -1172,7 +1172,7 @@ function game() {
 	BtnPageItemPersoUp.addEventListener('click', function(event) {
 		PageItemPerso++;
 		socket.emit('INFO_PERSONNAGE_CS');
-		
+
 	});
 
 	var BtnPageItemPersoDown = stage.addChild(new ButtonMove("-", ColorBtn));
@@ -1181,7 +1181,7 @@ function game() {
 	BtnPageItemPersoDown.addEventListener('click', function(event) {
 		PageItemPerso--;
 		socket.emit('INFO_PERSONNAGE_CS');
-		
+
 	});
 
 	BtnPageItemPersoUp.cursor=BtnPageItemPersoDown.cursor="pointer";
@@ -1393,6 +1393,7 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 	 */
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
+	stage.update();
 });
 
 /******************************************************************************************************************
@@ -1469,39 +1470,42 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 			break;
 
 			// équipage ok
+			// Si le type de l'item est : ARME
 		case 1:
 			var imgItem = new createjs.Bitmap(currentItem.imageName);
 			imgItem.cursor = "pointer";
-			// Si le type de l'item est : ARME
-			if (currentItem.type == 1) {
-				// Dessin de l'arme équipée
-				contArme.removeAllChildren();
-				contArme.addChild(imgItem);
-				contArme.addEventListener("click", function (event) {
-					SelectedItemEquip = currentItem.id;
-					alert(SelectedItemEquip);
-					stage.update();
-				});
-			}
-			// Si le type de l'item est : ARMURE
-			else if (currentItem.type == 2) {
-				// Dessin de l'armure équipée
-				contArmure.removeAllChildren();
-				contArmure.addChild(imgItem);
-				contArmure.addEventListener("click", function (event) {
-					SelectedItemEquip = currentItem.id;
-					alert(SelectedItemEquip);
-					stage.update();
-				});
-			}
+			// Dessin de l'arme équipée
+			contArme.removeAllChildren();
+			contArme.addChild(imgItem);
+			contArme.addEventListener("click", function (event) {
+				SelectedItemEquip = currentItem.id;
+				alert(SelectedItemEquip);
+				stage.update();
+			});
 			// log
 			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'objet ok");
+			txtObjet.text = ("Equipement de l'arme ok");
 
 			stage.update();
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
+		case 2:
+			// Si le type de l'item est : ARMURE
+			// Dessin de l'armure équipée
+			contArmure.removeAllChildren();
+			contArmure.addChild(imgItem);
+			contArmure.addEventListener("click", function (event) {
+				SelectedItemEquip = currentItem.id;
+				alert(SelectedItemEquip);
+				stage.update();
+			});
+			// log
+			txtObjet.text = "";
+			txtObjet.text = ("Equipement de l'armure ok");
 
+			stage.update();
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
 		case -1:
 			//alert("-1");
 			txtObjet.text = "";
@@ -1567,89 +1571,80 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
  * 
  * ET nbr goules attaquantes
  */
-socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
-	if (type == 'RAMASSER') {
+socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
+		{
+	txtObjet.text = "";
+	if (type == 'RAMASSER')
+	{
 		switch(codeRetour)
 		{
 		// erreur
 		case -3:
-			txtObjet.text = "";
 			txtObjet.text = ("Erreur inconnue");
 			break;
 			// poids insufisant
 		case -1:
-			txtObjet.text = "";
 			txtObjet.text = ("Impossible de ramasser l'objet,\npoids max atteint !");
 			break;
 			// objet pas dans case
 		case -2:
-			txtObjet.text = "";
 			txtObjet.text = ("Impossible de ramasser l'objet,\nplus dans la salle !");
 			break;
 		case -5:
-			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies !\n- " + DegatsG + " points de vie !");
-			socket.emit('INFO_PERSONNAGE_CS');
+			txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies !");
 			break;
-			// ramassage ok
 		default:
-			txtObjet.text = "";
-		txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Zombies restants");
-		socket.emit('INFO_PERSONNAGE_CS');
-		socket.emit('INFO_CASE_CS');
-		stage.update();
+			txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg");
 		break;
 		}
 	}
-	stage.update();
-	if (type == 'DEPOSER') {
+	if (type == 'DEPOSER')
+	{
 		switch(codeRetour)
 		{
 		// erreur
 		case -3:
-			txtObjet.text = "";
 			txtObjet.text = ("Déséquipez avant de déposer !");
 			break;
 		case -4:
-			txtObjet.text = "";
 			txtObjet.text = ("Erreur interne !");
 			break;
 			// objet pas dans sac (! pas normal)
 		case -2:
-			txtObjet.text = "";
 			txtObjet.text = ("L'item n'est plus dans le sac ");
 			break;
 			// dépôt ok
 		default:
-			txtObjet.text = "";
-		txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
-		socket.emit('INFO_CASE_CS');
-		socket.emit('INFO_PERSONNAGE_CS');
-		stage.update();
+			txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
 		break;
 		}
 	}
+	if(DegatsG > 0)
+	{
+		txtObjet.text += ("\n - " + DegatsG + " points de vie !\n");
+	}
+	socket.emit('INFO_PERSONNAGE_CS');
+	socket.emit('INFO_CASE_CS');
 	stage.update();
-});
+		});
 
 /******************************************************************************************************************
  * RECEPTION DES INFORMATIONS SUR LA CASE
  *
  * @method INFO_CASE_SC
  */
-socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
-	//socket.emit('CHECK_MSG_ATT_CS');	
+socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis)
+		{
+	var ProbCache, ProbFouille;
 	this.listeItemsCase = new Array();
 
-	if (currentCase == "ERREUR_CASE")
+	if (currentCase == null)
 	{
-		//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
 		txtSalle.text="";
 		txtSalle.text=("CLIENT :: nom case = " + "ERREUR_CASE");
 	}
-	else {
-
-		var ProbCache, ProbFouille;
+	else
+	{
 		ProbCache=(currentCase.probaCache * PersoProbaCache);
 		ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 
@@ -1667,7 +1662,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelObjetCase.text="";
 		labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
 
-		// CLear de la liste des items de case
+		// Clear de la liste des items de case
 		listeItemsCase = new Array();
 		contInvCase.removeAllChildren();
 		// parcours de la liste des items de la case
@@ -1722,7 +1717,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		}
 	}
 	stage.update();
-});
+		});
 
 /************************************************************************************************************
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
@@ -2010,7 +2005,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			//Boucle de reste
 			for (var i=j*10; i<j*10+TailleFinListe; i++)
 			{
-				
+
 				// mise de l'item dans une variable
 				var item = currentPerso.sacADos[i];
 				// mise de l'item dans une variable
@@ -2180,13 +2175,16 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 /**************************************************************************************
  * RECEPTION Suite à une DEMANDE POUR UTILISER UN ITEM
  * 
+ * 
+ * 
  * renvoi id item
  * 
  * ET return 1 si ok
  * erreur : -1 si objet n'est pas dans le sac
  * erreur : -2 si objet pas utilisable
  */
-socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
+socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour)
+		{
 	switch(codeRetour)
 	{
 	case 1: 
@@ -2209,7 +2207,7 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
 	}
 	stage.update();
 
-});
+		});
 
 /******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE POUR ATTAQUER UNE GOULE
@@ -2222,40 +2220,37 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
  * ET degats reçus
  * 
  */
-socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
+socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis)
+		{
+	labelRetourGoules.text="";
 	switch(goulesTues)
 	{
-	case 2: 
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("2 Zombies tuées ! -" + degatsSubis + " points de vie");
-		socket.emit('INFO_PERSONNAGE_CS');
-		break;
-
 	case 1: 
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("1 Zombie tuée ! -" + degatsSubis + " points de vie");
+	case 2: 
+		labelRetourGoules.text=(goulesTues + " Zombies tuées ! - " + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 0:
-		labelRetourGoules.text="";
 		labelRetourGoules.text=("Attaque de Zombie(s) : erreur interne");
 		break;
 
 	case -1:
-		labelRetourGoules.text="";
 		labelRetourGoules.text=("Attaque de Zombie(s) échouée ! -" + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case -2:
-		labelRetourGoules.text="";
 		labelRetourGoules.text=("Pas de Zombie dans la salle !");
+		break;
+
+	case -10:
+		labelRetourGoules.text=("Pas assez de points d'actions !");
 		break;
 	}
 	socket.emit('INFO_CASE_CS');
 	stage.update();
-});
+		});
 
 
 /******************************************************************************************************************
@@ -2413,54 +2408,47 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 				break;
 			}
 
-			alert("armeEquip : "+currentPerso.idArmeEquipee);
-			alert("arumureEquip : "+currentPerso.idArmureEquipee);
 
 			if(currentPerso.idArmeEquipee!=null && currentPerso.idArmureEquipee!=null)
+
+
+				labelDescribePerso.text = ("Competence : " + currentPerso.competence + 
+						"\nMode : " + ModePerso + 
+						"\nSanté : " + currentPerso.ptSante + " / " + currentPerso.ptSanteMax +
+						"\nSac rempli à : " + currentPerso.sacADos + " %");
+
+			if(currentPerso.armeEquipee!=null)
 			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nArme Equipee : "+currentPerso.armeEquipe+" "+currentPerso.armeEquipe.valeur+
-						"\nArmure Equipée :"+currentPerso.armureEquipe+" "+currentPerso.armureEquipe.valeur+"");
-			}
-			else if(currentPerso.idArmeEquipee==null && currentPerso.idArmureEquipee==null)
-			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-				"\nCe joueur n'est pas équipé !");
+				labelDescribePerso.text += "\nArme Equipée : " + currentPerso.armeEquipee.nom + " " + currentPerso.armeEquipee.valeur;
 			}
 			else
-			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-				"\nCe joueur est équipé !");
-			}
-			stage.update();
-		},false);
+
+				labelDescribePerso.text += "\nPas d'arme équipée.";
+		}
+
+		if(currentPerso.armureEquipee!=null)
+		{
+			labelDescribePerso.text += "\nArmure Equipée :" + currentPerso.armureEquipee.nom + " " + currentPerso.armureEquipee.valeur;
+		}
+		else
+		{
+			labelDescribePerso.text += "\nPas d'armure équipée.";
+		}
+		stage.update();
+	},false);
 
 		imgPerso.addEventListener('mouseout', function(event){
 			labelDescribePerso.text="";
 			stage.update();
 		},false);
 
-		/*imgPerso.addEventListener("click", function(event){
-			var currentPerso= listePersoAllies[event.target.name];
-			stage.update();
-		});*/
-
 		contListeAllies.addChild(imgPerso);
 
 		// position de l'item dans le conteneur
 		iPositionPersoInConteneur++;
-	}
-	stage.update();
-		});
+		}
+stage.update();
+});
 
 socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		{
@@ -2471,8 +2459,6 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	contListeEnnemis.removeAllChildren();
 
 	var imgPerso;
-
-	alert("longueur liste enn = " + listeEnn.length);
 
 	for(var i = 0; i < listeEnn.length; i++)
 	{
@@ -2584,8 +2570,6 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 			break;
 			}
 
-			/*alert("armeEquip : "+currentPerso.id.armeEquipe);
-		alert("arumureEquip : "+currentPerso.id.armureEquipe);*/
 
 			if(currentPerso.idArmeEquipee!=null && currentPerso.idArmureEquipee!=null)
 			{

@@ -258,7 +258,8 @@ app.delete("/", function (req, res)
 /*
  * LANCEMENT DU SERVEUR
  */
-server.listen(app.get('port'), function () {
+server.listen(app.get('port'), function ()
+{
     console.log("Express server listening on port " + app.get('port'));
 });
 
@@ -506,6 +507,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 io.sockets.on('connection', function (socket)
 {
 	var idUser = "";
+	
     //test sessions
     socket.emit('MESSAGE_TEST', 'Vous êtes bien connecté !');
     socket.broadcast.emit('MESSAGE_TEST', 'Un autre client vient de se connecter !');
@@ -577,121 +579,14 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('MOVE_PERSONNAGE_CS', function (move)
 	{
-		console.log("*******************************************************");
-		// log
-		console.log('SERVER : Déplacement du personnage demandé : ' + move);
-    	
-		// -> calcul de goules
-		var nbrGoules = oCase_Manager.GetNombreGoules(oPersonnage_Manager.GetIdSalleEnCours(idUser));
-		var nbrPersoInCase = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
-		nbrGoules = nbrGoules - nbrPersoInCase.nbrAllies;
+		var idCasePrecedente = oPersonnage_Manager.GetIdSalleEnCours(idUser);
 		
-		// test si déplacement possible
-		var testDep = oPersonnage_Manager.TestDeplacementPossible(idUser, nbrGoules, move);
-		if (testDep != 1)
-		{
-			switch(testDep)
-			{
-				case -2 : // plus de PM
-					console.log('SERVER : DEBUG envoi deplacement impossible : pu de PM');
-					socket.emit('MOVE_PERSONNAGE_SC', -2);
-					break;
-					
-				case -3 : // trop de goules
-					console.log('SERVER : DEBUG envoi deplacement impossible : trop de goules');
-					socket.emit('MOVE_PERSONNAGE_SC', -3);
-					break;
-			}
-			return;
-		}
+		var reponseDeplacement = oPersonnage_Manager.Deplacement(idUser, move);
 		
-		// test si pas zone sure adverse
-		// on regarde le manager de la salle suivante et on teste si zone sure
-		var idNextCase = oPersonnage_Manager.GetIdNextSalle(idUser, move);
-		//console.log("------------------------------" + oCase_Manager[idNextCase].GetTestZoneSure(oUtilisateur_Manager.GetNumEquipe()));
-		if (idNextCase == -1)
-		{
-			console.log('SERVER : DEBUG envoi deplacement impossible');
-			socket.emit('MOVE_PERSONNAGE_SC', -1);
-			return;
-		}
-		else if (oCase_Manager.GetTestZoneSure(idNextCase, oUtilisateur_Manager.GetNumEquipe(idUser)))
-		{
-			
-			console.log("SERVEUR : ! impossible : déplacement vers zone sûre ennemie !");
-			socket.emit('MOVE_PERSONNAGE_SC', -4);
-			return;
-		}
+		ActualiserCase(idCasePrecedente);
+		ActualiserCase(reponseDeplacement);
 		
-    	// ********* algorithme de calcul de l'impact des goules *********
-    	/*var restG = TestGoules();
-
-    	console.log("actionOk ? " + restG["actionOk"]);
-    	if (restG["actionOk"] == 0)
-		{
-			// log
-			console.log("deplacement ratée à cause des goules");
-			
-			// retrait des points de déplacement
-			oPersonnage_Manager.PerteDeplacementParGoules();
-			
-			// renvoi de la réponse
-			socket.emit('MOVE_PERSONNAGE_SC', -5, restG["degats"]); 
-			return;
-		}
-    	// ***************************************************************
-		
-        // TEST déplacement du personnage
-    	//***************************************
-    	nbrGoules = 0;
-    	/*************************************/
-		ActualiserCase(oPersonnage_Manager.GetIdSalleEnCours(idUser));
-		
-		// informer
-		InformerPersonnages_Case("a quitté la salle.");
-		// traiter
-		var ansDeplacementOk = oPersonnage_Manager.Deplacement(idUser, move, nbrGoules);
-		
-		ActualiserCase(oPersonnage_Manager.GetIdSalleEnCours(idUser));
-		
-		// informer
-		InformerPersonnages_Case("vient d'entrer dans la salle.");
-		
-		console.log("SERVEUR : code retour ans : " + ansDeplacementOk);
-		// si le déplacement a réussi
-		if (ansDeplacementOk == 1) 
-		{
-			console.log('SERVER : deplacement ok envoi de la nouvelle position');
-			
-			// mise en mode "oisif"
-	        oPersonnage_Manager.InitialiserMode(idUser);
-	        
-			// enregistre dans le manager
-			//oCase_Manager[oPersonnage_Manager.GetIdSalleEnCours()].ChangeCase(oPersonnage_Manager.GetIdSalleEnCours());
-			
-			// récupère la salle en cours
-			//var oCase_Manager[oPersonnage_Manager.GetIdSalleEnCours()].GetCopieCase() = oCase_BD.GetCaseById(oPersonnage_Manager.GetIdSalleEnCours());
-			//var oCase_Manager[oPersonnage_Manager.GetIdSalleEnCours()].GetCopieCase() = oCase_Manager[oPersonnage_Manager.GetIdSalleEnCours()].GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours());
-			
-			// renvoi la salle ou erreur
-			if (oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)) == null)
-				socket.emit('MOVE_PERSONNAGE_SC', 0);
-			else
-				socket.emit('MOVE_PERSONNAGE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)));
-		}
-		// si le déplacement a raté
-		else if (ansDeplacementOk == -1)
-		{
-			console.log('SERVER : DEBUG envoi deplacement impossible');
-			socket.emit('MOVE_PERSONNAGE_SC', -1);
-		}
-		else if (ansDeplacementOk == -2)
-		{
-			console.log('SERVER : DEBUG envoi deplacement impossible : pu de PM');
-			socket.emit('MOVE_PERSONNAGE_SC', -2);
-		}
-		console.log("*******************************************************");
-		//});
+		socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
     });
     /*
      * 
@@ -706,82 +601,30 @@ io.sockets.on('connection', function (socket)
      * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM 
      * return 1 si arme équipée / déséquipée
      * return 2 si armure équipée / déséquipée
-     * erreur : 0 si objet n'est pas dans le sac
-     * erreur : -1 si il y a déja une arme d'équipée
-     * erreur : -2 si il y a déja une armure d'équipée
+     * erreur : 0 si objet n'est pas dans le sac / Objet inexistant
      * erreur : -3 si item n'est ni arme ni armure
      * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
      */
     socket.on('INV_PERSONNAGE_CS', function (type, id_item)
 	{
+		var currentItem = oItem_Manager.GetItem(id_item);
+		var reponse;
+		
 		console.log("*******************************************************");
 		
-		// recupere l'currentItem
-		var currentItem = oItem_Manager.GetItem(id_item);
-		if (currentItem == null || typeof(currentItem) === "undefined" )
+		if (type == "EQUIPER")
 		{
-			console.log("SERVEUR : erreur : id item : " + id_item);
-			return;
+			reponse = oPersonnage_Manager.equiper(idUser, id_item);
+			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, reponse);
+			console.log("SERVEUR : INV_PERSONNAGE_CS : Equipement" + reponse);
+		}
+		else if (type == "DESEQUIPER") 
+		{
+			reponse = oPersonnage_Manager.desequiper(idUser, id_item);
+			socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem, reponse);
+			console.log("SERVEUR : INV_PERSONNAGE_CS : Desequipement" + reponse);
 		}
 		
-		// check si currentItem est bien dans le sac
-		var existItemInSac = oPersonnage_Manager.ExistItemInSac(idUser, currentItem);
-		
-		// si l'item n'est pas dans le sac, on renvoi 0
-		if (existItemInSac == false)
-		{
-			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, 0);
-		}
-		else
-		{
-			// si c'est une demande pour s'équiper
-			if (type == "EQUIPER")
-			{
-				console.log("SERVEUR : Tentative d'équipement de l'item " + currentItem.nom + " de type " + currentItem.type);
-				// on équipe le perso
-				 /* return 1 si ok
-				 * erreur : -1 si déja une arme équipée
-				 * erreur : -2 si déja une arme équipée
-				 * erreur : -3 si ni une arme, ni une armure
-				 */
-				// demande d'équipement au manager
-				var reponse = oPersonnage_Manager.SEquiper(idUser, currentItem);
-				
-				console.log("SERVEUR : code retour : " + reponse);
-				// et selon le message renvoyé
-				switch (reponse)
-				{
-					case 1:
-						console.log("SERVEUR : equipement ok");
-						socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, 1);
-						break;
-					case -1:
-						console.log("SERVEUR : deja une arme equipee");
-						socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -1);
-						break;
-					case -2:
-						console.log("SERVEUR : deja une armure equipee");
-						socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -2);
-						break;
-					case -3:
-						console.log("SERVEUR : item non equipable");
-						socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, -3);
-						break;
-					default:
-						console.log("SERVEUR :equipement - SWITCH DEFAULT");
-						break;
-				}
-			}
-			else if (type == "DESEQUIPER") 
-			{
-				console.log("SERVEUR : demande de déséquipement de l'item " + currentItem.id +" - " + currentItem.nom);
-				var r = oPersonnage_Manager.SeDesequiper(idUser, currentItem);
-				if (r == -1) 
-					socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, -4);
-				else
-					socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem.id, currentItem.type);
-			}
-		}
 		console.log("*******************************************************");
     });
     /*
@@ -813,122 +656,17 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
+		var currentItem = oItem_Manager.GetItem(id_item);
+		var reponse;
+		
 		console.log("*******************************************************");
 		
-		// récupère la case en cours
-		//var oCase_Manager[oPersonnage_Manager.GetIdSalleEnCours()].GetCopieCase() = oCase_BD.GetCaseById(oPersonnage_Manager.GetIdSalleEnCours());
-
-		// recupere l'currentItem
-		var currentItem = oItem_Manager.GetItem(id_item);
-
-		if (currentItem == null || typeof(currentItem) === "undefined" )
-		{
-			console.log("SERVEUR : erreur : id item : " + id_item);
-			return;
-		}
+		console.log("SERVEUR : INV_CASE_CS : Demande pour " + type + " l'item : " + id_item);
 		
-		// si action de type ramasser
-		if (type == "RAMASSER") 
-		{
-			// log
-			console.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
-
-			// check si currentItem est bien dans la salle
-			//var existItemInSalle = oCase_Manager[oPersonnage_Manager.GetIdSalleEnCours()].GetCopieCase().existItemInSalle(currentItem);
-			var existItemInSalle = oCase_Manager.ExistItem(oPersonnage_Manager.GetIdSalleEnCours(idUser), currentItem);
-			
-			// si l'objet est bien dans la salle
-			if (existItemInSalle == true)
-			{
-				//console.log("SERVER : poids sac : " + oPersonnage_Manager.GetPoidsSac() + " - poids item : " + currentItem.poids + " - poids max : " + myPerso.poidsMax);
-				 // ********* algorithme de calcul de l'impact des goules *********
-		    	var restG = TestGoules();
+		reponse = oPersonnage_Manager.ramasserDeposer(idUser, type, currentItem);
 		
-		    	if (restG["actionOk"] == 0)
-				{
-					// log
-					console.log("SERVEUR : ramassage raté à cause des goules");
-					
-					// renvoi de la réponse
-					socket.emit('INV_CASE_SC', 'RAMASSER', -5, currentItem.id, restG["degats"], restG["nbrGoulesA"]);
-					return;
-				}
-		    	// ***************************************************************
-				// demande au manager de perso d'ajouter l'item
-				var r = oPersonnage_Manager.AjouterItemAuSac(idUser, currentItem);
-				
-				// ramassage ok
-				if (r == 1)
-				{
-					console.log("SERVER : Demande de ramassage ok ");
-						
-					// suppression de l'objet de la case
-					oCase_Manager.SupprimerItem(oPersonnage_Manager.GetIdSalleEnCours(idUser), currentItem);
-						
-			        // informer les autres joueurs
-			        InformerPersonnages_Case("a ramassé l'objet " + currentItem.nom);
-			    	
-					// return au client
-					socket.emit('INV_CASE_SC', 'RAMASSER', oPersonnage_Manager.GetPoidsSac(idUser), currentItem.id, restG["degats"], restG["nbrGoulesA"]);
-					return;
-				}
-				else
-				{
-					// log
-					console.log("SERVER : Demande de ramassage impossible : poids max atteint");
-					
-					// return au client que l'objet ne peut être ajouté (poids insufisant)
-					socket.emit('INV_CASE_SC', 'RAMASSER', -1, currentItem.id, 0, 0);
-					return;
-				}
-			} // fin if (existItemInSalle == true)
-			// si l'objet n'est pas dans la case (! l'ihm n'a pas été mis à jour !)
-			else
-			{
-				// return que l'objet n'est pas dans la case
-				socket.emit('INV_CASE_SC', 'RAMASSER', -2, currentItem.id, 0, 0);
-				return;
-			}
-			
-		}
-		// si action de type depose
-		else if (type == "DEPOSER") 
-		{
-		// log
-		console.log("SERVER : Demande pour deposer l'currentItem : " + id_item + " - " + currentItem.nom);
-			
-		// check si l'objet à déposer n'est pas équipé
-		if (oPersonnage_Manager.IsItemEquipee(idUser, currentItem) == true)
-			{
-				console.log("APP : Objet à déposer est équipé !! ");
-				socket.emit('INV_CASE_SC', 'DEPOSER', -3, currentItem.id, 0, 0);
-				return;
-			}
+		socket.emit('INV_CASE_SC', type, reponse.reponseAction, id_item, reponse.degatSubis, reponse.nbrGoulesA);
 		
-		
-		// check si currentItem est bien dans le sac
-		var existItemInSac = oPersonnage_Manager.ExistItemInSac(idUser, currentItem);
-
-		// si l'item est bien dans le sac
-		if (existItemInSac == true) {
-			// ajout de l'item a la case
-			oCase_Manager.AjouterItem(oPersonnage_Manager.GetIdSalleEnCours(idUser), currentItem);
-			
-			// suppression de l'item au perso
-			oPersonnage_Manager.SupprimerDuSac(idUser, currentItem);
-			
-			// informer les autres joueurs
-	        InformerPersonnages_Case("a déposé l'objet " + currentItem.nom);
-	        
-			// return au client
-			socket.emit('INV_CASE_SC', 'DEPOSER', currentItem.id, oPersonnage_Manager.GetPoidsSac(idUser), 0, 0);
-			}
-			// si l'item n'est pas dans le sac (! l'ihm n'a pas été mis à jour !)
-			else {
-				// return que l'item n'est pas dans le sac
-				socket.emit('INV_CASE_SC', 'DEPOSER', -2, currentItem.id, 0, 0);
-			}
-		}
 		console.log("*******************************************************");
     });
 	
@@ -943,19 +681,15 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_CASE_CS', function ()
 	{
+		var liste	= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
+		var idSalle	= oPersonnage_Manager.GetIdSalleEnCours(idUser);
+		var maCase	= oCase_Manager.GetCopieCase(idSalle);
+		
 		console.log("*******************************************************");
 		
-		if (oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)) == null)
-		{
-			socket.emit('INFO_CASE_SC', "ERREUR_CASE");
-		}
-		else
-		{
-			var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
-			var res	= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
-	    	
-			socket.emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)), res.nbrAllies, res.nbrEnnemis);
-		}
+		console.log("SERVEUR : INFO_CASE : " + maCase);
+		
+		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis);
 		
 		console.log("*******************************************************");
     });
@@ -973,7 +707,9 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
-		socket.emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(idUser));
+		var monPerso = oPersonnage_Manager.GetCopiePerso(idUser);
+		
+		socket.emit('INFO_PERSONNAGE_SC', monPerso);
     });
     /*
      * 
@@ -996,34 +732,11 @@ io.sockets.on('connection', function (socket)
     socket.on('PERSONNAGE_USE_CS', function (id_item)
     {
     	console.log("*******************************************************");
-    	// recupere l'currentItem
-    	var currentItem = oItem_Manager.GetItem(id_item);
-
-    	// check si currentItem est bien dans le sac
-  		var existItemInSac = oPersonnage_Manager.ExistItemInSac(idUser, currentItem);
 		
-  		if (existItemInSac == false)
-		{
-			socket.emit('PERSONNAGE_USE_CS', currentItem, -1);
-		}
-		else
-		{
-			// le personnage tente d'utiliser l'item
-			var reponse = oPersonnage_Manager.Utiliser(idUser, currentItem);
-				
-			// et selon le message renvoyé
-			if (reponse == 1) 
-			{
-				console.log("SERVEUR : utilisation de l'item ok");
-				socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, 1);
-				ActualiserCase(oPersonnage_Manager.GetIdSalleEnCours(idUser));
-			}
-			else
-			{
-				console.log("SERVEUR : impossible d'utiliser cet item !");
-				socket.emit('PERSONNAGE_USE_SC', 'EQUIPER', currentItem, -2);
-			}
-		}
+		var reponse = oPersonnage_Manager.Utiliser(idUser, id_item);
+		
+		socket.emit('PERSONNAGE_USE_SC', id_item, reponse);
+		
 		console.log("*******************************************************");
     });
     /*
@@ -1053,60 +766,10 @@ io.sockets.on('connection', function (socket)
     socket.on('PERSONNAGE_MODE_CS', function (mode)
 	{
         console.log("*******************************************************");
-        console.log("SERVEUR : chgt de mode demandé, de " + oPersonnage_Manager.GetMode(idUser) + " -> " + mode);
-        
-        // si déja dans ce mode
-        if (oPersonnage_Manager.GetMode(idUser) == mode)
-        {
-            socket.emit('PERSONNAGE_MODE_SC', mode, -4, 0, 0);
-            return;
-        }
-        // si c'est un passage en mode défense
-        if (mode == 3)
-		{
-        	 if(oPersonnage_Manager.TestPtActions(idUser, "chgtMode_def"))
-        	 {
-             	socket.emit('PERSONNAGE_MODE_SC', mode, -10, 0, 0);
-             	return;
-        	 }
-        	 else
-        	 {
-        		 // changement de mode
-        		 oPersonnage_Manager.ChangementMode(idUser, mode);
-
-        		 // réponse ok
-        		 socket.emit('PERSONNAGE_MODE_SC', mode, 1, 0, 0);
-        		 return;
-        	 }
-        }
-        // si c'est un passage dans un autre mode
-        
-        // si pu de pts actions
-        if(oPersonnage_Manager.TestPtActions(idUser, "chgtMode")){
-        	socket.emit('PERSONNAGE_MODE_SC', mode, -10, 0, 0);
-        	return;
-        }
-        
-        // ********* algorithme de calcul de l'impact des goules *********
-    	var restG = TestGoules();
-
-    	if (restG["actionOk"] == 0)
-		{
-			// log
-			console.log("SERVEUR : chgt de mode ratée à cause des goules");
-			
-			// renvoi de la réponse
-			socket.emit('PERSONNAGE_MODE_SC', mode, -5, restG["degats"], restG["nbrGoulesA"]); 
-			return;
-		}
-    	// ***************************************************************
-
-    	// chgt de mode du perso
-        oPersonnage_Manager.ChangementMode(idUser, mode);
-    	socket.emit('PERSONNAGE_MODE_SC', mode, 1, restG["degats"], restG["nbrGoulesA"]);
-    	ActualiserCase(oPersonnage_Manager.GetIdSalleEnCours(idUser));
+		var reponse = oPersonnage_Manager.ChangementMode(idUser, mode);
 		
-    	console.log("SERVEUR : chgt de mode ok");
+		socket.emit('PERSONNAGE_MODE_SC', mode, reponse.reponseChargement, reponse.degatsSubis, reponse.nbrGoules);
+		
         console.log("*******************************************************");
     });
     /*
@@ -1142,8 +805,29 @@ io.sockets.on('connection', function (socket)
     {
     	console.log("***************** FOUILLE RAPIDE ******************************");
        
+    	var reponse = oPersonnageManager.fouilleRapide(id);
+    	
+    	switch(reponse.codeRetour)
+    	{
+    		case 1 : 
+    			break;
+    		case -1 : 
+    			break;
+    		case -5 : 
+    			break;
+    		case -10 : 
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0, 0, 0, 0);
+    			break;
+    	}
+    	
+    	
+    	
+    	
+    	
+    	
+    	
     	// si pu de pts actions
-        if(oPersonnage_Manager.TestPtActions(idUser, "fouilleRapide"))
+        if(!oPersonnage_Manager.TestPtActions(idUser, "fouilleRapide"))
 		{
         	socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0, 0, 0, 0);
         	return;
@@ -1227,57 +911,16 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (idPersonnageCible)
 	{
-		console.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
     	// récupèration de l'id de l'user propriétaire de ce perso
     	var idCible = oUtilisateur_Manager.findIdUser(idPersonnageCible);
-		
-		console.log("SERVER : idCible attaqué : " + idCible);
-		
-        // si pu de pts actions
-        if(oPersonnage_Manager.TestPtActions(idUser, "attaqueEnnemi"))
-        {
-        	socket.emit('ACTION_ATTAQUE_SC', -10, 0, 0, 0, 0);
-        	return;
-        }
-        
-        // si plus dans la case
-        if(!oPersonnage_Manager.MemeSalle(idUser, idCible))
-        {
-        	socket.emit('ACTION_ATTAQUE_SC', -1, 0, 0, 0, 0);
-        	return;
-        }
-        
-        // ********* algorithme de calcul de l'impact des goules *********
-    	var restG = TestGoules();
-
-    	if (restG["actionOk"] == 0)
-		{
-			// log
-			console.log("SERVEUR : attaque ratée à cause des goules");
-			
-			// renvoi de la réponse
-			socket.emit('PERSONNAGE_MODE_SC', -5, 0, 0, restG["degats"], restG["nbrGoulesA"]); 
-			return;
-		}
-    	// ***************************************************************
-    	
-    	// mise en mode "oisif"
-        oPersonnage_Manager.InitialiserMode(idUser);
-        
-        // combat
+    	var idCase = oPersonnage_Manager.GetIdSalleEnCours(idUser);
         var ans = oPersonnage_Manager.Attaquer(idUser, idCible);
-        
-        // informer les autres joueurs
-        InformerPersonnages_Case("a attaqué un autre joueur ! ");
-        
-        // voir s'il y a des mots
-        if (oPersonnage_Manager.estMort(idUser)) MettreKo(idUser, idCible);
-        if (oPersonnage_Manager.estMort(idCible)) MettreKo(idCible, idUser);
-
-        // log
-        console.log("Attaque de " + idUser + " -> " + idCible +" : (" + ans.degatsInfliges + ") <-> ("+ans.degatsRecus +")");
-        // return
-        socket.emit('ACTION_ATTAQUE_SC', 1, ans.degatsInfliges,  ans.degatsRecus, restG["degats"], restG["nbrGoulesA"]);
+		
+		console.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
+		
+        socket.emit('ACTION_ATTAQUE_SC', ans.reponseAttaque, ans.degatsInfliges,  ans.degatsRecus, ans.degatSubisParGoules, ans.nbrGoules);
+		
+		ActualiserCase(idCase);
     });
     /*
      * 
@@ -1334,9 +977,9 @@ io.sockets.on('connection', function (socket)
     	console.log("******************** ATTAQUE DE GOULES *****************");
     	
         // si pu de pts actions
-        if(oPersonnage_Manager.TestPtActions(idUser, "attaqueGoule"))
+        if(!oPersonnage_Manager.TestPtActions(idUser, "attaqueGoule"))
 		{
-        	socket.emit('PERSONNAGE_MODE_SC', -10, 0, 0);
+        	socket.emit('ACTION_ATTAQUE_GOULE_SC', -10, 0, 0);
         }
         else
 		{
@@ -1384,16 +1027,15 @@ io.sockets.on('connection', function (socket)
     socket.on('ACCUSE_LECTURE_MSG_CS', function ()
 	{
     	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser));
+    	
+    	// effacement des messages
     	oPersonnage_Manager.EffacerMessages(idUser);
     	
     	// si le perso est KO
     	if (oPersonnage_Manager.GetSante(idUser) == 0)
     	{
-    		// retablissement de la sante
+    		// retablissement de la sante et transfert en zone sure
     		oPersonnage_Manager.SeRetablir(idUser);
-    		
-    		// deplacement vers zone sure
-			oPersonnage_Manager.goZoneSure(idUser);
     	}
     });
     /*
@@ -1510,8 +1152,13 @@ io.sockets.on('connection', function (socket)
     	{
 			var id = liste.Allies[i];
 			
-			oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.GetPseudo(idUser) + " " + evenement);
+			// si le personnage n'est pas mort, on lui ajoute le message
+			if (!oPersonnage_Manager.estMort(id))
+			{
+				oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.GetPseudo(idUser) + " " + evenement);
+			}
 			
+			// pour ceux qui sont en ligne, on leurs rafraichit les infos sur leurs perso et la case
 			if(usersOnline[id])
 			{
 				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
@@ -1525,8 +1172,13 @@ io.sockets.on('connection', function (socket)
     	{
 			var id = liste.Ennemis[i];
 			
+			// si le personnage n'est pas mort, on lui ajoute le message
+			if (!oPersonnage_Manager.estMort(id))
+			{
 			oPersonnage_Manager.AddMessage(id, "Un ennemi " + evenement);
+			}
 			
+			// pour ceux qui sont en ligne, on leurs rafraichit les infos sur leurs perso et la case
 			if(usersOnline[id])
 			{
 				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
@@ -1600,21 +1252,12 @@ io.sockets.on('connection', function (socket)
     /******************************************************************************************************************
      * FONCTION POUR FAIRE METTRE KO UN JOUEUR
      */
-    function MettreKo(idUserKo, idUserTueur)
+    /*function MettreKo(idUserKo, idUserTueur)
     {
-		// log
-		console.log("SERVEUR : attaque() : Le joueur " + oUtilisateur_Manager.GetPseudo(idUserKo) + " vient de mourir");
 		
-		// transfert de son inventaire
-		oPersonnage_Manager.TransfererInventaire(idUserKo);
-		
-		// traitement de sa mort
-		oPersonnage_Manager.goZoneSure(idUserKo);
-    	
-    	
 		// informer les autres joueurs de la case
 		InformerPersonnages_Case("est KO... ");
-    }
+    }*/
     /******************************************************************************************************************
      * FONCTION DE TEST SI UNE FOUILLE PERMET DE DECOUVRIR OU ITEM OU UNE PERSONNE
      * return [actionOk, degats]
