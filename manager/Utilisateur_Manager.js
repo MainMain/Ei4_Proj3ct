@@ -7,12 +7,18 @@ var oPersonnage_Manager  = require('./Personnage_Manager');
 var oItem_Manager        = require('./Item_Manager');
 var oCase_Manager        = require('./Case_Manager');
 
+//inclusion des règles
+var GameRules	= require('../model/GameRules');
+
 // --- ATTRIBUTS DE CLASSE ---
 Utilisateur_Manager.listeUtilisateurs;
 
 function Utilisateur_Manager(){}
 
 // --- METHODES D'INSTANCE
+
+
+
 Utilisateur_Manager.Load = function()
 {
 	var context = Utilisateur_Manager;
@@ -60,6 +66,31 @@ Utilisateur_Manager.LoadUser = function(idUser)
 	});
 },
 
+
+/*
+ * FONCTIONS D'ECRITURE
+ */
+
+Utilisateur_Manager.SetNumEquipe = function(idUser, numEquipe)
+{
+	this.listeUtilisateurs[idUser].numEquipe = numEquipe;
+	oUtilisateur_BD.SetUtilisateur(this.listeUtilisateurs[idUser], function(reponse)
+	{
+		if (reponse == -1)
+		{
+			console.log("/!\ UTILISATEUR_MANAGER : erreur ecriture ");
+		}
+		else
+		{
+			console.log("UTILISATEUR_MANAGER : MAJ du numéro d'équipe pour l'id " + idUser + " OK!");
+		}
+	});
+},
+
+/*
+ * FONCTIONS DE LECTURE
+ */
+
 Utilisateur_Manager.exist = function(idUser)
 {
 	if(this.listeUtilisateurs[idUser])
@@ -84,26 +115,10 @@ Utilisateur_Manager.GetIdPersonnage = function(idUser)
 	return this.listeUtilisateurs[idUser].getIdPersonnage();
 },
 
-Utilisateur_Manager.SetNumEquipe = function(idUser, numEquipe)
-{
-	this.listeUtilisateurs[idUser].numEquipe = numEquipe;
-	oUtilisateur_BD.SetUtilisateur(this.listeUtilisateurs[idUser], function(reponse)
-	{
-		if (reponse == -1)
-		{
-			console.log("!!!!! WARNING : UMANAGER : erreur ecriture ");
-		}
-		else
-		{
-			console.log("UMANAGER : MAJ de l'equipe OK !");
-		}
-	});
-},
-
 Utilisateur_Manager.MemeEquipe = function(idUser1, idUser2)
 {
 	return Utilisateur_Manager.GetNumEquipe(idUser1) == Utilisateur_Manager.GetNumEquipe(idUser2);
-}
+},
 
 Utilisateur_Manager.findIdUser = function(idPersonnage)
 {
@@ -126,14 +141,14 @@ Utilisateur_Manager.Save = function()
 		{
 			if (reponse == -1)
 			{
-				console.log("!!!!! WARNING : UMANAGER : erreur ecriture de l'user " + idUser);
+				console.log("/!\ UTILISATEUR_MANAGER : erreur ecriture de l'user " + idUser);
 			}
 			else
 			{
-				console.log("UMANAGER : MAJ de l'user " + idUser + " OK !");
+				console.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " OK !");
 			}
 		});
 	}
-}
+},
 
 module.exports = Utilisateur_Manager;

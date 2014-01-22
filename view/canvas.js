@@ -1287,10 +1287,7 @@ function liste()
 			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
 
 	// Bouton ANNULER
-	/*var BtnCancelListe = contListe.addChild(new Button("Cancel", "#850000"));
-	BtnCancelListe.x=330;
-	BtnCancelListe.y=340;*/
-	var BtnCancelListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
+	var BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
 	BtnCancelListe.x=330;
 	BtnCancelListe.y=330;
 	contListe.addChild(BtnCancelListe);
@@ -1451,39 +1448,42 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 			break;
 
 			// équipage ok
+			// Si le type de l'item est : ARME
 		case 1:
 			var imgItem = new createjs.Bitmap(currentItem.imageName);
 			imgItem.cursor = "pointer";
-			// Si le type de l'item est : ARME
-			if (currentItem.type == 1) {
-				// Dessin de l'arme équipée
-				contArme.removeAllChildren();
-				contArme.addChild(imgItem);
-				contArme.addEventListener("click", function (event) {
-					SelectedItemEquip = currentItem.id;
-					alert(SelectedItemEquip);
-					stage.update();
-				});
-			}
-			// Si le type de l'item est : ARMURE
-			else if (currentItem.type == 2) {
-				// Dessin de l'armure équipée
-				contArmure.removeAllChildren();
-				contArmure.addChild(imgItem);
-				contArmure.addEventListener("click", function (event) {
-					SelectedItemEquip = currentItem.id;
-					alert(SelectedItemEquip);
-					stage.update();
-				});
-			}
+			// Dessin de l'arme équipée
+			contArme.removeAllChildren();
+			contArme.addChild(imgItem);
+			contArme.addEventListener("click", function (event) {
+				SelectedItemEquip = currentItem.id;
+				alert(SelectedItemEquip);
+				stage.update();
+			});
 			// log
 			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'objet ok");
+			txtObjet.text = ("Equipement de l'arme ok");
 
 			stage.update();
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
+		case 2:
+		// Si le type de l'item est : ARMURE
+			// Dessin de l'armure équipée
+			contArmure.removeAllChildren();
+			contArmure.addChild(imgItem);
+			contArmure.addEventListener("click", function (event) {
+				SelectedItemEquip = currentItem.id;
+				alert(SelectedItemEquip);
+				stage.update();
+			});
+			// log
+			txtObjet.text = "";
+			txtObjet.text = ("Equipement de l'armure ok");
 
+			stage.update();
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
 		case -1:
 			//alert("-1");
 			txtObjet.text = "";
@@ -1549,8 +1549,10 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
  * 
  * ET nbr goules attaquantes
  */
-socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
-	if (type == 'RAMASSER') {
+socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
+{
+	if (type == 'RAMASSER')
+	{
 		switch(codeRetour)
 		{
 		// erreur
@@ -1579,12 +1581,11 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Zombies restants");
 		socket.emit('INFO_PERSONNAGE_CS');
 		socket.emit('INFO_CASE_CS');
-		stage.update();
 		break;
 		}
 	}
-	stage.update();
-	if (type == 'DEPOSER') {
+	if (type == 'DEPOSER')
+	{
 		switch(codeRetour)
 		{
 		// erreur
@@ -1604,10 +1605,9 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			// dépôt ok
 		default:
 			txtObjet.text = "";
-		txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
-		socket.emit('INFO_CASE_CS');
-		socket.emit('INFO_PERSONNAGE_CS');
-		stage.update();
+			txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
+			socket.emit('INFO_CASE_CS');
+			socket.emit('INFO_PERSONNAGE_CS');
 		break;
 		}
 	}
@@ -2345,10 +2345,10 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 				break;
 			}
 			
-			labelDescribePerso.text=("Competence : "+currentPerso.competence+
-					"\nMode : "+ModePerso+
-					"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-					"\nSac rempli à : "+currentPerso.sacADos+" %");
+			labelDescribePerso.text = ("Competence : " + currentPerso.competence + 
+					"\nMode : " + ModePerso + 
+					"\nSanté : " + currentPerso.ptSante + " / " + currentPerso.ptSanteMax +
+					"\nSac rempli à : " + currentPerso.sacADos + " %");
 			
 			if(currentPerso.armeEquipee!=null)
 			{
