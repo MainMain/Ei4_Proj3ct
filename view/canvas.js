@@ -1372,6 +1372,7 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 	*/
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
+	stage.update();
 });
 
 /******************************************************************************************************************

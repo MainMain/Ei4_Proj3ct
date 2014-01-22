@@ -239,7 +239,7 @@ var Personnage = (function() {
 			}
 		},
 		
-		setptSante : function(newPtSante)
+		setPtsSante : function(newPtSante)
 		{
 			if(ptSante >= this.ptSanteMax)
 			{
@@ -401,7 +401,7 @@ var Personnage = (function() {
 			return 1;
 		},
 		
-		goCase : function(idCase)
+		setIdCase : function(idCase)
 		{
 			this.idSalleEnCours = idCase;
 		},
@@ -570,6 +570,13 @@ var Personnage = (function() {
 			this.listeMsgAtt = new Array();
 		},
 		
+		viderInventaire : function()
+		{
+			this.sacADos = new Array();
+			this.armeEquipee = null;
+			this.armureEquipee = null;
+		},
+		
 		/**
 		 * LECTURE
 		 * 
@@ -687,7 +694,7 @@ var Personnage = (function() {
 			return this.listeMsgAtt;
 		},
 		
-		GetMultiFouille : function()
+		getMultiFouille : function()
 		{
 			return this.multiProbaFouille;
 		},
@@ -705,6 +712,11 @@ var Personnage = (function() {
 		GetSac : function()
 		{
 			return this.sacADos;
+		},
+		
+		estMort : function()
+		{
+			return (this.ptSante == 0);
 		},
 		
 	};
