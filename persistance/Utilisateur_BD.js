@@ -76,7 +76,7 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
  * retourn -1 l'utilisateur n'est pas trouvé
  * @method GetUtilisateur
  */
-Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
+Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) {
 	
 	var Utilisateurmodel = mongoose.model('Utilisateur');
 		
@@ -90,12 +90,12 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur,callbackGetUtilisateur) {
 		if (typeof NewUser[0] === "undefined")
 		{
 			console.log("Get Utilisateur : undefined");
-			callbackGetUtilisateur(-1);	
+			callbackGetUtilisateur(idUtilisateur, -1);	
 		}
 		else
 		{
 			console.log("Appel du callBack avec un utilisateur"),
-			callbackGetUtilisateur( new oUtilisateur(
+			callbackGetUtilisateur(idUtilisateur, new oUtilisateur(
 				NewUser[0]._id,			NewUser[0].pseudo,NewUser[0].email,
 				NewUser[0].nbrMeurtres,	NewUser[0].nbrMeurtresCumule,
 				NewUser[0].nbrFoisTue,	NewUser[0].nbrFoisTueCumule,
@@ -198,7 +198,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 					}
 					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
 						
-					callbackInscription(1, req, res);
+					callbackInscription(NewUser._id, req, res);
 				});
 			}
 		});

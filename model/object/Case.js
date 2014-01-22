@@ -100,7 +100,21 @@ var Case = (function() {
 			this.listeItem.splice(i, 1);
 			this.logAfficherItems();
 		},
-
+		
+		AttaqueGoule : function(nbrGoules)
+		{
+			this.nbrGoules -= nbrGoules;
+			if(this.nbrGoules < 0)
+			{
+				this.nbrGoules = 0;
+			}
+		},
+		
+		getNbrGoules : function()
+		{
+			return this.nbrGoules;
+		},
+		
 		/*
 		 * LECTURE
 		 * 
