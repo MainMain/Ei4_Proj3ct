@@ -15,6 +15,7 @@ var SelectedItemEquip = -1;
 var SelectedPerso = -1;
 var PersoProbaCache=1;
 var PersoProbaFouille=1;
+var PageItemPerso=0;
 
 var background, backgroundPreload, map, perso;
 
@@ -594,7 +595,7 @@ function game() {
 	stage.addChild(shapeBtnsInvCase);
 	shapeBtnsInvCase.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_ContBtnsInvCaseX-4, _ContBtnsInvCaseY-4, _ContBtnsInvCaseW+5, _ContBtnsInvCaseH+5);
-	
+
 	//------------------------- Zone 14 : Labels de retour ---------------------------------------
 	contLabelsMove = new createjs.Container();
 	contLabelsMove.x = _ContLabelsMoveX;
@@ -606,7 +607,7 @@ function game() {
 	stage.addChild(shapeLabelsMove);
 	shapeLabelsMove.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_ContLabelsMoveX-4, _ContLabelsMoveY-4, _ContLabelsMoveW+5, _ContLabelsMoveH+5);
-	
+
 	contLabelsObjet = new createjs.Container();
 	contLabelsObjet.x = _ContLabelsObjetX;
 	contLabelsObjet.y = _ContLabelsObjetY;
@@ -617,7 +618,7 @@ function game() {
 	stage.addChild(shapeLabelsObjet);
 	shapeLabelsObjet.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_ContLabelsObjetX-4, _ContLabelsObjetY-4, _ContLabelsObjetW+5, _ContLabelsObjetH+5);
-	
+
 	contLabelsAtq = new createjs.Container();
 	contLabelsAtq.x = _ContLabelsAtqX;
 	contLabelsAtq.y = _ContLabelsAtqY;
@@ -628,7 +629,7 @@ function game() {
 	stage.addChild(shapeLabelsAtq);
 	shapeLabelsAtq.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_ContLabelsAtqX-4, _ContLabelsAtqY-4, _ContLabelsAtqW+5, _ContLabelsAtqH+5);
-	
+
 	contLabelsMode = new createjs.Container();
 	contLabelsMode.x = _ContLabelsModeX;
 	contLabelsMode.y = _ContLabelsModeY;
@@ -728,9 +729,9 @@ function game() {
 	moveBarContainer.x = actionBarContainer.x;
 	moveBarContainer.y = _labelPtsMY;
 	stage.addChild(moveBarContainer);
-	
+
 	//------------------ Zone 8 : Proba de la case -------------------------------------------------------
-	
+
 	// Barre de proba Cache
 
 	cacheBarContainer = new createjs.Container();
@@ -751,7 +752,7 @@ function game() {
 	cacheBarContainer.x = _labelProbaCacheX + 200;
 	cacheBarContainer.y = _labelProbaCacheY;
 	stage.addChild(cacheBarContainer);
-	
+
 	// Barre de proba Fouille
 
 	fouilleBarContainer = new createjs.Container();
@@ -966,7 +967,7 @@ function game() {
 	txtSalle.x = 0;
 	txtSalle.y = 0;
 	//txtSalle.text="txtSalle";
-	
+
 	// Conteneur labels Objet
 	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	txtObjet.lineHeight = _LineHeight;
@@ -974,7 +975,7 @@ function game() {
 	txtObjet.x = 0;
 	txtObjet.y = 0;
 	txtObjet.text="";
-	
+
 	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
 	labelRetourFouilleRapide.lineHeight = _LineHeight;
 	labelRetourFouilleRapide.textBaseline = _TextBaseline;
@@ -1165,6 +1166,26 @@ function game() {
 		}
 	});
 
+	var BtnPageItemPersoUp = stage.addChild(new ButtonMove("+", ColorBtn));
+	BtnPageItemPersoUp.x=1060;
+	BtnPageItemPersoUp.y=40;
+	BtnPageItemPersoUp.addEventListener('click', function(event) {
+		PageItemPerso++;
+		socket.emit('INFO_PERSONNAGE_CS');
+		
+	});
+
+	var BtnPageItemPersoDown = stage.addChild(new ButtonMove("-", ColorBtn));
+	BtnPageItemPersoDown.x=1030;
+	BtnPageItemPersoDown.y=40;
+	BtnPageItemPersoDown.addEventListener('click', function(event) {
+		PageItemPerso--;
+		socket.emit('INFO_PERSONNAGE_CS');
+		
+	});
+
+	BtnPageItemPersoUp.cursor=BtnPageItemPersoDown.cursor="pointer";
+
 	BtnListeAllies.cursor=BtnListeEnnemis.cursor=BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor ="pointer";// BtnAttaquer.cursor = 
 	stage.update();
 
@@ -1178,7 +1199,7 @@ function game() {
 	//socket.emit('INFO_CASE_ALLIES_CS');
 	stage.update();
 	//Check message en attente (socket.emit)
-	
+
 	stage.update();
 }
 
@@ -1194,10 +1215,10 @@ function message(ListeMsg)
 	stage.addChild(shapeMessage);
 	shapeMessage.graphics.setStrokeStyle(4).beginStroke("#006600").drawRect(
 			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);
-	
+
 	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
 	contMessage.addChild(background_message);
-	
+
 	labelMessage = contMessage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelMessage.lineHeight = _LineHeight;
 	labelMessage.textBaseline = _TextBaseline;
@@ -1214,7 +1235,7 @@ function message(ListeMsg)
 		ListeMessages=null;
 		game();
 	});	
-	
+
 	BtnCancelMessage.cursor="pointer";
 
 	stage.update();
@@ -1311,7 +1332,7 @@ function liste()
 			SelectedPerso = -1;
 		}
 	});
-	
+
 	BtnCancelListe.cursor=BtnAttaquerListe.cursor="pointer";
 
 	stage.update();
@@ -1348,28 +1369,28 @@ function setImg(img, X, Y)
 socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbGoules){
 	switch(codeRetour)
 	{
-		case 0:
-			alert("erreur interne");
-			break;
-		case 1:
-			alert("attaque ok");
-			break;
-		case -1:
-			alert("attaque : joueur plu dans la case");
-			break;
-		case -5:
-			alert("attaque ratée à cause des goules");
-			break;
-		case -10:
-			alert("attaque plus de pts d'actions");
-			break;
+	case 0:
+		alert("erreur interne");
+		break;
+	case 1:
+		alert("attaque ok");
+		break;
+	case -1:
+		alert("attaque : joueur plu dans la case");
+		break;
+	case -5:
+		alert("attaque ratée à cause des goules");
+		break;
+	case -10:
+		alert("attaque plus de pts d'actions");
+		break;
 	}
 	/*
 	alert("dagats infligés : " + degatsI);
 	alert("dagats recus ennemi : " + degatsRecusE);
 	alert("dagats recus goules : " + degatsRecusG);
 	alert("nbr goules attaqués: " + nbGoules);
-	*/
+	 */
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
 });
@@ -1639,10 +1660,10 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %     (x " +  PersoProbaFouille + ")");
 		labelNomSalle.text="";
 		labelNomSalle.text=("Nom salle : "+currentCase.nom+"");
-		
+
 		cacheBar.scaleX = (ProbCache/100) * cacheBarWidth;
 		fouilleBar.scaleX = (ProbFouille/100) * fouilleBarWidth;
-		
+
 		labelObjetCase.text="";
 		labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
 
@@ -1707,11 +1728,11 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-	
+
 	//socket.emit('CHECK_MSG_ATT_CS');
-	
+
 	this.listeItemsPerso = new Array();
-	
+
 	// insertion de l'image du Perso
 	if(currentPerso.competence=="brute")
 	{
@@ -1756,7 +1777,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		PointsDefense = currentPerso.multiPtsDefense;
 	}
-		//PointsDefense = currentPerso.getValeurArmure();
+	//PointsDefense = currentPerso.getValeurArmure();
 
 	// Mise à jour des labels
 	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
@@ -1973,56 +1994,106 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	contInvPerso.removeAllChildren();
 
 	var iPositionItemInConteneur=0;
+	var iPositionY=0;
 
-	for (var i = 0; i < currentPerso.sacADos.length; i++) 
+	var TabListe=new Array();
+
+	var Taille = Math.ceil(currentPerso.sacADos.length / 10);
+	var TailleFinListe =(currentPerso.sacADos.length % 10);
+
+	for (var j=0; j<Taille; j++)
 	{
-		// mise de l'item dans une variable
-		var item = currentPerso.sacADos[i];
+		var NewListe=new Array();
 
-		// Calcul du poids du sac
-		PoidsSac+=item.poids;
-
-		// Ajout de l'item à la liste
-		listeItemsPerso.push(item);
-
-		if(!((currentPerso.armeEquipee != null && item.id == currentPerso.armeEquipee.id) || 
-				(currentPerso.armureEquipee != null && item.id == currentPerso.armureEquipee.id)) )
-		{			
-			// Ajout de l'image à l'ihm
-			var imgItem = new createjs.Bitmap(item.imageName);
-
-			imgItem.name = i;
-			imgItem.cursor = "pointer";
-
-			// Ajout de l'évenement a l'image
-			// ajout d'un texte quand l'user passera la souris dessus
-			imgItem.addEventListener('mouseover', function(event) {
-				var currentItem = listeItemsPerso[event.target.name];
-				labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
-				stage.update();
-			},false);
-
-			imgItem.addEventListener('mouseout', function(event){
-				labelDescribeItem.text="";
-				stage.update();
-			},false);
-
-			imgItem.addEventListener("click", function(event){
-				var currentItem = listeItemsPerso[event.target.name];
-				SelectedItemPerso=currentItem.id;
-				stage.update();
-			});
-
-			imgItem.x = iPositionItemInConteneur * SpaceItem;
-			contInvPerso.addChild(imgItem);
-
-			// position de l'item dans le conteneur
-			iPositionItemInConteneur++;
-
-			// Update l'ihm
-			stage.update();
+		if(j==Taille-1 && TailleFinListe!=0)
+		{
+			//Boucle de reste
+			for (var i=j*10; i<j*10+TailleFinListe; i++)
+			{
+				
+				// mise de l'item dans une variable
+				var item = currentPerso.sacADos[i];
+				// mise de l'item dans une variable
+				NewListe.push(item);
+			}
+			TabListe.push(NewListe);	
+		}
+		else
+		{
+			//Boucle normale : creation nouvelle liste de 10 items max
+			for (var i=j*10; i<(j*10+10); i++)
+			{
+				// mise de l'item dans une variable
+				var item = currentPerso.sacADos[i];
+				// mise de l'item dans une variable
+				NewListe.push(item);
+			}
+			TabListe.push(NewListe);
 		}
 	}
+
+	if(PageItemPerso>Taille-1)
+	{
+		PageItemPerso=Taille-1;
+	}
+	else if (PageItemPerso<0)
+	{
+		PageItemPerso=0;
+	}
+
+	try 
+	{
+		// instructions à essayer
+		for (var i = 0; i < TabListe[PageItemPerso].length ; i++) 
+		{
+			var Obj=TabListe[PageItemPerso][i];
+			// Calcul du poids du sac
+			PoidsSac+=Obj.poids;
+
+			if(!((currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id) || 
+					(currentPerso.armureEquipee != null && Obj.id == currentPerso.armureEquipee.id)) )
+			{		
+				// Ajout de l'image à l'ihm
+				var imgItem = new createjs.Bitmap(Obj.imageName);
+
+				imgItem.name = i;
+				imgItem.cursor = "pointer";
+
+				// Ajout de l'évenement a l'image
+				// ajout d'un texte quand l'user passera la souris dessus
+				imgItem.addEventListener('mouseover', function(event) {
+					var currentItem = TabListe[PageItemPerso][event.target.name];
+					labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+					stage.update();
+				},false);
+
+				imgItem.addEventListener('mouseout', function(event){
+					labelDescribeItem.text="";
+					stage.update();
+				},false);
+
+				imgItem.addEventListener("click", function(event){
+					var currentItem = TabListe[PageItemPerso][event.target.name];
+					SelectedItemPerso=currentItem.id;
+					stage.update();
+				});
+
+				imgItem.x = iPositionItemInConteneur * SpaceItem;
+				imgItem.y = iPositionY * SpaceItem;
+				contInvPerso.addChild(imgItem);
+
+				// position de l'item dans le conteneur
+				iPositionItemInConteneur++;
+
+				// Update l'ihm
+				stage.update();
+			}
+		}
+	}
+	catch (e) {
+		alert("Page inexistante");
+	}
+
 
 	if (currentPerso.armeEquipee != null) {
 		// affichage arme équipee
@@ -2094,27 +2165,27 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	labelInventaire.text="";
 	labelInventaire.text=("Inventaire du perso :      "+ PoidsSac + "/" + currentPerso.poidsMax);
 
-	// Affichage barre poids du sac
+//	Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
-	
+
 	if(currentPerso.listeMsgAtt.length > 0)
 	{
 		ListeMessages=currentPerso.listeMsgAtt;
 	}
-	
-	// Update l'ihm
+
+//	Update l'ihm
 	stage.update();
 });
 
 /**************************************************************************************
  * RECEPTION Suite à une DEMANDE POUR UTILISER UN ITEM
- 	 * 
-	 * renvoi id item
-	 * 
-	 * ET return 1 si ok
-	 * erreur : -1 si objet n'est pas dans le sac
-	 * erreur : -2 si objet pas utilisable
-	 */
+ * 
+ * renvoi id item
+ * 
+ * ET return 1 si ok
+ * erreur : -1 si objet n'est pas dans le sac
+ * erreur : -2 si objet pas utilisable
+ */
 socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
 	switch(codeRetour)
 	{
@@ -2137,7 +2208,7 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
 		break;
 	}
 	stage.update();
-	
+
 });
 
 /******************************************************************************************************************
@@ -2244,62 +2315,62 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, degatsInfliges, item, d
 		{
 	alert("reponse : " + reponse + "degats : " + degatsInfliges);
 	/*
-			      		switch(reponse)
-			      		{
-			      			case  1 : 
-			      				labelRetourFouilleRapide.text = "Fouille ok ! Objet découvert : " + item.nom;
-			      				if (ajouteAuSac == 0) labelRetourFouilleRapide.text += " ! Ajouté à la case";
-			      				break;
-			      			case  0 : 
-			      				labelRetourFouilleRapide.text = "Fouille ok ! Objet découvert : " + item.nom;
-			      				labelRetourFouilleRapide.text = ". Mais vous avez été blessé ! " + degatsInfliges;
-			      				if (ajouteAuSac == 0) labelRetourFouilleRapide.text += " ! Ajouté à la case";
-			      				break;
-			      			case -1 : 
-			      				labelRetourFouilleRapide.text = "Fouille raté";
-			      				break;
-			      			case -2 : 
-			      				labelRetourFouilleRapide.text = 
-			      				break;
-			      			case -4 :
-			      				labelRetourFouilleRapide.text = 
-			  					break;
-			      			case -5 : 
-			      				labelRetourFouilleRapide.text = 
-			      				break;
-			      			case -6 :
-			      				labelRetourFouilleRapide.text = 
-			      				break;
-			      			case -7: 
-			      				labelRetourFouilleRapide.text = 
-			      				break;
-			      		}*/
+  		switch(reponse)
+  		{
+  			case  1 : 
+  				labelRetourFouilleRapide.text = "Fouille ok ! Objet découvert : " + item.nom;
+  				if (ajouteAuSac == 0) labelRetourFouilleRapide.text += " ! Ajouté à la case";
+  				break;
+  			case  0 : 
+  				labelRetourFouilleRapide.text = "Fouille ok ! Objet découvert : " + item.nom;
+  				labelRetourFouilleRapide.text = ". Mais vous avez été blessé ! " + degatsInfliges;
+  				if (ajouteAuSac == 0) labelRetourFouilleRapide.text += " ! Ajouté à la case";
+  				break;
+  			case -1 : 
+  				labelRetourFouilleRapide.text = "Fouille raté";
+  				break;
+  			case -2 : 
+  				labelRetourFouilleRapide.text = 
+  				break;
+  			case -4 :
+  				labelRetourFouilleRapide.text = 
+				break;
+  			case -5 : 
+  				labelRetourFouilleRapide.text = 
+  				break;
+  			case -6 :
+  				labelRetourFouilleRapide.text = 
+  				break;
+  			case -7: 
+  				labelRetourFouilleRapide.text = 
+  				break;
+  		}*/
 		});
 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
-{
+		{
 	//alert("retour ok");
 	var i=0;
 	var iPositionPersoInConteneur=0;
-	
+
 	contListeAllies.removeAllChildren();
-	
+
 	var imgPerso;
 	listePersoAllies = new Array();
-	
+
 	for(var perso in listeAllies)
 	{
 		// mise du perso dans une variable
 		var persoA = listeAllies[perso];
-		
+
 		var ModePerso;
 		var DescriptionSac;
 		var PourcentVie;
 		var DescriptionVie;
 		var PourcentSac;
-		
+
 		listePersoAllies.push(persoA);
-		
+
 		if(persoA.competence=="brute")
 		{
 			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
@@ -2319,32 +2390,32 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 			imgPerso.cursor= "pointer";
 		}
 		imgPerso.name = perso;
-		
+
 		// Ajout de l'évenement a l'image
 		// ajout d'un texte quand l'user passera la souris dessus
 		imgPerso.addEventListener('mouseover', function(event) {
 			var currentPerso =  listeAllies[event.target.name];
 			// Texte de description du Mode
-			 ModePerso="";
+			ModePerso="";
 			switch(currentPerso.mode)
 			{
-				case 0:
-					ModePerso="Normal";
+			case 0:
+				ModePerso="Normal";
 				break;
-				case 1:
-					ModePerso="Fouille";
+			case 1:
+				ModePerso="Fouille";
 				break;
-				case 2:
-					ModePerso="Caché";
+			case 2:
+				ModePerso="Caché";
 				break;
-				case 3:
-					ModePerso="Défense";
+			case 3:
+				ModePerso="Défense";
 				break;
 			}
-		
+
 			alert("armeEquip : "+currentPerso.idArmeEquipee);
 			alert("arumureEquip : "+currentPerso.idArmureEquipee);
-			
+
 			if(currentPerso.idArmeEquipee!=null && currentPerso.idArmureEquipee!=null)
 			{
 				labelDescribePerso.text=("Competence : "+currentPerso.competence+
@@ -2360,7 +2431,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 						"\nMode : "+ModePerso+
 						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
 						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nCe joueur n'est pas équipé !");
+				"\nCe joueur n'est pas équipé !");
 			}
 			else
 			{
@@ -2368,7 +2439,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 						"\nMode : "+ModePerso+
 						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
 						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nCe joueur est équipé !");
+				"\nCe joueur est équipé !");
 			}
 			stage.update();
 		},false);
@@ -2389,32 +2460,32 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		iPositionPersoInConteneur++;
 	}
 	stage.update();
-});
+		});
 
 socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
-{
+		{
 	var i=0;
 	var iPositionPersoInConteneur=0;
-	
+
 	this.listePersoEnnemis = new Array();
 	contListeEnnemis.removeAllChildren();
-	
+
 	var imgPerso;
-	
+
 	alert("longueur liste enn = " + listeEnn.length);
-	
+
 	for(var i = 0; i < listeEnn.length; i++)
 	{
 		// mise du perso dans une variable
 		var persoE = listeEnn[i];
-		
+
 		var ModePerso;
 		var DescriptionSac;
 		var PourcentVie;
 		var DescriptionVie;
-		
+
 		this.listePersoEnnemis.push(persoE);
-		
+
 		if(persoE.competence=="brute")
 		{
 			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
@@ -2434,11 +2505,11 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 			imgPerso.cursor= "pointer";
 		}
 		imgPerso.name = i;
-		
+
 		// Ajout de l'évenement a l'image
 		// ajout d'un texte quand l'user passera la souris dessus
 		imgPerso.addEventListener('mouseover', function(event)
-		{
+				{
 			var currentPerso =  listeEnn[event.target.name];
 			// Calcul du pourcentage de vie
 			PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
@@ -2468,12 +2539,12 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				DescriptionVie="";
 				DescriptionVie="Ce joueur a l'air au top de sa forme";
 			}
-			
+
 			// Texte de description du poids du sac
 			if(currentPerso.sacADos>=0 && currentPerso.sacADos<20)
 			{
-					DescriptionSac="";
-					DescriptionSac="Ce joueur n'a pas l'air très chargé !";
+				DescriptionSac="";
+				DescriptionSac="Ce joueur n'a pas l'air très chargé !";
 			}
 			else if(currentPerso.sacADos>=20 && currentPerso.sacADos<40)
 			{
@@ -2495,27 +2566,27 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				DescriptionSac="";
 				DescriptionSac="Ce joueur a l'air surchargé !";
 			}
-			
+
 			// Texte de description du Mode
 			switch(currentPerso.mode)
 			{
-				case 0: ModePerso="";
-					ModePerso="Normal";
-				break;
-				case 1: ModePerso="";
-					ModePerso="Fouille";
-				break;
-				case 2: ModePerso="";
-					ModePerso="Caché";
-				break;
-				case 3: ModePerso="";
-					ModePerso="Défense";
-				break;
+			case 0: ModePerso="";
+			ModePerso="Normal";
+			break;
+			case 1: ModePerso="";
+			ModePerso="Fouille";
+			break;
+			case 2: ModePerso="";
+			ModePerso="Caché";
+			break;
+			case 3: ModePerso="";
+			ModePerso="Défense";
+			break;
 			}
-		
-		/*alert("armeEquip : "+currentPerso.id.armeEquipe);
+
+			/*alert("armeEquip : "+currentPerso.id.armeEquipe);
 		alert("arumureEquip : "+currentPerso.id.armureEquipe);*/
-			
+
 			if(currentPerso.idArmeEquipee!=null && currentPerso.idArmureEquipee!=null)
 			{
 				labelDescribePerso.text=("Competence : "+currentPerso.competence+
@@ -2531,8 +2602,8 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 						"\nMode : "+ModePerso+
 						"\n"+DescriptionVie+
 						"\n"+DescriptionSac+
-						"\nCe joueur n'est pas équipé !");
-			
+				"\nCe joueur n'est pas équipé !");
+
 			}
 			else
 			{
@@ -2540,10 +2611,10 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 						"\nMode : "+ModePerso+
 						"\n"+DescriptionVie+
 						"\n"+DescriptionSac+
-						"\nCe joueur est équipé !");
+				"\nCe joueur est équipé !");
 			}
 			stage.update();
-		},false);
+				},false);
 
 		imgPerso.addEventListener('mouseout', function(event){
 			labelDescribePerso.text="";
@@ -2567,7 +2638,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	}
 	stage.update();
 	socket.emit('INFO_PERSONNAGE_CS');
-});
+		});
 
 
 
