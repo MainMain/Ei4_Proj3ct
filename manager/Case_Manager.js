@@ -143,18 +143,22 @@ Case_Manager.GetNombreGoules = function(idCase)
 	return this.listeCases[idCase].getNbrGoules();
 },
 
-Case_Manager.GetNombreAllies = function()
-{
-	return 0;
-},
-
 Case_Manager.getZoneSure = function(numEquipe)
 {
 	if(numEquipe == 1)
 	{
-		return idZoneSure1;
+		return this.idZoneSure1;
 	}
-	return idZoneSure2;
+	return this.idZoneSure2;
+},
+
+Case_Manager.GetIdZoneSureEnnemi = function(numEquipe)
+{
+	if(numEquipe == 1)
+	{
+		return this.idZoneSure2;
+	}
+	return this.idZoneSure1;
 },
 
 Case_Manager.GetTestZoneSure = function(idCase, numEquipe)

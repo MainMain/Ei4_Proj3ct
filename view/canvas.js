@@ -2328,7 +2328,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		imgPerso.addEventListener('mouseover', function(event) {
 			var currentPerso =  listeAllies[event.target.name];
 			// Texte de description du Mode
-			 ModePerso="";
+			ModePerso="";
 			switch(currentPerso.mode)
 			{
 				case 0:
@@ -2344,35 +2344,30 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 					ModePerso="Défense";
 				break;
 			}
-		
-			//alert("armeEquip : "+currentPerso.armeEquipee);
-			//alert("arumureEquip : "+currentPerso.idArmureEquipee);
 			
-			if(currentPerso.idArmeEquipee!=null && currentPerso.idArmureEquipee!=null)
+			labelDescribePerso.text=("Competence : "+currentPerso.competence+
+					"\nMode : "+ModePerso+
+					"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
+					"\nSac rempli à : "+currentPerso.sacADos+" %");
+			
+			if(currentPerso.armeEquipee!=null)
 			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nArme Equipee : "+currentPerso.armeEquipe+" "+currentPerso.armeEquipe.valeur+
-						"\nArmure Equipée :"+currentPerso.armureEquipe+" "+currentPerso.armureEquipe.valeur+"");
-			}
-			else if(currentPerso.idArmeEquipee==null && currentPerso.idArmureEquipee==null)
-			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nCe joueur n'est pas équipé !");
+				labelDescribePerso.text += "\nArme Equipée : " + currentPerso.armeEquipee.nom + " " + currentPerso.armeEquipee.valeur;
 			}
 			else
 			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nCe joueur est équipé !");
+				labelDescribePerso.text += "\nPas d'arme équipée.";
 			}
+			
+			if(currentPerso.armureEquipee!=null)
+			{
+				labelDescribePerso.text += "\nArmure Equipée :" + currentPerso.armureEquipee.nom + " " + currentPerso.armureEquipee.valeur;
+			}
+			else
+			{
+				labelDescribePerso.text += "\nPas d'armure équipée.";
+			}
+			
 			stage.update();
 		},false);
 
@@ -2403,8 +2398,6 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	contListeEnnemis.removeAllChildren();
 	
 	var imgPerso;
-	
-	alert("longueur liste enn = " + listeEnn.length);
 	
 	for(var i = 0; i < listeEnn.length; i++)
 	{

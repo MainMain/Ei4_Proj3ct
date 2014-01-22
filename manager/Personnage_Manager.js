@@ -130,12 +130,24 @@ Personnage_Manager.SetCompetence = function(idUser, competence)
 	
 },
 
-Personnage_Manager.Deplacement = function (idUser, move, nbrGoules)
+Personnage_Manager.Deplacement = function (idUser, move)
 {
+	var nbrGoules = oCase_Manager.GetNombreGoules(Personnage_Manager.GetIdSalleEnCours(idUser));
+	var a = Personnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
+	var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
+	var idZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
+	
+	nbrGoules -= a.nbrAllies;
+	
 	// deplace le personnage
-	var reponse = this.listePersonnages[idUser].deplacement(move, nbrGoules);
+	var reponse = this.listePersonnages[idUser].deplacement(move, nbrGoules, idZoneSureEnnemi);
 	
 	console.log("PMANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
+	
+	if(reponse > -1)
+	{
+		return oCase_Manager.GetCopieCase(reponse);
+	}
 	
 	return reponse;
 },
@@ -472,7 +484,7 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser)
 			-1,											-1, 											-1,
 			this.listePersonnages[idUser].getCompetence(),-1, 											this.listePersonnages[idUser].GetMode(),
 			-1,  										-1,  											-1,
-			-1,											this.listePersonnages[idUser].getArmeEquipe(),	this.listePersonnages[idUser].getArmureEquipe(),
+			-1,											this.listePersonnages[idUser].getArmeEquipee(),	this.listePersonnages[idUser].getArmureEquipee(),
 			comPoidsSac,								-1,												-1);
 	return perso;
 },

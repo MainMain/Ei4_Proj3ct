@@ -258,7 +258,8 @@ app.delete("/", function (req, res)
 /*
  * LANCEMENT DU SERVEUR
  */
-server.listen(app.get('port'), function () {
+server.listen(app.get('port'), function ()
+{
     console.log("Express server listening on port " + app.get('port'));
 });
 
@@ -506,6 +507,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 io.sockets.on('connection', function (socket)
 {
 	var idUser = "";
+	
     //test sessions
     socket.emit('MESSAGE_TEST', 'Vous êtes bien connecté !');
     socket.broadcast.emit('MESSAGE_TEST', 'Un autre client vient de se connecter !');
@@ -577,13 +579,23 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('MOVE_PERSONNAGE_CS', function (move)
 	{
+		var idCasePrecedente = oPersonnage_Manager.GetIdSalleEnCours(idUser);
+		
+		var reponseDeplacement = oPersonnage_Manager.Deplacement(idUser, move);
+		
+		//switch console.log("");
+		ActualiserCase(idCasePrecedente);
+		ActualiserCase(reponseDeplacement);
+		
+		socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
+		
+		/*
 		console.log("*******************************************************");
 		// log
 		console.log('SERVER : Déplacement du personnage demandé : ' + move);
     	
-		// -> calcul de goules
-		var nbrGoules = oCase_Manager.GetNombreGoules(oPersonnage_Manager.GetIdSalleEnCours(idUser));
-		nbrGoules = nbrGoules - oCase_Manager.GetNombreAllies(oPersonnage_Manager.GetIdSalleEnCours(idUser));
+		// -> calcul de goules en soustrayant le nombre d'alliés.
+		var nbrGoules = oCase_Manager.GetNombreGoules(idUser, oPersonnage_Manager.GetIdSalleEnCours(idUser));
 		
 		// test si déplacement possible
 		var testDep = oPersonnage_Manager.TestDeplacementPossible(idUser, nbrGoules, move);
@@ -644,6 +656,7 @@ io.sockets.on('connection', function (socket)
     	//***************************************
     	nbrGoules = 0;
     	/*************************************/
+		/*
 		ActualiserCase(oPersonnage_Manager.GetIdSalleEnCours(idUser));
 		
 		// informer
@@ -691,6 +704,7 @@ io.sockets.on('connection', function (socket)
 		}
 		console.log("*******************************************************");
 		//});
+		*/
     });
     /*
      * 

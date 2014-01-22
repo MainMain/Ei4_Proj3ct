@@ -87,7 +87,7 @@ var Personnage = (function() {
 		 * ECRITURE
 		 * 
 		 * FONCTION DE DEPLACEMENT D'UN PERSONNAGE 
-		 * return : 1 si ok 
+		 * return : idNewCase si ok 
 		 * erreur : -1 si déplacement impossible (pas de case dans la direction)
 		 * erreur : -2 si pas de pts mouvement
 		 * erreur : -3 si trop de goules
@@ -98,7 +98,7 @@ var Personnage = (function() {
 		 * 
 		 * @method deplacement
 		 */
-		deplacement : function(direction, nbrGoules)
+		deplacement : function(direction, nbrGoules, idZoneSureEnnemi)
 		{
 			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
 			
@@ -138,24 +138,31 @@ var Personnage = (function() {
 				console.log("PERSONNAGE : Déplacement impossible ! ");
 				return -1;
 			} 
-			else 
+			
+			if(ansIdSalle == idZoneSureEnnemi)
 			{
-				// Décrémente les points de déplacement
-				this.ptDeplacement--;
-				
-				//  on modifie l'id de salle du perso
-				this.idSalleEnCours = ansIdSalle;
-
-				// on gère son dernier mouvement
-				this.dernierMvt = direction;
-				
-				// Affiche sur le log
-				console.log('PERSONNAGE : Deplacement vers : ' + direction);
-				console.log('PERSONNAGE : Déplacement ok - nvlle salle '+ this.idSalleEnCours);
-				
-				// return
-				return 1;
+				console.log("PERSONNAGE : Déplacement impossible ! Zone sure Ennemi");
+				return -4
 			}
+			
+			// Décrémente les points de déplacement
+			this.ptDeplacement--;
+			
+			//  on modifie l'id de salle du perso
+			this.idSalleEnCours = ansIdSalle;
+			
+			//Passe en mode oisif
+			this.mode = 0;
+
+			// on gère son dernier mouvement
+			this.dernierMvt = direction;
+			
+			// Affiche sur le log
+			console.log('PERSONNAGE : Deplacement vers : ' + direction);
+			console.log('PERSONNAGE : Déplacement ok - nvlle salle '+ this.idSalleEnCours);
+			
+			// return
+			return this.idSalleEnCours;
 		},
 
 		/**
@@ -614,21 +621,21 @@ var Personnage = (function() {
 		/**
 		 * Retourne l'arme equipe par le personnage
 		 * 
-		 * @method getArmeEquipe
+		 * @method getArmeEquipee
 		 */
-		getArmeEquipe : function()
+		getArmeEquipee : function()
 		{
-			return this.armeEquipe;
+			return this.armeEquipee;
 		},
 
 		/**
 		 * Retourne l'armure equipe par le personnage
 		 * 
-		 * @method getArmureEquipe
+		 * @method getArmureEquipee
 		 */
-		getArmureEquipe : function()
+		getArmureEquipee : function()
 		{
-			return this.armureEquipe;
+			return this.armureEquipee;
 		},
 		
 		/**
