@@ -66,9 +66,6 @@ Item_BD.GetListItem = function()
 	this.listeItems = new Array();
 	this.nbrItem = 0;
 	
-
-
-	ItemBaseModel = mongoose.model('ItemBase');
 	ItemModel = mongoose.model('Item');
 
 	var file = fs.readFileSync('./persistance/itemListe.txt', "utf8");

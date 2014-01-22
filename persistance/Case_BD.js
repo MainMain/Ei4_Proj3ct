@@ -141,7 +141,7 @@ Case_BD.Initialiser = function() {
 	
 	
 	//
-	/*console.log("CASE_BD : ajout des cases dans la BD");
+	console.log("CASE_BD : ajout des cases dans la BD");
 	var array1 = [ oItem_BD.GetItemById(100), oItem_BD.GetItemById(200),
 			oItem_BD.GetItemById(300), oItem_BD.GetItemById(401),
 			oItem_BD.GetItemById(502), oItem_BD.GetItemById(503) ];
@@ -158,7 +158,6 @@ Case_BD.Initialiser = function() {
 	 * this.nbrGoules = nbrGoules; this.listeItem = listeItem; this.pathImg =
 	 * pathImg;
 	 */
-	 /*
 	var case1 = new oCase(0, 0, "E11", "Une mini salle", 20, 50, 1, array1,
 			"public/map/0-0.png");
 	var case2 = new oCase(0, 1, "E12", "Une petite salle", 24, 54, 2, array2,
@@ -177,8 +176,8 @@ Case_BD.Initialiser = function() {
 			"public/map/2-2.png");
 	var case9 = new oCase(0, 8, "E19", "Une salle sale", 75, 12, 1, array1,
 			"public/map/0-4.png");
-*/
-	/*var caseModel = mongoose.model('Case');
+
+	var caseModel = mongoose.model('Case');
 	caseModel.remove(true, function(err) {
 		if (err) {
 			throw err;
@@ -193,10 +192,10 @@ Case_BD.Initialiser = function() {
 	this.Creation(case6);
 	this.Creation(case7);
 	this.Creation(case8);
-	this.Creation(case9);*/
+	this.Creation(case9);
 	
 
-	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9, case10, case11);
+	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9);//, case10, case11);
 	
 
 	// this.listeCases = new Array(case1, case2, case3, case4, case5, case6,

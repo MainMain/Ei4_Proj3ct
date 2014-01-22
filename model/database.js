@@ -96,40 +96,6 @@ database.Initialiser = function() {
 
 	CaseModel = mongoose.model('Case',CaseSchema); 
 	
-
- 
-
-/***** CREATION DU SCHEMA "ITEM" ****/
-	var ItemSchema = new mongoose.Schema({
-		nom : String,
-		description : String,
-		poids : Number,
-		type : Number,
-		valeur : Number,
-		imageName : String,
-	});
-	
-	ItemModel = mongoose.model('Item',ItemSchema);
-	
-	var ItemBaseSchema = new mongoose.Schema({
-		nom : String,
-		description : String,
-		poids : Number,
-		type : Number,
-		valeur : Number,
-		imageName : String,
-		indice : Number,
-	});
-	
-	ItemBaseModel = mongoose.model('ItemBase',	ItemBaseSchema);
-	
-	
-	
-
-
-	CaseModel = mongoose.model('Case',CaseSchema);
-
-	
 	console.log("Initialisation Database");
 },
 

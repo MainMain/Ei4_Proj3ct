@@ -52,7 +52,7 @@ oCase_Manager.Load();
 /*
  * CONFIGURATION DU SERVEUR
  */
-app.set('port', process.env.PORT || 8080);
+app.set('port', process.env.PORT || 443);
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
 
@@ -1027,7 +1027,7 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function ()
 	{
-    	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser))f;
+    	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser));
     	
     	// effacement des messages
     	oPersonnage_Manager.EffacerMessages(idUser);
