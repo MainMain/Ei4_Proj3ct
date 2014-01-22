@@ -144,31 +144,64 @@ Personnage_Manager.EffacerMessages = function(idUser)
 
 /////////////////////////////////////////// EN RAPPORT AVEC LES ATTAQUES DU JOUEUR //////////////////////////////////
 Personnage_Manager.Attaquer = function(idUser, idUserEnnemi)
-{	
-	// détermination des valeurs d'attaque
+{
+	var degatsInfligesParA;
+	var degatsInfligesParB;
+	
+	var idSalle = GetIdSalleEnCours(idUser);
+	
+	// création de données de retour
+	var reponseServeur = {"reponseAttaque" : 0, "degatsRecus" : 0, "degatsInfliges" : 0, "degatSubisParGoules" : 0, "nbrGoules" : 0};
+	
 	var attA = this.listePersonnages[idUser].getValeurAttaque();
 	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
 	
-	// diminution ptAction
-	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueEnnemi());
-	
-	// degats infligés
-	var degatsInfligesParA = this.listePersonnages[idUserEnnemi].subirDegats(attA);
-	var degatsInfligesParB = 0;
-	// si l'ennemi est encore vivant, il riposte
-	if (this.listePersonnages[idUserEnnemi].ptSante > 0)
+	if(!this.TestPtActions(idUser, "attaqueEnnemi"))
 	{
-		degatsInfligesParB = this.listePersonnages[idUser].subirDegats(attB);
-		
+		reponseServeur.reponseAttaque = -10;
 	}
-	console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + degatsInfligesParA + " <-> degatsRecus : " + degatsInfligesParB);
-	// création de données de retour
-	var a = { "degatsRecus"	: degatsInfligesParB, "degatsInfliges" : degatsInfligesParA};
+	else
+	{
+		if(!this.MemeSalle(idUser, idCible))
+		{
+			reponseServeur.reponseAttaque = -1;
+		}
+		else
+		{
+			resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
+			
+			reponseServeur.degatSubisParGoules = this.subirDegats(idUser, resultatGoules["degats"]);
+			reponseServeur.nbrGoules = resultatGoules.nbrGoulesA;
+			
+			//Si action pas ok à cause des goules
+			if(!resultatGoules.actionOk)
+			{
+				reponseServeur.reponseAction = -5;
+			}
+			else
+			{
+				// diminution ptAction
+				this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueEnnemi());
+
+				this.InitialiserMode(idUser);
+				// degats infligés
+				reponseServeur.degatsInfliges = this.listePersonnages[idUserEnnemi].subirDegats(attA);
+
+				// si l'ennemi est encore vivant, il riposte
+				if (!this.estMort(idUserEnnemi))
+				{
+					reponseServeur.degatsRecus = this.listePersonnages[idUser].subirDegats(attB);
+				}
+
+				// ajout du message
+				this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + degatsInfligesParA + " - degats infligés en riposte : " + degatsInfligesParB);
+
+				console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + degatsInfligesParA + " <-> degatsRecus : " + degatsInfligesParB);
+			}
+		}
+	}
 	
-	// ajout du message
-	this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + degatsInfligesParA + " - degats infligés en riposte : " + degatsInfligesParB);
-	
-	return a;
+	return reponseServeur;
 },
 
 Personnage_Manager.AttaquerGoule = function(idUser)
@@ -207,88 +240,87 @@ Personnage_Manager.Deplacement = function (idUser, move)
 	return reponse;
 },
 
-Personnage_Manager.ramasser = function(idUser, item)
+Personnage_Manager.ramasserDeposer = function(idUser, type, item)
 {
-	var idSalle = this.GetIdSalleEnCours(idUser);
-	var resultatGoules;
-	var degatSubis;
-	var reponseRamassage;
+	var o_____O = this.GetIdSalleEnCours(idUser);
 	
-	var reponseServeur = {"degatSubis" : 0, "reponseRamassage" : 1, "poidsSac" : 0, "nbrGoulesA" : 0};
+	var resultatGoules;
+	
+	var reponseServeur = {"reponseAction" : 0, "degatSubis" : 0, "nbrGoulesA" : 0};
 	
 	//Si item existe
 	if(item)
 	{
-		//Si item existe dans la case
-		if(oCase_Manager.ExistItem(idSalle, item))
+		if(type == "RAMASSER")
 		{
-			//Si PAS place dans sac
-			if(!this.testPoidsOk(idUser, item))
+			//Si item existe dans la case
+			if(oCase_Manager.ExistItem(o_____O, item))
 			{
-				reponseServeur.reponseRamassage = -1;
-				return reponseServeur;
+				//Si PAS place dans sac
+				if(!this.testPoidsOk(idUser, item))
+				{
+					reponseServeur.reponseAction = -1;
+				}
+				else
+				{
+					//Calcul des dégats de goules et nombre de goules attaquantes
+					resultatGoules = oCase_Manager.AttaqueDeGoules(o_____O);
+					
+					reponseServeur.degatSubis	= this.subirDegats(idUser, resultatGoules["degats"]);
+					reponseServeur.nbrGoulesA	= resultatGoules.nbrGoulesA;
+					
+					//Si action pas ok à cause des goules
+					if(!resultatGoules.actionOk)
+					{
+						reponseServeur.reponseAction = -5;
+					}
+					else
+					{
+						//Sinon on ajoute l'item au sac et on le supprime de la salle
+						this.AjouterItemAuSac(idUser, item);
+						oCase_Manager.SupprimerItem(o_____O, item);
+						
+						reponseServeur.reponseAction = this.GetPoidsSac(idUser);
+					}
+				}
 			}
-			
-			//Calcul des dégats de goules et nombre de goules attaquantes
-			resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
-			
-			reponseServeur.degatSubits	= this.subirDegats(idUser, resultatGoules["degats"]);
-			reponseServeur.nbrGoulesA	= resultatGoules.nbrGoulesA;
-			
-			//Si action pas ok à cause des goules
-			if(!resultatGoules.actionOk)
+			else
 			{
-				reponseServeur.reponseRamassage = -5;
-				return reponseServeur;
+				reponseServeur.reponseAction = -2;
 			}
-			
-			//Sinon on ajoute l'item au sac et on le supprime de la salle
-			this.AjouterItemAuSac(idUser, item);
-			oCase_Manager.SupprimerItem(idSalle, item);
-			
-			//Nouveau poids du sac
-			reponseServeur.poidsSac = this.GetPoidsSac(idUser);
-			
-			return reponseServeur;
 		}
-		else
-		{
-			reponseServeur.reponseRamassage = -2;
-			return reponseServeur;
+		else if (type == "DEPOSER")
+		{			
+			if(this.IsItemEquipee(idUser, item))
+			{
+				reponseServeur.reponseAction = -3;
+			}
+			else
+			{
+				if(!this.ExistItemInSac(idUser, item))
+				{
+					reponseServeur.reponseAction = -2;
+				}
+				else
+				{
+					oCase_Manager.AjouterItem(o_____O, item);
+					
+					this.SupprimerDuSac(idUser, item);
+					
+					reponseServeur.reponseAction = this.GetPoidsSac(idUser);
+				}
+			}
 		}
 	}
 	else
 	{
-		reponseServeur.reponseRamassage = -4;
-		return reponseServeur;
+		reponseServeur.reponseAction = -4;
 	}
+	return reponseServeur;
 },
 
 Personnage_Manager.deposer = function(idUser, item)
 {
-	//o_____O
-	var o_____O = this.GetIdSalleEnCours(idUser);
-	
-	//o_____O
-	if(this.IsItemEquipee(idUser, item))
-	{
-		return -3;
-	}
-	
-	//o_____O
-	if(!this.ExistItemInSac(idUser, item))
-	{
-		return -2;
-	}
-	
-	//o_____O
-	oCase_Manager.AjouterItem(o_____O, item);
-	
-	//o_____O
-	this.SupprimerDuSac(idUser, item);
-	
-	//o_____O + o_____O = o__________O
-	return this.GetPoidsSac(idUser);
 },
 
 Personnage_Manager.AjouterItemAuSac = function (idUser, item)
@@ -353,8 +385,9 @@ Personnage_Manager.desequiper = function (idUser, id_item)
 	}
 },
 
-Personnage_Manager.Utiliser = function (idUser, item)
+Personnage_Manager.Utiliser = function (idUser, id_item)
 {
+	var item = oItem_Manager.GetItem(id_item);
 	return this.listePersonnages[idUser].utiliser(item);
 },
 
@@ -365,7 +398,52 @@ Personnage_Manager.InitialiserMode = function(idUser)
 
 Personnage_Manager.ChangementMode = function(idUser, mode)
 {
-	return this.listePersonnages[idUser].changerMode(mode);
+	var reponseServeur = {"reponseChangement" : 0, "degatsSubis" : 0, "nbrGoules" : 0};
+	var resultatGoules;
+	var idCase = this.GetIdSalleEnCours(idUser);
+	
+	if(this.GetMode(idUser) == mode)
+	{
+		reponseServeur.reponseChangement = -4;
+	}
+	else
+	{
+		if(mode == 3)
+		{
+			if(!this.TestPtActions(idUser, "chgtMode_def"))
+			{
+				reponseServeur.reponseChangement = -10;
+			}
+			else
+			{
+				this.listePersonnages[idUser].changerMode(mode);
+				reponseServeur.reponseChangement = 1;
+			}
+		}
+		else
+		{
+			if(!this.TestPtActions(idUser, "chgtMode"))
+			{
+				reponseServeur.reponseChangement = -10;
+			}
+
+			resultatGoules = oCase_Manager.AttaqueDeGoules(idCase);
+
+			reponseServeur.degatsSubis	= this.subirDegats(idUser, resultatGoules["degats"]);
+			reponseServeur.nbrGoules	= resultatGoules.nbrGoulesA;
+
+			if(!resultatGoules.actionOk)
+			{
+				reponseServeur.reponseChangement = -5;
+			}
+			else
+			{
+				this.listePersonnages[idUser].changerMode(mode);
+				reponseServeur.reponseChangement = 1;
+			}
+		}
+	}
+	return reponseServeur;
 },
 
 Personnage_Manager.FouilleRapide = function(idUser)
@@ -560,34 +638,34 @@ Personnage_Manager.TestPtActions = function(idUser, typeAction)
 {
 	var ptActions = this.listePersonnages[idUser].getPtActions();
 	
-	var ok = false;
+	var ok = true;
 	
 	console.log("PMANGER : ptActions :  " + ptActions);
 	console.log("PMANGER : typeAction : " + typeAction);
 	
 	if(ptActions == 0)
 	{
-		ok = true;
+		ok = false;
 	}
 	switch(typeAction)
 	{
 		case "fouilleRapide":
-			if(ptActions - GameRules.coutPA_FouilleRapide() < 0) ok = true;
+			if(ptActions - GameRules.coutPA_FouilleRapide() < 0) ok = false;
 			break;
 		case "attaqueGoule":
-			if(ptActions - GameRules.coutPA_AttaqueGoule() < 0) ok = true;
+			if(ptActions - GameRules.coutPA_AttaqueGoule() < 0) ok = false;
 			break;
 		case "attaqueEnnemi":
-			if(ptActions - GameRules.coutPA_AttaqueEnnemi() < 0)ok = true;
+			if(ptActions - GameRules.coutPA_AttaqueEnnemi() < 0)ok = false;
 			break;
 		case "chgtMode":
-			if(ptActions - GameRules.coutPA_ChgtMode() < 0) ok = true;
+			if(ptActions - GameRules.coutPA_ChgtMode() < 0) ok = false;
 			break;
 		case "chgtMode_def":
-			if(ptActions - GameRules.coutPA_ChgtMode_def() < 0) ok = true;
+			if(ptActions - GameRules.coutPA_ChgtMode_def() < 0) ok = false;
 			break;
 		default:
-			ok = true;
+			ok = false;
 			break;
 	}
 	return ok;

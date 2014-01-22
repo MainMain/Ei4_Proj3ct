@@ -1,5 +1,8 @@
 var oCarte = require('../../model/object/Carte');
 
+//inclusion des règles
+var GameRules	= require('../../model/GameRules');
+
 /**
  * Modélisation d'un personnage
  * 
@@ -384,12 +387,15 @@ var Personnage = (function() {
 		
 		changerMode : function(mode)
 		{
-			if(this.ptActions <= 0)
+			if(mode == 3)
 			{
-				return -1;
+				this.ptActions -= GameRules.coutPA_ChgtMode_def();
+			}
+			else
+			{
+				this.ptActions -= GameRules.coutPA_ChgtMode();
 			}
 			
-			this.ptActions--;
 			this.mode = mode;
 			
 			return 1;
@@ -516,6 +522,11 @@ var Personnage = (function() {
 			var type = parseInt(item.type);
 			var valeur = parseInt(item.valeur);
 			//console.log("PERSONNAGE : utiliser() : utilisation de l'item" + item.nom + " de type : " + type + " de valeur " + valeur);
+			
+			if(!this.existItemInSac(item))
+			{
+				return -2;
+			}
 			
 			if (type < 4 || type > 6)
 			{

@@ -1551,66 +1551,58 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
  */
 socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
 {
+	txtObjet.text = "";
 	if (type == 'RAMASSER')
 	{
 		switch(codeRetour)
 		{
-		// erreur
-		case -3:
-			txtObjet.text = "";
-			txtObjet.text = ("Erreur inconnue");
+			// erreur
+			case -3:
+				txtObjet.text = ("Erreur inconnue");
+				break;
+				// poids insufisant
+			case -1:
+				txtObjet.text = ("Impossible de ramasser l'objet,\npoids max atteint !");
+				break;
+				// objet pas dans case
+			case -2:
+				txtObjet.text = ("Impossible de ramasser l'objet,\nplus dans la salle !");
+				break;
+			case -5:
+				txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies !");
+				break;
+			default:
+				txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg");
 			break;
-			// poids insufisant
-		case -1:
-			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet,\npoids max atteint !");
-			break;
-			// objet pas dans case
-		case -2:
-			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet,\nplus dans la salle !");
-			break;
-		case -5:
-			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies !\n- " + DegatsG + " points de vie !");
-			socket.emit('INFO_PERSONNAGE_CS');
-			break;
-			// ramassage ok
-		default:
-			txtObjet.text = "";
-		txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Zombies restants");
-		socket.emit('INFO_PERSONNAGE_CS');
-		socket.emit('INFO_CASE_CS');
-		break;
 		}
 	}
 	if (type == 'DEPOSER')
 	{
 		switch(codeRetour)
 		{
-		// erreur
-		case -3:
-			txtObjet.text = "";
-			txtObjet.text = ("Déséquipez avant de déposer !");
-			break;
-		case -4:
-			txtObjet.text = "";
-			txtObjet.text = ("Erreur interne !");
-			break;
+			// erreur
+			case -3:
+				txtObjet.text = ("Déséquipez avant de déposer !");
+				break;
+			case -4:
+				txtObjet.text = ("Erreur interne !");
+				break;
 			// objet pas dans sac (! pas normal)
-		case -2:
-			txtObjet.text = "";
-			txtObjet.text = ("L'item n'est plus dans le sac ");
-			break;
+			case -2:
+				txtObjet.text = ("L'item n'est plus dans le sac ");
+				break;
 			// dépôt ok
-		default:
-			txtObjet.text = "";
-			txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
-			socket.emit('INFO_CASE_CS');
-			socket.emit('INFO_PERSONNAGE_CS');
-		break;
+			default:
+				txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
+			break;
 		}
 	}
+	if(DegatsG > 0)
+	{
+		txtObjet.text += ("\n - " + DegatsG + " points de vie !\n");
+	}
+	socket.emit('INFO_PERSONNAGE_CS');
+	socket.emit('INFO_CASE_CS');
 	stage.update();
 });
 
@@ -1619,19 +1611,18 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
  *
  * @method INFO_CASE_SC
  */
-socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
-	//socket.emit('CHECK_MSG_ATT_CS');	
+socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis)
+{
+	var ProbCache, ProbFouille;
 	this.listeItemsCase = new Array();
 
-	if (currentCase == "ERREUR_CASE")
+	if (currentCase == null)
 	{
-		//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
 		txtSalle.text="";
 		txtSalle.text=("CLIENT :: nom case = " + "ERREUR_CASE");
 	}
-	else {
-
-		var ProbCache, ProbFouille;
+	else
+	{
 		ProbCache=(currentCase.probaCache * PersoProbaCache);
 		ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 
@@ -1649,7 +1640,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelObjetCase.text="";
 		labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
 
-		// CLear de la liste des items de case
+		// Clear de la liste des items de case
 		listeItemsCase = new Array();
 		contInvCase.removeAllChildren();
 		// parcours de la liste des items de la case
@@ -2118,26 +2109,27 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	 * erreur : -1 si objet n'est pas dans le sac
 	 * erreur : -2 si objet pas utilisable
 	 */
-socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
+socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour)
+{
 	switch(codeRetour)
 	{
-	case 1: 
-		//alert("objet utilisé !");
-		txtObjet.text="";
-		txtObjet.text=("objet utilisé !");
-		socket.emit('INFO_PERSONNAGE_CS');
-		break;
-	case -1:
-		//alert("objet plus dans le sac !");
-		txtObjet.text="";
-		txtObjet.text=("objet plus dans le sac !");
-		break;
+		case 1: 
+			//alert("objet utilisé !");
+			txtObjet.text="";
+			txtObjet.text=("objet utilisé !");
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
+		case -1:
+			//alert("objet plus dans le sac !");
+			txtObjet.text="";
+			txtObjet.text=("objet plus dans le sac !");
+			break;
 
-	case -2:
-		//alert("objet inutilisable !");
-		txtObjet.text="";
-		txtObjet.text=("objet inutilisable !");
-		break;
+		case -2:
+			//alert("objet inutilisable !");
+			txtObjet.text="";
+			txtObjet.text=("objet inutilisable !");
+			break;
 	}
 	stage.update();
 	
@@ -2154,35 +2146,32 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
  * ET degats reçus
  * 
  */
-socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
+socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis)
+{
+	labelRetourGoules.text="";
 	switch(goulesTues)
 	{
-	case 2: 
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("2 Zombies tuées ! -" + degatsSubis + " points de vie");
-		socket.emit('INFO_PERSONNAGE_CS');
-		break;
-
 	case 1: 
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("1 Zombie tuée ! -" + degatsSubis + " points de vie");
+	case 2: 
+		labelRetourGoules.text=(goulesTues + " Zombies tuées ! - " + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 0:
-		labelRetourGoules.text="";
 		labelRetourGoules.text=("Attaque de Zombie(s) : erreur interne");
 		break;
 
 	case -1:
-		labelRetourGoules.text="";
 		labelRetourGoules.text=("Attaque de Zombie(s) échouée ! -" + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case -2:
-		labelRetourGoules.text="";
 		labelRetourGoules.text=("Pas de Zombie dans la salle !");
+		break;
+
+	case -10:
+		labelRetourGoules.text=("Pas assez de points d'actions !");
 		break;
 	}
 	socket.emit('INFO_CASE_CS');
