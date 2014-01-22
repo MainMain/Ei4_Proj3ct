@@ -151,7 +151,7 @@ Case_Manager.DecouverteEnnemi = function(idCase, probaObjetPerso, probaCacheEnn)
 	var probaDecouverte = this.listeCases[idCase].probaObjet * probaObjetPerso;
 	var probaDecouverte2 = probaDecouverte / probaCacheEnn;
 	
-	console.log("CASE_MANAGER : DecouverteEnnemi() : proba = " + proba + " - probaDecouverte  => brut = " + probaDecouverte + " - net = " + probaDecouverte2);
+	console.log("CASE_MANAGER : DecouverteEnnemi() : proba cache = " + proba + " - probaDecouverte  => brut = " + probaDecouverte + " - net = " + probaDecouverte2);
 	if (proba < probaDecouverte) return true;
 	else return false;
 },

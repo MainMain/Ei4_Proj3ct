@@ -145,28 +145,43 @@ Personnage_Manager.EffacerMessages = function(idUser)
 /////////////////////////////////////////// EN RAPPORT AVEC LES ATTAQUES DU JOUEUR //////////////////////////////////
 Personnage_Manager.Attaquer = function(idUser, idUserEnnemi)
 {	
+	// recuperation des personnages
+	var persoUser = this.listePersonnages[idUser];
+	var persoEnn = this.listePersonnages[idUserEnnemi];
+	
+	// logins
+	var loginUser = oUtilisateur_Manager.GetPseudo(idUser);
+	var loginEnn = oUtilisateur_Manager.GetPseudo(idUserEnnemi);
+	
 	// détermination des valeurs d'attaque
-	var attA = this.listePersonnages[idUser].getValeurAttaque();
-	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
+	var attA = persoUser.getValeurAttaque();
+	var attB = persoEnn.getValeurAttaque();
 	
 	// diminution ptAction
-	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueEnnemi());
+	persoUser.diminuerPointAction(GameRules.coutPA_AttaqueEnnemi());
 	
 	// degats infligés
-	var degatsInfligesParA = this.listePersonnages[idUserEnnemi].subirDegats(attA);
+	var degatsInfligesParA = persoEnn.subirDegats(attA);
 	var degatsInfligesParB = 0;
+	
 	// si l'ennemi est encore vivant, il riposte
 	if (this.listePersonnages[idUserEnnemi].ptSante > 0)
 	{
-		degatsInfligesParB = this.listePersonnages[idUser].subirDegats(attB);
-		
+		degatsInfligesParB = persoUser.subirDegats(attB);
 	}
-	console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + degatsInfligesParA + " <-> degatsRecus : " + degatsInfligesParB);
+	
+	// vérifie s'il y a des morts
+	if (persoUser.estMort()) this.TuerJoueur(idUser, loginEnn);
+	if (persoEnn.estMort()) this.TuerJoueur(idUserEnnemi, loginUser);
+	
 	// création de données de retour
 	var a = { "degatsRecus"	: degatsInfligesParB, "degatsInfliges" : degatsInfligesParA};
 	
 	// ajout du message
 	this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + degatsInfligesParA + " - degats infligés en riposte : " + degatsInfligesParB);
+	
+	// log
+	console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + degatsInfligesParA + " <-> degatsRecus : " + degatsInfligesParB);
 	
 	return a;
 },
@@ -176,10 +191,9 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueGoule());
 },
 
-//DiminuerSante
 Personnage_Manager.subirDegats = function (idUser, degats)
 {
-	console.log("PERSONNAGE_MANAGER : Subir Dégats() : " + this.listePersonnages[idUser].getPtSante());
+	console.log("PERSONNAGE_MANAGER : Subir Dégats() : pts de santé restants : " + this.listePersonnages[idUser].getPtSante());
 	return this.listePersonnages[idUser].subirDegats(degats);
 },
 
@@ -197,7 +211,7 @@ Personnage_Manager.Deplacement = function (idUser, move)
 	// deplace le personnage
 	var reponse = this.listePersonnages[idUser].deplacement(move, nbrGoules, idZoneSureEnnemi);
 	
-	console.log("PMANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
+	console.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
 	
 	if(reponse > -1)
 	{
@@ -368,9 +382,75 @@ Personnage_Manager.ChangementMode = function(idUser, mode)
 	return this.listePersonnages[idUser].changerMode(mode);
 },
 
-Personnage_Manager.FouilleRapide = function(idUser)
+Personnage_Manager.fouilleRapide = function(idUser)
 {
-	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_FouilleRapide());
+	//this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_FouilleRapide());
+	
+	var resultatGoules;
+	var degatSubis;
+	var reponseRamassage;
+	var reponseServeur = {"degatSubis" : 0, "codeRetour" : 1, 
+		"itemDecouvert" : null, "nbrGoulesA" : 0, "itemDansSac" : 0, 
+		"nbrEnnemisDecouverts" : 0};
+	var codeRetour = 0;
+	var itemDecouvert;
+	var nbrEnnDecouverts = 0;
+	
+	// tests pts actions
+    if(oPersonnage_Manager.TestPtActions(idUser, "fouilleRapide"))
+	{
+		reponseServeur.codeRetour = - 10;
+    	return reponseServeur;
+    }
+			
+	// Calcul des dégats de goules et nombre de goules attaquantes
+	resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
+	
+	reponseServeur.degatSubis = this.subirDegats(idUser, resultatGoules["degats"]);
+	reponseServeur.nbrGoulesA = resultatGoules.nbrGoulesA;
+	
+	//Si action pas ok à cause des goules
+	if(!resultatGoules.actionOk)
+	{
+		reponseServeur.codeRetour = -5;
+		// diminution pt actions
+		this.PerteActionParGoules(idUser);
+		return reponseServeur;
+	}
+	// diminution des pts d'action
+	
+	
+	// id case du perso
+	var idCase = this.listePersonnages[idUser].getIdSalleEnCours();
+	// multi du perso
+	var multiFouille = this.listePersonnages[idUser].getMultiFouille();
+	
+	// calcul de decouverte d'un item
+	if (oCase_Manager.Fouille(idCase, multiFouille))
+	{
+		reponseServeur.codeRetour = 1;
+		// création d'un item
+		itemDecouvert = oItem_Manager.GetItemAleatoire();
+		reponseServeur.itemDecouvert = itemDecouvert;
+		
+		// essai d'ajout au sac (calcul de poids)
+		if (this.listePersonnages[idUser].getPoidsSac() - itemDecouvert.poids > 0)
+		{
+			this.AjouterItemAuSac(idUser, itemDecouvert);
+			reponseServeur.itemDansSac = true;
+		}
+		else
+		{
+			oCase_Manager.AjouterItem(idCase, itemDecouvert);
+			reponseServeur.itemDansSac = false;
+		}
+		return reponseServeur;
+	}
+	else
+	{
+		reponseServeur.codeRetour = -1;
+	   	return reponseServeur;
+	}
 },
 
 
@@ -383,32 +463,41 @@ Personnage_Manager.FouilleRapide = function(idUser)
 /////////////////////////////////////////// EN RAPPORT AVEC LA MORT DU JOUEUR //////////////////////////////////
 Personnage_Manager.MisKo = function(idUser, meurtrier)
 {
-	this.AddMessage(idUser, "Vous avez été mis KO par " + meurtrier + " ! Vous avez été ramené dans votre zone sure, mais vous avez perdu tout vos objets.");
+	
 },
 
-Personnage_Manager.Mourir = function(idUser)
+Personnage_Manager.TuerJoueur = function(idTue, loginTueur)
 {
-
+	// log
+	console.log("PERSONNAGE_MANAGER : Mourir() : mort du personnage " + oUtilisateur_Manager.GetPseudo(idTue)+ " par : " + loginTueur);
+	
+	// recupère le perso tue
+	var currentPerso = this.listePersonnages[idTue];
+	
+	// ajout du message 
+	this.AddMessage(idTue, "Vous avez été mis KO par " + loginTueur + " ! Vous avez été ramené dans votre zone sure, mais vous avez perdu tout vos objets.");
+	
+	// mettre son inventaire dans la case
+	for (var i = 0; i < currentPerso.GetSac().length; i++)
+	{
+		// transfert de l'item en cours dans la case
+		oCase_Manager.AjouterItem(currentPerso.getIdSalleEnCours(), currentPerso.GetSac()[i]);
+	}
+	
+	// vider son inventaire
+	currentPerso.viderInventaire();
 },
 
 SeRetablir = function(idUser)
 {
 	console.log("SERVEUR : SeRetablir()");
 	
-	this.listePersonnages[idUser].setptSante(20);
-},
-
-Personnage_Manager.goZoneSure = function(idUser)
-{
-	this.listePersonnages[idUser].goCase(Case_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
-},
-
-Personnage_Manager.TransfererInventaire = function(idUser)
-{
+	// ajout de points de santé
+	this.listePersonnages[idUser].setPtsSante(20);
 	
+	// go a la zone sure
+	this.listePersonnages[idUser].setIdCase(Case_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
 },
-
-
 
 
 
@@ -419,12 +508,12 @@ Personnage_Manager.TransfererInventaire = function(idUser)
  
 Personnage_Manager.testPoidsOk = function(idUser, item)
 {
-	return this.listePersonnages[idUser].testPoidsOk(item)
+	return this.listePersonnages[idUser].testPoidsOk(item);
 },
 
 Personnage_Manager.estMort = function(idUser)
 {
-	return (this.listePersonnages[idUser].getPtSante() == 0);
+	return (this.listePersonnages[idUser].getPtSante() <= 0);
 },
 
 Personnage_Manager.MemeSalle = function(idUser1, idUser2)

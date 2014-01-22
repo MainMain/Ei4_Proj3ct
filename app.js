@@ -894,6 +894,27 @@ io.sockets.on('connection', function (socket)
     {
     	console.log("***************** FOUILLE RAPIDE ******************************");
        
+    	var reponse = oPersonnageManager.fouilleRapide(id);
+    	
+    	switch(reponse.codeRetour)
+    	{
+    		case 1 : 
+    			break;
+    		case -1 : 
+    			break;
+    		case -5 : 
+    			break;
+    		case -10 : 
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0, 0, 0, 0);
+    			break;
+    	}
+    	
+    	
+    	
+    	
+    	
+    	
+    	
     	// si pu de pts actions
         if(oPersonnage_Manager.TestPtActions(idUser, "fouilleRapide"))
 		{
@@ -1136,16 +1157,15 @@ io.sockets.on('connection', function (socket)
     socket.on('ACCUSE_LECTURE_MSG_CS', function ()
 	{
     	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser));
+    	
+    	// effacement des messages
     	oPersonnage_Manager.EffacerMessages(idUser);
     	
     	// si le perso est KO
     	if (oPersonnage_Manager.GetSante(idUser) == 0)
     	{
-    		// retablissement de la sante
+    		// retablissement de la sante et transfert en zone sure
     		oPersonnage_Manager.SeRetablir(idUser);
-    		
-    		// deplacement vers zone sure
-			oPersonnage_Manager.goZoneSure(idUser);
     	}
     });
     /*
@@ -1262,8 +1282,13 @@ io.sockets.on('connection', function (socket)
     	{
 			var id = liste.Allies[i];
 			
-			oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.GetPseudo(idUser) + " " + evenement);
+			// si le personnage n'est pas mort, on lui ajoute le message
+			if (!oPersonnage_Manager.estMort(id))
+			{
+				oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.GetPseudo(idUser) + " " + evenement);
+			}
 			
+			// pour ceux qui sont en ligne, on leurs rafraichit les infos sur leurs perso et la case
 			if(usersOnline[id])
 			{
 				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
@@ -1277,8 +1302,13 @@ io.sockets.on('connection', function (socket)
     	{
 			var id = liste.Ennemis[i];
 			
+			// si le personnage n'est pas mort, on lui ajoute le message
+			if (!oPersonnage_Manager.estMort(id))
+			{
 			oPersonnage_Manager.AddMessage(id, "Un ennemi " + evenement);
+			}
 			
+			// pour ceux qui sont en ligne, on leurs rafraichit les infos sur leurs perso et la case
 			if(usersOnline[id])
 			{
 				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
@@ -1352,21 +1382,12 @@ io.sockets.on('connection', function (socket)
     /******************************************************************************************************************
      * FONCTION POUR FAIRE METTRE KO UN JOUEUR
      */
-    function MettreKo(idUserKo, idUserTueur)
+    /*function MettreKo(idUserKo, idUserTueur)
     {
-		// log
-		console.log("SERVEUR : attaque() : Le joueur " + oUtilisateur_Manager.GetPseudo(idUserKo) + " vient de mourir");
 		
-		// transfert de son inventaire
-		oPersonnage_Manager.TransfererInventaire(idUserKo);
-		
-		// traitement de sa mort
-		oPersonnage_Manager.goZoneSure(idUserKo);
-    	
-    	
 		// informer les autres joueurs de la case
 		InformerPersonnages_Case("est KO... ");
-    }
+    }*/
     /******************************************************************************************************************
      * FONCTION DE TEST SI UNE FOUILLE PERMET DE DECOUVRIR OU ITEM OU UNE PERSONNE
      * return [actionOk, degats]
