@@ -4,8 +4,12 @@ var oItem = require('../model/object/Item');
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
 
+var async = require('async');
+
+
 this.listeItems;
 this.nbrItem;
+
 
 /**
  * ITEM : COMMUNICATION SERVEUR <-> BD
@@ -62,7 +66,13 @@ Item_BD.GetListItem = function()
 	this.listeItems = new Array();
 	this.nbrItem = 0;
 	
-	var file = fs.readFileSync('./persistance/itemListe.txt', "utf-8");
+
+
+	ItemBaseModel = mongoose.model('ItemBase');
+	ItemModel = mongoose.model('Item');
+
+	var file = fs.readFileSync('./persistance/itemListe.txt', "utf8");
+
 	
 	var lignes = file.split("\r\n");
 	
@@ -94,6 +104,6 @@ Item_BD.GetListItem = function()
 	}
 	
 	return this.listeItems;
-}
+},
 
 module.exports = Item_BD;

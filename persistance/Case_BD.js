@@ -195,8 +195,13 @@ Case_BD.Initialiser = function() {
 	this.Creation(case8);
 	this.Creation(case9);*/
 	
+
+	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9, case10, case11);
+	
+
 	// this.listeCases = new Array(case1, case2, case3, case4, case5, case6,
 	// case7, case8, case9);// case10, case11);
+
 },
 
 Case_BD.GetCasesId = function() {

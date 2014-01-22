@@ -707,6 +707,7 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
+
 		var monPerso = oPersonnage_Manager.GetCopiePerso(idUser);
 		
 		socket.emit('INFO_PERSONNAGE_SC', monPerso);
@@ -1026,7 +1027,7 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function ()
 	{
-    	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser));
+    	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser))f;
     	
     	// effacement des messages
     	oPersonnage_Manager.EffacerMessages(idUser);

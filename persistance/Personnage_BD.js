@@ -32,6 +32,9 @@ function Personnage_BD() {
  *
  * @method SetPersonnage
  */
+
+
+
 Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage) {
 
     console.log("PERSONNAGE_BD : id du perso : " + personnageToSave.id);
@@ -104,6 +107,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
         }
 
     });
+
 
 },
 
