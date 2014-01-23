@@ -45,6 +45,10 @@ Personnage_Manager.Load = function()
 				{
 					console.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
 					context.listePersonnages[id] = reponse;
+					/*** TEST ***/
+					context.listePersonnages[id].setptSanteMax(30);
+					context.listePersonnages[id].setptDeplacementMax(1000);
+					context.listePersonnages[id].setptActionMax(1000);
 				}
 			});
 		}
@@ -63,6 +67,10 @@ Personnage_Manager.LoadUser = function(idUser)
 		else
 		{
 			context.listePersonnages[id] = reponse;
+			/*** TEST ***/
+			context.listePersonnages[id].setptSanteMax(30);
+			context.listePersonnages[id].setptDeplacementMax(1000);
+			context.listePersonnages[id].setptActionMax(1000);
 		}
 	});     	
 }, 
