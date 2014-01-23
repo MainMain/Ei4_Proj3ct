@@ -1107,7 +1107,6 @@ function game() {
 			socket.emit('INV_PERSONNAGE_CS', "EQUIPER", SelectedItemPerso);
 			SelectedItemEquip = -1;
 			SelectedItemPerso = -1;
-
 		}
 
 	});
@@ -1156,7 +1155,6 @@ function game() {
 	BtnListeEnnemis.addEventListener('click', function(event) {
 		if(ListeMessages != null)
 		{
-			//alert("Nouveaux messages");
 			message(ListeMessages);
 		}
 		else
@@ -1205,11 +1203,12 @@ function message(ListeMsg)
 	labelMessage.y = 5;
 	labelMessage.text=ListeMsg;
 
-	var BtnCancelMessage = new createjs.Bitmap("public/Boutons/Attaquer.png");
+	var BtnValideMsg = new createjs.Bitmap("public/Boutons/Annuler.png");
 	BtnCancelMessage.x=330;
 	BtnCancelMessage.y=330;
 	contMessage.addChild(BtnCancelMessage);
 	BtnCancelMessage.addEventListener('click', function (event) {
+		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contMessage);
 		ListeMessages=null;
 		game();
@@ -2343,34 +2342,29 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 					ModePerso="Défense";
 				break;
 			}
-		
-			alert("armeEquip : "+currentPerso.idArmeEquipee);
-			alert("arumureEquip : "+currentPerso.idArmureEquipee);
-			
-			if(currentPerso.idArmeEquipee!=null && currentPerso.idArmureEquipee!=null)
+
+			labelDescribePerso.text = ("Competence : " + currentPerso.competence + 
+										"\nMode : " + ModePerso + 
+										"\nSanté : " + currentPerso.ptSante + " / " + currentPerso.ptSanteMax +
+										"\nSac rempli à : " + currentPerso.sacADos + " %");
+
+			if(currentPerso.armeEquipee!=null)
 			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nArme Equipee : "+currentPerso.armeEquipe+" "+currentPerso.armeEquipe.valeur+
-						"\nArmure Equipée :"+currentPerso.armureEquipe+" "+currentPerso.armureEquipe.valeur+"");
-			}
-			else if(currentPerso.idArmeEquipee==null && currentPerso.idArmureEquipee==null)
-			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nCe joueur n'est pas équipé !");
+				labelDescribePerso.text += "\nArme Equipée : " + currentPerso.armeEquipee.nom + " " + currentPerso.armeEquipee.valeur;
 			}
 			else
 			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\nSanté : "+currentPerso.ptSante+" / "+currentPerso.ptSanteMax+
-						"\nSac rempli à : "+currentPerso.sacADos+" %"+
-						"\nCe joueur est équipé !");
+				labelDescribePerso.text += "\nPas d'arme équipée";
+			}
+			
+			if(currentPerso.armureEquipee!=null)
+			{
+				labelDescribePerso.text += "\nArmure Equipée : " + currentPerso.armureEquipee.nom + " " + currentPerso.armureEquipee.valeur;
+			}
+			else
+			{
+				labelDescribePerso.text += "\nPas d'armure équipée";
+
 			}
 			stage.update();
 		},false);
@@ -2502,48 +2496,42 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 			switch(currentPerso.mode)
 			{
 				case 0: ModePerso="";
-					ModePerso="Normal";
+				ModePerso="Normal";
 				break;
 				case 1: ModePerso="";
-					ModePerso="Fouille";
+				ModePerso="Fouille";
 				break;
 				case 2: ModePerso="";
-					ModePerso="Caché";
+				ModePerso="Caché";
 				break;
 				case 3: ModePerso="";
-					ModePerso="Défense";
+				ModePerso="Défense";
 				break;
 			}
+
+			labelDescribePerso.text=("Competence : "+currentPerso.competence+
+									"\nMode : "+ModePerso+
+									"\n"+DescriptionVie+
+									"\n"+DescriptionSac);
+
+		if(currentPerso.armeEquipee!=null)
+		{
+			labelDescribePerso.text +=("\nArme Equipée : " + currentPerso.armeEquipee.nom);
+		}
+		else
+		{
+			labelDescribePerso.text += "\nPas d'arme équipée";
+		}
 		
-		/*alert("armeEquip : "+currentPerso.id.armeEquipe);
-		alert("arumureEquip : "+currentPerso.id.armureEquipe);*/
-			
-			if(currentPerso.idArmeEquipee!=null && currentPerso.idArmureEquipee!=null)
-			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\n"+DescriptionVie+
-						"\n"+DescriptionSac+
-						"\nArme Equipee : "+currentPerso.armeEquipe+" "+currentPerso.armeEquipe.valeur+
-						"\nArmure Equipée :"+currentPerso.armureEquipe+" "+currentPerso.armureEquipe.valeur+"");
-			}
-			else if(currentPerso.idArmeEquipee==null && currentPerso.idArmureEquipee==null)
-			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\n"+DescriptionVie+
-						"\n"+DescriptionSac+
-						"\nCe joueur n'est pas équipé !");
-			
-			}
-			else
-			{
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
-						"\n"+DescriptionVie+
-						"\n"+DescriptionSac+
-						"\nCe joueur est équipé !");
-			}
+		
+		if(currentPerso.armureEquipee!=null)
+		{
+			labelDescribePerso.text +=("\nArmure Equipée :" + currentPerso.armureEquipee.nom);
+		}
+		else
+		{
+			labelDescribePerso.text += "\nPas d'armure équipée";
+		}
 			stage.update();
 		},false);
 
@@ -2555,7 +2543,6 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		imgPerso.addEventListener("click", function(event){
 			var currentPerso =  listeEnn[event.target.name];
 			SelectedPerso=currentPerso.id;
-			//alert(SelectedPerso);
 			stage.update();
 		});
 
