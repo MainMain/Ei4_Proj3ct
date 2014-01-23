@@ -41,12 +41,12 @@ var Utilisateur = (function() {
 		this.nbrMeurtresCumule = nbrMeurtresCumule;
 		this.nbrFoisTue = nbrFoisTue;
 		this.nbrFoisTueCumule = nbrFoisTueCumule;
-		this.scoreByMeutre;
-		this.scoreByODD;
-		this.scoreByMeutreCumule;
-		this.scoreByODDCumule;
-		this.nbrGoulesTues;
-		this.nbrGoulesTuesCumules;
+		this.scoreByMeutre = scoreByMeutre;
+		this.scoreByODD = scoreByODD;
+		this.scoreByMeutreCumule = scoreByMeutreCumule;
+		this.scoreByODDCumule = scoreByODDCumule;
+		this.nbrGoulesTues = nbrGoulesTues;
+		this.nbrGoulesTuesCumules = nbrGoulesTuesCumules;
 		this.numEquipe = numEquipe;
 		this.idPersonnage = idPersonnage;
 		console.log("Utilisateur : Nouveau Utilisateur crée ");
