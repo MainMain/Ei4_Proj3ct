@@ -7,8 +7,6 @@ var mouseTarget; // the display object currently under the mouse, or being dragg
 var dragStarted; // indicates whether we are currently in a drag operation
 var offset;
 
-var listeItemsCase;
-var listeItemsPerso;
 var SelectedItemCase = -1;
 var SelectedItemPerso = -1;
 var SelectedItemEquip = -1;
@@ -17,6 +15,7 @@ var PersoProbaCache=1;
 var PersoProbaFouille=1;
 
 var PageItemPerso=0;
+var PageItemCase=0;
 
 var background, backgroundPreload, map, perso;
 
@@ -29,6 +28,8 @@ var PoliceLabel="14px monospace";
 var _LineHeight = 15;
 //label.textBaseline
 var _TextBaseline = "top";
+
+var BtnPageItemPersoRight, BtnPageItemPersoLeft, BtnPageItemCaseRight, BtnPageItemCaseLeft;
 
 //******************************************
 //*  Réglages mise en forme (partie Design)*
@@ -1169,25 +1170,42 @@ function game() {
 			alert("Pas de nouveaux messages");
 		}
 	});
-	
-	var BtnPageItemPersoRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+
+	BtnPageItemPersoRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
 	BtnPageItemPersoRight.x= _ContItemPersoX + 320;
 	BtnPageItemPersoRight.y= _ContItemPersoY + 5;
 	BtnPageItemPersoRight.addEventListener('click', function(event) {
-	  PageItemPerso++;
-	  socket.emit('INFO_PERSONNAGE_CS');
-	  
+		PageItemPerso++;
+		socket.emit('INFO_PERSONNAGE_CS');
+
 	});
-	
-	var BtnPageItemPersoLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+
+	BtnPageItemPersoLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
 	BtnPageItemPersoLeft.x= _ContItemPersoX - 30;
 	BtnPageItemPersoLeft.y= _ContItemPersoY + 5;
 	BtnPageItemPersoLeft.addEventListener('click', function(event) {
-	  PageItemPerso--;
-	  socket.emit('INFO_PERSONNAGE_CS');
+		PageItemPerso--;
+		socket.emit('INFO_PERSONNAGE_CS');
 	});
-	
-	BtnPageItemPersoRight.cursor=BtnPageItemPersoLeft.cursor="pointer";
+
+	BtnPageItemCaseRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+	BtnPageItemCaseRight.x= _ContItemCaseX + 320;
+	BtnPageItemCaseRight.y= _ContItemCaseY + 5;
+	BtnPageItemCaseRight.addEventListener('click', function(event) {
+		PageItemCase++;
+		socket.emit('INFO_CASE_CS');
+
+	});
+
+	BtnPageItemCaseLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+	BtnPageItemCaseLeft.x= _ContItemCaseX - 30;
+	BtnPageItemCaseLeft.y= _ContItemCaseY + 5;
+	BtnPageItemCaseLeft.addEventListener('click', function(event) {
+		PageItemCase--;
+		socket.emit('INFO_CASE_CS');
+	});
+
+	BtnPageItemPersoRight.cursor=BtnPageItemPersoLeft.cursor=BtnPageItemCaseRight.cursor=BtnPageItemCaseLeft.cursor="pointer";
 
 	BtnListeAllies.cursor=BtnListeEnnemis.cursor=BtnFouilleRapide.cursor=BtnAtqGoules.cursor=BtnEvents.cursor = BtnUtiliser.cursor = BtnRamasseObjet.cursor = BtnDeposer.cursor = BtnEquiper.cursor = BtnDesequiper.cursor ="pointer";// BtnAttaquer.cursor = 
 	stage.update();
@@ -1230,17 +1248,17 @@ function message(ListeMsg)
 	labelMessage.text=ListeMsg;
 
 	var BtnValideMsg = new createjs.Bitmap("public/Boutons/Annuler.png");
-	BtnCancelMessage.x=330;
-	BtnCancelMessage.y=330;
-	contMessage.addChild(BtnCancelMessage);
-	BtnCancelMessage.addEventListener('click', function (event) {
+	BtnValideMsg.x=330;
+	BtnValideMsg.y=330;
+	contMessage.addChild(BtnValideMsg);
+	BtnValideMsg.addEventListener('click', function (event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contMessage);
 		ListeMessages=null;
 		game();
 	});	
 
-	BtnCancelMessage.cursor="pointer";
+	BtnValideMsg.cursor="pointer";
 
 	stage.update();
 }
@@ -1715,7 +1733,6 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 	//socket.emit('CHECK_MSG_ATT_CS');	
-	this.listeItemsCase = new Array();
 
 	if (currentCase == "ERREUR_CASE")
 	{
@@ -1744,6 +1761,132 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
 
 		// CLear de la liste des items de case
+		contInvCase.removeAllChildren();
+
+		// tableau qui contient toutes les listes d'objets
+		var TabListe=new Array();
+
+		var Taille = Math.ceil(currentCase.listeItem.length / 10);
+		var TailleFinListe =(currentCase.listeItem.length % 10);
+
+		var iPositionItemInConteneur=0;
+
+		for (var j=0; j<Taille; j++)
+		{
+			var NewListe=new Array();
+
+			if(j==Taille-1 && TailleFinListe!=0)
+			{
+				//Boucle des items liste incomplète
+				for (var i=j*10; i<j*10+TailleFinListe; i++)
+				{
+					// mise de l'item dans une variable
+					var item = currentCase.listeItem[i];
+
+					// ajout de l'item à la nouvelle liste
+					NewListe.push(item);
+				}
+				// ajout de la nouvelle liste au tableau de listes
+				TabListe.push(NewListe);  
+			}
+			else
+			{
+				//Boucle normale : creation nouvelle liste de 10 items max
+				for (var i=j*10; i<(j*10+10); i++)
+				{
+
+					// mise de l'item dans une variable
+					var item = currentCase.listeItem[i];
+
+					// mise de l'item dans une variable
+					NewListe.push(item);
+				}
+				TabListe.push(NewListe);
+			}
+		}
+
+		if(PageItemCase>Taille-1)
+		{
+			PageItemCase=Taille-1;
+		}
+		else if (PageItemCase<=0)
+		{
+			PageItemCase=0;
+		}
+		
+		if(PageItemCase==Taille-1)
+		{
+			BtnPageItemCaseRight.visible=false;
+		}
+		else
+		{
+			BtnPageItemCaseRight.visible=true;
+		}
+		
+		if(PageItemCase==0)
+		{
+			BtnPageItemCaseLeft.visible=false;
+		}
+		else
+		{
+			BtnPageItemCaseLeft.visible=true;
+		}
+
+		try 
+		{
+			// instructions à essayer
+			for (var i = 0; i < TabListe[PageItemCase].length ; i++) 
+			{
+				var Obj=TabListe[PageItemCase][i];
+
+				// Ajout de l'image à l'ihm
+				var imgItem = new createjs.Bitmap(Obj.imageName);
+
+				imgItem.name = i;
+				imgItem.cursor = "pointer";
+
+				// Ajout de l'évenement a l'image
+				// ajout d'un texte quand l'user passera la souris dessus
+				imgItem.addEventListener('mouseover', function(event) {
+					var currentItem = TabListe[PageItemCase][event.target.name];
+					labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+					stage.update();
+				},false);
+
+				imgItem.addEventListener('mouseout', function(event){
+					labelDescribeItem.text="";
+					stage.update();
+				},false);
+
+				imgItem.addEventListener("click", function(event){
+					var currentItem = TabListe[PageItemCase][event.target.name];
+					SelectedItemCase=currentItem.id;
+					stage.update();
+				});
+
+				imgItem.x = iPositionItemInConteneur * SpaceItem;
+
+				contInvCase.addChild(imgItem);
+
+				// position de l'item dans le conteneur
+				iPositionItemInConteneur++;
+
+				stage.update();
+			}
+		}
+		catch(e){
+			//alert("Page inexistante");
+		}
+		
+		// Changement de l'image de la Map
+		contMap.removeChild(map);
+		// insertion de la map
+		var map = new createjs.Bitmap(currentCase.pathImg);
+		// Placement de la map
+		map.x = contMap.width/2 - map.image.width/2;
+		contMap.addChild(map);
+
+		/*// CLear de la liste des items de case
 		listeItemsCase = new Array();
 		contInvCase.removeAllChildren();
 		// parcours de la liste des items de la case
@@ -1795,7 +1938,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 
 			// Update l'ihm
 			stage.update();
-		}
+		}*/
 	}
 	stage.update();
 });
@@ -2100,7 +2243,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			//Boucle normale : creation nouvelle liste de 10 items max
 			for (var i=j*10; i<(j*10+10); i++)
 			{
-				
+
 				// mise de l'item dans une variable
 				var item = currentPerso.sacADos[i];
 				// Calcul du poids du sac
@@ -2119,6 +2262,24 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	else if (PageItemPerso<0)
 	{
 		PageItemPerso=0;
+	}
+	
+	if(PageItemPerso==Taille-1)
+	{
+		BtnPageItemPersoRight.visible=false;
+	}
+	else
+	{
+		BtnPageItemPersoRight.visible=true;
+	}
+	
+	if(PageItemPerso==0)
+	{
+		BtnPageItemPersoLeft.visible=false;
+	}
+	else
+	{
+		BtnPageItemPersoLeft.visible=true;
 	}
 
 	try 
