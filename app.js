@@ -1069,7 +1069,7 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('INFO_CASE_ALLIES_CS', function ()
 	{
-    	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser);
+    	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, false);
     	socket.emit('INFO_CASE_ALLIES_SC', liste.Allies);
     });
     /*
@@ -1089,7 +1089,7 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('INFO_CASE_ENNEMIS_CS', function ()
 	{
-    	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser);
+    	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
     	socket.emit('INFO_CASE_ENNEMIS_SC', liste.Ennemis);
     });
     /*  
