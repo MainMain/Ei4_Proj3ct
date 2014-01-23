@@ -91,7 +91,7 @@ Case_Manager.AttaqueGoule = function(idCase)
  */
 Case_Manager.GetCopieCase = function(idCase)
 {
-	console.log("CASE_MANAGER : GetCopieCase() : " + this.listeCases[idCase].id + " - " + this.listeCases[idCase].nom);
+	//console.log("CASE_MANAGER : GetCopieCase() : " + this.listeCases[idCase].id + " - " + this.listeCases[idCase].nom);
 	return this.listeCases[idCase];
 },
 

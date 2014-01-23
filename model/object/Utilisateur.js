@@ -34,21 +34,21 @@ var Utilisateur = (function() {
 	function Utilisateur(id, pseudo, email, nbrMeurtres, nbrMeurtresCumule, nbrFoisTue, nbrFoisTueCumule, scoreByMeutre, 
 			scoreByODD, scoreByMeutreCumule, scoreByODDCumule, nbrGoulesTues, nbrGoulesTuesCumules, numEquipe, idPersonnage) {
 		// --- Attributs d'instance
-		this.id = id;
-		this.pseudo = pseudo;
-		this.email = email;
-		this.nbrMeurtres = nbrMeurtres;
-		this.nbrMeurtresCumule = nbrMeurtresCumule;
-		this.nbrFoisTue = nbrFoisTue;
-		this.nbrFoisTueCumule = nbrFoisTueCumule;
-		this.scoreByMeutre = scoreByMeutre;
-		this.scoreByODD = scoreByODD;
-		this.scoreByMeutreCumule = scoreByMeutreCumule;
-		this.scoreByODDCumule = scoreByODDCumule;
-		this.nbrGoulesTues = nbrGoulesTues;
-		this.nbrGoulesTuesCumules = nbrGoulesTuesCumules;
-		this.numEquipe = numEquipe;
-		this.idPersonnage = idPersonnage;
+		this.id 					= id;
+		this.pseudo 				= pseudo;
+		this.email 					= email;
+		this.nbrMeurtres 			= nbrMeurtres;
+		this.nbrMeurtresCumule 		= nbrMeurtresCumule;
+		this.nbrFoisTue 			= nbrFoisTue;
+		this.nbrFoisTueCumule 		= nbrFoisTueCumule;
+		this.scoreByMeutre 			= scoreByMeutre;
+		this.scoreByODD 			= scoreByODD;
+		this.scoreByMeutreCumule 	= scoreByMeutreCumule;
+		this.scoreByODDCumule 		= scoreByODDCumule;
+		this.nbrGoulesTues 			= nbrGoulesTues;
+		this.nbrGoulesTuesCumules 	= nbrGoulesTuesCumules;
+		this.numEquipe			 	= numEquipe;
+		this.idPersonnage 			= idPersonnage;
 		console.log("Utilisateur : Nouveau Utilisateur crée ");
 	}
 
