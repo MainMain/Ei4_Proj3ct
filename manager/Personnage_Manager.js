@@ -161,9 +161,12 @@ Personnage_Manager.Attaquer = function(idUser, idUserEnnemi)
 	// création de données de retour
 	var reponseServeur = {"reponseAttaque" : 0, "degatsRecus" : 0, "degatsInfliges" : 0, "degatSubisParGoules" : 0, "nbrGoules" : 0};
 	
+	var resultatGoules;
+	
 	var attA = this.listePersonnages[idUser].getValeurAttaque();
 	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
 	
+	// Si plus de pts d'actions
 	if(!this.TestPtActions(idUser, "attaqueEnnemi"))
 	{
 		reponseServeur.reponseAttaque = -10;
@@ -176,10 +179,10 @@ Personnage_Manager.Attaquer = function(idUser, idUserEnnemi)
 		}
 		else
 		{
-			resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
-			
-			reponseServeur.degatSubisParGoules = this.subirDegats(idUser, resultatGoules["degats"]);
-			reponseServeur.nbrGoules = resultatGoules.nbrGoulesA;
+			// infliger les dégats de goules 
+			resultatGoules 						= oCase_Manager.AttaqueDeGoules(idSalle);
+			reponseServeur.nbrGoules			= resultatGoules.nbrGoulesA;
+			reponseServeur.degatSubisParGoules 	= this.subirDegats(idUser, resultatGoules.degats);
 			
 			//Si action pas ok à cause des goules
 			if(!resultatGoules.actionOk)
@@ -191,26 +194,30 @@ Personnage_Manager.Attaquer = function(idUser, idUserEnnemi)
 				// diminution ptAction
 				this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueEnnemi());
 
+				// remettre en mode 'oisif'
 				this.InitialiserMode(idUser);
-				// degats infligés
+				
+				// degats infligés a l'ennemi
 				reponseServeur.degatsInfliges = this.listePersonnages[idUserEnnemi].subirDegats(attA);
-
+				
 				// si l'ennemi est encore vivant, il riposte
 				if (!this.estMort(idUserEnnemi))
 				{
 					reponseServeur.degatsRecus = this.listePersonnages[idUser].subirDegats(attB);
 				}
 				
+				// ajout du message
+				this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + reponseServeur.degatsInfliges + " - degats infligés en riposte : " + reponseServeur.degatsRecus);
+				
 				// vérifie s'il y a des morts
 				if (persoUser.estMort()) this.TuerJoueur(idUser, loginEnn);
 				if (persoEnn.estMort()) this.TuerJoueur(idUserEnnemi, loginUser);
 
 				reponseServeur.reponseAttaque = 1;
-				
-				// ajout du message
-				this.AddMessage(idUserEnnemi, "Attaqué par un ennemi ! Degats subis : " + degatsInfligesParA + " - degats infligés en riposte : " + degatsInfligesParB);
 
-				console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + degatsInfligesParA + " <-> degatsRecus : " + degatsInfligesParB);
+				console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + reponseServeur.degatsInfliges
+						+ " <-> degatsRecus : " + reponseServeur.degatsRecus 
+						+ "  +  degatsGoules : " + reponseServeur.degatSubisParGoules );
 				
 			}
 		}
@@ -799,7 +806,6 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser)
 {
 	var comPoidsSac = this.listePersonnages[idUser].getPoidsSac() / this.listePersonnages[idUser].getPoidsMax() * 100;
 		
-	console.log("PM : approximation poids sac : " + comPoidsSac +" %");
 	var perso = new oPersonnage(
 			this.listePersonnages[idUser].getIdPerso(), 									this.listePersonnages[idUser].getPtSante(),		this.listePersonnages[idUser].getPtSanteMax(),
 			-1,											-1, 												-1,

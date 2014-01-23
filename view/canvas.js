@@ -2098,6 +2098,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	
 	if(currentPerso.listeMsgAtt.length > 0)
 	{
+		alert(currentPerso.listeMsgAtt.length);
 		ListeMessages=currentPerso.listeMsgAtt;
 	}
 	

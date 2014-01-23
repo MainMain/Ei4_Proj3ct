@@ -716,7 +716,7 @@ var Personnage = (function() {
 		
 		estMort : function()
 		{
-			return (this.ptSante == 0);
+			return (this.ptSante <= 0);
 		},
 		
 	};

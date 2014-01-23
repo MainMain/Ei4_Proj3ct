@@ -1046,7 +1046,7 @@ io.sockets.on('connection', function (socket)
     	oPersonnage_Manager.EffacerMessages(idUser);
     	
     	// si le perso est KO
-    	if (oPersonnage_Manager.GetSante(idUser) == 0)
+    	if (oPersonnage_Manager.GetSante(idUser) <= 0)
     	{
     		// retablissement de la sante et transfert en zone sure
     		oPersonnage_Manager.SeRetablir(idUser);
@@ -1069,13 +1069,8 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('INFO_CASE_ALLIES_CS', function ()
 	{
-    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    	// déclaration des variables
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser);
-		
     	socket.emit('INFO_CASE_ALLIES_SC', liste.Allies);
-		
-    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
     /*
      * 
@@ -1094,13 +1089,8 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('INFO_CASE_ENNEMIS_CS', function ()
 	{
-    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-    	// déclaration des variables
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser);
-		
     	socket.emit('INFO_CASE_ENNEMIS_SC', liste.Ennemis);
-		
-    	console.log("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
     });
     /*  
      *
@@ -1188,19 +1178,23 @@ io.sockets.on('connection', function (socket)
     	{
 			var id = liste.Allies[i];
 			
-			// si le personnage n'est pas mort, on lui ajoute le message
-			if (!oPersonnage_Manager.estMort(id))
+			// si ce n'est pas l'user qui a cré l'event
+			if (id != idUser)
 			{
-				oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.GetPseudo(idUser) + " " + evenement);
-			}
-			
-			// pour ceux qui sont en ligne, on leurs rafraichit les infos sur leurs perso et la case
-			if(usersOnline[id])
-			{
-				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
-				for(var j in usersOnline[id].sockets)
+				// si le personnage n'est pas mort, on lui ajoute le message
+				if (!oPersonnage_Manager.estMort(id))
 				{
-					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)), res.nbrAllies, res.nbrEnnemis);
+					oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.GetPseudo(idUser) + " " + evenement);
+				}
+			
+				// pour ceux qui sont en ligne, on leurs rafraichit les infos sur leurs perso et la case
+				if(usersOnline[id])
+				{
+					var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
+					for(var j in usersOnline[id].sockets)
+					{
+						usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(idUser)), res.nbrAllies, res.nbrEnnemis);
+					}
 				}
 			}
 		}
@@ -1235,7 +1229,8 @@ io.sockets.on('connection', function (socket)
     	{
 			var id = listePerso[i];
 			
-			if(usersOnline[id])
+			// si en ligne ET différent de l'user qui a crée l'event
+			if(usersOnline[id] && id != idUser )
 			{
 				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
 				for(var j in usersOnline[id].sockets)

@@ -137,22 +137,22 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	
 	var NewUser = new Utilisateurmodel();
 	
-	NewUser.pseudo = pseudoU;
-	NewUser.pass = passU;
-	NewUser.email = emailU;
-	NewUser.nbrMeurtres = 0;
-	NewUser.nbrMeurtresCumule = 0;
-	NewUser.nbrFoisTue = 0;
-	NewUser.nbrFoisTueCumule = 0;
+	NewUser.pseudo 				= pseudoU;
+	NewUser.pass 				= passU;
+	NewUser.email 				= emailU;
+	NewUser.nbrMeurtres 		= 0;
+	NewUser.nbrMeurtresCumule 	= 0;
+	NewUser.nbrFoisTue 			= 0;
+	NewUser.nbrFoisTueCumule 	= 0;
 	
-	NewUser.scoreByMeutre = 0;
-	NewUser.scoreByODD = 0;
+	NewUser.scoreByMeutre 		= 0;
+	NewUser.scoreByODD 			= 0;
 	NewUser.scoreByMeutreCumule = 0;
-	NewUser.scoreByODDCumule = 0;
-	NewUser.nbrGoulesTues = 0;
-	NewUser.nbrGoulesTuesCumules = 0;
+	NewUser.scoreByODDCumule	= 0;
+	NewUser.nbrGoulesTues 		= 0;
+	NewUser.nbrGoulesTuesCumules= 0;
 	
-	NewUser.numEquipe = 0;
+	NewUser.numEquipe 			= 0;
 	
 	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)
 	{
