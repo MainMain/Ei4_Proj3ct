@@ -460,6 +460,34 @@ Personnage_Manager.ChangementMode = function(idUser, mode)
 	return reponseServeur;
 },
 
+Personnage_Manager.fouille1Hr = function(idUser)
+{
+	// calcul de decouverte d'un item
+	var itemDecouvert = oCase_Manager.Fouille(idCase, multiFouille);
+	var msg = "";
+	// si un objet a été découvert
+	if (itemDecouvert)
+	{
+		msg += "Vous avez découvert un item : " + itemDecouvert.nom;
+		// essai d'ajout au sac (calcul de poids)
+		if (this.listePersonnages[idUser].getPoidsSac() - parseInt(itemDecouvert.poids) > 0)
+		{
+			this.AjouterItemAuSac(idUser, itemDecouvert);
+			msg += " L'item à été ajouté à votre sac.";
+		}
+		else
+		{
+			oCase_Manager.AjouterItem(idCase, itemDecouvert);
+			msg += " Faute de place, l'item à été déposé dans la salle";
+		}
+	}
+	else
+	{
+		msg += "Malheureusement, la fouille n'a pas été fructueuse...";	
+	}
+	this.AddMessage(idUser, msg);
+},
+
 Personnage_Manager.fouilleRapide = function(idUser)
 {
 	//this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_FouilleRapide());
@@ -473,9 +501,10 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	var codeRetour = 0;
 	var itemDecouvert;
 	var nbrEnnDecouverts = 0;
-	
+	var idSalle = this.GetIdSalleEnCours(idUser);;
+		
 	// tests pts actions
-    if(oPersonnage_Manager.TestPtActions(idUser, "fouilleRapide"))
+    if(!this.TestPtActions(idUser, "fouilleRapide"))
 	{
 		reponseServeur.codeRetour = - 10;
     	return reponseServeur;
@@ -484,6 +513,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	// Calcul des dégats de goules et nombre de goules attaquantes
 	resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
 	
+	// remplissage de la structure de réponse
 	reponseServeur.degatSubis = this.subirDegats(idUser, resultatGoules["degats"]);
 	reponseServeur.nbrGoulesA = resultatGoules.nbrGoulesA;
 	
@@ -496,7 +526,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 		return reponseServeur;
 	}
 	// diminution des pts d'action
-	
+	this.diminuerPointAction(GameRules.coutPA_FouilleRapide());
 	
 	// id case du perso
 	var idCase = this.listePersonnages[idUser].getIdSalleEnCours();
@@ -504,15 +534,20 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	var multiFouille = this.listePersonnages[idUser].getMultiFouille();
 	
 	// calcul de decouverte d'un item
-	if (oCase_Manager.Fouille(idCase, multiFouille))
+	itemDecouvert = oCase_Manager.Fouille(idCase, multiFouille);
+	
+	// si un objet a été découvert
+	if (itemDecouvert)
 	{
 		reponseServeur.codeRetour = 1;
-		// création d'un item
-		itemDecouvert = oItem_Manager.GetItemAleatoire();
 		reponseServeur.itemDecouvert = itemDecouvert;
 		
+		console.log("--> DEBUG : poids sac  : "+parseInt(this.listePersonnages[idUser].getPoidsSac()));
+		console.log("--> DEBUG : poids item : "+parseInt(itemDecouvert.poids));
+		console.log("--> DEBUG : difference : "+parseInt(this.listePersonnages[idUser].getPoidsSac()) - parseInt(itemDecouvert.poids));
+		
 		// essai d'ajout au sac (calcul de poids)
-		if (this.listePersonnages[idUser].getPoidsSac() - itemDecouvert.poids > 0)
+		if (this.listePersonnages[idUser].getPoidsSac() - parseInt(itemDecouvert.poids) > 0)
 		{
 			this.AjouterItemAuSac(idUser, itemDecouvert);
 			reponseServeur.itemDansSac = true;

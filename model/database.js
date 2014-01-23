@@ -32,15 +32,21 @@ database.Initialiser = function() {
 
 	/***** CREATION DU SCHEMA "UTILISATEUR" ****/
 	var UtilisateurSchema = new mongoose.Schema({		//creation de la structure d'un utilisateur
-		pseudo : String,
-		pass : String,
-		email : String,
-		personnage : String,
-		nbrMeurtres : Number,
-		nbrMeurtresCumule : Number,
-		nbrFoisTue : Number,
-		nbrFoisTueCumule : Number,
-		numEquipe : Number,
+		pseudo					: String,
+		pass				 	: String,
+		email 					: String,
+		personnage 				: String,
+		nbrMeurtres 			: Number,
+		nbrMeurtresCumule 		: Number,
+		nbrFoisTue 				: Number,
+		nbrFoisTueCumule 		: Number,
+		scoreByMeutre 			: Number,
+		scoreByODD 				: Number,
+		scoreByMeutreCumule 	: Number,
+		scoreByODDCumule 		: Number,
+		nbrGoulesTues 			: Number,
+		nbrGoulesTuesCumules 	: Number,
+		numEquipe				: Number,
 	});
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
 	

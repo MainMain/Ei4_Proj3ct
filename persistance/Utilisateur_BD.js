@@ -40,15 +40,25 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 		}
 		else
 		{
-			NewUser[0].pseudo = utilisateurToSave.pseudo;
-			NewUser[0].email = utilisateurToSave.email;
-			NewUser[0].personnage = utilisateurToSave.idPersonnage;
-			NewUser[0].nbrMeurtres = utilisateurToSave.nbrMeurtres;
-			NewUser[0].nbrMeurtresCumule = utilisateurToSave.nbrMeurtresCumule;
-			NewUser[0].nbrFoisTue = utilisateurToSave.nbrFoisTue;
-			NewUser[0].nbrFoisTueCumule = utilisateurToSave.nbrFoisTueCumule;
+			console.log(utilisateurToSave);
+			NewUser[0].pseudo				= utilisateurToSave.pseudo;
+			NewUser[0].email 				= utilisateurToSave.email;
+			NewUser[0].personnage 			= utilisateurToSave.idPersonnage;
+			NewUser[0].nbrMeurtres 			= utilisateurToSave.nbrMeurtres;
+			NewUser[0].nbrMeurtresCumule 	= utilisateurToSave.nbrMeurtresCumule;
+			NewUser[0].nbrFoisTue 			= utilisateurToSave.nbrFoisTue;
+			NewUser[0].nbrFoisTueCumule 	= utilisateurToSave.nbrFoisTueCumule;
+			
+			NewUser[0].scoreByMeutre 		= utilisateurToSave.scoreByMeutre;
+			NewUser[0].scoreByODD 			= utilisateurToSave.scoreByODD;
+			NewUser[0].scoreByMeutreCumule 	= utilisateurToSave.scoreByMeutreCumule;
+			NewUser[0].scoreByODDCumule 	= utilisateurToSave.scoreByODDCumule;
+			NewUser[0].nbrGoulesTues 		= utilisateurToSave.nbrGoulesTues;
+			NewUser[0].nbrGoulesTuesCumules = utilisateurToSave.nbrGoulesTuesCumules;
+			
 			NewUser[0].numEquipe = utilisateurToSave.numEquipe;
 			
+			console.log("--------> " + NewUser[0].nbrMeurtres);
 			NewUser[0].save(function (err)
 					{
 						if (err)
@@ -58,10 +68,10 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 						console.log('Mis a jour de l\'utilisateur!');
 						
 						callbackSetUtilisateur(new oUtilisateur(
-							NewUser._id,NewUser.pseudo,NewUser.email,NewUser.pass,
-							NewUser.nbrMeurtres,NewUser.nbrMeurtresCumule,
-							NewUser.nbrFoisTue,NewUser.nbrFoisTueCumule,
-							NewUser.numEquipe,NewUser.personnage));
+							NewUser._id,			NewUser.pseudo,				NewUser.email,				NewUser.pass,
+							NewUser.nbrMeurtres,	NewUser.nbrMeurtresCumule,	NewUser.nbrFoisTue,			NewUser.nbrFoisTueCumule,
+							NewUser.scoreByMeutre,	NewUser.scoreByODD,			NewUser.scoreByMeutreCumule,NewUser.scoreByODDCumule,
+							NewUser.nbrGoulesTues, 	NewUser.nbrGoulesTuesCumules, NewUser.numEquipe,		NewUser.personnage));
 					});
 			
 		}
@@ -94,12 +104,14 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) 
 		}
 		else
 		{
-			console.log("Appel du callBack avec un utilisateur"),
-			callbackGetUtilisateur(idUtilisateur, new oUtilisateur(
-				NewUser[0]._id,			NewUser[0].pseudo,NewUser[0].email,
-				NewUser[0].nbrMeurtres,	NewUser[0].nbrMeurtresCumule,
-				NewUser[0].nbrFoisTue,	NewUser[0].nbrFoisTueCumule,
-				NewUser[0].numEquipe,	NewUser[0].personnage));
+			console.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
+			var user = new oUtilisateur(
+					NewUser[0]._id,				NewUser[0].pseudo,				NewUser[0].email,				//NewUser[0].pass,
+					NewUser[0].nbrMeurtres,		NewUser[0].nbrMeurtresCumule,	NewUser[0].nbrFoisTue,			NewUser[0].nbrFoisTueCumule,
+					NewUser[0].scoreByMeutre,	NewUser[0].scoreByODD,			NewUser[0].scoreByMeutreCumule,	NewUser[0].scoreByODDCumule,
+					NewUser[0].nbrGoulesTues, 	NewUser[0].nbrGoulesTuesCumules,NewUser[0].numEquipe,			NewUser[0].personnage);
+			console.log(user);
+			callbackGetUtilisateur(idUtilisateur, user);
 		}
 	});
 	
@@ -132,6 +144,14 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	NewUser.nbrMeurtresCumule = 0;
 	NewUser.nbrFoisTue = 0;
 	NewUser.nbrFoisTueCumule = 0;
+	
+	NewUser.scoreByMeutre = 0;
+	NewUser.scoreByODD = 0;
+	NewUser.scoreByMeutreCumule = 0;
+	NewUser.scoreByODDCumule = 0;
+	NewUser.nbrGoulesTues = 0;
+	NewUser.nbrGoulesTuesCumules = 0;
+	
 	NewUser.numEquipe = 0;
 	
 	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)

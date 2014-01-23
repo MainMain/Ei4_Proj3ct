@@ -15,19 +15,24 @@ var Utilisateur = (function() {
 	Utilisateur.nbrMeurtresCumule;
 	Utilisateur.nbrFoisTue;
 	Utilisateur.nbrFoisTueCumule;
+	Utilisateur.scoreByMeutre;
+	Utilisateur.scoreByODD;
+	Utilisateur.scoreByMeutreCumule;
+	Utilisateur.scoreByODDCumule;
+	Utilisateur.nbrGoulesTues;
+	Utilisateur.nbrGoulesTuesCumules;
 	Utilisateur.numEquipe;
 	Utilisateur.idPersonnage;
 
 	// --- METHODES DE CLASSE ---
-	Utilisateur.build = function(id, pseudo, email, nbrMeurtres,
-			nbrMeurtresCumule, nbrFoisTue, nbrFoisTueCumule, numEquipe,
-			idPersonnage) {
+	Utilisateur.build = function(id, pseudo, email, pass, nbrMeurtres, nbrMeurtresCumule,nbrFoisTue, nbrFoisTueCumule, scoreByMeutre, 
+			scoreByODD, scoreByMeutreCumule, scoreByODDCumule, nbrGoulesTues, nbrGoulesTuesCumules, numEquipe, idPersonnage) {
 		return new Utilisateur();
 	};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	function Utilisateur(id, pseudo, email, nbrMeurtres, nbrMeurtresCumule,
-			nbrFoisTue, nbrFoisTueCumule, numEquipe, idPersonnage) {
+	function Utilisateur(id, pseudo, email, nbrMeurtres, nbrMeurtresCumule, nbrFoisTue, nbrFoisTueCumule, scoreByMeutre, 
+			scoreByODD, scoreByMeutreCumule, scoreByODDCumule, nbrGoulesTues, nbrGoulesTuesCumules, numEquipe, idPersonnage) {
 		// --- Attributs d'instance
 		this.id = id;
 		this.pseudo = pseudo;
@@ -36,6 +41,12 @@ var Utilisateur = (function() {
 		this.nbrMeurtresCumule = nbrMeurtresCumule;
 		this.nbrFoisTue = nbrFoisTue;
 		this.nbrFoisTueCumule = nbrFoisTueCumule;
+		this.scoreByMeutre;
+		this.scoreByODD;
+		this.scoreByMeutreCumule;
+		this.scoreByODDCumule;
+		this.nbrGoulesTues;
+		this.nbrGoulesTuesCumules;
 		this.numEquipe = numEquipe;
 		this.idPersonnage = idPersonnage;
 		console.log("Utilisateur : Nouveau Utilisateur crée ");

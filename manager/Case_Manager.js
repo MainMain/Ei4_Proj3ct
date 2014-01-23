@@ -1,8 +1,8 @@
 // includes
-var oCase = require('../model/Object/Case');
-var oCase_BD = require('../persistance/Case_BD');
-var oCarte = require('../model/object/Carte');
-var oCase_BD = require('../persistance/Case_BD');
+var oCase 		= require('../model/Object/Case');
+var oCase_BD 	= require('../persistance/Case_BD');
+var oCarte 		= require('../model/object/Carte');
+var oCase_BD 	= require('../persistance/Case_BD');
 
 var oPersonnage_Manager  = require('./Personnage_Manager');
 var oItem_Manager        = require('./Item_Manager');
@@ -12,8 +12,6 @@ var oUtilisateur_Manager = require('./Utilisateur_Manager');
 var GameRules	= require('../model/GameRules');
 
 this.listeCases;
-//GameRules.idZoneSure_1();
-//GameRules.idZoneSure_2();
 	
 function Case_Manager(){}
 
@@ -93,7 +91,6 @@ Case_Manager.AttaqueGoule = function(idCase)
  */
 Case_Manager.GetCopieCase = function(idCase)
 {
-	console.log("+++++++++++++++++" + idCase);
 	console.log("CASE_MANAGER : GetCopieCase() : " + this.listeCases[idCase].id + " - " + this.listeCases[idCase].nom);
 	return this.listeCases[idCase];
 },
@@ -105,6 +102,15 @@ Case_Manager.ExistItem = function(idCase, item)
 
 Case_Manager.AttaqueDeGoules = function(idCase)
 {
+	var a = {
+		"degats"	: 0,
+		"nbrGoulesA" : 0,
+		"actionOk" 	: true,
+	};
+	
+	// si pas de goules, on quitte 
+	if (this.listeCases[idCase].getNbrGoules() == 0) return a;
+	
 	// génère la puissance des goules
 	var degatsGoules = GameRules.goules_GetPtsAttaque();
 	// calcul le nombre de goules attaquantes
@@ -118,12 +124,10 @@ Case_Manager.AttaqueDeGoules = function(idCase)
 	// s'il y a interception, action ratée
 	if (GameRules.goules_proba_Interception()) actionOk = false;
 	else actionOk = true;
-	
-	// si le nombre de goule est de zéro, l'action est automatiquement ok
-	if (this.listeCases[idCase].getNbrGoules() == 0) actionOk = true;
+
 	
 	// return les données
-	var a = {
+	a = {
 			"degats"	: total,
 			"nbrGoulesA" : nbrGoulesAttaquantes,
 			"actionOk" 	: actionOk,
@@ -134,14 +138,20 @@ Case_Manager.AttaqueDeGoules = function(idCase)
 
 Case_Manager.Fouille = function(idCase, probaObjetPerso)
 {
+	var newItem;
 	// génère un ombre entre 1 et 100
 	var proba = Math.floor(Math.random() * 100);
 	// multiplie la proba de trouver un objet avec le multiplicateur du personnage
 	var probaObjetCase = this.listeCases[idCase].probaObjet * probaObjetPerso;
 
 	console.log("CASE_MANAGER : Fouille() : proba = " + proba + " - probaObjetCase  => brut = " + this.listeCases[idCase].probaObjet + " - net = " + probaObjetCase);
-	if (proba < probaObjetCase) return true;
-	else return false;
+	if (proba < probaObjetCase)
+	{
+	// création d'un item
+		newItem = oItem_Manager.GetItemAleatoire();
+		console.log("CASE_MANAGER : Fouille() : Nouvel objet decouvert ! : "+ newItem.nom);
+	}
+	return newItem;
 },
 
 Case_Manager.DecouverteEnnemi = function(idCase, probaObjetPerso, probaCacheEnn)

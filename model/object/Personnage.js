@@ -596,7 +596,7 @@ var Personnage = (function() {
 			// if (armeEquipee != null) poids += armeEquipee.poids;
 			// if (armureEquipee != null) poids += armeEquipee.poids;
 			//console.log("PERSONNAGE : Calcul du poids total du sac : " + poids);
-			return poids;
+			return parseInt(poids);
 		},
 
 		/**
