@@ -20,7 +20,7 @@ var PageItemCase=0;
 var background, backgroundPreload, map, perso;
 
 //Espacement items
-var SpaceItem = 30;
+var SpaceItem = 32;
 //Police des labels
 var PoliceLabel="14px monospace";
 
@@ -68,11 +68,11 @@ var _labelModeY = 0;
 
 //Placement Conteneur ItemCase
 var _ContItemCaseX = _labelModeX;
-var _ContItemCaseY = 620-75;
+var _ContItemCaseY = 620-95	;
 
 //Dimension Conteneur ItemCase
-var _ContItemCaseH = 32;
-var _ContItemCaseW = 320;
+var _ContItemCaseH = 40;
+var _ContItemCaseW = 330;
 
 //Placement label ItemCase
 var _labelItemCaseX = _ContItemCaseX;
@@ -90,15 +90,15 @@ var _labelArmureY = _labelArmeY;
 
 //Placement label ItemPerso
 var _labelItemPersoX = _labelArmeX;
-var _labelItemPersoY = _labelArmureY + _EspaceLabelY + 15;
+var _labelItemPersoY = _labelArmureY 	+ _EspaceLabelY + 15;
 
 //Placement Conteneur ItemPerso
 var _ContItemPersoX = _labelItemPersoX;
 var _ContItemPersoY = _labelItemPersoY + _EspaceLabelY+5;
 
 //Dimension Conteneur ItemPerso
-var _ContItemPersoH = 32;
-var _ContItemPersoW = 320;
+var _ContItemPersoH = 40;
+var _ContItemPersoW = 330;
 
 //------------------- Zone 1 : 1/2 barres perso -----------------------------------------------------
 
@@ -143,7 +143,7 @@ var _labelPoidsSacY = _labelPtsDefY + _EspaceLabelY; */
 
 //Placement label Description Item
 var _labelDescribeItemX = _ContItemCaseX;
-var _labelDescribeItemY = _ContItemCaseY + 30;
+var _labelDescribeItemY = _ContItemCaseY + 40;
 
 //Placement label Nombre d'Aliés
 var _labelNbAliesX = 350;
@@ -355,6 +355,7 @@ function initialize() {
 	                {src:"public/Boutons/Annuler.png", id:"idBtnAnnuler"},
 	                {src:"public/Boutons/LArrow.png", id:"idBtnLArrow"},
 	                {src:"public/Boutons/RArrow.png", id:"idBtnRArrow"},
+	                {src:"public/Boutons/Select.png", id:"idSelect"},
 	                {src:"public/map/0-0.png", id:"0-0"},
 	                {src:"public/map/0-1.png", id:"0-1"},
 	                {src:"public/map/0-2.png", id:"0-2"},
@@ -1172,7 +1173,7 @@ function game() {
 	});
 
 	BtnPageItemPersoRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	BtnPageItemPersoRight.x= _ContItemPersoX + 320;
+	BtnPageItemPersoRight.x= _ContItemPersoX + _ContItemPersoW;
 	BtnPageItemPersoRight.y= _ContItemPersoY + 5;
 	BtnPageItemPersoRight.addEventListener('click', function(event) {
 		PageItemPerso++;
@@ -1189,7 +1190,7 @@ function game() {
 	});
 
 	BtnPageItemCaseRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	BtnPageItemCaseRight.x= _ContItemCaseX + 320;
+	BtnPageItemCaseRight.x= _ContItemCaseX  + _ContItemCaseW;
 	BtnPageItemCaseRight.y= _ContItemCaseY + 5;
 	BtnPageItemCaseRight.addEventListener('click', function(event) {
 		PageItemCase++;
@@ -1832,6 +1833,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 			BtnPageItemCaseLeft.visible=true;
 		}
 
+		var Select;
+		
 		try 
 		{
 			// instructions à essayer
@@ -1859,13 +1862,22 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 				},false);
 
 				imgItem.addEventListener("click", function(event){
+					if (Select!=null)
+					{
+						contInvCase.removeChild(Select);
+					}
+					var num=event.target.name;
 					var currentItem = TabListe[PageItemCase][event.target.name];
 					SelectedItemCase=currentItem.id;
+					Select = contInvCase.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+					Select.x=num*(SpaceItem);
+					Select.y=0;
 					stage.update();
 				});
 
-				imgItem.x = iPositionItemInConteneur * SpaceItem;
-
+				imgItem.x = 7+(iPositionItemInConteneur * SpaceItem);
+				imgItem.y = 4;
+	
 				contInvCase.addChild(imgItem);
 
 				// position de l'item dans le conteneur
@@ -1886,59 +1898,6 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		map.x = contMap.width/2 - map.image.width/2;
 		contMap.addChild(map);
 
-		/*// CLear de la liste des items de case
-		listeItemsCase = new Array();
-		contInvCase.removeAllChildren();
-		// parcours de la liste des items de la case
-		for (var i = 0; i < currentCase.listeItem.length; i++) {
-
-			// mise de l'item dans une variable
-			var item = currentCase.listeItem[i];
-
-			// Ajout de l'item à la liste
-			listeItemsCase.push(item);
-
-			// Ajout de l'image à l'ihm
-			var imgItem = new createjs.Bitmap(item.imageName);
-
-			// ajout d'un texte quand l'user passera la souris dessus
-			imgItem.name = i;
-
-			imgItem.cursor = "pointer";
-
-			// Ajout de l'évenement a l'image
-			imgItem.addEventListener('mouseover', function(event) {
-				var currentItem = listeItemsCase[event.target.name];
-				labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
-				stage.update();
-			},false);
-
-			imgItem.addEventListener('mouseout', function(event){
-				labelDescribeItem.text="";
-				stage.update();
-			},false);
-
-			imgItem.addEventListener("click", function(event){
-				var currentItem = listeItemsCase[event.target.name];
-				SelectedItemCase=currentItem.id;
-				stage.update();
-			});
-
-			//Placement de l'image et ajout au conteneur
-			//imgItem.image.onload = setImg(imgItem,200+(i+1)*30,50);
-			imgItem.x = i * SpaceItem;
-			contInvCase.addChild(imgItem);
-
-			contMap.removeChild(map);
-			// insertion de la map
-			var map = new createjs.Bitmap(currentCase.pathImg);
-			// Placement de la map
-			map.x = contMap.width/2 - map.image.width/2;
-			contMap.addChild(map);
-
-			// Update l'ihm
-			stage.update();
-		}*/
 	}
 	stage.update();
 });
@@ -2281,6 +2240,8 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		BtnPageItemPersoLeft.visible=true;
 	}
+	
+	var Select;
 
 	try 
 	{
@@ -2312,13 +2273,21 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 				},false);
 
 				imgItem.addEventListener("click", function(event){
+					if (Select!=null)
+					{
+						contInvPerso.removeChild(Select);
+					}
+					var num=event.target.name;
 					var currentItem = TabListe[PageItemPerso][event.target.name];
 					SelectedItemPerso=currentItem.id;
+					Select = contInvPerso.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+					Select.x=num*(SpaceItem);
+					Select.y=0;
 					stage.update();
 				});
 
-				imgItem.x = iPositionItemInConteneur * SpaceItem;
-
+				imgItem.x = 7+(iPositionItemInConteneur * SpaceItem);
+				imgItem.y = 4;
 				contInvPerso.addChild(imgItem);
 
 				// position de l'item dans le conteneur
