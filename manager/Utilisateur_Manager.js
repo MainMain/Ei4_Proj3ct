@@ -39,7 +39,7 @@ Utilisateur_Manager.Load = function()
 				}
 				else
 				{
-					console.log("UTILISATEUR_MANAGER : user loaded : " + id);
+					//console.log("UTILISATEUR_MANAGER : user loaded : " + id);
 					context.listeUtilisateurs[id] = reponse;
 				}
 			});
@@ -146,7 +146,7 @@ Utilisateur_Manager.Save = function()
 			}
 			else
 			{
-				console.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " OK !");
+				//console.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " OK !");
 			}
 		});
 	}

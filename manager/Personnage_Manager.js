@@ -43,7 +43,7 @@ Personnage_Manager.Load = function()
 				}
 				else
 				{
-					console.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
+					//console.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
 					context.listePersonnages[id] = reponse;
 					/*** TEST ***/
 					context.listePersonnages[id].setptSanteMax(30);
@@ -127,7 +127,7 @@ Personnage_Manager.SetCompetence = function(idUser,  competence)
 		}
 		else
 		{
-			console.log("PERSONNAGE_MANAGER : SetCompetence() : MAJ du perso de " + idUser + " OK !");
+			//console.log("PERSONNAGE_MANAGER : SetCompetence() : MAJ du perso de " + idUser + " OK !");
 		}
 	});
 	
@@ -254,6 +254,7 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 	var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
 	var idZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
 	
+	// chaque allié diminue de 1 le nombre de goules
 	nbrGoules -= a.nbrAllies;
 	
 	// deplace le personnage
@@ -857,7 +858,7 @@ Personnage_Manager.Save = function()
 			}
 			else
 			{
-				console.log("UMANAGER : MAJ du perso de " + idUser + " OK !");
+				//console.log("UMANAGER : MAJ du perso de " + idUser + " OK !");
 			}
 		});
 	}

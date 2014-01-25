@@ -351,32 +351,27 @@ var Personnage = (function() {
 		getValeurAttaque : function()
 		{
 			var att;
-			if (this.armeEquipee == null)
+			if (competence == "brute") 		 att = GameRules.combat_ptsAttaque_base_brute();
+			if (competence == "explorateur") att = GameRules.combat_ptsAttaque_base_explorateur();
+			if (competence == "chercheur") 	 att = GameRules.combat_ptsAttaque_base_chercheur();
+			
+			if (this.armeEquipee != null)
 			{
-				att = 1;
-				//console.log("VALEUR ATTAQUE : " + att);
-				att+=1;
-				//console.log("VALEUR ATTAQUE : " + att);
+				att += this.armeEquipee.valeur;
 			}
-			else
-			{
-				att = this.armeEquipee.valeur;
-			}
+			
 			return (att * this.multiPtsAttaque);
 		},
 		
 		getValeurArmure : function()
 		{
-			var def;
-			if (this.armureEquipee == null)
+			var def = GameRules.combat_ptsDefense_base();
+			
+			if (this.armureEquipee != null)
 			{
-				def = 1;
+				def += this.armureEquipee.valeur;
 			}
-			else
-			{
-				def = this.armureEquipee.valeur;
-			}
-			//console.log("PERSONNAGE : Valeur Armure : " + def );
+
 			return (def * this.multiPtsDefense);
 		},
 		

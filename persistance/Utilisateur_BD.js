@@ -40,7 +40,7 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 		}
 		else
 		{
-			console.log(utilisateurToSave);
+			//console.log(utilisateurToSave);
 			NewUser[0].pseudo				= utilisateurToSave.pseudo;
 			NewUser[0].email 				= utilisateurToSave.email;
 			NewUser[0].personnage 			= utilisateurToSave.idPersonnage;
@@ -58,14 +58,13 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 			
 			NewUser[0].numEquipe = utilisateurToSave.numEquipe;
 			
-			console.log("--------> " + NewUser[0].nbrMeurtres);
 			NewUser[0].save(function (err)
 					{
 						if (err)
 						{
 							throw err;
 						}
-						console.log('Mis a jour de l\'utilisateur!');
+						console.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 						
 						callbackSetUtilisateur(new oUtilisateur(
 							NewUser._id,			NewUser.pseudo,				NewUser.email,				NewUser.pass,
@@ -104,13 +103,13 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) 
 		}
 		else
 		{
-			console.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
+			//console.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
 			var user = new oUtilisateur(
 					NewUser[0]._id,				NewUser[0].pseudo,				NewUser[0].email,				//NewUser[0].pass,
 					NewUser[0].nbrMeurtres,		NewUser[0].nbrMeurtresCumule,	NewUser[0].nbrFoisTue,			NewUser[0].nbrFoisTueCumule,
 					NewUser[0].scoreByMeutre,	NewUser[0].scoreByODD,			NewUser[0].scoreByMeutreCumule,	NewUser[0].scoreByODDCumule,
 					NewUser[0].nbrGoulesTues, 	NewUser[0].nbrGoulesTuesCumules,NewUser[0].numEquipe,			NewUser[0].personnage);
-			console.log(user);
+			console.log("UTILISATEUR_BD : Chargement de l'utilisateur : ["+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 			callbackGetUtilisateur(idUtilisateur, user);
 		}
 	});
@@ -256,15 +255,10 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		}
 		else
 		{
-			console.log("USER_BD : id de l'user = " + user[0].id);
+			console.log("USER_BD : connexion de l'user = " + user[0].pseudo);
 			callbackConnexion(user[0].id, req, res);
 		}
 	});
-},
- 
-Utilisateur_BD.test = function()
-{
-	console.log("COUCOU");
 },
  
  Utilisateur_BD.GetUsersId = function(callback)

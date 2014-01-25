@@ -9,7 +9,8 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
-
+var date = new Date();
+console.log(date);
 /*
  *
  */
@@ -1254,12 +1255,7 @@ io.sockets.on('connection', function (socket)
     /******************************************************************************************************************
      * FONCTION DE SAUVEGARDE DE TOUTES LES DONNEES
      */
-    function SauvegardeGlobale()
-    {
-		oUtilisateur_Manager.Save();
-		oPersonnage_Manager.Save();
-		oCase_Manager.Save();
-    }
+
     /*
      * 
      *
@@ -1296,6 +1292,18 @@ io.sockets.on('connection', function (socket)
     
 
 });
+
+setInterval(function() 
+	    { 
+	    	console.log("***************** SAUVEGARDE GLOBALE DES DONNEES *****************************");
+	    	var date = new Date();
+	    	console.log("[ ! ] Sauvegarde globale ! Date: " + date);
+	    	oUtilisateur_Manager.Save();
+			oPersonnage_Manager.Save();
+			oCase_Manager.Save();
+			console.log("******************************************************************************");
+	    },  1000 * 60 * 10  ); // 1000 millisec * 60 sec * 10 min
+
 
 
 // server.listen(8080);

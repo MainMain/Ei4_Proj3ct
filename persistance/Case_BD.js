@@ -43,9 +43,9 @@ Case_BD.SetCase = function(caseToSave, callSetCase) {
 			
 			throw err;
 		}
-		
+		console.log("CASE_BD : Mis à jour de la case : [" + newCase.id +"-"+newCase.nom+"]");
 		callSetCase(1);
-		console.log('CASE_BD : Creation de case réussie !');
+		
 	});
 },
 
@@ -73,7 +73,7 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
 			console.log("CASE_BD : Creation() : ERREUR ");
 		}
 
-		console.log('CASE_BD : Creation de case réussie !');
+		console.log("CASE_BD : Creation de case réussie ! " + newCase.nom);
 
 	});
 },
@@ -85,7 +85,6 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
  */
 Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 	var caseModel = mongoose.model('Case');
-	console.log("CASE_BD : GetCaseById: id case demandé : " + idCase);
 	
 	var query = caseModel.find(null);
 	query.where('id', idCase);
@@ -108,7 +107,7 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 					currentCase[0].listeItem, 	currentCase[0].pathImg);
 
 			// log
-			console.log("CASE_BD : GetCase() : CALLBACK");
+			console.log("CASE_BD : Chargement de la case : [" + currentCase[0].id +"-"+currentCase[0].nom+"]");
 
 			// renvoi de la case
 			callbackGetCase(idCase, caseRecup);

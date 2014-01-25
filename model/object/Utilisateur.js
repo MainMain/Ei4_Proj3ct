@@ -49,7 +49,7 @@ var Utilisateur = (function() {
 		this.nbrGoulesTuesCumules 	= nbrGoulesTuesCumules;
 		this.numEquipe			 	= numEquipe;
 		this.idPersonnage 			= idPersonnage;
-		console.log("Utilisateur : Nouveau Utilisateur crée ");
+		//console.log("Utilisateur : Nouveau Utilisateur crée ");
 	}
 
 	// --- METHODES D'INSTANCE

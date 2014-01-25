@@ -41,7 +41,7 @@ Case_Manager.Load = function()
 			// enregistrement effectif
 			else
 			{
-				console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+				//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
 				context.listeCases[idCase] = reponse;
 			}
 		});
@@ -206,10 +206,10 @@ Case_Manager.Save = function()
 	
 	for(var idCase in this.listeCases)
 	{
-		console.log("CASE_MANAGER : Save() : Sauvegarde de la case [id="+idCase);
+		//console.log("CASE_MANAGER : Save() : Sauvegarde de la case [id="+idCase);
 		oCase_BD.SetCase(this.listeCases[idCase], function(reponse)
 		{
-			console.log("Enregistrement de case ok !");
+			//console.log("Enregistrement de case ok !");
 		});
 	}
 },

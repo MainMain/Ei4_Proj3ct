@@ -35,9 +35,8 @@ function Personnage_BD() {
 
 
 
-Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage) {
-
-    console.log("PERSONNAGE_BD : id du perso : " + personnageToSave.id);
+Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
+{
     var PersonnageModel = mongoose.model('Personnage');
     var nouveauPerso = PersonnageModel();
 
@@ -51,9 +50,9 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
 
         if (typeof perso[0] === "undefined") {
             console.log("PERSONNAGE_BD : SetPersonnage() : undefined ! ");
-            callbackSetPersonnage(-1)
+            callbackSetPersonnage(-1);
         } else {
-            console.log("PERSONNAGE_BD : SetPersonnage() : personnage trouvé dans la BD ! ");
+           
 
             var idArme = 0,
                 idArmure = 0;
@@ -68,8 +67,8 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
             else
                 idArmure = personnageToSave.armureEquipee.id;
 
-            console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
-            console.log("PERSONNAGE_BD : SetPersonnage() : last mvt :  " + personnageToSave.dernierMvt);
+           // console.log("PERSONNAGE_BD : SetPersonnage() : id :  " + personnageToSave.id);
+           // console.log("PERSONNAGE_BD : SetPersonnage() : last mvt :  " + personnageToSave.dernierMvt);
             
             PersonnageModel.update({
                     _id: personnageToSave.id
@@ -100,7 +99,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                         throw err;
                     }
 					
-                    console.log('Pseudos modifiés !');
+                    console.log("PERSONNAGE_BD : Mis à jour du personnage : ["+personnageToSave.id+"]");
 					callbackSetPersonnage(1);
                 }
             );
@@ -149,9 +148,9 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
         } else {
             PersonnageModel.find({_id: user[0].personnage}, function (err, perso) 
             {
-            	console.log("PERSONNAGE_BD : ID user[0].id : " + user[0].id);
-            	console.log("PERSONNAGE_BD : ID user[0].pseudo : " + user[0].pseudo);
-                console.log("PERSONNAGE_BD : ID user[0].personnage : " + user[0].personnage);
+            	//console.log("PERSONNAGE_BD : ID user[0].id : " + user[0].id);
+            	//console.log("PERSONNAGE_BD : ID user[0].pseudo : " + user[0].pseudo);
+                //console.log("PERSONNAGE_BD : ID user[0].personnage : " + user[0].personnage);
                 
                 if (err) {
                     console.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
@@ -163,11 +162,11 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                     callbackGetPersonnageByIdUser(idUtilisateur, -2);
 
                 } else {
-                    console.log('PERSONNAGE_BD : id perso récupéré : ' + perso[0].id);
-                    console.log('PERSONNAGE_BD : id salle perso récupéré : ' + perso[0].idSalleEnCours);
+                    console.log("PERSONNAGE_BD : Chargement du personnage : ["+perso[0].id+"]");
+                    //console.log('PERSONNAGE_BD : id salle perso récupéré : ' + perso[0].idSalleEnCours);
                     // conversion des id "ArmeEquipee" et "ArmureEquipee" en objet
                     var arme = null, armure = null;
-					console.log("idArmeEquipee = " + perso[0].idArmeEquipee);
+					//console.log("idArmeEquipee = " + perso[0].idArmeEquipee);
                     if (perso[0].idArmeEquipee != null)
                     	 arme = oItem_BD.GetItemById(perso[0].idArmeEquipee);
                     if (perso[0].idArmureEquipee != null)
