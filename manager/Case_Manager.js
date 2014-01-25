@@ -111,10 +111,15 @@ Case_Manager.AttaqueDeGoules = function(idCase)
 	// si pas de goules, on quitte 
 	if (this.listeCases[idCase].getNbrGoules() == 0) return a;
 	
-	// génère la puissance des goules
-	var degatsGoules = GameRules.goules_GetPtsAttaque();
 	// calcul le nombre de goules attaquantes
 	var nbrGoulesAttaquantes = Math.floor(Math.random() * this.listeCases[idCase].getNbrGoules());
+	
+	// si aucune goule n'attaque, on quitte
+	if (nbrGoulesAttaquantes == 0) return a;
+	
+	// génère la puissance des goules
+	var degatsGoules = GameRules.goules_GetPtsAttaque();
+	
 	// total des dégats infligés
 	var total = degatsGoules * nbrGoulesAttaquantes;
 	

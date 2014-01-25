@@ -51,7 +51,8 @@ GameRules.goules_proba_TuerDeuxGoules = function() 			{ return (Math.floor(Math.
 
 // ********** AUTRES **********
 // différence max de nombre de joueurs entre les équipes
-GameRules.jeu_diffMaxEntreEquipes = function() 		{ return 4; }, 
-
+GameRules.jeu_diffMaxEntreEquipes = function() 				{ return 4; }, 
+// temps de fouilles
+GameRules.jeu_duree_fouille = function() 					{ return 1000 * 5/*60 * 60*/ ; }, // 1 heure
 // export
 module.exports = GameRules;

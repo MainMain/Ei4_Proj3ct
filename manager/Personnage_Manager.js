@@ -13,6 +13,7 @@ var oUtilisateur_Manager = require('./Utilisateur_Manager');
 var GameRules	= require('../model/GameRules');
 
 this.listePersonnages;
+this.listeIdIntervalleFouille;
 
 function Personnage_Manager(){}
 
@@ -22,7 +23,8 @@ Personnage_Manager.Load = function()
 {
 	var context = this;
 	this.listePersonnages = new Array();
-
+	this.listeIdIntervalleFouille = new Array();
+	
 	oUtilisateur_BD.GetUsersId(function(tabId)
 	{
 		var idUser;
@@ -136,7 +138,7 @@ Personnage_Manager.SetCompetence = function(idUser,  competence)
 /////////////////////////////////////////// EN RAPPORT AVEC LES MESSAGES DU JOUEUR //////////////////////////////////
 Personnage_Manager.AddMessage = function(idUser,  msg)
 {
-	console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
+	//console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
 	this.listePersonnages[idUser].ajouterMessage(msg + "\n");
 }, 
 
@@ -264,6 +266,8 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 	
 	if(reponse > -1)
 	{
+		// initialisation mode
+		this.InitialiserMode(idUser);
 		return oCase_Manager.GetCopieCase(reponse);
 	}
 	
@@ -423,7 +427,12 @@ Personnage_Manager.Utiliser = function (idUser,  id_item)
 
 Personnage_Manager.InitialiserMode = function(idUser)
 {
+	//si en mode fouille, stopper le boucle de fouille
+	this.stopperFouille(idUser);
+	
+	// remettre le mode à zéro
 	this.listePersonnages[idUser].initialiserMode();
+	
 }, 
 
 Personnage_Manager.ChangementMode = function(idUser,  mode)
@@ -438,37 +447,65 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 	}
 	else
 	{
+		// si c'est pr le mode déf
 		if(mode == 3)
 		{
+			// check si assez de pts d'actions
 			if(!this.TestPtActions(idUser,  "chgtMode_def"))
 			{
 				reponseServeur.reponseChangement = -10;
 			}
 			else
 			{
+				// initialiser le mode
+				this.InitialiserMode(idUser);
+				
+				// chgt de mode effectif
 				this.listePersonnages[idUser].changerMode(mode);
 				reponseServeur.reponseChangement = 1;
 			}
 		}
+		// si c'est pour un autre mode
 		else
 		{
+			// check si assez de pts d'action
 			if(!this.TestPtActions(idUser,  "chgtMode"))
 			{
 				reponseServeur.reponseChangement = -10;
 			}
 
+			// impact des goules
 			resultatGoules = oCase_Manager.AttaqueDeGoules(idCase);
-
 			reponseServeur.degatsSubis	= this.subirDegats(idUser,  resultatGoules["degats"]);
 			reponseServeur.nbrGoules	= resultatGoules.nbrGoulesA;
 
+			// check si l'action est réussie
 			if(!resultatGoules.actionOk)
 			{
 				reponseServeur.reponseChangement = -5;
 			}
 			else
 			{
+				// initialiser le mode
+				this.InitialiserMode(idUser);
+				
+				 // chgt de mdoe effectif
 				this.listePersonnages[idUser].changerMode(mode);
+				
+				// si c'est une fouille, on lance le compteur
+				if(mode == 1)
+				{
+					// lancement de la boucle périodique
+					var self = this;
+					this.listeIdIntervalleFouille[idUser] = setInterval( function() 
+					{
+						// appel a la fonction de fouille
+						self.fouille1Hr(idUser);
+					}, GameRules.jeu_duree_fouille());	
+					console.log(this.listeIdIntervalleFouille[idUser]);
+				}
+				
+				// réponse
 				reponseServeur.reponseChangement = 1;
 			}
 		}
@@ -476,10 +513,26 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 	return reponseServeur;
 }, 
 
+Personnage_Manager.stopperFouille = function(idUser)
+{
+	console.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
+	//fin du compteur
+	try
+	{
+		console.log(this.listeIdIntervalleFouille[idUser]);
+		clearTimeout(this.listeIdIntervalleFouille[idUser]);
+	}
+	catch(Err){}
+},
+
 Personnage_Manager.fouille1Hr = function(idUser)
 {
+	console.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
 	// calcul de decouverte d'un item
+	var idCase = this.GetIdSalleEnCours(idUser);
+	var multiFouille = this.listePersonnages[idUser].getMultiFouille();
 	var itemDecouvert = oCase_Manager.Fouille(idCase,  multiFouille);
+	
 	var msg = "";
 	// si un objet a été découvert
 	if (itemDecouvert)
@@ -545,7 +598,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_FouilleRapide());
 	
 	// id case du perso
-	var idCase = this.listePersonnages[idUser].getIdSalleEnCours();
+	var idCase = this.GetIdSalleEnCours(idUser);
 	// multi du perso
 	var multiFouille = this.listePersonnages[idUser].getMultiFouille();
 	
@@ -663,7 +716,7 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 	var a = { "nbrAllies"	: -1,  "nbrEnnemis" : 0};
 	for(var i in this.listePersonnages)
 	{
-		if(this.listePersonnages[idUser].getIdSalleEnCours() == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -683,7 +736,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
-		if(this.listePersonnages[idUser].getIdSalleEnCours() == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -716,7 +769,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
-		if(this.listePersonnages[idUser].getIdSalleEnCours() == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -843,7 +896,7 @@ Personnage_Manager.GetIdSalleEnCours = function(idUser)
 
 Personnage_Manager.GetIdNextSalle = function(idUser,  direction)
 {
-	return oCarte.GetIdSalleSuivante(this.listePersonnages[idUser].getIdSalleEnCours(),  direction);
+	return oCarte.GetIdSalleSuivante(this.GetIdSalleEnCours(idUser),  direction);
 }, 
 
 Personnage_Manager.Save = function()

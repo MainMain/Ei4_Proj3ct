@@ -145,7 +145,7 @@ var Personnage = (function() {
 			if(ansIdSalle == idZoneSureEnnemi)
 			{
 				console.log("PERSONNAGE : Déplacement impossible ! Zone sure Ennemi");
-				return -4
+				return -4;
 			}
 			
 			// Décrémente les points de déplacement
@@ -351,9 +351,9 @@ var Personnage = (function() {
 		getValeurAttaque : function()
 		{
 			var att;
-			if (competence == "brute") 		 att = GameRules.combat_ptsAttaque_base_brute();
-			if (competence == "explorateur") att = GameRules.combat_ptsAttaque_base_explorateur();
-			if (competence == "chercheur") 	 att = GameRules.combat_ptsAttaque_base_chercheur();
+			if (this.competence == "brute") 		 att = GameRules.combat_ptsAttaque_base_brute();
+			if (this.competence == "explorateur") att = GameRules.combat_ptsAttaque_base_explorateur();
+			if (this.competence == "chercheur") 	 att = GameRules.combat_ptsAttaque_base_chercheur();
 			
 			if (this.armeEquipee != null)
 			{
@@ -382,6 +382,7 @@ var Personnage = (function() {
 		
 		changerMode : function(mode)
 		{
+			console.log("PERSONNAGE : passage en mode " + mode);
 			if(mode == 3)
 			{
 				this.ptActions -= GameRules.coutPA_ChgtMode_def();
