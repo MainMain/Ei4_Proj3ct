@@ -38,7 +38,9 @@ GameRules.combat_ptsDefense_base = function() 				{ return 0; },
 GameRules.goules_RespawnMin = function() 					{ return 2; }, 
 //maximun de goules qui spawn dans chaque case par jour
 GameRules.goules_RespawnMax = function() 					{ return 10;}, 
-// minimun de pts d'attaque par goules
+// calcul un nbr aléatoire de nombre de goule
+GameRules.goules_nbrNouvellesGoules = function()			{ return (Math.floor(Math.random() * (10-2) + 2 ));},
+//minimun de pts d'attaque par goules
 GameRules.goules_PtsAttaqueMin = function() 				{ return 3; },
 //maximun de pts d'attaque par goules
 GameRules.goules_PtsAttaqueMax = function() 				{ return 8; }, 

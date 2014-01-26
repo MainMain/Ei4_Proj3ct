@@ -14,16 +14,18 @@ var GameRules	= require('../model/GameRules');
 
 this.listePersonnages;
 this.listeIdIntervalleFouille;
+this.callbackFinFouille;
 
 function Personnage_Manager(){}
 
 
 /////////////////////////////////////////// EN RAPPORT AVEC L'INITIALISATION DU JOUEUR //////////////////////////////////
-Personnage_Manager.Load = function()
+Personnage_Manager.Load = function(callbackFinFouille)
 {
 	var context = this;
 	this.listePersonnages = new Array();
 	this.listeIdIntervalleFouille = new Array();
+	this.callbackFinFouille = callbackFinFouille;
 	
 	oUtilisateur_BD.GetUsersId(function(tabId)
 	{
@@ -51,6 +53,9 @@ Personnage_Manager.Load = function()
 					context.listePersonnages[id].setptSanteMax(30);
 					context.listePersonnages[id].setptDeplacementMax(1000);
 					context.listePersonnages[id].setptActionMax(1000);
+					
+					// si le perso était en fouille, on le remet en oisif (car on n'a pas la durée du compteur de fouille)
+					if (context.listePersonnages[id].mode == 1)context.listePersonnages[id].mode = 0;
 				}
 			});
 		}
@@ -502,7 +507,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 						// appel a la fonction de fouille
 						self.fouille1Hr(idUser);
 					}, GameRules.jeu_duree_fouille());	
-					console.log(this.listeIdIntervalleFouille[idUser]);
+					//console.log(this.listeIdIntervalleFouille[idUser]);
 				}
 				
 				// réponse
@@ -515,11 +520,11 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 
 Personnage_Manager.stopperFouille = function(idUser)
 {
-	console.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
+	//console.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
 	//fin du compteur
 	try
 	{
-		console.log(this.listeIdIntervalleFouille[idUser]);
+		//console.log(this.listeIdIntervalleFouille[idUser]);
 		clearTimeout(this.listeIdIntervalleFouille[idUser]);
 	}
 	catch(Err){}
@@ -528,10 +533,11 @@ Personnage_Manager.stopperFouille = function(idUser)
 Personnage_Manager.fouille1Hr = function(idUser)
 {
 	console.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
+	
 	// calcul de decouverte d'un item
-	var idCase = this.GetIdSalleEnCours(idUser);
-	var multiFouille = this.listePersonnages[idUser].getMultiFouille();
-	var itemDecouvert = oCase_Manager.Fouille(idCase,  multiFouille);
+	var idCase 			= this.GetIdSalleEnCours(idUser);
+	var multiFouille 	= this.listePersonnages[idUser].getMultiFouille();
+	var itemDecouvert 	= oCase_Manager.Fouille(idCase,  multiFouille);
 	
 	var msg = "";
 	// si un objet a été découvert
@@ -539,15 +545,16 @@ Personnage_Manager.fouille1Hr = function(idUser)
 	{
 		msg += "Vous avez découvert un item : " + itemDecouvert.nom;
 		// essai d'ajout au sac (calcul de poids)
-		if (this.listePersonnages[idUser].getPoidsSac() - parseInt(itemDecouvert.poids) > 0)
-		{
-			this.AjouterItemAuSac(idUser,  itemDecouvert);
-			msg += " L'item à été ajouté à votre sac.";
-		}
-		else
+		if ((this.listePersonnages[idUser].getPoidsSac() + parseInt(itemDecouvert.poids)) > this.listePersonnages[idUser].getPoidsMax())
 		{
 			oCase_Manager.AjouterItem(idCase,  itemDecouvert);
 			msg += " Faute de place,  l'item à été déposé dans la salle";
+		}
+		else
+		{
+			this.AjouterItemAuSac(idUser,  itemDecouvert);
+			msg += " L'item à été ajouté à votre sac.";
+			
 		}
 	}
 	else
@@ -555,6 +562,9 @@ Personnage_Manager.fouille1Hr = function(idUser)
 		msg += "Malheureusement,  la fouille n'a pas été fructueuse...";	
 	}
 	this.AddMessage(idUser,  msg);
+	
+	// actualiser IHMs
+	this.callbackFinFouille(idUser);
 }, 
 
 Personnage_Manager.fouilleRapide = function(idUser)
@@ -611,20 +621,18 @@ Personnage_Manager.fouilleRapide = function(idUser)
 		reponseServeur.codeRetour = 1;
 		reponseServeur.itemDecouvert = itemDecouvert;
 		
-		console.log("--> DEBUG : poids sac  : "+parseInt(this.listePersonnages[idUser].getPoidsSac()));
-		console.log("--> DEBUG : poids item : "+parseInt(itemDecouvert.poids));
-		console.log("--> DEBUG : difference : "+parseInt(this.listePersonnages[idUser].getPoidsSac()) - parseInt(itemDecouvert.poids));
-		
-		// essai d'ajout au sac (calcul de poids)
-		if (this.listePersonnages[idUser].getPoidsSac() - parseInt(itemDecouvert.poids) > 0)
+		if ((this.listePersonnages[idUser].getPoidsSac() + parseInt(itemDecouvert.poids)) > this.listePersonnages[idUser].getPoidsMax())
 		{
-			this.AjouterItemAuSac(idUser,  itemDecouvert);
-			reponseServeur.itemDansSac = true;
+			console.log("-----------> add case");
+			oCase_Manager.AjouterItem(idCase,  itemDecouvert);
+			reponseServeur.itemDansSac = false;
 		}
 		else
 		{
-			oCase_Manager.AjouterItem(idCase,  itemDecouvert);
-			reponseServeur.itemDansSac = false;
+			console.log("-----------> add sac");
+			this.AjouterItemAuSac(idUser,  itemDecouvert);
+			reponseServeur.itemDansSac = true;
+			
 		}
 		return reponseServeur;
 	}
@@ -916,5 +924,12 @@ Personnage_Manager.Save = function()
 		});
 	}
 }, 
+Personnage_Manager.nouvelleJournee = function()
+{
+	for(var idUser in this.listePersonnages)
+	{
+		this.listePersonnages[idUser].regainPts();
+	}
+},
 
 module.exports = Personnage_Manager;

@@ -172,6 +172,21 @@ Case_Manager.DecouverteEnnemi = function(idCase, probaObjetPerso, probaCacheEnn)
 	else return false;
 },
 
+Case_Manager.nouvelleJournee = function()
+{
+	// ajout de goules
+	for(var idCase in this.listeCases)
+	{
+		// calcul du nombre de goules a ajouter
+		var nbrGoules = GameRules.goules_nbrNouvellesGoules();
+		
+		// log
+		console.log("CASE_MANAGER : case " + idCase + " : ajout de " + nbrGoules + " goules !");
+		
+		// ajout
+		this.listeCases[idCase].nbrGoules += nbrGoules;
+	}
+},
 Case_Manager.GetNombreGoules = function(idCase)
 {
 	return this.listeCases[idCase].getNbrGoules();

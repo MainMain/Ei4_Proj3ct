@@ -73,14 +73,6 @@ var Personnage = (function() {
 		this.sacADos = sacADos;
 		this.dernierMvt = dernierMvt;
 		this.listeMsgAtt = listeMsgAtt;
-		
-		
-		
-		/*//console.log("PERSONNAGE : this.goulesMax : " + this.goulesMax);
-		//console.log("PERSONNAGE : this.competence : " + this.competence);
-		//console.log("PERSONNAGE : this.idSalleEnCours : " + this.idSalleEnCours);
-		
-		//console.log("PERSONNAGE : Nouveau personnage crée");*/
 	}
 
 	// --- METHODES D'INSTANCE
@@ -226,6 +218,8 @@ var Personnage = (function() {
 			}
 			
 			this.ptSante -= degats;
+			
+			if (this.ptSante < 0) this.ptSante = 0;
 			
 			return degats;
 		},
@@ -571,6 +565,25 @@ var Personnage = (function() {
 			this.sacADos = new Array();
 			this.armeEquipee = null;
 			this.armureEquipee = null;
+		},
+		
+		regainPts : function()
+		{
+			if(this.competence == "brute")
+			{
+				this.ptDeplacement = 15;
+				this.ptActions = 20;
+			}
+			else if(this.competence == "explorateur")
+			{
+				this.ptDeplacement = 25;
+				this.ptActions = 20;
+			}
+			else if(this.competence == "chercheur")
+			{
+				this.ptDeplacement = 15;
+				this.ptActions = 30;
+			}
 		},
 		
 		/**

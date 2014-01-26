@@ -94,8 +94,10 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                     dernierMvt : 		personnageToSave.dernierMvt,
             		listeMsgAtt : 		personnageToSave.listeMsgAtt,
                 },
-                function (err) {
-                    if (err) {
+                function (err) 
+                {
+                    if (err)
+                    {
                         throw err;
                     }
 					
