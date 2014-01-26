@@ -195,7 +195,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 		else
 		{
 			// infliger les dégats de goules 
-			resultatGoules 						= oCase_Manager.AttaqueDeGoules(idSalle);
+			resultatGoules 						= oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
 			reponseServeur.nbrGoules			= resultatGoules.nbrGoulesA;
 			reponseServeur.degatSubisParGoules 	= this.subirDegats(idUser,  resultatGoules.degats);
 			
@@ -303,7 +303,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 				else
 				{
 					//Calcul des dégats de goules et nombre de goules attaquantes
-					resultatGoules = oCase_Manager.AttaqueDeGoules(o_____O);
+					resultatGoules = oCase_Manager.AttaqueDeGoules(o_____O, this.GetNbrAllies(idUser));
 					
 					reponseServeur.degatSubis	= this.subirDegats(idUser,  resultatGoules["degats"]);
 					reponseServeur.nbrGoulesA	= resultatGoules.nbrGoulesA;
@@ -480,7 +480,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			}
 
 			// impact des goules
-			resultatGoules = oCase_Manager.AttaqueDeGoules(idCase);
+			resultatGoules 				= oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
 			reponseServeur.degatsSubis	= this.subirDegats(idUser,  resultatGoules["degats"]);
 			reponseServeur.nbrGoules	= resultatGoules.nbrGoulesA;
 
@@ -590,7 +590,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
     }
 			
 	// Calcul des dégats de goules et nombre de goules attaquantes
-	resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle);
+	resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
 	
 	// remplissage de la structure de réponse
 	reponseServeur.degatSubis = this.subirDegats(idUser,  resultatGoules["degats"]);
@@ -719,6 +719,13 @@ Personnage_Manager.GetCopiePerso = function(idUser)
 	return this.listePersonnages[idUser];
 }, 
 
+Personnage_Manager.GetNbrAllies = function(idUser)
+{
+	var res = this.GetNbrAlliesEnemisDansSalle(idUser);
+	console.log("---------------------> " + res.nbrAllies);
+	return res.nbrAllies;
+}, 
+
 Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 {
 	var a = { "nbrAllies"	: -1,  "nbrEnnemis" : 0};
@@ -807,6 +814,8 @@ Personnage_Manager.TestDeplacementPossible = function(idUser,  nbrGoules,  direc
 	
 	return this.listePersonnages[idUser].testDeplacement(nbrGoules,  direction);
 }, 
+
+
 
 Personnage_Manager.GetMultiFouille = function(idUser)
 {

@@ -979,8 +979,11 @@ io.sockets.on('connection', function (socket)
 			}
 			else
 			{
+				// calcul soutien alliés
+				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
+				
 				// calcul des dégats subis
-				var ans = oCase_Manager.AttaqueDeGoules(oPersonnage_Manager.GetIdSalleEnCours(idUser));
+				var ans = oCase_Manager.AttaqueDeGoules(oPersonnage_Manager.GetIdSalleEnCours(idUser), res.nbrAllies);
 				var degatsSubis = oPersonnage_Manager.subirDegats(idUser, ans["degats"]);
 				
 				// goules tuées

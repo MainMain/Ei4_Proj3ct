@@ -100,7 +100,7 @@ Case_Manager.ExistItem = function(idCase, item)
 	return this.listeCases[idCase].existItemInSalle(item);
 },
 
-Case_Manager.AttaqueDeGoules = function(idCase)
+Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 {
 	var a = {
 		"degats"	: 0,
@@ -109,13 +109,16 @@ Case_Manager.AttaqueDeGoules = function(idCase)
 	};
 	
 	// si pas de goules, on quitte 
-	if (this.listeCases[idCase].getNbrGoules() == 0) return a;
+	if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
 	
 	// calcul le nombre de goules attaquantes
 	var nbrGoulesAttaquantes = Math.floor(Math.random() * this.listeCases[idCase].getNbrGoules());
 	
+	// soustraction du nombre de goules par le nombre d'alliés
+	nbrGoulesAttaquantes -= parseInt(nbrAllies);
+	
 	// si aucune goule n'attaque, on quitte
-	if (nbrGoulesAttaquantes == 0) return a;
+	if (nbrGoulesAttaquantes <= 0) return a;
 	
 	// génère la puissance des goules
 	var degatsGoules = GameRules.goules_GetPtsAttaque();
