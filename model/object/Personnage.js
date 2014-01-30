@@ -251,6 +251,7 @@ var Personnage = (function() {
 		
 		acquitterMsg : function()
 		{
+			console.log("PERSONNAGE : Acquittement des messages ! ");
 			this.nbrNvMsg = 0;
  		},
 		
@@ -573,9 +574,9 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
-			console.log("---------> add mesg : " + msg);
 			this.listeMsgAtt.push(msg);
 			this.nbrNvMsg++;
+			console.log("PERSONNAGE : Acquittement des messages ! ");
 		},
 		
 		effacerMessage : function(msg)
