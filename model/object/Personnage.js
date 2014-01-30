@@ -126,7 +126,7 @@ var Personnage = (function() {
 			
 			// recupere l'id de la salle suivante
 			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours, direction);
-			
+ 
 			// si id de la salle -1, pas de salle dans la direction
 			if (ansIdSalle == -1)
 			{
@@ -235,17 +235,17 @@ var Personnage = (function() {
 		
 		setPtsSante : function(newPtSante)
 		{
-			if(ptSante >= this.ptSanteMax)
+			if(newPtSante >= this.ptSanteMax)
 			{
 				this.ptSante = this.ptSanteMax;
 			}
-			else if(ptSante <= 0)
+			else if(newPtSante <= 0)
 			{
 				this.ptSante = 0;
 			}
 			else
 			{
-				this.ptSante = ptSante;
+				this.ptSante = newPtSante;
 			}
 		},
 		

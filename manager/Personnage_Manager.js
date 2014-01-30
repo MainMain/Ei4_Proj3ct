@@ -181,6 +181,14 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	var attA = this.listePersonnages[idUser].getValeurAttaque();
 	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
 	
+	// si c'est une tentative d'attaquer un allié (requete http trafiquée)
+	if (oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(idUserEnnemi))
+	{
+		console.log("/!\ -> PIRATAGE D'UNE REQUETE -> ATTAQUE DE " + persoUser + " VERS " + persoEnn + " ALORS QUE MEME EQUIPE !");
+		reponseServeur.reponseAttaque = 0;
+		return reponseServeur;
+	}
+	
 	// Si plus de pts d'actions
 	if(!this.TestPtActions(idUser,  "attaqueEnnemi"))
 	{
@@ -198,6 +206,14 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 			resultatGoules 						= oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
 			reponseServeur.nbrGoules			= resultatGoules.nbrGoulesA;
 			reponseServeur.degatSubisParGoules 	= this.subirDegats(idUser,  resultatGoules.degats);
+			
+			// si le joueur a été tué...
+			if (this.estMort(idUser))
+			{
+				this.TuerJoueur(idUser, "une goule");
+				reponseServeur.reponseAttaque = 0;
+				return reponseServeur;
+			}
 			
 			//Si action pas ok à cause des goules
 			if(!resultatGoules.actionOk)
@@ -241,9 +257,17 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	return reponseServeur;
 }, 
 
+
+
 Personnage_Manager.AttaquerGoule = function(idUser)
 {
 	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueGoule());
+	
+	// si le joueur a été tué...
+	if (this.estMort(idUser))
+	{
+		this.TuerJoueur(idUser, "une goule");
+	}
 }, 
 
 Personnage_Manager.subirDegats = function (idUser,  degats)
@@ -292,68 +316,86 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 	{
 		if(type == "RAMASSER")
 		{
-			//Si item existe dans la case
-			if(oCase_Manager.ExistItem(o_____O,  item))
-			{
-				//Si PAS place dans sac
-				if(!this.testPoidsOk(idUser,  item))
-				{
-					reponseServeur.reponseAction = -1;
-				}
-				else
-				{
-					//Calcul des dégats de goules et nombre de goules attaquantes
-					resultatGoules = oCase_Manager.AttaqueDeGoules(o_____O, this.GetNbrAllies(idUser));
-					
-					reponseServeur.degatSubis	= this.subirDegats(idUser,  resultatGoules["degats"]);
-					reponseServeur.nbrGoulesA	= resultatGoules.nbrGoulesA;
-					
-					//Si action pas ok à cause des goules
-					if(!resultatGoules.actionOk)
-					{
-						reponseServeur.reponseAction = -5;
-					}
-					else
-					{
-						//Sinon on ajoute l'item au sac et on le supprime de la salle
-						this.AjouterItemAuSac(idUser,  item);
-						oCase_Manager.SupprimerItem(o_____O,  item);
-						
-						reponseServeur.reponseAction = this.GetPoidsSac(idUser);
-					}
-				}
-			}
-			else
+			//Si item pas existe dans la case -> return 
+			if(! oCase_Manager.ExistItem(o_____O,  item))
 			{
 				reponseServeur.reponseAction = -2;
+				return reponseServeur;
 			}
+			
+			// si c'est un ODD dans la zone sure -> return 
+			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2()) )
+			{
+				reponseServeur.reponseAction = -6;
+				return reponseServeur;
+			}
+			
+			//Si PAS place dans sac -> return 
+			if(!this.testPoidsOk(idUser,  item))
+			{
+				reponseServeur.reponseAction = -1;
+				return reponseServeur;
+			}
+			
+			//Calcul des dégats de goules et nombre de goules attaquantes
+			resultatGoules = oCase_Manager.AttaqueDeGoules(o_____O, this.GetNbrAllies(idUser));
+			
+			reponseServeur.degatSubis	= this.subirDegats(idUser,  resultatGoules["degats"]);
+			reponseServeur.nbrGoulesA	= resultatGoules.nbrGoulesA;
+			
+			// si le joueur a été tué...
+			if (this.estMort(idUser))
+			{
+				this.TuerJoueur(idUser, "une goule");
+				reponseServeur.reponseAction  = 0;
+				return reponseServeur;
+			}
+			
+			//Si action pas ok à cause des goules -> return 
+			if(!resultatGoules.actionOk) 
+			{
+				reponseServeur.reponseAction = -5;
+				return reponseServeur;
+			}
+			
+			// Si tout est ok, on ajoute l'item au sac et on le supprime de la salle
+			this.AjouterItemAuSac(idUser,  item);
+			oCase_Manager.SupprimerItem(o_____O,  item);
+			
+			reponseServeur.reponseAction = this.GetPoidsSac(idUser);
+			return reponseServeur;
 		}
 		else if (type == "DEPOSER")
 		{			
 			if(this.IsItemEquipee(idUser,  item))
 			{
 				reponseServeur.reponseAction = -3;
+				return reponseServeur;
+				
 			}
-			else
+			if(!this.ExistItemInSac(idUser,  item))
 			{
-				if(!this.ExistItemInSac(idUser,  item))
-				{
-					reponseServeur.reponseAction = -2;
-				}
-				else
-				{
-					oCase_Manager.AjouterItem(o_____O,  item);
-					
-					this.SupprimerDuSac(idUser,  item);
-					
-					reponseServeur.reponseAction = this.GetPoidsSac(idUser);
-				}
+				reponseServeur.reponseAction = -2;
+				return reponseServeur;
 			}
+			// ajout a la case
+			oCase_Manager.AjouterItem(o_____O,  item);
+			
+			// supprimer du sac
+			this.SupprimerDuSac(idUser,  item);
+			
+			// ajout du score si c'est le dépot d'un odd en zone sure
+			
+			
+			
+			reponseServeur.reponseAction = this.GetPoidsSac(idUser);
+			return reponseServeur;
 		}
 	}
 	else
 	{
 		reponseServeur.reponseAction = -4;
+		return reponseServeur;
 	}
 	return reponseServeur;
 }, 
@@ -484,6 +526,14 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			reponseServeur.degatsSubis	= this.subirDegats(idUser,  resultatGoules["degats"]);
 			reponseServeur.nbrGoules	= resultatGoules.nbrGoulesA;
 
+			// si le joueur a été tué...
+			if (this.estMort(idUser))
+			{
+				this.TuerJoueur(idUser, "une goule");
+				reponseServeur.reponseChangement = 0;
+				return reponseServeur;
+			}
+			
 			// check si l'action est réussie
 			if(!resultatGoules.actionOk)
 			{
@@ -596,6 +646,14 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	reponseServeur.degatSubis = this.subirDegats(idUser,  resultatGoules["degats"]);
 	reponseServeur.nbrGoulesA = resultatGoules.nbrGoulesA;
 	
+	// si le joueur a été tué...
+	if (this.estMort(idUser))
+	{
+		this.TuerJoueur(idUser, "une goule");
+		reponseServeur.codeRetour = 0;
+		return reponseServeur;
+	}
+	
 	//Si action pas ok à cause des goules
 	if(!resultatGoules.actionOk)
 	{
@@ -673,15 +731,19 @@ Personnage_Manager.TuerJoueur = function(idTue,  loginTueur)
 	// mettre son inventaire dans la case
 	for (var i = 0; i < currentPerso.GetSac().length; i++)
 	{
-		// transfert de l'item en cours dans la case
-		oCase_Manager.AjouterItem(currentPerso.getIdSalleEnCours(),  currentPerso.GetSac()[i]);
+		if (GameRules.combat_proba_perdreItem())
+		{
+			// transfert de l'item en cours dans la case
+			oCase_Manager.AjouterItem(currentPerso.getIdSalleEnCours(),  currentPerso.GetSac()[i]);
+			
+			// l'enlever de son inventaire
+			currentPerso.supprimerDuSac(currentPerso.GetSac()[i]);
+		}
 	}
-	
-	// vider son inventaire
-	currentPerso.viderInventaire();
+	//currentPerso.viderInventaire();
 }, 
 
-SeRetablir = function(idUser)
+Personnage_Manager.SeRetablir = function(idUser)
 {
 	console.log("SERVEUR : SeRetablir()");
 	
@@ -689,7 +751,7 @@ SeRetablir = function(idUser)
 	this.listePersonnages[idUser].setPtsSante(20);
 	
 	// go a la zone sure
-	this.listePersonnages[idUser].setIdCase(Case_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
+	this.listePersonnages[idUser].setIdCase(oCase_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
 }, 
 
 

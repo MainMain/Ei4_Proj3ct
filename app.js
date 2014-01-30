@@ -671,6 +671,7 @@ io.sockets.on('connection', function (socket)
      * erreur : -3 si objet à déposer est équipé
      * erreur : -4 si autre
      * erreur : -5 si raté par goules
+     * erreur : -6 si tentative ramasser ODD dans zone sure
      * 
      * ET return id_item
      * 
@@ -1027,7 +1028,7 @@ io.sockets.on('connection', function (socket)
     	oPersonnage_Manager.EffacerMessages(idUser);
     	
     	// si le perso est KO
-    	if (oPersonnage_Manager.GetSante(idUser) <= 0)
+    	if (oPersonnage_Manager.estMort(idUser))
     	{
     		// retablissement de la sante et transfert en zone sure
     		oPersonnage_Manager.SeRetablir(idUser);

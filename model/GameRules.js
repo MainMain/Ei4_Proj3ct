@@ -31,6 +31,7 @@ GameRules.combat_ptsAttaque_base_brute = function() 		{ return 6; },
 GameRules.combat_ptsAttaque_base_explo = function() 		{ return 2; },
 GameRules.combat_ptsAttaque_base_chercheur = function() 	{ return 4; },
 GameRules.combat_ptsDefense_base = function() 				{ return 0; },
+GameRules.combat_proba_perdreItem = function() 				{ return (Math.floor(Math.random() * 100) <= 80) ? true : false ; },
 
 
 // ********** CONFIGURATION DES GOULES **********
@@ -47,14 +48,19 @@ GameRules.goules_PtsAttaqueMax = function() 				{ return 8; },
 // donne un nombre de dégat de goules aléatoire
 GameRules.goules_GetPtsAttaque = function() 				{ return (Math.floor(Math.random() * (8-3) + 3 )); },
 //Proba que une goule fasse rater l'action
-GameRules.goules_proba_Interception = function() 			{ return (Math.floor(Math.random() * 100) < 35) ? true : false ; }, 
+GameRules.goules_proba_Interception = function() 			{ return (Math.floor(Math.random() * 100) <= 35) ? true : false ; }, 
 // Proba de tuer deux goules au lieu d'une seule
-GameRules.goules_proba_TuerDeuxGoules = function() 			{ return (Math.floor(Math.random() * 100) < 20) ? true : false ; }, 
+GameRules.goules_proba_TuerDeuxGoules = function() 			{ return (Math.floor(Math.random() * 100) <= 20) ? true : false ; }, 
 
 // ********** AUTRES **********
 // différence max de nombre de joueurs entre les équipes
 GameRules.jeu_diffMaxEntreEquipes = function() 				{ return 4; }, 
 // temps de fouilles
 GameRules.jeu_duree_fouille = function() 					{ return 1000 * 5/*60 * 60*/ ; }, // 1 heure
+// Gain de score quand meurtre
+GameRules.jeu_score_gain_meurtre = function() 				{ return 3; }, 
+// Perte score quand tué
+GameRules.jeu_score_perte_tue = function() 					{ return 1; }, 
+
 // export
 module.exports = GameRules;

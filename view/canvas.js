@@ -1368,6 +1368,7 @@ function dead()
 	contDead.addChild(BtnCancelDead);
 	BtnCancelDead.addEventListener('click', function (event) {
 		stage.removeChild(contDead);
+		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		game();
 	});
 
@@ -2640,13 +2641,14 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		ListeMessage=null;
 	}
-	setBtnMessage();
-
+	
+	
 	if(currentPerso.ptSante<=0 && currentPerso.listeMsgAtt.length > 0)
 	{
 		dead(ListeMessages);
 	}
 
+	setBtnMessage();
 	// Update l'ihm
 	stage.update();
 });

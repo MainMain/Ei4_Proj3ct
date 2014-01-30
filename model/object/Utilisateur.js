@@ -3,6 +3,10 @@
  * 
  * @class Utilisateur
  */
+
+//inclusion des règles
+var GameRules	= require('../GameRules');
+
 var Utilisateur = (function() {
 	'use strict';
 
@@ -55,25 +59,38 @@ var Utilisateur = (function() {
 	// --- METHODES D'INSTANCE
 	Utilisateur.prototype = {
 		/**
-		 * L'UTILISATEUR A COMMIT A MEUTRE item
+		 * L'UTILISATEUR A COMMIT UN MEUTRE
 		 * 
 		 * @method ajoutMeurtre
 		 */
 		ajoutMeurtre : function() {
-			this.nbrMeurtres += 1;
-			this.nbrMeurtresCumule += 1;
+			this.nbrMeurtres 			+= 1;
+			this.nbrMeurtresCumule 		+= 1;
+			this.scoreByMeutre 			+= GameRules.jeu_score_gain_meurtre();
+			this.scoreByMeutreCumule 	+= GameRules.jeu_score_gain_meurtre();
 		},
 
 		/**
-		 * L'UTILISATTER A ETE TUE
+		 * L'UTILISATEUR A ETE TUE
 		 * 
 		 * @method ajoutMeurtre
 		 */
 		ajoutTue : function() {
-			this.nbrFoisTue += 1;
-			this.nbrFoisTueCumule += 1;
+			this.nbrFoisTue 			+= 1;
+			this.nbrFoisTueCumule 		+= 1;
+			this.scoreByMeutre 			-= GameRules.jeu_score_perte_tue();
+			this.scoreByMeutreCumule 	-= GameRules.jeu_score_perte_tue();
 		},
-		
+		/**
+		 * L'UTILISATEUR A DEPOSE UN ODD DANS SA ZONE SURE
+		 * 
+		 * @method depotODD
+		 */
+		depotODD : function(valeurODD) {
+			this.scoreByODD += valeurODD;
+			this.scoreByODDCumule += valeurODD;
+		},
+
 		getNumEquipe : function()
 		{
 			return this.numEquipe;
