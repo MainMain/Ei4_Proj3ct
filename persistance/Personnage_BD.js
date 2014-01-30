@@ -179,8 +179,8 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                     callbackGetPersonnageByIdUser(idUtilisateur, new oPersonnage(
                         perso[0].id, 				perso[0].ptSante, 			perso[0].ptSanteMax,
                         perso[0].ptAction,		 	perso[0].ptActionMax, 		perso[0].ptDeplacement,
-                        perso[0].ptFaim,			perso[0].ptFaimMax,
-                        perso[0].ptDeplacementMax,	perso[0].poidsMax, 			perso[0].gouleLimite,
+                        perso[0].ptDeplacementMax,	perso[0].ptFaim,			perso[0].ptFaimMax,
+                        perso[0].poidsMax, 			perso[0].gouleLimite,
                         perso[0].competence, 		perso[0].idSalleEnCours, 	perso[0].mode, 
                         perso[0].multiPtsAttaque,  	perso[0].multiPtsDefense,  	perso[0].multiProbaCache,  
                         perso[0].multiProbaFouille, arme,						armure,
