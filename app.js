@@ -671,6 +671,7 @@ io.sockets.on('connection', function (socket)
      * erreur : -3 si objet à déposer est équipé
      * erreur : -4 si autre
      * erreur : -5 si raté par goules
+     * erreur : -6 si tentative ramasser ODD dans zone sure
      * 
      * ET return id_item
      * 
@@ -1023,12 +1024,15 @@ io.sockets.on('connection', function (socket)
 	{
     	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser));
     	
-    	// effacement des messages
-    	oPersonnage_Manager.EffacerMessages(idUser);
+    	// aquittement
+    	oPersonnage_Manager.acquitterMsg(idUser);
     	
     	// si le perso est KO
-    	if (oPersonnage_Manager.GetSante(idUser) <= 0)
+    	if (oPersonnage_Manager.estMort(idUser))
     	{
+        	// effacement des messages
+        	oPersonnage_Manager.EffacerMessages(idUser);
+        	
     		// retablissement de la sante et transfert en zone sure
     		oPersonnage_Manager.SeRetablir(idUser);
     	}
@@ -1204,9 +1208,9 @@ function ActualiserAllGlobal(idCase)
 	}
 }
 
-setInterval(function() 
-{ 
-   	console.log("***************** SAUVEGARDE GLOBALE DES DONNEES *****************************");
+function SauvegardeGlobale()
+{
+	console.log("***************** SAUVEGARDE GLOBALE DES DONNEES *****************************");
    	var date = new Date();
    	console.log("[ ! ] Sauvegarde globale ! Date: " + date);
    				
@@ -1225,12 +1229,16 @@ setInterval(function()
 	{
 		for(var j in usersOnline[id].sockets)
 		{
-			oPersonnage_Manager.AddMessage(id, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
+			//oPersonnage_Manager.AddMessage(id, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
 			var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
 			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
 			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(id)), res.nbrAllies, res.nbrEnnemis);
 		}
 	}
+}
+setInterval(function() 
+{ 
+	SauvegardeGlobale();
 	
 },  1000 * 60 * 10  ); // 1000 millisec * 60 sec * 10 min
 

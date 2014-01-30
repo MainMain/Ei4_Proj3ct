@@ -19,6 +19,8 @@ var Personnage = (function() {
 	Personnage.ptActionsMax;
 	Personnage.ptDeplacement;
 	Personnage.ptDeplacementMax;
+	Personnage.ptFaim;
+	Personnage.ptFaimMax;
 	Personnage.poidsMax;
 	Personnage.goulesMax;
 	Personnage.competence;
@@ -33,46 +35,47 @@ var Personnage = (function() {
 	Personnage.sacADos;
 	Personnage.dernierMvt;
 	Personnage.listeMsgAtt;
+	Personnage.nbrNvMsg;
 
 	// --- ENUMERATIONS DE CLASSE ---
 	Personnage.DIRECTIONS = [ 'NORD', 'SUD', 'EST', 'OUEST' ];
 
 	// --- METHODES DE CLASSE ---
-	Personnage.build = function(ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours, mode,
-			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
-			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt) {
+	Personnage.build = function() {
 		return new Personnage();
 
 	};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
+			ptDeplacement, ptDeplacementMax, ptFaim, ptFaimMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
 			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
-			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt) {
+			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg) {
 		// --- Attributs d'instance
-		this.id = id;
-		this.ptSante = ptSante;
-		this.ptSanteMax = ptSanteMax;
-		this.ptActions = ptActions;
-		this.ptActionsMax = ptActionsMax;
-		this.ptDeplacement = ptDeplacement;
-		this.ptDeplacementMax = ptDeplacementMax;
-		this.poidsMax = poidsMax;
-		this.goulesMax = goulesMax;
-		this.competence = competence;
-		this.idSalleEnCours = idSalleEnCours;
-		this.mode = mode;
-		this.multiPtsAttaque = multiPtsAttaque;
-		this.multiPtsDefense = multiPtsDefense;
-	    this.multiProbaCache = multiProbaCache;
-	    this.multiProbaFouille = multiProbaFouille;
-		this.armeEquipee = armeEquipee;
-		this.armureEquipee = armureEquipee;
-		this.sacADos = sacADos;
-		this.dernierMvt = dernierMvt;
-		this.listeMsgAtt = listeMsgAtt;
+		this.id 				= id;
+		this.ptSante			= ptSante;
+		this.ptSanteMax 		= ptSanteMax;
+		this.ptActions 			= ptActions;
+		this.ptActionsMax		= ptActionsMax;
+		this.ptDeplacement 		= ptDeplacement;
+		this.ptDeplacementMax	= ptDeplacementMax;
+		this.ptFaim				= ptFaim;
+		this.ptFaimMax			= ptFaimMax;
+		this.poidsMax 			= poidsMax;
+		this.goulesMax 			= goulesMax;
+		this.competence 		= competence;
+		this.idSalleEnCours 	= idSalleEnCours;
+		this.mode 				= mode;
+		this.multiPtsAttaque	= multiPtsAttaque;
+		this.multiPtsDefense	= multiPtsDefense;
+	    this.multiProbaCache 	= multiProbaCache;
+	    this.multiProbaFouille 	= multiProbaFouille;
+		this.armeEquipee 		= armeEquipee;
+		this.armureEquipee 		= armureEquipee;
+		this.sacADos 			= sacADos;
+		this.dernierMvt 		= dernierMvt;
+		this.listeMsgAtt 		= listeMsgAtt;
+		this.nbrNvMsg			= nbrNvMsg;
 	}
 
 	// --- METHODES D'INSTANCE
@@ -108,7 +111,7 @@ var Personnage = (function() {
 			if (nbrGoules > this.goulesMax)
 			{
 				if (!
-						(direction == "OUEST" && this.dernierMvt == "EST" ||
+					(direction == "OUEST" && this.dernierMvt == "EST" ||
 					direction == "EST" && this.dernierMvt == "OUEST" ||
 					direction == "NORD" && this.dernierMvt == "SUD" ||
 					direction == "SUD" && this.dernierMvt == "NORD"))
@@ -126,7 +129,7 @@ var Personnage = (function() {
 			
 			// recupere l'id de la salle suivante
 			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours, direction);
-			
+ 
 			// si id de la salle -1, pas de salle dans la direction
 			if (ansIdSalle == -1)
 			{
@@ -191,8 +194,21 @@ var Personnage = (function() {
 			this.logAfficherSacADos();
 			var index;
 			for (var i = 0; i < this.sacADos.length; i++) {
-				if (this.sacADos[i].id == item.id) {
+				if (this.sacADos[i].id == item.id) 
+				{
 					index = i;
+					
+					// si c'est l'arme équipe
+					console.log("---------------> RETRAIT DE L'ITEM " + this.sacADos[i].id);
+					if (this.armeEquipee != null) console.log("---------------> id arme " + this.armeEquipee.id);
+					if (this.armureEquipee != null) console.log("---------------> id armure " + this.armureEquipee.id);
+					
+					if (this.armeEquipee != null && this.sacADos[i].id == this.armeEquipee.id)
+						this.armeEquipee = null;
+					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id)
+						this.armureEquipee = null;
+					
+					
 					break;
 				}
 			}
@@ -233,19 +249,24 @@ var Personnage = (function() {
 			}
 		},
 		
+		acquitterMsg : function()
+		{
+			this.nbrNvMsg = 0;
+ 		},
+		
 		setPtsSante : function(newPtSante)
 		{
-			if(ptSante >= this.ptSanteMax)
+			if(newPtSante >= this.ptSanteMax)
 			{
 				this.ptSante = this.ptSanteMax;
 			}
-			else if(ptSante <= 0)
+			else if(newPtSante <= 0)
 			{
 				this.ptSante = 0;
 			}
 			else
 			{
-				this.ptSante = ptSante;
+				this.ptSante = newPtSante;
 			}
 		},
 		
@@ -552,7 +573,9 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
+			console.log("---------> add mesg : " + msg);
 			this.listeMsgAtt.push(msg);
+			this.nbrNvMsg++;
 		},
 		
 		effacerMessage : function(msg)
@@ -567,7 +590,7 @@ var Personnage = (function() {
 			this.armureEquipee = null;
 		},
 		
-		regainPts : function()
+		nvlleJournee : function()
 		{
 			if(this.competence == "brute")
 			{
@@ -584,6 +607,7 @@ var Personnage = (function() {
 				this.ptDeplacement = 15;
 				this.ptActions = 30;
 			}
+			this.ptFaim -= 3;
 		},
 		
 		/**

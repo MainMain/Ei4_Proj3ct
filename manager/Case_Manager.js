@@ -126,9 +126,9 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 	// total des dégats infligés
 	var total = degatsGoules * nbrGoulesAttaquantes;
 	
-	
 	// action raté ou non
 	var actionOk;
+	
 	// s'il y a interception, action ratée
 	if (GameRules.goules_proba_Interception()) actionOk = false;
 	else actionOk = true;
@@ -180,14 +180,17 @@ Case_Manager.nouvelleJournee = function()
 	// ajout de goules
 	for(var idCase in this.listeCases)
 	{
-		// calcul du nombre de goules a ajouter
-		var nbrGoules = GameRules.goules_nbrNouvellesGoules();
+		if (!((idCase == GameRules.idZoneSure_1()) || (idCase == GameRules.idZoneSure_2())))
+		{
+			// calcul du nombre de goules a ajouter
+			var nbrGoules = GameRules.goules_nbrNouvellesGoules();
 		
-		// log
-		console.log("CASE_MANAGER : case " + idCase + " : ajout de " + nbrGoules + " goules !");
+			// log
+			console.log("CASE_MANAGER : case " + idCase + " : ajout de " + nbrGoules + " goules !");
 		
-		// ajout
-		this.listeCases[idCase].nbrGoules += nbrGoules;
+			// ajout
+			this.listeCases[idCase].nbrGoules += nbrGoules;
+		}
 	}
 },
 Case_Manager.GetNombreGoules = function(idCase)
