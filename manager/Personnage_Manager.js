@@ -152,7 +152,10 @@ Personnage_Manager.EffacerMessages = function(idUser)
 	console.log("PERSONNAGE_MANAGER : EffacerMessages() : Effacement de la liste des messages");
 }, 
 
-
+Personnage_Manager.acquitterMsg = function(idUser)
+{
+	this.listePersonnages[idUser].acquitterMsg();
+},
 
 
 
@@ -210,7 +213,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "une goule");
+				this.TuerJoueur(idUser, "Z");
 				reponseServeur.reponseAttaque = 0;
 				return reponseServeur;
 			}
@@ -266,7 +269,7 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	// si le joueur a été tué...
 	if (this.estMort(idUser))
 	{
-		this.TuerJoueur(idUser, "une goule");
+		this.TuerJoueur(idUser, "Z");
 	}
 }, 
 
@@ -346,7 +349,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "une goule");
+				this.TuerJoueur(idUser, "Z");
 				reponseServeur.reponseAction  = 0;
 				return reponseServeur;
 			}
@@ -529,7 +532,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "une goule");
+				this.TuerJoueur(idUser, "Z");
 				reponseServeur.reponseChangement = 0;
 				return reponseServeur;
 			}
@@ -649,7 +652,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	// si le joueur a été tué...
 	if (this.estMort(idUser))
 	{
-		this.TuerJoueur(idUser, "une goule");
+		this.TuerJoueur(idUser, "Z");
 		reponseServeur.codeRetour = 0;
 		return reponseServeur;
 	}
@@ -997,9 +1000,37 @@ Personnage_Manager.Save = function()
 }, 
 Personnage_Manager.nouvelleJournee = function()
 {
+	var idCase;
+	var resultatGoules;
+	var nbrGoules;
+	var degatSubisParGoules;
+	
 	for(var idUser in this.listePersonnages)
 	{
-		this.listePersonnages[idUser].regainPts();
+		// regain de pts de vie
+		this.listePersonnages[idUser].nvlleJournee();
+		
+		idCase = this.listePersonnages[idUser].getIdSalleEnCours();
+		
+		// si le perso n'est pas caché -> attaque de la nuit
+		if (this.listePersonnages[idUser].mode != 2 
+				&& !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2()))
+		{
+			// infliger les dégats de goules 
+			resultatGoules 			= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
+			nbrGoules				= resultatGoules.nbrGoulesA;
+			degatSubisParGoules 	= this.subirDegats(idUser,  resultatGoules.degats);
+		
+			this.listePersonnages[idUser].ajouterMessage("Vous avez été attaqué durant l'attaque de la nuit ! "
+				+"Vous avez subi un total de " + degatSubisParGoules + " pts de dégâts infligés par " 
+				+ nbrGoules + " zombies ! ");
+		
+			// si le joueur a été tué...
+			if (this.estMort(idUser))
+			{
+				this.TuerJoueur(idUser, "N");
+			}
+		}
 	}
 },
 

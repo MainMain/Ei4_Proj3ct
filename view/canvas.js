@@ -1304,8 +1304,7 @@ function liste()
 	stage.update();
 }
 
-//function dead(ListeMsg) 
-function dead() 
+function dead(ListeMsg) 
 {
 	stage.removeAllChildren();
 
@@ -1313,7 +1312,7 @@ function dead()
 	var PoliceDead="40px monospace";
 	var ColorDead="#000000";
 
-	var Killer="un mec";
+	var Killer; //="un mec";
 
 	contDead = new createjs.Container();
 	contDead.x = 0;
@@ -1326,7 +1325,7 @@ function dead()
 	shapeDead.graphics.setStrokeStyle(10).beginStroke("#990000").drawRect(
 			contDead.x, contDead.y, contDead.width, contDead.height);
 
-	/*contDeadLabel = new createjs.Container();
+	contDeadLabel = new createjs.Container();
 	contDeadLabel.x = 390;
 	contDeadLabel.y = 70;
 	contDeadLabel.height = 210;
@@ -1335,7 +1334,7 @@ function dead()
 	shapeDeadLabel = new createjs.Shape();
 	stage.addChild(shapeDeadLabel);
 	shapeDeadLabel.graphics.setStrokeStyle(5).beginStroke("#FFFFFF").drawRect(
-			contDeadLabel.x, contDeadLabel.y, contDeadLabel.width, contDeadLabel.height);*/
+			contDeadLabel.x, contDeadLabel.y, contDeadLabel.width, contDeadLabel.height);
 
 	// Application du background qui va recouvrir le canvas
 	var background_dead = new createjs.Bitmap("public/Background_Dead.jpg");
@@ -1346,18 +1345,23 @@ function dead()
 	//labelDeadByWho.textBaseline = _TextBaseline;
 	labelDeadByWho.x = 465;
 	labelDeadByWho.y = 100;
-	/*if (ListeMsg[ListeMsg.length -1]!=null && ListeMsg[ListeMsg.length -1]!="Z")
+	alert(ListeMsg[ListeMsg.length -1]);
+	if (ListeMsg[ListeMsg.length -1]!=null && ListeMsg[ListeMsg.length -1] == "Z")
+	{
+		Killer="un zombie rôdant dans la salle !";
+	}
+	else if(ListeMsg[ListeMsg.length -1]!=null && ListeMsg[ListeMsg.length -1] == "N")
+	{
+		Killer="un zombie durant l'attaque de nuit !";
+	}
+	else if(ListeMsg[ListeMsg.length -1]!=null && ListeMsg[ListeMsg.length -1] != "Z")
 	{
 		Killer=ListeMsg[ListeMsg.length -1];
-	}
-	else if(ListeMsg[ListeMsg.length -1]!=null && ListeMsg[ListeMsg.length -1]=="Z")
-	{
-		Killer="un Zombie !";
 	}
 	else
 	{
 		Killer="";
-	}*/
+	}
 	labelDeadByWho.text=("Tué par\n\n");
 	labelDeadByWho.text+=Killer;
 
@@ -2986,7 +2990,12 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 			// Calcul du pourcentage de vie
 			PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
 			// Texte de Description de la vie
-			if(PourcentVie>=0 && PourcentVie<20)
+			if(PourcentVie>=0 && PourcentVie==0)
+			{
+				DescriptionVie="";
+				DescriptionVie="Le corps de ce joueur gît au sol...";
+			}
+			else if(PourcentVie>=0 && PourcentVie<20)
 			{
 				DescriptionVie="";
 				DescriptionVie="Ce joueur n'a pas l'air très en forme";

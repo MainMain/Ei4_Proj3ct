@@ -79,6 +79,8 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                     ptActionMax: 		personnageToSave.ptActionsMax,
                     ptDeplacement: 		personnageToSave.ptDeplacement,
                     ptDeplacementMax: 	personnageToSave.ptDeplacementMax,
+            		ptFaim : 			personnageToSave.ptFaim,
+            		ptFaimMax : 		personnageToSave.ptFaimMax,
                     poidsMax: 			personnageToSave.poidsMax,
                     gouleLimite: 		personnageToSave.goulesMax,
                     competence: 		personnageToSave.competence,
@@ -93,6 +95,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                     sacADos: 			personnageToSave.sacADos,		
                     dernierMvt : 		personnageToSave.dernierMvt,
             		listeMsgAtt : 		personnageToSave.listeMsgAtt,
+            		nbrNvMsg : 			personnageToSave.nbrNvMsg,
                 },
                 function (err) 
                 {
@@ -176,11 +179,13 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                     callbackGetPersonnageByIdUser(idUtilisateur, new oPersonnage(
                         perso[0].id, 				perso[0].ptSante, 			perso[0].ptSanteMax,
                         perso[0].ptAction,		 	perso[0].ptActionMax, 		perso[0].ptDeplacement,
+                        perso[0].ptFaim,			perso[0].ptFaimMax,
                         perso[0].ptDeplacementMax,	perso[0].poidsMax, 			perso[0].gouleLimite,
                         perso[0].competence, 		perso[0].idSalleEnCours, 	perso[0].mode, 
                         perso[0].multiPtsAttaque,  	perso[0].multiPtsDefense,  	perso[0].multiProbaCache,  
                         perso[0].multiProbaFouille, arme,						armure,
-                        perso[0].sacADos,			perso[0].dernierMvt,		perso[0].listeMsgAtt		));
+                        perso[0].sacADos,			perso[0].dernierMvt,		perso[0].listeMsgAtt,
+                        perso[0].nbrNvMsg));
                 }
             });
         }
@@ -233,26 +238,29 @@ Personnage_BD.Creation = function (vie, action, deplacement, poids, goule, compe
     var PersonnageModel = mongoose.model('Personnage');
     var Perso = new PersonnageModel();
 
-    Perso.ptSanteMax = vie;
-    Perso.ptSante = vie;
-    Perso.ptAction = action;
-    Perso.ptActionMax = action;
-    Perso.ptDeplacement = deplacement;
-    Perso.ptDeplacementMax = deplacement;
-    Perso.poidsMax = poids;
-    Perso.gouleLimite = goule;
-    Perso.competence = competence;
-    Perso.sacADos = new Array();
-    Perso.idSalleEnCours = 0;
-    Perso.mode = 0;
-    Perso.multiPtsAttaque = 1;
-    Perso.multiPtsDefense = 1;
-    Perso.multiProbaCache = 1;
+    Perso.ptSanteMax		= vie;
+    Perso.ptSante 			= vie;
+    Perso.ptAction 			= action;
+    Perso.ptActionMax 		= action;
+    Perso.ptDeplacement 	= deplacement;
+    Perso.ptDeplacementMax 	= deplacement;
+    Perso.ptFaim		 	= 10;
+    Perso.ptFaimMax		 	= 10;
+    Perso.poidsMax 			= poids;
+    Perso.gouleLimite 		= goule;
+    Perso.competence 		= competence;
+    Perso.sacADos 			= new Array();
+    Perso.idSalleEnCours 	= 0;
+    Perso.mode 				= 0;
+    Perso.multiPtsAttaque 	= 1;
+    Perso.multiPtsDefense 	= 1;
+    Perso.multiProbaCache 	= 1;
     Perso.multiProbaFouille = 1;
-    Perso.idArmeEquipee = null;
-    Perso.idArmureEquipee = null;
-    Perso.dernierMvt = null;
-    Perso.listeMsgAtt = new Array();
+    Perso.idArmeEquipee 	= null;
+    Perso.idArmureEquipee 	= null;
+    Perso.dernierMvt 		= null;
+    Perso.listeMsgAtt 		= new Array();
+    Perso.nbrNvMsg			= 0;
 
     Perso.save(function (err) {
         if (err) {
