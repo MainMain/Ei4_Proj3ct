@@ -217,8 +217,8 @@ var _ContBtnsListesW = 140;
 var _ContBtnsListesH = 100;
 
 //Placement du label nombre de nouveaux messages
-var _labelNbNvMessageX=_ContBtnsListesX + 150;
-var _labelNbNvMessageY=_ContBtnsListesY + 20;
+var _labelNombreNouvMsgX=_ContBtnsListesX + 150;
+var _labelNombreNouvMsgY=_ContBtnsListesY + 20;
 
 //Placement label Choix Mode
 var _labelBtnsListesX = _ContBtnsListesX+2;
@@ -287,7 +287,7 @@ labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules
 labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
 
-var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage, labelNbNvMessage;
+var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage, labelNombreNouvMsg;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
 contBtnsListes, contDead,
@@ -829,6 +829,12 @@ function game() {
 	// ******************************************
 	//********** Déclaration des labels *******
 	// ******************************************
+	
+	labelNombreNouvMsg = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelNombreNouvMsg.lineHeight = _LineHeight;
+	labelNombreNouvMsg.textBaseline = _TextBaseline;
+	labelNombreNouvMsg.x = _labelNombreNouvMsgX;
+	labelNombreNouvMsg.y = _labelNombreNouvMsgY;
 	
 	labelDernierMessage = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelDernierMessage.lineHeight = _LineHeight;
@@ -1387,7 +1393,6 @@ function dead(ListeMsg)
 	BtnCancelDead.addEventListener('click', function (event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
-		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		game();
 	});
 
@@ -2631,8 +2636,8 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	
 	if(ListeMessages!=null && currentPerso.nbrNvMsg >0)
 	{
-		labelNbNvMessage.text="";
-		labelNbNvMessage.text=("( "+ currentPerso.nbrNvMsg + " )");
+		labelNombreNouvMsg.text="";
+		labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " )");
 		
 		var BtnMessages = new createjs.Bitmap("public/Boutons/Messages.png");
 		BtnMessages.y=H;
@@ -2651,7 +2656,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	}
 	else if(ListeMessages!=null && currentPerso.nbrNvMsg ==0)
 	{
-		labelNbNvMessage.text="";
+		labelNbMessage.text="";
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesVide.png");
 		BtnMessages.y=H;
 		contBtnsListes.addChild(BtnMessages);
@@ -2666,11 +2671,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			}
 		});
 		
-		BtnMessages.cursor="not-allowed";
+		BtnMessages.cursor="pointer";
 	}
 	else
 	{
-		//labelNbNvMessage.text="";
+		labelNombreNouvMsg.text="";
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
 		BtnMessages.y=H;
 		contBtnsListes.addChild(BtnMessages);
