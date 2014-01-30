@@ -287,8 +287,7 @@ labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules
 labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
 
-var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage,
-labelNbNvMessage;
+var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage, labelNbNvMessage;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
 contBtnsListes, contDead,
@@ -2660,12 +2659,13 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			{
 				alert("Pas de nouveaux messages");
 			}
+		});
 		
 		BtnMessages.cursor="not-allowed";
 	}
 	else
 	{
-		labelNbNvMessage.text="";
+		//labelNbNvMessage.text="";
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
 		BtnMessages.y=H;
 		contBtnsListes.addChild(BtnMessages);
