@@ -2682,8 +2682,6 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		dead(ListeMessages);
 	}
-
-	setBtnMessage();
 	// Update l'ihm
 	stage.update();
 });
