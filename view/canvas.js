@@ -101,6 +101,10 @@ var _ContItemPersoY = _labelItemPersoY + _EspaceLabelY+5;
 var _ContItemPersoH = 40;
 var _ContItemPersoW = 330;
 
+// Placement du dernier message
+var _labelDernierMessageX = 0;
+var _labelDernierMessageY = 600;
+
 //------------------- Zone 1 : 1/2 barres perso -----------------------------------------------------
 
 //Placement label Points de vie
@@ -212,6 +216,10 @@ var _ContBtnsListesY = 510;
 var _ContBtnsListesW = 140;
 var _ContBtnsListesH = 100;
 
+//Placement du label nombre de nouveaux messages
+var _labelNbNvMessageX=_ContBtnsListesX + 150;
+var _labelNbNvMessageY=_ContBtnsListesY + 20;
+
 //Placement label Choix Mode
 var _labelBtnsListesX = _ContBtnsListesX+2;
 var _labelBtnsListesY = _ContBtnsListesY-20;
@@ -279,7 +287,8 @@ labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules
 labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
 
-var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage;
+var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage,
+labelNbNvMessage;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
 contBtnsListes, contDead,
@@ -334,8 +343,6 @@ function initialize() {
 	                {src:"public/Background_11.jpg", id:"idBackground_11"},  
 	                {src:"public/Background_Dead.jpg", id:"idBackground_Dead"},
 	                {src:"public/blood.jpg", id:"idBackground_blood"}, 
-	                {src:"public/ButtonRed.png", id:"idButton"},
-	                {src:"public/ButtonGreen.png", id:"idButton2"},
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
 	                {src:"public/Boutons/Attaquer.png", id:"idBtnAttaquer"},
 	                {src:"public/Boutons/AttaquerGris.png", id:"idBtnAttaquerGris"},
@@ -368,6 +375,9 @@ function initialize() {
 	                {src:"public/Boutons/Down.png", id:"idBtnDown"},
 	                {src:"public/Boutons/RArrow.png", id:"idBtnRArrow"},
 	                {src:"public/Boutons/Select.png", id:"idSelect"},
+	                {src:"public/Boutons/Messages.png", id:"idBtnMessages"},
+	                {src:"public/Boutons/MessagesVide.png", id:"idBtnMessagesVide"},
+	                {src:"public/Boutons/MessagesGris.png", id:"idBtnMessagesGris"},
 	                {src:"public/map/0-0.png", id:"0-0"},
 	                {src:"public/map/0-1.png", id:"0-1"},
 	                {src:"public/map/0-2.png", id:"0-2"},
@@ -820,6 +830,12 @@ function game() {
 	// ******************************************
 	//********** Déclaration des labels *******
 	// ******************************************
+	
+	labelDernierMessage = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelDernierMessage.lineHeight = _LineHeight;
+	labelDernierMessage.textBaseline = _TextBaseline;
+	labelDernierMessage.x = _labelDernierMessageX;
+	labelDernierMessage.y = _labelDernierMessageY;
 
 	labelIdSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelIdSalle.lineHeight = _LineHeight;
@@ -1198,7 +1214,6 @@ function message(ListeMsg)
 	BtnValideMsg.addEventListener('click', function (event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contMessage);
-		ListeMessages=null;
 		game();
 	});	
 
@@ -1367,6 +1382,7 @@ function dead()
 	BtnCancelDead.y=570;
 	contDead.addChild(BtnCancelDead);
 	BtnCancelDead.addEventListener('click', function (event) {
+		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
 		game();
 	});
@@ -1552,35 +1568,6 @@ function setContCase()
 		BtnRamasseObjet.cursor="not-allowed";
 	}
 	
-}
-
-function setBtnMessage()
-{
-	if(ListeMessage!=null)
-	{
-		var BtnMessages = new createjs.Bitmap("public/Boutons/Messages.png");
-		BtnMessages.y=H;
-		contBtnsListes.addChild(BtnMessages);
-		BtnMessages.addEventListener('click', function(event) {
-			if(ListeMessages != null)
-			{
-				message(ListeMessages);
-			}
-			else
-			{
-				alert("Pas de nouveaux messages");
-			}
-		});
-		BtnMessages.cursor="pointer";
-	}
-	else
-	{
-		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
-		BtnMessages.y=H;
-		contBtnsListes.addChild(BtnMessages);
-		
-		BtnMessages.cursor="not-allowed";
-	}
 }
 
 function setBtnJoueurs(nbJoueurs)
@@ -2058,9 +2045,6 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 			BtnPageItemCaseLeft.visible=false;
 			BtnPageItemCaseRight.visible=false;
 		}
-		
-		
-		
 
 		setContCase();
 	
@@ -2140,9 +2124,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-
-	//socket.emit('CHECK_MSG_ATT_CS');
-
+	
 	this.listeItemsPerso = new Array();
 
 	// insertion de l'image du Perso
@@ -2630,17 +2612,66 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
 	
-
 	if(currentPerso.listeMsgAtt.length > 0)
 	{
 		//alert(currentPerso.listeMsgAtt.length);
 		ListeMessages=currentPerso.listeMsgAtt;
+		labelDernierMessage.text="";
+		labelDernierMessage.text=ListeMessages[ListeMessages.lenght-1];
 	}
 	else
 	{
+		labelDernierMessage.text="";
 		ListeMessage=null;
 	}
-	setBtnMessage();
+	
+	if(ListeMessages!=null && currentPerso.nbrNvMsg >0)
+	{
+		labelNbNvMessage.text="";
+		labelNbNvMessage.text=("( "+ currentPerso.nbrNvMsg + " )");
+		
+		var BtnMessages = new createjs.Bitmap("public/Boutons/Messages.png");
+		BtnMessages.y=H;
+		contBtnsListes.addChild(BtnMessages);
+		BtnMessages.addEventListener('click', function(event) {
+			if(ListeMessages != null)
+			{
+				message(ListeMessages);
+			}
+			else
+			{
+				alert("Pas de nouveaux messages");
+			}
+		});
+		BtnMessages.cursor="pointer";
+	}
+	else if(ListeMessages!=null && currentPerso.nbrNvMsg ==0)
+	{
+		labelNbNvMessage.text="";
+		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesVide.png");
+		BtnMessages.y=H;
+		contBtnsListes.addChild(BtnMessages);
+		BtnMessages.addEventListener('click', function(event) {
+			if(ListeMessages != null)
+			{
+				message(ListeMessages);
+			}
+			else
+			{
+				alert("Pas de nouveaux messages");
+			}
+		
+		BtnMessages.cursor="not-allowed";
+	}
+	else
+	{
+		labelNbNvMessage.text="";
+		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
+		BtnMessages.y=H;
+		contBtnsListes.addChild(BtnMessages);
+		
+		BtnMessages.cursor="not-allowed";
+	}
 
 	if(currentPerso.ptSante<=0 && currentPerso.listeMsgAtt.length > 0)
 	{
