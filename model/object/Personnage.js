@@ -576,7 +576,7 @@ var Personnage = (function() {
 		{
 			this.listeMsgAtt.push(msg);
 			this.nbrNvMsg++;
-			console.log("PERSONNAGE : Acquittement des messages ! ");
+			console.log("PERSONNAGE : Ajout d'un message : " + msg);
 		},
 		
 		effacerMessage : function(msg)

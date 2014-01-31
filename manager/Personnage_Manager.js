@@ -1013,7 +1013,8 @@ Personnage_Manager.nouvelleJournee = function()
 		idCase = this.listePersonnages[idUser].getIdSalleEnCours();
 		
 		// si le perso n'est pas caché -> attaque de la nuit
-		if (this.listePersonnages[idUser].mode != 2 
+		if (!this.listePersonnages[idUser].estMort()
+				&& this.listePersonnages[idUser].mode != 2 
 				&& !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2()))
 		{
 			// infliger les dégats de goules 
