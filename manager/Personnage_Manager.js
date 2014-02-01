@@ -955,14 +955,12 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 	var pseudo		= oUtilisateur_Manager.GetPseudo(idUser);
 	if (allie == false) pseudo = -1;
 	
-	console.log(this.listePersonnages[idUser]);
 	var perso = new oPersonnage(
 			id, 	ptSante, 		ptSanteMax, 	-1, 			-1, 
 			-1, 	-1, 			-1, 			-1,-1,-1,		comp, 
 			-1, 	mode, 			-1, 			-1, 			-1,
 			-1, 	arme, 			armure, 		comPoidsSac, 	-1, 
 			pseudo);
-	console.log(perso);
 	return perso;
 }, 
 

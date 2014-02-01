@@ -73,6 +73,7 @@ oCase_Manager.Load();
 
 //////////////TEST SESSIONJEU
 var date = new Date(2016, 12, 1, 1, 1, 1, 1);
+
 //oSession_Manager.demarrer(date);
 
 oSession_Manager.Load(function(idSession)

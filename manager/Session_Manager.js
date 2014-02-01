@@ -13,10 +13,16 @@ function Session_Manager(){}
 
 Session_Manager.Load = function(callback)
 {
+	// init
+	this.idSessionEnCours = -1;
+	this.dateDebut = new Date();
+	this.dateFin = new Date();
+	
 	// récupérer la date
 	var myDate = new Date();
-	var datelaseSession;
+	var datelaseSession ;
 	
+	var context = this;
 	// récupérer le dernier élément de la table session
 	oSession_BD.GetLastSessionId(function(lastId)
 	{
@@ -24,13 +30,23 @@ Session_Manager.Load = function(callback)
 		{
 			// si dateFin de cet élément est après la date courante
 				// entrer les attributs
-				this.idSessionEnCours 	= idSession;
-				this.dateDebut			= dateDeb;
-				this.dateFin 			= dateFin;
+				if (typeof idSession === "undefined")
+				{
+					context.idSessionEnCours 	= -1;
+					context.dateDebut			= new Date();
+					context.dateFin 			=  new Date();
+				}
+				else
+				{
+					context.idSessionEnCours 	= idSession;
+					context.dateDebut			= dateDeb;
+					context.dateFin 			= dateFin;
+				}
 			// sinon
 				// tout mettre à null	
+				
 		});
-		callback(lastId);
+		callback(context.idSessionEnCours);
 	});
 },
 

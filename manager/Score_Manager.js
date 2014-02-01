@@ -23,15 +23,7 @@ Score_Manager.Load = function (idSession) {
     this.idSessionEnCours = idSession;
     this.listeScores = new Array();
 
-    // pour chaque user...
-    //oUtilisateur_BD.GetUsersId(function (tabId) 
-    //{
-    //	// initialiser la ligne
-    //    for (var idUser in tabId) 
-    //    {
-    //        context.listeScores[idUser] = {};
-    //    }
-    //    // pour chaque id de score....
+        // pour chaque id de score....
         oScore_BD.GetIds(function (listeId) 
         {
             // pour chaque id de score
@@ -61,7 +53,6 @@ Score_Manager.Load = function (idSession) {
                 });
             }
         });
-    //});
 },
 
 Score_Manager.Save = function()

@@ -128,9 +128,7 @@ Score_BD.Creation = function (idUser, idSession) {
         if (err) {
             throw err;
         }
-        
-        console.log('BASE DE DONNEES : Creation dun score !');
-       // callback(); // rappel
+        console.log("SCORE_BD : Ajout d'un score -> " + idUser + " <-> " + idSession);
     });
     return newScore;
 },

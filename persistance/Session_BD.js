@@ -10,7 +10,7 @@ function Session_BD() {
 
 Session_BD.GetLastSessionId = function(callback)
 {
-	var Sessionmodel = mongoose.model('Session'); 				//recupération de la classe utilisateur
+	var Sessionmodel = mongoose.model('Session'); 				
 	var tabId = new Array();
 	
 	Sessionmodel.find({}, function(err, session)
@@ -21,8 +21,10 @@ Session_BD.GetLastSessionId = function(callback)
 		}
 		for(var i in session)
 		{
-			tabId[i] = session[i].id;
+			tabId = session[i].id;
 		}
+		
+		
 		callback(tabId);
 	});
 },
