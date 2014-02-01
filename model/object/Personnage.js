@@ -43,6 +43,33 @@ var Personnage = (function() {
 	// --- METHODES DE CLASSE ---
 	Personnage.build = function() {return new Personnage();};
 
+	function Personnage(id)
+	{
+		this.id 				= id;
+	 	this.ptSanteMax			= -1;
+	 	this.ptSante 			= -1;
+	    this.ptAction 			= -1;
+	    this.ptActionMax 		= -1;
+	    this.ptDeplacement 		= -1;
+	    this.ptDeplacementMax 	= -1;
+	    this.ptFaim		 		= 10;
+	    this.ptFaimMax		 	= 10;
+	    this.poidsMax 			= -1;
+	    this.gouleLimite 		= -1;
+	    this.competence 		= -1;
+	    this.sacADos 			= new Array();
+	    this.idSalleEnCours 	= -1;
+	    this.mode 				= -1;
+	    this.multiPtsAttaque 	= -1;
+	    this.multiPtsDefense 	= -1;
+	    this.multiProbaCache 	= -1;
+	    this.multiProbaFouille	= -1;
+	    this.idArmeEquipee 		= null;
+	    this.idArmureEquipee 	= null;
+	    this.dernierMvt 		= null;
+	    this.listeMsgAtt 		= new Array();
+	    this.nbrNvMsg			= 0;
+	}
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
 			ptDeplacement, ptDeplacementMax, ptFaim, ptFaimMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
@@ -571,8 +598,12 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
-			this.listeMsgAtt.push(msg);
+			var date = new Date();
+			var mois = parseInt(date.getMonth()) + 1;
+			var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
+			this.listeMsgAtt.push(str + " : " + msg);
 			this.nbrNvMsg++;
+			
 			console.log("PERSONNAGE : Ajout d'un message : " + msg);
 		},
 		

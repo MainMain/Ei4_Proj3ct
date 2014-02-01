@@ -52,9 +52,9 @@ Personnage_Manager.Load = function(callbackFinFouille)
 					//console.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
 					context.listePersonnages[id] = reponse;
 					/*** TEST ***/
-					context.listePersonnages[id].setptSanteMax(30);
-					context.listePersonnages[id].setptDeplacementMax(1000);
-					context.listePersonnages[id].setptActionMax(1000);
+					//context.listePersonnages[id].setptSanteMax(30);
+					//context.listePersonnages[id].setptDeplacementMax(1000);
+					//context.listePersonnages[id].setptActionMax(1000);
 					
 					// si le perso était en fouille, on le remet en oisif (car on n'a pas la durée du compteur de fouille)
 					if (context.listePersonnages[id].mode == 1)context.listePersonnages[id].mode = 0;
@@ -77,9 +77,9 @@ Personnage_Manager.LoadUser = function(idUser)
 		{
 			context.listePersonnages[id] = reponse;
 			/*** TEST ***/
-			context.listePersonnages[id].setptSanteMax(30);
-			context.listePersonnages[id].setptDeplacementMax(1000);
-			context.listePersonnages[id].setptActionMax(1000);
+			//context.listePersonnages[id].setptSanteMax(30);
+			//context.listePersonnages[id].setptDeplacementMax(1000);
+			//context.listePersonnages[id].setptActionMax(1000);
 		}
 	});     	
 }, 
@@ -89,42 +89,36 @@ Personnage_Manager.SetCompetence = function(idUser,  competence)
 	/*** - CALCUL SUR LES MULTI POINTS - ***/
 	if(competence == "brute")
 	{
-		this.listePersonnages[idUser].setptSanteMax(140);
-		this.listePersonnages[idUser].setptDeplacementMax(15);
-		this.listePersonnages[idUser].setptActionMax(20);
-		
-		this.listePersonnages[idUser].setmultiPtsAttaque(2);
-		this.listePersonnages[idUser].setmultiPtsDefense(2);
-		this.listePersonnages[idUser].setmultiProbaCache(0.5);
-		this.listePersonnages[idUser].setmultiProbaFouille(1);
-		
-		this.listePersonnages[idUser].setgoulesMax(2);
+		this.listePersonnages[idUser].setptSanteMax			(140);
+		this.listePersonnages[idUser].setptDeplacementMax	(15);
+		this.listePersonnages[idUser].setptActionMax		(20);
+		this.listePersonnages[idUser].setmultiPtsAttaque	(2);
+		this.listePersonnages[idUser].setmultiPtsDefense	(2);
+		this.listePersonnages[idUser].setmultiProbaCache	(0.5);
+		this.listePersonnages[idUser].setmultiProbaFouille	(1);
+		this.listePersonnages[idUser].setgoulesMax			(2);
 	}
 	else if(competence == "explorateur")
 	{
-		this.listePersonnages[idUser].setptSanteMax(100);
-		this.listePersonnages[idUser].setptDeplacementMax(25);
-		this.listePersonnages[idUser].setptActionMax(20);
-		
-		this.listePersonnages[idUser].setmultiPtsAttaque(1);
-		this.listePersonnages[idUser].setmultiPtsDefense(0.3);
-		this.listePersonnages[idUser].setmultiProbaCache(1);
-		this.listePersonnages[idUser].setmultiProbaFouille(3);
-		
-		this.listePersonnages[idUser].setgoulesMax(5);
+		this.listePersonnages[idUser].setptSanteMax			(100);
+		this.listePersonnages[idUser].setptDeplacementMax	(25);
+		this.listePersonnages[idUser].setptActionMax		(20);
+		this.listePersonnages[idUser].setmultiPtsAttaque	(1);
+		this.listePersonnages[idUser].setmultiPtsDefense	(0.3);
+		this.listePersonnages[idUser].setmultiProbaCache	(1);
+		this.listePersonnages[idUser].setmultiProbaFouille	(3);
+		this.listePersonnages[idUser].setgoulesMax			(5);
 	}
 	else if(competence == "chercheur")
 	{
-		this.listePersonnages[idUser].setptSanteMax(100);
-		this.listePersonnages[idUser].setptDeplacementMax(15);
-		this.listePersonnages[idUser].setptActionMax(30);
-		
-		this.listePersonnages[idUser].setmultiPtsAttaque(0.5);
-		this.listePersonnages[idUser].setmultiPtsDefense(1.5);
-		this.listePersonnages[idUser].setmultiProbaCache(3);
-		this.listePersonnages[idUser].setmultiProbaFouille(0.5);
-		
-		this.listePersonnages[idUser].setgoulesMax(3);
+		this.listePersonnages[idUser].setptSanteMax			(100);
+		this.listePersonnages[idUser].setptDeplacementMax	(15);
+		this.listePersonnages[idUser].setptActionMax		(30);
+		this.listePersonnages[idUser].setmultiPtsAttaque	(0.5);
+		this.listePersonnages[idUser].setmultiPtsDefense	(1.5);
+		this.listePersonnages[idUser].setmultiProbaCache	(3);
+		this.listePersonnages[idUser].setmultiProbaFouille	(0.5);
+		this.listePersonnages[idUser].setgoulesMax			(3);
 	}
 	this.listePersonnages[idUser].setCompetence(competence);
 	
@@ -213,7 +207,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "Z");
+				this.TuerJoueur(idUser, -1, "Z");
 				reponseServeur.reponseAttaque = 0;
 				return reponseServeur;
 			}
@@ -244,8 +238,8 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 				this.AddMessage(idUserEnnemi,  "Attaqué par un ennemi ! Degats subis : " + reponseServeur.degatsInfliges + " - degats infligés en riposte : " + reponseServeur.degatsRecus);
 				
 				// vérifie s'il y a des morts
-				if (persoUser.estMort()) this.TuerJoueur(idUser,  loginEnn);
-				if (persoEnn.estMort()) this.TuerJoueur(idUserEnnemi,  loginUser);
+				if (persoUser.estMort()) this.TuerJoueur(idUser, idUserEnnemi, loginEnn);
+				if (persoEnn.estMort()) this.TuerJoueur(idUserEnnemi, idUser, loginUser);
 
 				reponseServeur.reponseAttaque = 1;
 
@@ -267,12 +261,12 @@ Personnage_Manager.AttaquerGoule = function(idUser, nbrG)
 	// si le joueur a été tué...
 	if (this.estMort(idUser))
 	{
-		this.TuerJoueur(idUser, "Z");
+		this.TuerJoueur(idUser, -1, "Z");
 	}
 	else
 	{
 		// comptabiliser le socre
-		oScore_Manager.compabiliserGouleTue(nbrG);
+		oScore_Manager.compabiliserGouleTue(idUser, nbrG);
 	}
 }, 
 
@@ -351,7 +345,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "Z");
+				this.TuerJoueur(idUser, -1, "Z");
 				reponseServeur.reponseAction  = 0;
 				return reponseServeur;
 			}
@@ -533,7 +527,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "Z");
+				this.TuerJoueur(idUser, -1, "Z");
 				reponseServeur.reponseChangement = 0;
 				return reponseServeur;
 			}
@@ -653,7 +647,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	// si le joueur a été tué...
 	if (this.estMort(idUser))
 	{
-		this.TuerJoueur(idUser, "Z");
+		this.TuerJoueur(idUser, -1, "Z");
 		reponseServeur.codeRetour = 0;
 		return reponseServeur;
 	}
@@ -712,7 +706,7 @@ Personnage_Manager.MisKo = function(idUser,  meurtrier)
 	
 }, 
 
-Personnage_Manager.TuerJoueur = function(idTue,  loginTueur)
+Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 {
 	// log
 	console.log("PERSONNAGE_MANAGER : Mourir() : mort du personnage " + oUtilisateur_Manager.GetPseudo(idTue)+ " par : " + loginTueur);
@@ -724,7 +718,7 @@ Personnage_Manager.TuerJoueur = function(idTue,  loginTueur)
 	//this.AddMessage(idTue,  "Vous avez été mis KO par " + loginTueur + " ! Vous avez été ramené dans votre zone sure,  mais vous avez perdu tout vos objets.");
 	
 	// ajout du score
-	oScore_Manager.compabiliserMeurtre(loginTueur, idTue);
+	oScore_Manager.compabiliserMeurtre(idTueur, idTue);
 	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
 	this.AddMessage(idTue,  loginTueur);
@@ -957,7 +951,7 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 	
 	var perso = new oPersonnage(
 			id, 	ptSante, 		ptSanteMax, 	-1, 			-1, 
-			-1, 	-1, 			-1, 			-1,				comp, 
+			-1, 	-1, 			-1, 			-1,-1,-1,		comp, 
 			-1, 	mode, 			-1, 			-1, 			-1,
 			-1, 	arme, 			armure, 		comPoidsSac, 	-1, 
 			pseudo);
@@ -1023,10 +1017,15 @@ Personnage_Manager.nouvelleJournee = function()
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "N");
+				this.TuerJoueur(idUser, -1, "N");
 			}
 		}
 	}
+},
+
+Personnage_Manager.debutSession = function(idUser)
+{
+	
 },
 
 module.exports = Personnage_Manager;

@@ -1,5 +1,7 @@
 //appel aux modules
-//var http = require('http');
+// require model
+var oDatabase	= require('./model/database');
+
 var url         = require("url");
 var querystring = require('querystring');
 var express     = require('express'),
@@ -9,13 +11,12 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
-var date = new Date();
-console.log(date);
+var dateLancementSrv = new Date();
+console.log(dateLancementSrv);
 /*
  *
  */
-// require model
-var oDatabase	= require('./model/database');
+
 
 // require objets
 //var oPersonnage = require('./model/object/Personnage');
@@ -39,13 +40,16 @@ var oSession_Manager	 = require('./manager/Session_Manager');
 //Tableau des utilisateur en ligne
 var usersOnline = new Array();
 
+
+
+
 //Initialisation de la base de données
 oDatabase.Initialiser();
 
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(6, 6);
 
-oSession_Manager.Load();
+
 
 oUtilisateur_Manager.Load();
 
@@ -67,7 +71,16 @@ oCase_BD.Initialiser();
 
 oCase_Manager.Load();
 
-oScore_Manager.Load();
+//////////////TEST SESSIONJEU
+var date = new Date(2016, 12, 1, 1, 1, 1, 1);
+
+//oSession_Manager.demarrer(date);
+
+oSession_Manager.Load(function(idSession)
+{
+	oScore_Manager.Load(idSession);
+});
+
 /*
  * CONFIGURATION DU SERVEUR
  */
@@ -264,7 +277,7 @@ callbackInscription = function(reponseInscription, req, res)
 		oUtilisateur_Manager.LoadUser(reponseInscription);
 		oPersonnage_Manager.LoadUser(reponseInscription);
 		// ajout de l'objet score pour la session de jeu en cours
-		oScore_Manager.nouveauJoueur(reponseInscription.id);
+		oScore_Manager.nouveauJoueur(reponseInscription, oSession_Manager.getIdSessionEnCours());
 		
 		res.render("accueil", optionAccueil);
 		
@@ -526,8 +539,8 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 
 
 
-////////////// TEST SESSIONJEU
- 
+
+
 /*
  * CONNEXION D'UN CLIENT
  */
