@@ -18,10 +18,16 @@ var PersoProbaFouille=1;
 var PageItemPerso=0;
 var PageItemCase=0;
 
+var PagePersoEnn=0;
+var PagePersoAllies=0;
+
 var background, backgroundPreload, map, perso;
 
 //Espacement items
 var SpaceItem = 32;
+
+var SpacePerso = 64;
+
 //Police des labels
 var PoliceLabel="14px monospace";
 
@@ -37,7 +43,7 @@ var BtnPageItemPersoRight, BtnPageItemPersoLeft, BtnPageItemCaseRight, BtnPageIt
 //******************************************
 
 //Espacement des boutons
-var H=50;
+var H=45;
 
 //Abscisse des boutons 
 var AbsBtn=0;
@@ -60,15 +66,11 @@ var ColorLabel = "#fff";
 var ColorLabelBonus = ColorGreen;
 
 //Espacement des labels
-var _EspaceLabelX = 300;
+var _EspaceLabelX = 265;
 var _EspaceLabelY = 20;
 
-//Placement label Mode Perso
-var _labelModeX = 440 + _EspaceLabelX;
-var _labelModeY = 0;
-
 //Placement Conteneur ItemCase
-var _ContItemCaseX = _labelModeX;
+var _ContItemCaseX = 750;
 var _ContItemCaseY = 620-95	;
 
 //Dimension Conteneur ItemCase
@@ -81,7 +83,6 @@ var _labelItemCaseY = _ContItemCaseY - 20;
 
 //Placement label Arme
 var _labelArmeX = 750;
-//var _labelArmeY = _labelModeY + _EspaceLabelY +5;
 var _labelArmeY = 15;
 
 //Placement label Armure
@@ -101,15 +102,11 @@ var _ContItemPersoY = _labelItemPersoY + _EspaceLabelY+5;
 var _ContItemPersoH = 40;
 var _ContItemPersoW = 330;
 
-// Placement du dernier message
-var _labelDernierMessageX = 0;
-var _labelDernierMessageY = 600;
-
 //------------------- Zone 1 : 1/2 barres perso -----------------------------------------------------
 
 //Placement label Points de vie
-var _labelPtsVX = 160;
-var _labelPtsVY = 20;
+var _labelPtsVX = 200;
+var _labelPtsVY = _labelArmeY;
 
 //Placement label Points de faim
 var _labelPtsFX = _labelPtsVX;
@@ -138,11 +135,6 @@ var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 //Placement label id Salle en cours
 var _labelIdSalleX = _labelPtsAX;
 var _labelIdSalleY = _labelPtsMY + _EspaceLabelY;
-
-
-//Placement label Poids du Sac
-/*var _labelPoidsSacX = _labelPtsVX + _EspaceLabelX;
-var _labelPoidsSacY = _labelPtsDefY + _EspaceLabelY; */
 
 //------------------ Zone 9 : Infos Case -------------------------------------------------------
 
@@ -184,7 +176,7 @@ var _labelRetourGoulesY = 580;
 var _ContModeX = 50;
 var _ContModeY = 330;
 var _ContModeW = 140;
-var _ContModeH = 150;
+var _ContModeH = 3*H;
 
 //Placement label Choix Mode
 var _labelChoixModeX = _ContModeX+5;
@@ -214,7 +206,7 @@ var _ContArmureW = 30;
 var _ContBtnsListesX = 50;
 var _ContBtnsListesY = 510;
 var _ContBtnsListesW = 140;
-var _ContBtnsListesH = 100;
+var _ContBtnsListesH = 2*H;
 
 //Placement du label nombre de nouveaux messages
 var _labelNombreNouvMsgX=_ContBtnsListesX + 150;
@@ -225,22 +217,22 @@ var _labelBtnsListesX = _ContBtnsListesX+2;
 var _labelBtnsListesY = _ContBtnsListesY-20;
 
 //------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
-//Placement Conteneur des Boutons liste
+//Placement Conteneur des Boutons perso
 var _ContBtnsInvPersoX = 910;
 var _ContBtnsInvPersoY = 140;
 var _ContBtnsInvPersoW = 140;
-var _ContBtnsInvPersoH = 150;
+var _ContBtnsInvPersoH = 3*H;
 
 //Placement label Choix Mode
 var _labelBtnsInvPersoX = _ContBtnsInvPersoX-5;
 var _labelBtnsInvPersoY = _ContBtnsInvPersoY-20;
 
 //------------------------- Zone 6 : Btns Inv Case ---------------------------------------
-//Placement Conteneur des Boutons liste
+//Placement Conteneur des Boutons case
 var _ContBtnsInvCaseX = _ContBtnsInvPersoX ;
-var _ContBtnsInvCaseY = 340;
+var _ContBtnsInvCaseY = 310;
 var _ContBtnsInvCaseW = 140;
-var _ContBtnsInvCaseH = 150;
+var _ContBtnsInvCaseH = 4*H;
 
 //Placement label Choix Mode
 var _labelBtnsInvCaseX = _ContBtnsInvCaseX-5;
@@ -255,6 +247,10 @@ var _ContMapY = 620/2 - 379/2;
 //Dimension Conteneur Map
 var _ContMapH = 379;
 var _ContMapW = 620;
+
+//Placement du dernier message
+var _labelDernierMessageX = _ContMapX;
+var _labelDernierMessageY = _ContMapY-20;
 
 //------------------- Zone 14 : Labels de retour------------------------------------------------------
 
@@ -283,7 +279,7 @@ var _ContLabelsModeH = 80;
 var txtSalle, txtObjet, labelRetourFouilleRapide,
 labelObjetCase,	labelInventaire, labelDescribeItem, labelRetourMode,
 labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
-labelBonusArme, labelBonusArmure, labelIdSalle, labelNomSalle, labelRetourGoules,
+labelBonusArme, labelBonusArmure, labelIdSalle, labelRetourGoules,
 labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
 
@@ -304,6 +300,8 @@ var ListeMessages;
 
 var imgPerso, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsListes, 
 shapeBtnsInvPerso, shapeBtnsInvCase;
+
+var BtnPageAlliesRight, BtnPageAlliesLeft, BtnPagePersoEnnRight, BtnPagePersoEnnLeft;
 
 onload = initialize;
 
@@ -389,6 +387,15 @@ function initialize() {
 	                {src:"public/spritesheets/persos/Brute.gif", id:"idPersoBrute"},
 	                {src:"public/spritesheets/persos/Chercheur.gif", id:"idPersoChercheur"},
 	                {src:"public/spritesheets/persos/Explorateur.gif", id:"idPersoExplorateur"},
+	                {src:"public/spritesheets/persos/Brute96.png", id:"idPersoBrute96"},
+	                {src:"public/spritesheets/persos/Chercheur96.png", id:"idPersoChercheur96"},
+	                {src:"public/spritesheets/persos/Explorateur96.png", id:"idPersoExplorateur96"},
+	                {src:"public/spritesheets/persos/Brute64.png", id:"idPersoBrute64"},
+	                {src:"public/spritesheets/persos/Chercheur64.png", id:"idPersoChercheur64"},
+	                {src:"public/spritesheets/persos/Explorateur64.png", id:"idPersoExplorateur64"},
+	                {src:"public/spritesheets/persos/Brute32.png", id:"idPersoBrute32"},
+	                {src:"public/spritesheets/persos/Chercheur32.png", id:"idPersoChercheur32"},
+	                {src:"public/spritesheets/persos/Explorateur32.png", id:"idPersoExplorateur32"},
 	                {src:"public/spritesheets/persos/perso.gif", id:"idPerso"},
 	                {src:"public/spritesheets/arme/100.png", id:"100"},
 	                {src:"public/spritesheets/arme/101.png", id:"101"},
@@ -571,8 +578,10 @@ function game() {
 			_ContMapX-2, _ContMapY-2, _ContMapW+2, _ContMapH+2);
 
 	contPerso = new createjs.Container();
-	contPerso.x = w/2 - 32/2;
-	contPerso.y = h/2 - 32/2;
+	/*contPerso.x = w/2 - 32/2;
+	contPerso.y = h/2 - 32/2;*/
+	contPerso.x = 5;
+	contPerso.y = 5;
 	contPerso.height = 32;
 	contPerso.width = 32;
 	stage.addChild(contPerso);
@@ -848,12 +857,6 @@ function game() {
 	labelIdSalle.x = _labelIdSalleX;
 	labelIdSalle.y = _labelIdSalleY;
 
-	labelNomSalle = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	labelNomSalle.lineHeight = _LineHeight;
-	labelNomSalle.textBaseline = _TextBaseline;
-	labelNomSalle.x = _labelIdSalleX;
-	labelNomSalle.y = _labelIdSalleY + 20;
-
 	labelObjetCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelObjetCase.lineHeight = _LineHeight;
 	labelObjetCase.textBaseline = _TextBaseline;
@@ -1122,9 +1125,9 @@ function game() {
 		socket.emit('SAVE_BD_DEBUG_CS');
 	});
 
-	var BtnEvents = new createjs.Bitmap("public/Boutons/Historique.png");
+	/*var BtnEvents = new createjs.Bitmap("public/Boutons/Historique.png");
 	BtnEvents.image.onload = setImg(BtnEvents, AbsBtn, OrdBtn);
-	/*BtnEvents.addEventListener('click', function(event) {
+	BtnEvents.addEventListener('click', function(event) {
 
 		});	*/
 
@@ -1172,7 +1175,7 @@ function game() {
 
 	BtnPageItemPersoRight.cursor=BtnPageItemPersoLeft.cursor=BtnPageItemCaseRight.cursor=BtnPageItemCaseLeft.cursor="pointer";
 
-	BtnFouilleRapide.cursor=BtnEvents.cursor ="pointer";
+	BtnFouilleRapide.cursor="pointer";
 	stage.update();
 
 	// ******************************************
@@ -1271,10 +1274,10 @@ function liste()
 
 	//Conteneur des ALLIES
 	contListeAllies = new createjs.Container();
-	contListeAllies.x = 20;
+	contListeAllies.width = 8*64;
+	contListeAllies.x = contListe.width/2 - contListeAllies.width/2;
 	contListeAllies.y = 20;
-	contListeAllies.height = 100;
-	contListeAllies.width = 580;
+	contListeAllies.height = 70;
 	contListe.addChild(contListeAllies);
 	shape7 = new createjs.Shape();
 	contListe.addChild(shape7);
@@ -1283,10 +1286,10 @@ function liste()
 
 	//Conteneur des ENNEMIS
 	contListeEnnemis = new createjs.Container();
-	contListeEnnemis.x = 20;
+	contListeEnnemis.width = 8*64;
+	contListeEnnemis.x = contListe.width/2 - contListeEnnemis.width/2;
 	contListeEnnemis.y = 160;
-	contListeEnnemis.height = 100;
-	contListeEnnemis.width = 580;
+	contListeEnnemis.height = 70;
 	contListe.addChild(contListeEnnemis);
 	shape8 = new createjs.Shape();
 	contListe.addChild(shape8);
@@ -1299,27 +1302,51 @@ function liste()
 	BtnCancelListe.y=330;
 	contListe.addChild(BtnCancelListe);
 	BtnCancelListe.addEventListener('click', function (event) {
+		SelectedPerso=-1;
 		stage.removeChild(contListe);
 		game();
 	});
-
-	// Bouton ATTAQUER
-	var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
-	BtnAttaquerListe.x=480;
-	BtnAttaquerListe.y=330;
-	contListe.addChild(BtnAttaquerListe);
-	BtnAttaquerListe.addEventListener('click', function(event) {
-		if (SelectedPerso == -1) {
-			alert("Selectionner Ennemi avant d'attaquer !");
-		}
-		else
-		{
-			socket.emit('ACTION_ATTAQUE_CS', SelectedPerso);
-			SelectedPerso = -1;
-		}
+	
+	BtnPageAlliesRight = new createjs.Bitmap("public/Boutons/RArrow.png");
+	BtnPageAlliesRight.x= contListeAllies.x + contListeAllies.w;
+	BtnPageAlliesRight.y= contListeAllies.y + 15;
+	contListe.addChild(BtnPageAlliesRight);
+	BtnPageAlliesRight.addEventListener('click', function(event) {
+		PagePersoAllies++;
+		socket.emit('INFO_CASE_ALLIES_CS');
+	});
+	
+	BtnPageAlliesLeft = new createjs.Bitmap("public/Boutons/RArrow.png");
+	BtnPageAlliesLeft.x= contListeAllies.x + contListeAllies.w;
+	BtnPageAlliesLeft.y= contListeAllies.y + 15;
+	contListe.addChild(BtnPageAlliesLeft);
+	BtnPageAlliesLeft.addEventListener('click', function(event) {
+		PagePersoAllies--;
+		socket.emit('INFO_CASE_ALLIES_CS');
+	});
+	
+	BtnPagePersoEnnRight = new createjs.Bitmap("public/Boutons/RArrow.png");
+	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.w;
+	BtnPagePersoEnnRight.y= contListeEnnemis.y + 15;
+	contListe.addChild(BtnPagePersoEnnRight);
+	BtnPagePersoEnnRight.addEventListener('click', function(event) {
+		PagePersoEnnemis++;
+		socket.emit('INFO_CASE_ENNEMIS_CS');
+	});
+	
+	BtnPagePersoEnnLeft = new createjs.Bitmap("public/Boutons/RArrow.png");
+	BtnPagePersoEnnLeft.x= contListeEnnemis.x + contListeEnnemis.w;
+	BtnPagePersoEnnLeft.y= contListeEnnemis.y + 15;
+	contListe.addChild(BtnPagePersoEnnLeft);
+	BtnPagePersoEnnLeft.addEventListener('click', function(event) {
+		PagePersoEnnemis--;
+		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
 
-	BtnCancelListe.cursor=BtnAttaquerListe.cursor="pointer";
+	setBtnAttaquer();
+
+	BtnCancelListe.cursor="pointer";
+	BtnPageAlliesRight.cursor=BtnPageAlliesLeft.cursor=BtnPagePersoEnnRight.cursor=BtnPagePersoEnnLeft.cursor="pointer";
 
 	stage.update();
 }
@@ -1399,6 +1426,39 @@ function dead(ListeMsg)
 	BtnCancelDead.cursor="pointer";
 
 	stage.update();
+}
+
+function setBtnAttaquer()
+{
+	if (SelectedPerso != -1)
+	{
+		// Bouton ATTAQUER
+		var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
+		BtnAttaquerListe.x=480;
+		BtnAttaquerListe.y=330;
+		contListe.addChild(BtnAttaquerListe);
+		BtnAttaquerListe.addEventListener('click', function(event) {
+			if (SelectedPerso == -1) {
+				alert("Selectionner Ennemi avant d'attaquer !");
+			}
+			else
+			{
+				socket.emit('ACTION_ATTAQUE_CS', SelectedPerso);
+				SelectedPerso = -1;
+			}
+		});
+		BtnAttaquerListe.cursor="pointer";
+	}
+	else
+	{
+		// Bouton ATTAQUER
+		var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/AttaquerGris.png");
+		BtnAttaquerListe.x=480;
+		BtnAttaquerListe.y=330;
+		contListe.addChild(BtnAttaquerListe);
+		BtnAttaquerListe.cursor="not-allowed";
+	}
+	
 }
 
 function setContPerso()
@@ -1608,18 +1668,18 @@ function setBtnGoules(nbrGoules)
 	if(nbrGoules>0)
 	{
 		var BtnAtqGoules = new createjs.Bitmap("public/Boutons/Zombie.png");
-		BtnAtqGoules.image.onload = setImg(BtnAtqGoules, AbsBtn, OrdBtn + H);
+		BtnAtqGoules.y = 3*H;
+		contBtnsInvCase.addChild(BtnAtqGoules);
 		BtnAtqGoules.addEventListener('click', function(event) {
 			socket.emit('ACTION_ATTAQUE_GOULE_CS');
 		});
-		
 		BtnAtqGoules.cursor="pointer";
 	}
 	else
 	{
 		var BtnAtqGoules = new createjs.Bitmap("public/Boutons/ZombieGris.png");
-		BtnAtqGoules.image.onload = setImg(BtnAtqGoules, AbsBtn, OrdBtn + H);
-		
+		BtnAtqGoules.y = 150;
+		contBtnsInvCase.addChild(BtnAtqGoules);
 		BtnAtqGoules.cursor="not-allowed";
 	}
 }
@@ -1968,8 +2028,6 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %");
 		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %");
-		labelNomSalle.text="";
-		labelNomSalle.text=("Nom salle : "+currentCase.nom+"");
 
 		cacheBar.scaleX = (ProbCache/100) * cacheBarWidth;
 		fouilleBar.scaleX = (ProbFouille/100) * fouilleBarWidth;
@@ -2139,15 +2197,15 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	// insertion de l'image du Perso
 	if(currentPerso.competence=="brute")
 	{
-		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute96.png");
 	}
 	else if(currentPerso.competence=="chercheur")
 	{
-		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur.gif");
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur96.png");
 	}
 	else if(currentPerso.competence=="explorateur")
 	{
-		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur.gif");
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur96.png");
 	}
 	else
 	{
@@ -2621,21 +2679,27 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
 	
+	//alert("Messages : "+ currentPerso.listeMsgAtt.length);
 	if(currentPerso.listeMsgAtt.length > 0)
 	{
-		//alert(currentPerso.listeMsgAtt.length);
+		//alert("1");
 		ListeMessages=currentPerso.listeMsgAtt;
+		var tailleListe=ListeMessages.length;
+		tailleListe--;
 		labelDernierMessage.text="";
-		labelDernierMessage.text=ListeMessages[ListeMessages.lenght-1];
+		labelDernierMessage.text=ListeMessages[tailleListe];
+		//alert("Dernier msg : " + ListeMessages[tailleListe]);
 	}
 	else
 	{
+		//alert("2");
 		labelDernierMessage.text="";
-		ListeMessage=null;
+		ListeMessages=null;
 	}
 	
 	if(ListeMessages!=null && currentPerso.nbrNvMsg >0)
 	{
+		//alert("3");
 		labelNombreNouvMsg.text="";
 		labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " )");
 		
@@ -2656,7 +2720,9 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	}
 	else if(ListeMessages!=null && currentPerso.nbrNvMsg ==0)
 	{
-		labelNbMessage.text="";
+		//alert("4");
+		labelNombreNouvMsg.text="";
+		
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesVide.png");
 		BtnMessages.y=H;
 		contBtnsListes.addChild(BtnMessages);
@@ -2675,7 +2741,9 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	}
 	else
 	{
+		//alert("5");
 		labelNombreNouvMsg.text="";
+		
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
 		BtnMessages.y=H;
 		contBtnsListes.addChild(BtnMessages);
@@ -2863,15 +2931,18 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, degatsInfliges, item, d
 		});
 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
-		{
+{
 	//alert("retour ok");
 	var i=0;
 	var iPositionPersoInConteneur=0;
 
 	contListeAllies.removeAllChildren();
 
-	var imgPerso;
 	listePersoAllies = new Array();
+	
+	var imgPersoAllie;
+	
+	//alert("longueur liste allies = " + listeAllies.length);
 
 	for(var perso in listeAllies)
 	{
@@ -2885,31 +2956,37 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		var PourcentSac;
 
 		listePersoAllies.push(persoA);
-
-		if(persoA.competence=="brute")
+		
+		/// 0 à modifier par brute quand la liste sera ok  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		if(persoA.competence==0)
 		{
-			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
-			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
-			imgPerso.cursor= "pointer";
+			 imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
+			 imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
+			// imgPersoAllie.y = 2;
+			 imgPersoAllie.cursor= "normal";
 		}
 		else if(persoA.competence=="chercheur")
 		{
-			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur.gif");
-			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
-			imgPerso.cursor= "pointer";
+			 imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
+			 imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
+			// imgPersoAllie.y = 2;
+			 imgPersoAllie.cursor= "normal";
 		}
 		else if(persoA.competence=="explorateur")
 		{
-			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur.gif");
-			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
-			imgPerso.cursor= "pointer";
+			 imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
+			 imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
+			// imgPersoAllie.y = 2;
+			 imgPersoAllie.cursor= "normal";
 		}
-		imgPerso.name = perso;
+		
+		 imgPersoAllie.name = perso;
 
 		// Ajout de l'évenement a l'image
 		// ajout d'un texte quand l'user passera la souris dessus
-		imgPerso.addEventListener('mouseover', function(event) {
-			var currentPerso =  listeAllies[event.target.name];
+		 imgPersoAllie.addEventListener('mouseover', function(event) {
+			var currentPerso = listeAllies[event.target.name];
 			// Texte de description du Mode
 			ModePerso="";
 			switch(currentPerso.mode)
@@ -2954,17 +3031,12 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 			stage.update();
 		},false);
 
-		imgPerso.addEventListener('mouseout', function(event){
+		 imgPersoAllie.addEventListener('mouseout', function(event){
 			labelDescribePerso.text="";
 			stage.update();
 		},false);
 
-		/*imgPerso.addEventListener("click", function(event){
-			var currentPerso= listePersoAllies[event.target.name];
-			stage.update();
-		});*/
-
-		contListeAllies.addChild(imgPerso);
+		contListeAllies.addChild( imgPersoAllie);
 
 		// position de l'item dans le conteneur
 		iPositionPersoInConteneur++;
@@ -2979,174 +3051,270 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 
 	this.listePersoEnnemis = new Array();
 	contListeEnnemis.removeAllChildren();
+	
+	var imgPersoEnnemi;
 
-	var imgPerso;
+	// tableau qui contient toutes les listes d'objets
+	var TabListe=new Array();
 
-	alert("longueur liste enn = " + listeEnn.length);
+	var Taille = Math.ceil(listeEnn.length / 8);
+	var TailleFinListe =(listeEnn.length % 8);
 
-	for(var i = 0; i < listeEnn.length; i++)
+	for (var j=0; j<Taille; j++)
 	{
-		// mise du perso dans une variable
-		var persoE = listeEnn[i];
+		var NewListe=new Array();
 
-		var ModePerso;
-		var DescriptionSac;
-		var PourcentVie;
-		var DescriptionVie;
-
-		this.listePersoEnnemis.push(persoE);
-
-		if(persoE.competence=="brute")
+		if(j==Taille-1 && TailleFinListe!=0)
 		{
-			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute.gif");
-			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
-			imgPerso.cursor= "pointer";
+			//Boucle des items liste incomplète
+			for (var i=j*8; i<j*8+TailleFinListe; i++)
+			{
+				// mise de l'item dans une variable
+				var perso = listeEnn[i];
+				
+				// ajout de l'item à la nouvelle liste
+				NewListe.push(perso);
+			}
+			// ajout de la nouvelle liste au tableau de listes
+			TabListe.push(NewListe);  
 		}
-		else if(persoE.competence=="chercheur")
+		else
 		{
-			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur.gif");
-			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
-			imgPerso.cursor= "pointer";
-		}
-		else if(persoE.competence=="explorateur")
-		{
-			imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur.gif");
-			imgPerso.x = iPositionPersoInConteneur * SpaceItem;
-			imgPerso.cursor= "pointer";
-		}
-		imgPerso.name = i;
+			//Boucle normale : creation nouvelle liste de 10 items max
+			for (var i=j*8; i<(j*8+8); i++)
+			{
 
-		// Ajout de l'évenement a l'image
-		// ajout d'un texte quand l'user passera la souris dessus
-		imgPerso.addEventListener('mouseover', function(event)
+				// mise de l'item dans une variable
+				var perso = listeEnn[i];
+				
+				// mise de l'item dans une variable
+				NewListe.push(perso);
+			}
+			TabListe.push(NewListe);
+		}
+	}
+
+	if(PagePersoEnn>Taille-1)
+	{
+		PagePersoEnn=Taille-1;
+	}
+	else if (PagePersoEnn<0)
+	{
+		PagePersoEnn=0;
+	}
+	
+	if(PagePersoEnn==Taille-1)
+	{
+		BtnPagePersoEnnRight.visible=false;
+	}
+	else
+	{
+		BtnPagePersoEnnRight.visible=true;
+	}
+	
+	if(PagePersoEnn==0)
+	{
+		BtnPagePersoEnnLeft.visible=false;
+	}
+	else
+	{
+		BtnPagePersoEnnLeft.visible=true;
+	}
+	
+	if(Taille ==0)
+	{
+		BtnPagePersoEnnLeft.visible=false;
+		BtnPagePersoEnnRight.visible=false;
+	}
+
+	try 
+	{
+		// instructions à essayer
+		for (var i = 0; i < TabListe[PagePersoEnn].length ; i++) 
+		{
+				var persoE=TabListe[PagePersoEnn][i];
+
+				var ModePerso;
+				var DescriptionSac;
+				var PourcentVie;
+				var DescriptionVie;
+
+				this.listePersoEnnemis.push(persoE);
+
+				/// 0 à modifier par brute quand la liste sera ok  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+				if(persoE.competence==0)
 				{
-			var currentPerso =  listeEnn[event.target.name];
-			// Calcul du pourcentage de vie
-			PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
-			// Texte de Description de la vie
-			if(PourcentVie>=0 && PourcentVie==0)
-			{
-				DescriptionVie="";
-				DescriptionVie="Le corps de ce joueur gît au sol...";
-			}
-			else if(PourcentVie>=0 && PourcentVie<20)
-			{
-				DescriptionVie="";
-				DescriptionVie="Ce joueur n'a pas l'air très en forme";
-			}
-			else if(PourcentVie>=20 && PourcentVie<40)
-			{
-				DescriptionVie="";
-				DescriptionVie="Ce joueur n'a pas l'air peu en forme";
-			}
-			else if(PourcentVie>=40 && PourcentVie<60)
-			{
-				DescriptionVie="";
-				DescriptionVie="Ce joueur a l'air en forme";
-			}
-			else if(PourcentVie>=60 && PourcentVie<80)
-			{
-				DescriptionVie="";
-				DescriptionVie="Ce joueur a l'air très en forme";
-			}
-			else if(PourcentVie>=80 && PourcentVie<=100)
-			{
-				DescriptionVie="";
-				DescriptionVie="Ce joueur a l'air au top de sa forme";
-			}
+					 imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
+					 imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					 imgPersoEnnemi.y = 2 ; 
+					 imgPersoEnnemi.cursor= "pointer";
+					
+				}
+				else if(persoE.competence=="chercheur")
+				{
+					 imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
+					 imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					 imgPersoEnnemi.y = 2 ; 
+					 imgPersoEnnemi.cursor= "pointer";
+				}
+				else if(persoE.competence=="explorateur")
+				{
+					 imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
+					 imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					 imgPersoEnnemi.y = 2 ; 
+					 imgPersoEnnemi.cursor= "pointer";
+				}
+				
+				 imgPersoEnnemi.name = perso;
 
-			// Texte de description du poids du sac
-			if(currentPerso.sacADos>=0 && currentPerso.sacADos<20)
-			{
-				DescriptionSac="";
-				DescriptionSac="Ce joueur n'a pas l'air très chargé !";
-			}
-			else if(currentPerso.sacADos>=20 && currentPerso.sacADos<40)
-			{
-				DescriptionSac="";
-				DescriptionSac="Ce joueur a l'air peu chargé !";
-			}
-			else if(currentPerso.sacADos>=40 && currentPerso.sacADos<60)
-			{
-				DescriptionSac="";
-				DescriptionSac="Ce joueur a l'air chargé !";
-			}
-			else if(currentPerso.sacADos>=60 && currentPerso.sacADos<80)
-			{
-				DescriptionSac="";
-				DescriptionSac="Ce joueur a l'air très chargé !";
-			}
-			else if(currentPerso.sacADos>=80 && currentPerso.sacADos<=100)
-			{
-				DescriptionSac="";
-				DescriptionSac="Ce joueur a l'air surchargé !";
-			}
+				// Ajout de l'évenement a l'image
+				// ajout d'un texte quand l'user passera la souris dessus
+				 imgPersoEnnemi.addEventListener('mouseover', function(event)
+				{
+					 
+					var currentPerso = [event.target.name];
+					alert("currentPerso : " + currentPerso);
+					// Calcul du pourcentage de vie
+					PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
+					// Texte de Description de la vie
+					if(PourcentVie>=0 && PourcentVie==0)
+					{
+						DescriptionVie="";
+						DescriptionVie="Le corps de ce joueur gît au sol...";
+					}
+					else if(PourcentVie>=0 && PourcentVie<20)
+					{
+						DescriptionVie="";
+						DescriptionVie="Ce joueur n'a pas l'air très en forme";
+					}
+					else if(PourcentVie>=20 && PourcentVie<40)
+					{
+						DescriptionVie="";
+						DescriptionVie="Ce joueur n'a pas l'air peu en forme";
+					}
+					else if(PourcentVie>=40 && PourcentVie<60)
+					{
+						DescriptionVie="";
+						DescriptionVie="Ce joueur a l'air en forme";
+					}
+					else if(PourcentVie>=60 && PourcentVie<80)
+					{
+						DescriptionVie="";
+						DescriptionVie="Ce joueur a l'air très en forme";
+					}
+					else if(PourcentVie>=80 && PourcentVie<=100)
+					{
+						DescriptionVie="";
+						DescriptionVie="Ce joueur a l'air au top de sa forme";
+					}
 
-			// Texte de description du Mode
-			switch(currentPerso.mode)
-			{
-			case 0: ModePerso="";
-			ModePerso="Normal";
-			break;
-			case 1: ModePerso="";
-			ModePerso="Fouille";
-			break;
-			case 2: ModePerso="";
-			ModePerso="Caché";
-			break;
-			case 3: ModePerso="";
-			ModePerso="Défense";
-			break;
-			}
+					// Texte de description du poids du sac
+					if(currentPerso.sacADos>=0 && currentPerso.sacADos<20)
+					{
+						DescriptionSac="";
+						DescriptionSac="Ce joueur n'a pas l'air très chargé !";
+					}
+					else if(currentPerso.sacADos>=20 && currentPerso.sacADos<40)
+					{
+						DescriptionSac="";
+						DescriptionSac="Ce joueur a l'air peu chargé !";
+					}
+					else if(currentPerso.sacADos>=40 && currentPerso.sacADos<60)
+					{
+						DescriptionSac="";
+						DescriptionSac="Ce joueur a l'air chargé !";
+					}
+					else if(currentPerso.sacADos>=60 && currentPerso.sacADos<80)
+					{
+						DescriptionSac="";
+						DescriptionSac="Ce joueur a l'air très chargé !";
+					}
+					else if(currentPerso.sacADos>=80 && currentPerso.sacADos<=100)
+					{
+						DescriptionSac="";
+						DescriptionSac="Ce joueur a l'air surchargé !";
+					}
 
-			labelDescribePerso.text=("Competence : "+currentPerso.competence+
-					"\nMode : "+ModePerso+
-					"\n"+DescriptionVie+
-					"\n"+DescriptionSac);
+					// Texte de description du Mode
+					switch(currentPerso.mode)
+					{
+					case 0: ModePerso="";
+					ModePerso="Normal";
+					break;
+					case 1: ModePerso="";
+					ModePerso="Fouille";
+					break;
+					case 2: ModePerso="";
+					ModePerso="Caché";
+					break;
+					case 3: ModePerso="";
+					ModePerso="Défense";
+					break;
+					}
 
-			if(currentPerso.armeEquipee!=null)
-			{
-				labelDescribePerso.text +=("\nArme Equipée : " + currentPerso.armeEquipee.nom);
-			}
-			else
-			{
-				labelDescribePerso.text += "\nPas d'arme équipée";
-			}
+					labelDescribePerso.text=("Competence : "+currentPerso.competence+
+							"\nMode : "+ModePerso+
+							"\n"+DescriptionVie+
+							"\n"+DescriptionSac);
+
+					if(currentPerso.armeEquipee!=null)
+					{
+						labelDescribePerso.text +=("\nArme Equipée : " + currentPerso.armeEquipee.nom);
+					}
+					else
+					{
+						labelDescribePerso.text += "\nPas d'arme équipée";
+					}
 
 
-			if(currentPerso.armureEquipee!=null)
-			{
-				labelDescribePerso.text +=("\nArmure Equipée :" + currentPerso.armureEquipee.nom);
-			}
-			else
-			{
-				labelDescribePerso.text += "\nPas d'armure équipée";
-			}
-			stage.update();
+					if(currentPerso.armureEquipee!=null)
+					{
+						labelDescribePerso.text +=("\nArmure Equipée :" + currentPerso.armureEquipee.nom);
+					}
+					else
+					{
+						labelDescribePerso.text += "\nPas d'armure équipée";
+					}
+					stage.update();
+						},false);
+
+				 imgPersoEnnemi.addEventListener('mouseout', function(event){
+					labelDescribePerso.text="";
+					stage.update();
 				},false);
 
-		imgPerso.addEventListener('mouseout', function(event){
-			labelDescribePerso.text="";
-			stage.update();
-		},false);
+				 imgPersoEnnemi.addEventListener("click", function(event){
+					var currentPerso = TabListe[PagePersoEnn][event.target.name];
+					SelectedPerso=currentPerso.id;
+					setBtnAttaquer();
+					stage.update();
+				});
 
-		imgPerso.addEventListener("click", function(event){
-			var currentPerso =  listeEnn[event.target.name];
-			SelectedPerso=currentPerso.id;
-			stage.update();
-		});
+				contListeEnnemis.addChild(imgPersoEnnemi);
 
-		contListeEnnemis.addChild(imgPerso);
+				// position de l'item dans le conteneur
+				iPositionPersoInConteneur++;
 
-		// position de l'item dans le conteneur
-		iPositionPersoInConteneur++;
-
-		// Update l'ihm
-		stage.update();
+				// Update l'ihm
+				stage.update();
+		}
 	}
+	catch(e){
+		//alert("Page inexistante");
+	}
+
+	/*for(var perso in listeEnn)
+	{
+		// mise du perso dans une variable
+		var persoE = listeEnn[perso];
+
+		
+		
+	}*/
 	stage.update();
 	socket.emit('INFO_PERSONNAGE_CS');
-		});
+});
 
 
 
