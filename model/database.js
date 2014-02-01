@@ -110,7 +110,7 @@ database.Initialiser = function() {
 	
 	/***** CREATION DU SCHEMA "SCORE" ****/
 	var ScoreSchema = new mongoose.Schema({
-		idUser 			: Number,
+		idUser 			: String,
 		idSession		: Number,
 		scoreODD		: Number,
 		scoreByODD 		: Number,
@@ -118,6 +118,8 @@ database.Initialiser = function() {
 		nbrFoisTue 		: Number,
 		nbrMeurtres 	: Number,
 		nbrGoulesTues 	: Number,
+		listeVictimes	: Array,
+		listeBourreaux	: Array,
 	});
 	ScoreModel = mongoose.model('Score',ScoreSchema); 
 	

@@ -9,8 +9,8 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
-var date = new Date();
-console.log(date);
+var dateLancementSrv = new Date();
+console.log(dateLancementSrv);
 /*
  *
  */
@@ -45,7 +45,10 @@ oDatabase.Initialiser();
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(6, 6);
 
-oSession_Manager.Load();
+oSession_Manager.Load(function(idSession)
+{
+	oScore_Manager.Load(idSession);
+});
 
 oUtilisateur_Manager.Load();
 
@@ -67,7 +70,7 @@ oCase_BD.Initialiser();
 
 oCase_Manager.Load();
 
-oScore_Manager.Load();
+
 /*
  * CONFIGURATION DU SERVEUR
  */
@@ -527,7 +530,9 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 
 
 ////////////// TEST SESSIONJEU
- 
+var date = new Date(2016, 12, 1, 1, 1, 1, 1);
+//oSession_Manager.demarrer(date);
+
 /*
  * CONNEXION D'UN CLIENT
  */

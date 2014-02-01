@@ -11,7 +11,7 @@ var dateFin;
 
 function Session_Manager(){}
 
-Session_Manager.Load = function()
+Session_Manager.Load = function(callback)
 {
 	// récupérer la date
 	var myDate = new Date();
@@ -30,6 +30,7 @@ Session_Manager.Load = function()
 			// sinon
 				// tout mettre à null	
 		});
+		callback(lastId);
 	});
 },
 

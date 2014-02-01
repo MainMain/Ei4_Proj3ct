@@ -213,7 +213,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "Z");
+				this.TuerJoueur(idUser, -1, "Z");
 				reponseServeur.reponseAttaque = 0;
 				return reponseServeur;
 			}
@@ -244,8 +244,8 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 				this.AddMessage(idUserEnnemi,  "Attaqué par un ennemi ! Degats subis : " + reponseServeur.degatsInfliges + " - degats infligés en riposte : " + reponseServeur.degatsRecus);
 				
 				// vérifie s'il y a des morts
-				if (persoUser.estMort()) this.TuerJoueur(idUser,  loginEnn);
-				if (persoEnn.estMort()) this.TuerJoueur(idUserEnnemi,  loginUser);
+				if (persoUser.estMort()) this.TuerJoueur(idUser, idUserEnnemi, loginEnn);
+				if (persoEnn.estMort()) this.TuerJoueur(idUserEnnemi, idUser, loginUser);
 
 				reponseServeur.reponseAttaque = 1;
 
@@ -267,12 +267,12 @@ Personnage_Manager.AttaquerGoule = function(idUser, nbrG)
 	// si le joueur a été tué...
 	if (this.estMort(idUser))
 	{
-		this.TuerJoueur(idUser, "Z");
+		this.TuerJoueur(idUser, -1, "Z");
 	}
 	else
 	{
 		// comptabiliser le socre
-		oScore_Manager.compabiliserGouleTue(nbrG);
+		oScore_Manager.compabiliserGouleTue(idUser, nbrG);
 	}
 }, 
 
@@ -351,7 +351,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "Z");
+				this.TuerJoueur(idUser, -1, "Z");
 				reponseServeur.reponseAction  = 0;
 				return reponseServeur;
 			}
@@ -533,7 +533,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "Z");
+				this.TuerJoueur(idUser, -1, "Z");
 				reponseServeur.reponseChangement = 0;
 				return reponseServeur;
 			}
@@ -653,7 +653,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	// si le joueur a été tué...
 	if (this.estMort(idUser))
 	{
-		this.TuerJoueur(idUser, "Z");
+		this.TuerJoueur(idUser, -1, "Z");
 		reponseServeur.codeRetour = 0;
 		return reponseServeur;
 	}
@@ -712,7 +712,7 @@ Personnage_Manager.MisKo = function(idUser,  meurtrier)
 	
 }, 
 
-Personnage_Manager.TuerJoueur = function(idTue,  loginTueur)
+Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 {
 	// log
 	console.log("PERSONNAGE_MANAGER : Mourir() : mort du personnage " + oUtilisateur_Manager.GetPseudo(idTue)+ " par : " + loginTueur);
@@ -724,7 +724,7 @@ Personnage_Manager.TuerJoueur = function(idTue,  loginTueur)
 	//this.AddMessage(idTue,  "Vous avez été mis KO par " + loginTueur + " ! Vous avez été ramené dans votre zone sure,  mais vous avez perdu tout vos objets.");
 	
 	// ajout du score
-	oScore_Manager.compabiliserMeurtre(loginTueur, idTue);
+	oScore_Manager.compabiliserMeurtre(idTueur, idTue);
 	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
 	this.AddMessage(idTue,  loginTueur);
@@ -1023,7 +1023,7 @@ Personnage_Manager.nouvelleJournee = function()
 			// si le joueur a été tué...
 			if (this.estMort(idUser))
 			{
-				this.TuerJoueur(idUser, "N");
+				this.TuerJoueur(idUser, -1, "N");
 			}
 		}
 	}
