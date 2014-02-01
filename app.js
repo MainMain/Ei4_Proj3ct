@@ -1,5 +1,7 @@
 //appel aux modules
-//var http = require('http');
+// require model
+var oDatabase	= require('./model/database');
+
 var url         = require("url");
 var querystring = require('querystring');
 var express     = require('express'),
@@ -14,8 +16,7 @@ console.log(dateLancementSrv);
 /*
  *
  */
-// require model
-var oDatabase	= require('./model/database');
+
 
 // require objets
 //var oPersonnage = require('./model/object/Personnage');
@@ -39,16 +40,16 @@ var oSession_Manager	 = require('./manager/Session_Manager');
 //Tableau des utilisateur en ligne
 var usersOnline = new Array();
 
+
+
+
 //Initialisation de la base de données
 oDatabase.Initialiser();
 
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(6, 6);
 
-oSession_Manager.Load(function(idSession)
-{
-	oScore_Manager.Load(idSession);
-});
+
 
 oUtilisateur_Manager.Load();
 
@@ -70,6 +71,14 @@ oCase_BD.Initialiser();
 
 oCase_Manager.Load();
 
+//////////////TEST SESSIONJEU
+var date = new Date(2016, 12, 1, 1, 1, 1, 1);
+//oSession_Manager.demarrer(date);
+
+oSession_Manager.Load(function(idSession)
+{
+	oScore_Manager.Load(idSession);
+});
 
 /*
  * CONFIGURATION DU SERVEUR
@@ -529,9 +538,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 
 
 
-////////////// TEST SESSIONJEU
-var date = new Date(2016, 12, 1, 1, 1, 1, 1);
-//oSession_Manager.demarrer(date);
+
 
 /*
  * CONNEXION D'UN CLIENT
