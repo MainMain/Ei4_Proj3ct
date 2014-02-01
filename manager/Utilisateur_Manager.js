@@ -3,9 +3,7 @@ var oUtilisateur = require('../model/Object/Utilisateur');
 var oUtilisateur_BD = require('../persistance/Utilisateur_BD');
 
 //managers
-var oPersonnage_Manager  = require('./Personnage_Manager');
-var oItem_Manager        = require('./Item_Manager');
-var oCase_Manager        = require('./Case_Manager');
+var oSession_Manager  	 = require('./Session_Manager');
 
 //inclusion des règles
 var GameRules	= require('../model/GameRules');
@@ -71,10 +69,11 @@ Utilisateur_Manager.LoadUser = function(idUser)
 /*
  * FONCTIONS D'ECRITURE
  */
-
-Utilisateur_Manager.SetNumEquipe = function(idUser, numEquipe)
+Utilisateur_Manager.SetNumEquipe = function(idUser, numEquipe, idSession)
 {
 	this.listeUtilisateurs[idUser].numEquipe = numEquipe;
+	this.listeUtilisateurs[idUser].idSession = idSession;
+	
 	oUtilisateur_BD.SetUtilisateur(this.listeUtilisateurs[idUser], function(reponse)
 	{
 		if (reponse == -1)
@@ -91,7 +90,6 @@ Utilisateur_Manager.SetNumEquipe = function(idUser, numEquipe)
 /*
  * FONCTIONS DE LECTURE
  */
-
 Utilisateur_Manager.exist = function(idUser)
 {
 	if(this.listeUtilisateurs[idUser])

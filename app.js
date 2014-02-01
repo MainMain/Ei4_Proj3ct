@@ -32,6 +32,9 @@ var oPersonnage_Manager  = require('./manager/Personnage_Manager');
 var oItem_Manager        = require('./manager/Item_Manager');
 var oCase_Manager        = require('./manager/Case_Manager');
 var oUtilisateur_Manager = require('./manager/Utilisateur_Manager');
+var oScore_Manager       = require('./manager/Score_Manager');
+var oSession_Manager	 = require('./manager/Session_Manager');
+
 
 //Tableau des utilisateur en ligne
 var usersOnline = new Array();
@@ -41,6 +44,8 @@ oDatabase.Initialiser();
 
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(6, 6);
+
+oSession_Manager.Load();
 
 oUtilisateur_Manager.Load();
 
@@ -62,6 +67,7 @@ oCase_BD.Initialiser();
 
 oCase_Manager.Load();
 
+oScore_Manager.Load();
 /*
  * CONFIGURATION DU SERVEUR
  */
@@ -141,7 +147,8 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 	
 	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")
 	{
-		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe);
+		var idSession = oSession_Manager.getIdSessionEnCours();
+		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe, idSession);
 		oPersonnage_Manager.SetCompetence(s.idUser, b.competence);
 		options.idEquipe = b.equipe;
 	}
@@ -228,6 +235,7 @@ app.put('/', function (req, res)
 {
 	var b = req.body;
 	oUtilisateur_BD.Inscription(b.username, b.password, b.email, req, res, callbackInscription);
+	
 });
 	
 callbackInscription = function(reponseInscription, req, res)
@@ -255,6 +263,8 @@ callbackInscription = function(reponseInscription, req, res)
 		
 		oUtilisateur_Manager.LoadUser(reponseInscription);
 		oPersonnage_Manager.LoadUser(reponseInscription);
+		// ajout de l'objet score pour la session de jeu en cours
+		oScore_Manager.nouveauJoueur(reponseInscription.id);
 		
 		res.render("accueil", optionAccueil);
 		
@@ -513,6 +523,10 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 	});
 });
 
+
+
+
+////////////// TEST SESSIONJEU
  
 /*
  * CONNEXION D'UN CLIENT
@@ -993,8 +1007,8 @@ io.sockets.on('connection', function (socket)
 				// mise en mode "oisif"
 				oPersonnage_Manager.InitialiserMode(idUser);
 				
-				// attaque
-				oPersonnage_Manager.AttaquerGoule(idUser);
+				// informer le manager de perso de l'attaque
+				oPersonnage_Manager.AttaquerGoule(idUser, goulesTues);
 				
 				// informer les perso
 				InformerAllInCase("a courageusement tué " + goulesTues + " goules ! ");
@@ -1222,7 +1236,7 @@ function SauvegardeGlobale()
    	oUtilisateur_Manager.Save();
 	oPersonnage_Manager.Save();
 	oCase_Manager.Save();
-			
+	oScore_Manager.Save();
 			
 	// maj ihms des connectés
 	for(var id in usersOnline)

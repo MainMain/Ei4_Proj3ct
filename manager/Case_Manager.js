@@ -4,9 +4,7 @@ var oCase_BD 	= require('../persistance/Case_BD');
 var oCarte 		= require('../model/object/Carte');
 var oCase_BD 	= require('../persistance/Case_BD');
 
-var oPersonnage_Manager  = require('./Personnage_Manager');
 var oItem_Manager        = require('./Item_Manager');
-var oUtilisateur_Manager = require('./Utilisateur_Manager');
 
 //inclusion des règles
 var GameRules	= require('../model/GameRules');

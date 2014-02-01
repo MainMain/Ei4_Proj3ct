@@ -32,23 +32,15 @@ database.Initialiser = function() {
 
 	/***** CREATION DU SCHEMA "UTILISATEUR" ****/
 	var UtilisateurSchema = new mongoose.Schema({		//creation de la structure d'un utilisateur
-		pseudo					: String,
-		pass				 	: String,
-		email 					: String,
-		personnage 				: String,
-		nbrMeurtres 			: Number,
-		nbrMeurtresCumule 		: Number,
-		nbrFoisTue 				: Number,
-		nbrFoisTueCumule 		: Number,
-		scoreByMeutre 			: Number,
-		scoreByODD 				: Number,
-		scoreByMeutreCumule 	: Number,
-		scoreByODDCumule 		: Number,
-		nbrGoulesTues 			: Number,
-		nbrGoulesTuesCumules 	: Number,
-		numEquipe				: Number,
+		pseudo				: String,
+		pass				: String,
+		email 				: String,
+		personnage 			: String,
+		numEquipe			: Number,
+		idSession			: Number,
 	});
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
+	
 	
 	/***** CREATION DU SCHEMA "PERSONNAGE" ****/
 	var PersonnageSchema = new mongoose.Schema({
@@ -78,6 +70,7 @@ database.Initialiser = function() {
 	});
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
 	
+	
 	/***** CREATION DU SCHEMA "ITEM" ****/
 	var ItemSchema = new mongoose.Schema({
 		idItem 		: Number,
@@ -88,8 +81,8 @@ database.Initialiser = function() {
 		valeur 		: Number,
 		imageName	: String,
 	});
-	
 	ItemModel = mongoose.model('Item',ItemSchema);
+	
 	
 	/***** CREATION DU SCHEMA "CASE" ****/
 	var CaseSchema = new mongoose.Schema({
@@ -102,8 +95,31 @@ database.Initialiser = function() {
 		listeItem : Array,
 		pathImg : String,
 	});
-
 	CaseModel = mongoose.model('Case',CaseSchema); 
+	
+	
+	/***** CREATION DU SCHEMA "SESSION" ****/
+	var SessionSchema = new mongoose.Schema({
+		id 			: Number,
+		dateDebut 	: Date,
+		dateFin 	: Date,
+	});
+
+	SessionModel = mongoose.model('Session',SessionSchema); 
+	
+	
+	/***** CREATION DU SCHEMA "SCORE" ****/
+	var ScoreSchema = new mongoose.Schema({
+		idUser 			: Number,
+		idSession		: Number,
+		scoreODD		: Number,
+		scoreByODD 		: Number,
+		scoreByMeutre 	: Number,
+		nbrFoisTue 		: Number,
+		nbrMeurtres 	: Number,
+		nbrGoulesTues 	: Number,
+	});
+	ScoreModel = mongoose.model('Score',ScoreSchema); 
 	
 	console.log("Initialisation Database");
 },

@@ -41,10 +41,7 @@ var Personnage = (function() {
 	Personnage.DIRECTIONS = [ 'NORD', 'SUD', 'EST', 'OUEST' ];
 
 	// --- METHODES DE CLASSE ---
-	Personnage.build = function() {
-		return new Personnage();
-
-	};
+	Personnage.build = function() {return new Personnage();};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,

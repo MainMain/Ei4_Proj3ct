@@ -15,82 +15,32 @@ var Utilisateur = (function() {
 	Utilisateur.pseudo;
 	Utilisateur.email;
 	Utilisateur.pass;
-	Utilisateur.nbrMeurtres;
-	Utilisateur.nbrMeurtresCumule;
-	Utilisateur.nbrFoisTue;
-	Utilisateur.nbrFoisTueCumule;
-	Utilisateur.scoreByMeutre;
-	Utilisateur.scoreByODD;
-	Utilisateur.scoreByMeutreCumule;
-	Utilisateur.scoreByODDCumule;
-	Utilisateur.nbrGoulesTues;
-	Utilisateur.nbrGoulesTuesCumules;
 	Utilisateur.numEquipe;
 	Utilisateur.idPersonnage;
-
+	Utilisateur.idSession;
+	
 	// --- METHODES DE CLASSE ---
-	Utilisateur.build = function(id, pseudo, email, pass, nbrMeurtres, nbrMeurtresCumule,nbrFoisTue, nbrFoisTueCumule, scoreByMeutre, 
-			scoreByODD, scoreByMeutreCumule, scoreByODDCumule, nbrGoulesTues, nbrGoulesTuesCumules, numEquipe, idPersonnage) {
-		return new Utilisateur();
-	};
+	Utilisateur.build = function() {return new Utilisateur();};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	function Utilisateur(id, pseudo, email, nbrMeurtres, nbrMeurtresCumule, nbrFoisTue, nbrFoisTueCumule, scoreByMeutre, 
-			scoreByODD, scoreByMeutreCumule, scoreByODDCumule, nbrGoulesTues, nbrGoulesTuesCumules, numEquipe, idPersonnage) {
+	function Utilisateur(id, pseudo, email, numEquipe, idPersonnage, idSession) {
 		// --- Attributs d'instance
 		this.id 					= id;
 		this.pseudo 				= pseudo;
 		this.email 					= email;
-		this.nbrMeurtres 			= nbrMeurtres;
-		this.nbrMeurtresCumule 		= nbrMeurtresCumule;
-		this.nbrFoisTue 			= nbrFoisTue;
-		this.nbrFoisTueCumule 		= nbrFoisTueCumule;
-		this.scoreByMeutre 			= scoreByMeutre;
-		this.scoreByODD 			= scoreByODD;
-		this.scoreByMeutreCumule 	= scoreByMeutreCumule;
-		this.scoreByODDCumule 		= scoreByODDCumule;
-		this.nbrGoulesTues 			= nbrGoulesTues;
-		this.nbrGoulesTuesCumules 	= nbrGoulesTuesCumules;
 		this.numEquipe			 	= numEquipe;
 		this.idPersonnage 			= idPersonnage;
-		//console.log("Utilisateur : Nouveau Utilisateur crée ");
+		this.idSession				= idSession;
 	}
 
 	// --- METHODES D'INSTANCE
 	Utilisateur.prototype = {
-		/**
-		 * L'UTILISATEUR A COMMIT UN MEUTRE
-		 * 
-		 * @method ajoutMeurtre
-		 */
-		ajoutMeurtre : function() {
-			this.nbrMeurtres 			+= 1;
-			this.nbrMeurtresCumule 		+= 1;
-			this.scoreByMeutre 			+= GameRules.jeu_score_gain_meurtre();
-			this.scoreByMeutreCumule 	+= GameRules.jeu_score_gain_meurtre();
-		},
 
-		/**
-		 * L'UTILISATEUR A ETE TUE
-		 * 
-		 * @method ajoutMeurtre
-		 */
-		ajoutTue : function() {
-			this.nbrFoisTue 			+= 1;
-			this.nbrFoisTueCumule 		+= 1;
-			this.scoreByMeutre 			-= GameRules.jeu_score_perte_tue();
-			this.scoreByMeutreCumule 	-= GameRules.jeu_score_perte_tue();
+		getIdSession : function()
+		{
+			return this.idSession;
 		},
-		/**
-		 * L'UTILISATEUR A DEPOSE UN ODD DANS SA ZONE SURE
-		 * 
-		 * @method depotODD
-		 */
-		depotODD : function(valeurODD) {
-			this.scoreByODD += valeurODD;
-			this.scoreByODDCumule += valeurODD;
-		},
-
+		
 		getNumEquipe : function()
 		{
 			return this.numEquipe;

@@ -2,12 +2,14 @@
 var oPersonnage		= require('../model/Object/Personnage');
 var oUtilisateur	= require('../model/Object/Utilisateur');
 var oCarte			= require('../model/object/Carte');
+
 var oPersonnage_BD	= require('../persistance/Personnage_BD');
 var oUtilisateur_BD	= require('../persistance/Utilisateur_BD');
 
 var oItem_Manager        = require('./Item_Manager');
 var oCase_Manager        = require('./Case_Manager');
 var oUtilisateur_Manager = require('./Utilisateur_Manager');
+var oScore_Manager		 = require('./Score_Manager');
 
 //inclusion des règles
 var GameRules	= require('../model/GameRules');
@@ -158,8 +160,6 @@ Personnage_Manager.acquitterMsg = function(idUser)
 },
 
 
-
-
 /////////////////////////////////////////// EN RAPPORT AVEC LES ATTAQUES DU JOUEUR //////////////////////////////////
 Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 {
@@ -260,9 +260,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	return reponseServeur;
 }, 
 
-
-
-Personnage_Manager.AttaquerGoule = function(idUser)
+Personnage_Manager.AttaquerGoule = function(idUser, nbrG)
 {
 	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueGoule());
 	
@@ -271,6 +269,11 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	{
 		this.TuerJoueur(idUser, "Z");
 	}
+	else
+	{
+		// comptabiliser le socre
+		oScore_Manager.compabiliserGouleTue(nbrG);
+	}
 }, 
 
 Personnage_Manager.subirDegats = function (idUser,  degats)
@@ -278,7 +281,6 @@ Personnage_Manager.subirDegats = function (idUser,  degats)
 	console.log("PERSONNAGE_MANAGER : Subir Dégats() : pts de santé restants : " + this.listePersonnages[idUser].getPtSante());
 	return this.listePersonnages[idUser].subirDegats(degats);
 }, 
-
 
 /////////////////////////////////////////// EN RAPPORT AVEC LES ACTIONS DU JOUEUR //////////////////////////////////
 Personnage_Manager.Deplacement = function (idUser,  move)
@@ -385,11 +387,13 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			oCase_Manager.AjouterItem(o_____O,  item);
 			
 			// supprimer du sac
-			this.SupprimerDuSac(idUser,  item);
+			this.SupprimerDuSac(idUser, item);
 			
-			// ajout du score si c'est le dépot d'un odd en zone sure
-			
-			
+			// si c'est un ODD dans la zone sure -> return 
+			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2()) )
+			{
+				oScore_Manager.compabiliserDepotODD(idUser, item.valeur);
+			}
 			
 			reponseServeur.reponseAction = this.GetPoidsSac(idUser);
 			return reponseServeur;
@@ -403,9 +407,6 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 	return reponseServeur;
 }, 
 
-Personnage_Manager.deposer = function(idUser,  item)
-{
-}, 
 
 Personnage_Manager.AjouterItemAuSac = function (idUser,  item)
 {
@@ -705,12 +706,6 @@ Personnage_Manager.fouilleRapide = function(idUser)
 }, 
 
 
-
-
-
-
-
-
 /////////////////////////////////////////// EN RAPPORT AVEC LA MORT DU JOUEUR //////////////////////////////////
 Personnage_Manager.MisKo = function(idUser,  meurtrier)
 {
@@ -728,6 +723,9 @@ Personnage_Manager.TuerJoueur = function(idTue,  loginTueur)
 	// ajout du message 
 	//this.AddMessage(idTue,  "Vous avez été mis KO par " + loginTueur + " ! Vous avez été ramené dans votre zone sure,  mais vous avez perdu tout vos objets.");
 	
+	// ajout du score
+	oScore_Manager.compabiliserMeurtre(loginTueur, idTue);
+	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
 	this.AddMessage(idTue,  loginTueur);
 	
@@ -743,7 +741,6 @@ Personnage_Manager.TuerJoueur = function(idTue,  loginTueur)
 			currentPerso.supprimerDuSac(currentPerso.GetSac()[i]);
 		}
 	}
-	//currentPerso.viderInventaire();
 }, 
 
 Personnage_Manager.SeRetablir = function(idUser)
@@ -756,8 +753,6 @@ Personnage_Manager.SeRetablir = function(idUser)
 	// go a la zone sure
 	this.listePersonnages[idUser].setIdCase(oCase_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
 }, 
-
-
 
 
 /*
@@ -880,8 +875,6 @@ Personnage_Manager.TestDeplacementPossible = function(idUser,  nbrGoules,  direc
 	return this.listePersonnages[idUser].testDeplacement(nbrGoules,  direction);
 }, 
 
-
-
 Personnage_Manager.GetMultiFouille = function(idUser)
 {
 	return this.listePersonnages[idUser].GetMultiFouille();
@@ -998,6 +991,7 @@ Personnage_Manager.Save = function()
 		});
 	}
 }, 
+
 Personnage_Manager.nouvelleJournee = function()
 {
 	var idCase;
