@@ -52,9 +52,9 @@ Personnage_Manager.Load = function(callbackFinFouille)
 					//console.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
 					context.listePersonnages[id] = reponse;
 					/*** TEST ***/
-					context.listePersonnages[id].setptSanteMax(30);
-					context.listePersonnages[id].setptDeplacementMax(1000);
-					context.listePersonnages[id].setptActionMax(1000);
+					//context.listePersonnages[id].setptSanteMax(30);
+					//context.listePersonnages[id].setptDeplacementMax(1000);
+					//context.listePersonnages[id].setptActionMax(1000);
 					
 					// si le perso était en fouille, on le remet en oisif (car on n'a pas la durée du compteur de fouille)
 					if (context.listePersonnages[id].mode == 1)context.listePersonnages[id].mode = 0;
@@ -77,9 +77,9 @@ Personnage_Manager.LoadUser = function(idUser)
 		{
 			context.listePersonnages[id] = reponse;
 			/*** TEST ***/
-			context.listePersonnages[id].setptSanteMax(30);
-			context.listePersonnages[id].setptDeplacementMax(1000);
-			context.listePersonnages[id].setptActionMax(1000);
+			//context.listePersonnages[id].setptSanteMax(30);
+			//context.listePersonnages[id].setptDeplacementMax(1000);
+			//context.listePersonnages[id].setptActionMax(1000);
 		}
 	});     	
 }, 
@@ -89,42 +89,36 @@ Personnage_Manager.SetCompetence = function(idUser,  competence)
 	/*** - CALCUL SUR LES MULTI POINTS - ***/
 	if(competence == "brute")
 	{
-		this.listePersonnages[idUser].setptSanteMax(140);
-		this.listePersonnages[idUser].setptDeplacementMax(15);
-		this.listePersonnages[idUser].setptActionMax(20);
-		
-		this.listePersonnages[idUser].setmultiPtsAttaque(2);
-		this.listePersonnages[idUser].setmultiPtsDefense(2);
-		this.listePersonnages[idUser].setmultiProbaCache(0.5);
-		this.listePersonnages[idUser].setmultiProbaFouille(1);
-		
-		this.listePersonnages[idUser].setgoulesMax(2);
+		this.listePersonnages[idUser].setptSanteMax			(140);
+		this.listePersonnages[idUser].setptDeplacementMax	(15);
+		this.listePersonnages[idUser].setptActionMax		(20);
+		this.listePersonnages[idUser].setmultiPtsAttaque	(2);
+		this.listePersonnages[idUser].setmultiPtsDefense	(2);
+		this.listePersonnages[idUser].setmultiProbaCache	(0.5);
+		this.listePersonnages[idUser].setmultiProbaFouille	(1);
+		this.listePersonnages[idUser].setgoulesMax			(2);
 	}
 	else if(competence == "explorateur")
 	{
-		this.listePersonnages[idUser].setptSanteMax(100);
-		this.listePersonnages[idUser].setptDeplacementMax(25);
-		this.listePersonnages[idUser].setptActionMax(20);
-		
-		this.listePersonnages[idUser].setmultiPtsAttaque(1);
-		this.listePersonnages[idUser].setmultiPtsDefense(0.3);
-		this.listePersonnages[idUser].setmultiProbaCache(1);
-		this.listePersonnages[idUser].setmultiProbaFouille(3);
-		
-		this.listePersonnages[idUser].setgoulesMax(5);
+		this.listePersonnages[idUser].setptSanteMax			(100);
+		this.listePersonnages[idUser].setptDeplacementMax	(25);
+		this.listePersonnages[idUser].setptActionMax		(20);
+		this.listePersonnages[idUser].setmultiPtsAttaque	(1);
+		this.listePersonnages[idUser].setmultiPtsDefense	(0.3);
+		this.listePersonnages[idUser].setmultiProbaCache	(1);
+		this.listePersonnages[idUser].setmultiProbaFouille	(3);
+		this.listePersonnages[idUser].setgoulesMax			(5);
 	}
 	else if(competence == "chercheur")
 	{
-		this.listePersonnages[idUser].setptSanteMax(100);
-		this.listePersonnages[idUser].setptDeplacementMax(15);
-		this.listePersonnages[idUser].setptActionMax(30);
-		
-		this.listePersonnages[idUser].setmultiPtsAttaque(0.5);
-		this.listePersonnages[idUser].setmultiPtsDefense(1.5);
-		this.listePersonnages[idUser].setmultiProbaCache(3);
-		this.listePersonnages[idUser].setmultiProbaFouille(0.5);
-		
-		this.listePersonnages[idUser].setgoulesMax(3);
+		this.listePersonnages[idUser].setptSanteMax			(100);
+		this.listePersonnages[idUser].setptDeplacementMax	(15);
+		this.listePersonnages[idUser].setptActionMax		(30);
+		this.listePersonnages[idUser].setmultiPtsAttaque	(0.5);
+		this.listePersonnages[idUser].setmultiPtsDefense	(1.5);
+		this.listePersonnages[idUser].setmultiProbaCache	(3);
+		this.listePersonnages[idUser].setmultiProbaFouille	(0.5);
+		this.listePersonnages[idUser].setgoulesMax			(3);
 	}
 	this.listePersonnages[idUser].setCompetence(competence);
 	
@@ -1027,6 +1021,11 @@ Personnage_Manager.nouvelleJournee = function()
 			}
 		}
 	}
+},
+
+Personnage_Manager.debutSession = function(idUser)
+{
+	
 },
 
 module.exports = Personnage_Manager;

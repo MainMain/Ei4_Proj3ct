@@ -166,8 +166,10 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
  *
  * @method Creation
  */
-Personnage_BD.Creation = function (vie, action, deplacement, poids, goule, competence) {
-
+Personnage_BD.Creation = function (vie, action, deplacement, poids, goule, competence) 
+{
+	var a = 0;
+	a = a / 0;
     var PersonnageModel = mongoose.model('Personnage');
     var Perso = new PersonnageModel();
 

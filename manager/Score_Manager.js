@@ -106,6 +106,8 @@ Score_Manager.nouvelleSession = function(idSession)
 
 Score_Manager.nouveauJoueur = function(idUser, idSession)
 {
+	if (idSession == -1) return;
+	
 	// ajout en BD
 	oScore_BD.Creation(idUser, idSession, function()
 	{

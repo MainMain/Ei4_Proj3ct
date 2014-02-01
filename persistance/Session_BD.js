@@ -96,6 +96,7 @@ Session_BD.SetSession = function (sessionToSave, callbackSetSession)
 
 Session_BD.Creation = function (idSession, dateDebut, dateFin) {
 
+	console.log("SESSION_BD_CREATION");
     var SessionModel = mongoose.model('Session');
     var newSession = new SessionModel();
 

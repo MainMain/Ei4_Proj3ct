@@ -69,6 +69,7 @@ Session_Manager.demarrer = function(dateFin)
 	
 		// créer en BD
 		oSession_BD.Creation(this.idSessionEnCours, this.dateDebut, this.dateFin);
+	
 	});
 },
 

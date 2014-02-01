@@ -277,7 +277,7 @@ callbackInscription = function(reponseInscription, req, res)
 		oUtilisateur_Manager.LoadUser(reponseInscription);
 		oPersonnage_Manager.LoadUser(reponseInscription);
 		// ajout de l'objet score pour la session de jeu en cours
-		oScore_Manager.nouveauJoueur(reponseInscription.id, oSession_Manager.getIdSessionEnCours());
+		oScore_Manager.nouveauJoueur(reponseInscription, oSession_Manager.getIdSessionEnCours());
 		
 		res.render("accueil", optionAccueil);
 		
