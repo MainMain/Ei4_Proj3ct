@@ -113,7 +113,7 @@ Score_Manager.nouvelleSession = function(idSession)
 	});
 },
 
-Score_Manager.nouveauJoueur = function(idUser)
+Score_Manager.nouveauJoueur = function(idUser, idSession)
 {
 	// ajout en BD
 	oScore_BD.Creation(idUser, idSession, function()
