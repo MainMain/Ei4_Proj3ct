@@ -241,12 +241,12 @@ var _labelBtnsInvCaseY = _ContBtnsInvCaseY-20;
 //------------------ Zone 12 : Map -------------------------------------------------------
 
 //Placement Conteneur Map (en fonction de la taille de l'image !!)
-var _ContMapX = 1100/2 - 620/2;
-var _ContMapY = 620/2 - 379/2;
+var _ContMapX = 1100/2 - 746/2;
+var _ContMapY = 620/2 - 420/2;
 
 //Dimension Conteneur Map
-var _ContMapH = 379;
-var _ContMapW = 620;
+var _ContMapH = 420;
+var _ContMapW = 746;
 
 //Placement du dernier message
 var _labelDernierMessageX = _ContMapX;
