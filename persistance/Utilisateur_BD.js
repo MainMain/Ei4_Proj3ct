@@ -113,86 +113,76 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	var userExiste = true;
 	var mailExiste = true;
 	var sauvegarde = 0;
-	var NewUser = new Utilisateurmodel();
+	var newUser = new Utilisateurmodel();
 	
-	NewUser.pseudo 				= pseudoU;
-	NewUser.pass 				= passU;
-	NewUser.email 				= emailU;
-	NewUser.numEquipe 			= 0;
-	NewUser.idSession			= -1;
+	newUser.pseudo 				= pseudoU;
+	newUser.pass 				= passU;
+	newUser.email 				= emailU;
+	newUser.numEquipe 			= 0;
+	newUser.idSession			= -1;
+	
+	// on cherche si ce pseudo existee déja
 	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)
 	{
-		if (err)
-		{
-			throw err;
-		}		
+		// si erreur 
+		if (err){ throw err; }		
 
-		if(typeof testuseru[0] === "undefined")
-		{
-			userExiste = false;
-		}
-		else
-		{
-			userExiste = true;
-		}
+		// si pseudo pas trouvé
+		if(typeof testuseru[0] === "undefined") { userExiste = false; }
+		// si pseudo trouvé
+		else { userExiste = true; }
 		
+		// on cherche si cet email existe déja
 		Utilisateurmodel.find({email: emailU}, function (err, testusere)
 		{
-			if (err)
-			{
-				throw err;
-			}
+			// si erreur
+			if (err) { throw err; }
 			
-			if(typeof testusere[0] === "undefined")
-			{
-				mailExiste = false;
-			}
-			else
-			{
-				mailExiste = true;
-			}
+			// si email pas trouvé
+			if(typeof testusere[0] === "undefined") { mailExiste = false; }
+			// si email trouvé
+			else { mailExiste = true; }
 			
-			if (userExiste)
-			{
-				sauvegarde = -1;
-			}
+			// création des codes d'erreur
+			if (userExiste) { sauvegarde = -1; }
+			if (mailExiste) { sauvegarde = -2; }
 			
-			if(mailExiste)
-			{
-				sauvegarde = -2;
-			}
-			
-			if(sauvegarde == -1 || sauvegarde == -2)
-			{
-				callbackInscription(sauvegarde, req, res);
-			}
+			// renvoi des codes d'eeur
+			if(sauvegarde == -1 || sauvegarde == -2) { callbackInscription(sauvegarde, req, res); }
+			// si c'est ok
 			else
 			{		
 				var PersonnageModel = mongoose.model('Personnage');
-				var NewPerso = new PersonnageModel();
+				var newPerso = new PersonnageModel();
 				
-				NewPerso = oPersonnageDB.Creation(100,20,15,30,4,"");
+				// crée le perso en BD
+				newPerso = oPersonnageDB.Creation();
 				
-				console.log('BASE DE DONNEES : ID du perso cree ' + NewPerso._id);
-				NewUser.personnage = NewPerso._id;
+				// log
+				console.log('BASE DE DONNEES : ID du perso cree ' + newPerso._id);
 				
-				NewUser.save(function (err)
+				// on attribut l'id de personnage crée à l'attribut "personnage" du nouvel user
+				newUser.personnage = newPerso._id;
+				
+				// lance la sauvegarde de l'utilisateur
+				newUser.save(function (err)
 				{
 					if (err)
 					{
 						throw err;
 					}
 					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
-						
-					callbackInscription(NewUser._id, req, res);
+					
+					// renvoi réponse
+					callbackInscription(newUser._id, req, res);
 				});
 			}
 		});
 	});
 },
  
- /**
- *	Renvoi 1 si le pseudo n'existe pas, 2 si le mot de passe ne coresspond pas au pseudo et 0 si tout est en règle 
+/**
+ * Renvoi 1 si le pseudo n'existe pas, 2 si le mot de passe ne coresspond pas au pseudo et 0 si tout est en règle 
  * Renvoi 1 si conexion ok
  * Renvoi 0 si erreur
  * Renvoi -1 si le password ne corespond pas

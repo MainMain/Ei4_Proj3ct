@@ -97,7 +97,7 @@ Score_Manager.nouvelleSession = function(idSession)
 		var idUser;
 		for(var i in tabId)
 		{
-			console.log("------> CREATION SCORE : idUser = " + tabId[i]);
+			console.log("------> SC_MANAGER : nvlle session : creation score : idUser = " + tabId[i]);
 			// il crée un score avec l'id de ma nouvelle session
 			oScore_BD.Creation(tabId[i], idSession);
 		}
@@ -106,17 +106,21 @@ Score_Manager.nouvelleSession = function(idSession)
 
 Score_Manager.nouveauJoueur = function(idUser, idSession)
 {
+	console.log("SC_MANAGER : nouveauJoueur() - idSession = " + idSession );
 	if (idSession == -1) return;
 	
+	var context = this;
 	// ajout en BD
 	oScore_BD.Creation(idUser, idSession, function()
 	{
+		console.log("SC_MANAGER : creation() - idSession = " + idSession );
 		// puis on le charge en mémoire
-		oScore_BD.GetScoreById(idUser, function(idScore, score)
+		oScore_BD.GetScoreByIdUser(idUser, function(score)
 		{
+			console.log("SC_MANAGER : getScoreById() - idSession = " + idSession );
 			if (score == -1)
 			{
-				console.log("/!\ WARNING : SCMANAGER : erreur lecture du score de " + idScore);
+				console.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + idScore);
 			}
 			else
 			{
@@ -126,7 +130,7 @@ Score_Manager.nouveauJoueur = function(idUser, idSession)
 				// enregistrement du score
 				context.listeScores[iduser] = {};
 				context.listeScores[iduser][idsession] = score;
-				console.log("SC_MANAGER : Creation socre pour le nouveau joueur : " + oUtilisateur_Manager.GetPseudo(iduser)+"<->"+idsession+"<->"+score.id);
+				console.log("SC_MANAGER :Chargement en mémoire du nouveau score pour le nouveau joueur : " + iduser+"<->"+idsession+"<->"+score.id);
 			}
 		});
 	});
@@ -137,23 +141,23 @@ Score_Manager.compabiliserMeurtre = function(idBourreau, idVictime)
 	console.log("SCORE_MANAGER : ComptabiliserMeurtre idB =  " + idBourreau+"<-> idV = "+idVictime);
 	if (idBourreau == -1)
 	{
-		this.listeScores[idVictime][idSessionEnCours].ajoutTueParGoule();
+		this.listeScores[idVictime][this.idSessionEnCours].ajoutTueParGoule();
 	}
 	else
 	{
-		this.listeScores[idBourreau][idSessionEnCours].ajoutMeurtre(idVictime);
-		this.listeScores[idVictime] [idSessionEnCours].ajoutTueParJoueur(idBourreau);	
+		this.listeScores[idBourreau][this.idSessionEnCours].ajoutMeurtre(idVictime);
+		this.listeScores[idVictime] [this.idSessionEnCours].ajoutTueParJoueur(idBourreau);	
 	}
 },
 
 Score_Manager.compabiliserDepotODD = function(idUser, valeurODD)
 {
-	this.listeScores[idUser][idSessionEnCours].depotODD(valeurODD);
+	this.listeScores[idUser][this.idSessionEnCours].depotODD(valeurODD);
 },
 
 Score_Manager.compabiliserGouleTue = function(idUser, nbr)
 {
-	this.listeScores[idUser][idSessionEnCours].ajoutGouleTue(nbr);
+	this.listeScores[idUser][this.idSessionEnCours].ajoutGouleTue(nbr);
 },
 
 module.exports = Score_Manager;

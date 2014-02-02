@@ -61,11 +61,43 @@ Score_BD.GetScoreById = function(idScore, callbackGetScore) {
 	
 },
 
+
+Score_BD.GetScoreByIdUser = function(id, callbackGetScore) {
+	
+	var Scoremodel = mongoose.model('Score');
+		
+	Scoremodel.find({idUser : id},function (err, Score)
+	{
+		if (err)  
+		{
+			throw err;
+		}
+		
+		if (typeof Score[0] === "undefined")
+		{
+			console.log("Get Score : undefined");
+			callbackGetScore(null);	
+		}
+		else
+		{
+			var score = new oScore(
+				Score[0]._id,				Score[0].idUser,			Score[0].idSession,				
+				Score[0].nbrMeurtres,		Score[0].nbrFoisTue,		Score[0].scoreByMeutre,
+				Score[0].scoreByODD,		Score[0].nbrGoulesTues,		Score[0].listeVictimes,
+				Score[0].listeBourreaux
+				);
+			//console.log("SCORE_BD : Chargement du score : ["+Score[0].idUser+"-"+Score[0].idSession+"]");
+			callbackGetScore(score);
+		}
+	});
+	
+},
 Score_BD.SetScore = function (scoreToSave, callbackSetScore)
 {
     var ScoreModel = mongoose.model('Score');
     var newScore = ScoreModel();
 
+    console.log("SCORE_BD : TENTATIVE Mise à jour du score : ["+scoreToSave.id+"]");
     ScoreModel.find({_id: scoreToSave.id}, function (err, newScore) 
     {
     	console.log("---> BD : id score to save " + scoreToSave.id);
@@ -109,7 +141,7 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
     });
 },
 
-Score_BD.Creation = function (idUser, idSession) {
+Score_BD.Creation = function (idUser, idSession, callback) {
 
     var ScoreModel = mongoose.model('Score');
     var newScore = new ScoreModel();
@@ -129,7 +161,8 @@ Score_BD.Creation = function (idUser, idSession) {
             throw err;
         }
         console.log("SCORE_BD : Ajout d'un score -> " + idUser + " <-> " + idSession);
-    });
+        callback();
+	});
     return newScore;
 },
 

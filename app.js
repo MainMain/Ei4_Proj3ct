@@ -162,7 +162,7 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 	{
 		var idSession = oSession_Manager.getIdSessionEnCours();
 		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe, idSession);
-		oPersonnage_Manager.SetCompetence(s.idUser, b.competence);
+		oPersonnage_Manager.SetCompetence(s.idUser, b.competence, b.equipe);
 		options.idEquipe = b.equipe;
 	}
 	

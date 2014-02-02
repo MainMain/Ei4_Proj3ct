@@ -20,7 +20,6 @@ Session_Manager.Load = function(callback)
 	
 	// récupérer la date
 	var myDate = new Date();
-	var datelaseSession ;
 	
 	var context = this;
 	// récupérer le dernier élément de la table session
@@ -30,11 +29,11 @@ Session_Manager.Load = function(callback)
 		{
 			// si dateFin de cet élément est après la date courante
 				// entrer les attributs
-				if (typeof idSession === "undefined")
+				if (typeof lastId === "undefined")
 				{
 					context.idSessionEnCours 	= -1;
 					context.dateDebut			= new Date();
-					context.dateFin 			=  new Date();
+					context.dateFin 			= new Date();
 				}
 				else
 				{
@@ -42,11 +41,8 @@ Session_Manager.Load = function(callback)
 					context.dateDebut			= dateDeb;
 					context.dateFin 			= dateFin;
 				}
-			// sinon
-				// tout mettre à null	
-				
+				callback(context.idSessionEnCours);
 		});
-		callback(context.idSessionEnCours);
 	});
 },
 
