@@ -376,6 +376,7 @@ function initialize() {
 		{src:"public/Boutons/Messages.png", id:"idBtnMessages"},
 		{src:"public/Boutons/MessagesVide.png", id:"idBtnMessagesVide"},
 		{src:"public/Boutons/MessagesGris.png", id:"idBtnMessagesGris"},
+		{src:"public/Boutons/Ok.png", id:"idBtnOk"},
 		{src:"public/spritesheets/persos/Brute.gif", id:"idPersoBrute"},
 		{src:"public/spritesheets/persos/Chercheur.gif", id:"idPersoChercheur"},
 		{src:"public/spritesheets/persos/Explorateur.gif", id:"idPersoExplorateur"},
@@ -1221,7 +1222,7 @@ function message(ListeMsg)
 	labelMessage.y = 5;
 	labelMessage.text=ListeMsg;
 
-	var BtnValideMsg = new createjs.Bitmap("public/Boutons/Annuler.png");
+	var BtnValideMsg = new createjs.Bitmap("public/Boutons/Ok.png");
 	BtnValideMsg.x=330;
 	BtnValideMsg.y=330;
 	contMessage.addChild(BtnValideMsg);
@@ -1419,7 +1420,7 @@ function dead(ListeMsg)
 	labelDeadByWho.text+=Killer;
 
 	// Bouton ANNULER
-	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Annuler.png");
+	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Ok.png");
 	BtnCancelDead.x=960;
 	BtnCancelDead.y=570;
 	contDead.addChild(BtnCancelDead);
