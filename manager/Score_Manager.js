@@ -66,22 +66,22 @@ Score_Manager.Save = function()
 		{
 			//console.log("SCMANAGER :   ---  " + context.idSessionEnCours);
 			// pour chaque session
-			for(var jSess = 1; jSess <= context.idSessionEnCours; jSess++)
+			//for(var jSess = 1; jSess <= context.idSessionEnCours; jSess++)
+			//{
+			console.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+context.idSessionEnCours);
+			// ... le sauvegarder en BD
+			oScore_BD.SetScore(context.listeScores[tabId[i]][context.idSessionEnCours],  function(reponse)
 			{
-				console.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess);
-				// ... le sauvegarder en BD
-				oScore_BD.SetScore(context.listeScores[tabId[i]][jSess],  function(reponse)
+				if (reponse == -1)
 				{
-					if (reponse == -1)
-					{
-						console.log("/!\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
-					}
-					else
-					{
-						console.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess+" OK !");
-					}
-				});
-			}
+					console.log("/!\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
+				}
+				else
+				{
+					console.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess+" OK !");
+				}
+			});
+			//}
 		}
 	});
 },
@@ -157,6 +157,7 @@ Score_Manager.compabiliserDepotODD = function(idUser, valeurODD)
 
 Score_Manager.compabiliserGouleTue = function(idUser, nbr)
 {
+	console.log("------------------------------------- COMPTABILISE GOULE ");
 	this.listeScores[idUser][this.idSessionEnCours].ajoutGouleTue(nbr);
 },
 
