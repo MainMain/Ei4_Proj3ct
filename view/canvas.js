@@ -587,11 +587,15 @@ function game() {
 	contPerso = new createjs.Container();
 	/*contPerso.x = w/2 - 32/2;
 	contPerso.y = h/2 - 32/2;*/
-	contPerso.x = -10;
+	contPerso.x = -5;
 	contPerso.y = 15;
 	contPerso.height = 64;
 	contPerso.width = 64;
 	stage.addChild(contPerso);
+	shapePerso = new createjs.Shape();
+	stage.addChild(shapePerso);
+	shapePerso.graphics.setStrokeStyle(4).beginStroke("#850000").drawRect(
+			2, 2, 173, 96);
 
 	//------------------------- Zone 13 : Modes-----------------------------------------------
 	contMode = new createjs.Container();
@@ -849,7 +853,7 @@ function game() {
 	labelFichePerso = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelFichePerso.lineHeight = _LineHeight;
 	labelFichePerso.textBaseline = _TextBaseline;
-	labelFichePerso.x = contPerso.x + 64;
+	labelFichePerso.x = contPerso.x + 58;
 	labelFichePerso.y = _labelPtsVY;
 	
 	labelNombreNouvMsg = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -1207,10 +1211,10 @@ function game() {
 function message(ListeMsg)
 {
 	contMessage = new createjs.Container();
-	contMessage.x = canvas.width/2 - 620/2;
-	contMessage.y = canvas.height/2 - 379/2;
-	contMessage.height = 379;
-	contMessage.width = 620;
+	contMessage.x = canvas.width/2 - 746/2;
+	contMessage.y = canvas.height/2 - 420/2;
+	contMessage.height = 420;
+	contMessage.width = 746;
 	stage.addChild(contMessage);
 	shapeMessage = new createjs.Shape();
 	stage.addChild(shapeMessage);
@@ -1248,10 +1252,10 @@ function liste()
 	socket.emit('INFO_CASE_ENNEMIS_CS');
 
 	contListe = new createjs.Container();
-	contListe.x = canvas.width/2 - 620/2;
-	contListe.y = canvas.height/2 - 379/2;
-	contListe.height = 379;
-	contListe.width = 620;
+	contListe.x = canvas.width/2 - 746/2;
+	contListe.y = canvas.height/2 - 420/2;
+	contListe.height = 420;
+	contListe.width = 746;
 	stage.addChild(contListe);
 	shape6 = new createjs.Shape();
 	stage.addChild(shape6);
@@ -1281,14 +1285,14 @@ function liste()
 	labelDescribePerso = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelDescribePerso.lineHeight = _LineHeight;
 	labelDescribePerso.textBaseline = _TextBaseline;
-	labelDescribePerso.x = 20;
+	labelDescribePerso.x = labelAlliesListe.y + 20;
 	labelDescribePerso.y = 280;
 
 	//Conteneur des ALLIES
 	contListeAllies = new createjs.Container();
-	contListeAllies.width = 8*64;
+	contListeAllies.width = 10*64;
 	contListeAllies.x = contListe.width/2 - contListeAllies.width/2;
-	contListeAllies.y = 20;
+	contListeAllies.y = labelAlliesListe.y + 20;
 	contListeAllies.height = 70;
 	contListe.addChild(contListeAllies);
 	shape7 = new createjs.Shape();
@@ -1298,7 +1302,7 @@ function liste()
 
 	//Conteneur des ENNEMIS
 	contListeEnnemis = new createjs.Container();
-	contListeEnnemis.width = 8*64;
+	contListeEnnemis.width = 10*64;
 	contListeEnnemis.x = contListe.width/2 - contListeEnnemis.width/2;
 	contListeEnnemis.y = 160;
 	contListeEnnemis.height = 70;
@@ -1310,8 +1314,8 @@ function liste()
 
 	// Bouton ANNULER
 	var BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
-	BtnCancelListe.x=480;
-	BtnCancelListe.y=330;
+	BtnCancelListe.x=600;
+	BtnCancelListe.y=365;
 	contListe.addChild(BtnCancelListe);
 	BtnCancelListe.addEventListener('click', function (event) {
 		SelectedPerso=-1;
@@ -1355,7 +1359,7 @@ function liste()
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
 
-	setBtnAttaquer();
+	setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
 
 	BtnCancelListe.cursor="pointer";
 	BtnPagePersoAlliesRight.cursor=BtnPagePersoAlliesLeft.cursor=BtnPagePersoEnnRight.cursor=BtnPagePersoEnnLeft.cursor="pointer";
@@ -1440,14 +1444,14 @@ function dead(ListeMsg)
 	stage.update();
 }
 
-function setBtnAttaquer()
+function setBtnAttaquer(x,y)
 {
 	if (SelectedPerso != -1)
 	{
 		// Bouton ATTAQUER
 		var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
-		BtnAttaquerListe.x=330;
-		BtnAttaquerListe.y=330;
+		BtnAttaquerListe.x=x-150;
+		BtnAttaquerListe.y=y;
 		contListe.addChild(BtnAttaquerListe);
 		BtnAttaquerListe.addEventListener('click', function(event) {
 			if (SelectedPerso == -1) {
@@ -1465,8 +1469,8 @@ function setBtnAttaquer()
 	{
 		// Bouton ATTAQUER
 		var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/AttaquerGris.png");
-		BtnAttaquerListe.x=480;
-		BtnAttaquerListe.y=330;
+		BtnAttaquerListe.x=x-150;
+		BtnAttaquerListe.y=y;
 		contListe.addChild(BtnAttaquerListe);
 		BtnAttaquerListe.cursor="not-allowed";
 	}
@@ -1690,7 +1694,7 @@ function setBtnGoules(nbrGoules)
 	else
 	{
 		var BtnAtqGoules = new createjs.Bitmap("public/Boutons/ZombieGris.png");
-		BtnAtqGoules.y = 150;
+		BtnAtqGoules.y = 3*H;
 		contBtnsInvCase.addChild(BtnAtqGoules);
 		BtnAtqGoules.cursor="not-allowed";
 	}
@@ -1827,37 +1831,6 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 
 			// équipage ok
 		case 1:
-			alert("Code de retour bisare dans INV_CASE_SC ");
-			/*
-			 * ANCIEN CODE
-			 * 
-			 * var imgItem = new createjs.Bitmap(currentItem.imageName);
-			imgItem.cursor = "pointer";
-			// Si le type de l'item est : ARME
-			if (currentItem.type == 1) {
-				// Dessin de l'arme équipée
-				contArme.removeAllChildren();
-				contArme.addChild(imgItem);
-				contArme.addEventListener("click", function (event) {
-					SelectedItemEquip = currentItem.id;
-					//alert(SelectedItemEquip);
-					stage.update();
-				});
-			}
-			// Si le type de l'item est : ARMURE
-			else if (currentItem.type == 2) {
-				// Dessin de l'armure équipée
-				contArmure.removeAllChildren();
-				contArmure.addChild(imgItem);
-				stage.update();
-				contArmure.addEventListener("click", function (event) {
-					SelectedItemEquip = currentItem.id;
-					//alert(SelectedItemEquip);
-					stage.update();
-				});
-			}
-			// log*/
-
 			txtObjet.text = "";
 			txtObjet.text = ("Equipement de l'arme ok");
 			stage.update();
@@ -2041,8 +2014,23 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %");
 		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %");
 
-		cacheBar.scaleX = (ProbCache/100) * cacheBarWidth;
-		fouilleBar.scaleX = (ProbFouille/100) * fouilleBarWidth;
+		if(ProbCache>100)
+		{
+			cacheBar.scaleX = cacheBarWidth;
+		}
+		else
+		{
+			cacheBar.scaleX = (ProbCache/100) * cacheBarWidth;
+		}
+		
+		if(ProbFouille>100)
+		{
+			fouilleBar.scaleX = fouilleBarWidth;
+		}
+		else
+		{
+			fouilleBar.scaleX = (ProbFouille/100) * fouilleBarWidth;
+		}
 
 		labelObjetCase.text="";
 		//labelObjetCase.text=("Objets présents : "+ currentCase.nom + "");
@@ -2259,7 +2247,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	}
 	
 	labelFichePerso.text=(classe+"\n"+
-			"Zombies max : "+currentPerso.goulesMax+"\n"+
+			"Zombies : "+currentPerso.goulesMax+"\n"+
 			"Attaque x "+currentPerso.multiPtsAttaque+"\n"+
 			"Défense x "+currentPerso.multiPtsDefense+"\n"+
 			"Cache   x "+currentPerso.multiProbaCache+"\n"+
@@ -2988,8 +2976,8 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 	// tableau qui contient toutes les listes d'objets
 	var TabListe=new Array();
 
-	var Taille = Math.ceil(listeAllies.length / 8);
-	var TailleFinListe =(listeAllies.length % 8);
+	var Taille = Math.ceil(listeAllies.length / 10);
+	var TailleFinListe =(listeAllies.length % 10);
 
 	for (var j=0; j<Taille; j++)
 	{
@@ -2998,7 +2986,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		if(j==Taille-1 && TailleFinListe!=0)
 		{
 			//Boucle des items liste incomplète
-			for (var i=j*8; i<j*8+TailleFinListe; i++)
+			for (var i=j*10; i<j*10+TailleFinListe; i++)
 			{
 				// mise de l'item dans une variable
 				var perso = listeAllies[i];
@@ -3012,7 +3000,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		else
 		{
 			//Boucle normale : creation nouvelle liste de 10 items max
-			for (var i=j*8; i<(j*8+8); i++)
+			for (var i=j*10; i<(j*10+10); i++)
 			{
 
 				// mise de l'item dans une variable
@@ -3177,8 +3165,8 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	// tableau qui contient toutes les listes d'objets
 	var TabListe=new Array();
 
-	var Taille = Math.ceil(listeEnn.length / 8);
-	var TailleFinListe =(listeEnn.length % 8);
+	var Taille = Math.ceil(listeEnn.length / 10);
+	var TailleFinListe =(listeEnn.length % 10);
 
 	for (var j=0; j<Taille; j++)
 	{
@@ -3187,7 +3175,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		if(j==Taille-1 && TailleFinListe!=0)
 		{
 			//Boucle des items liste incomplète
-			for (var i=j*8; i<j*8+TailleFinListe; i++)
+			for (var i=j*10; i<j*10+TailleFinListe; i++)
 			{
 				// mise de l'item dans une variable
 				var perso = listeEnn[i];
@@ -3201,7 +3189,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		else
 		{
 			//Boucle normale : creation nouvelle liste de 10 items max
-			for (var i=j*8; i<(j*8+8); i++)
+			for (var i=j*10; i<(j*10+10); i++)
 			{
 
 				// mise de l'item dans une variable
