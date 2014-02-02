@@ -42,40 +42,15 @@ var Personnage = (function() {
 
 	// --- METHODES DE CLASSE ---
 	Personnage.build = function() {return new Personnage();};
-
-	function Personnage(id)
-	{
-		this.id 				= id;
-	 	this.ptSanteMax			= -1;
-	 	this.ptSante 			= -1;
-	    this.ptAction 			= -1;
-	    this.ptActionMax 		= -1;
-	    this.ptDeplacement 		= -1;
-	    this.ptDeplacementMax 	= -1;
-	    this.ptFaim		 		= 10;
-	    this.ptFaimMax		 	= 10;
-	    this.poidsMax 			= -1;
-	    this.gouleLimite 		= -1;
-	    this.competence 		= -1;
-	    this.sacADos 			= new Array();
-	    this.idSalleEnCours 	= -1;
-	    this.mode 				= -1;
-	    this.multiPtsAttaque 	= -1;
-	    this.multiPtsDefense 	= -1;
-	    this.multiProbaCache 	= -1;
-	    this.multiProbaFouille	= -1;
-	    this.idArmeEquipee 		= null;
-	    this.idArmureEquipee 	= null;
-	    this.dernierMvt 		= null;
-	    this.listeMsgAtt 		= new Array();
-	    this.nbrNvMsg			= 0;
-	}
+	
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
 			ptDeplacement, ptDeplacementMax, ptFaim, ptFaimMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
 			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
-			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg) {
+			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg) 
+	{
 		// --- Attributs d'instance
+				console.log("1");
 		this.id 				= id;
 		this.ptSante			= ptSante;
 		this.ptSanteMax 		= ptSanteMax;
@@ -105,6 +80,88 @@ var Personnage = (function() {
 	// --- METHODES D'INSTANCE
 	Personnage.prototype =
 	{
+		initialiser : function()
+		{
+		 	this.ptSanteMax			= -1;
+		 	this.ptSante 			= -1;
+		    this.ptAction 			= -1;
+		    this.ptActionsMax 		= -1;
+		    this.ptDeplacement 		= -1;
+		    this.ptDeplacementMax 	= -1;
+		    this.ptFaim		 		= 10;
+		    this.ptFaimMax		 	= 10;
+		    this.poidsMax 			= 30;
+		    this.gouleLimite 		= -1;
+		    this.competence 		= -1;
+		    this.sacADos 			= new Array();
+		    this.idSalleEnCours 	= -1;
+		    this.mode 				= 0;
+		    this.multiPtsAttaque 	= -1;
+		    this.multiPtsDefense 	= -1;
+		    this.multiProbaCache 	= -1;
+		    this.multiProbaFouille	= -1;
+		    this.idArmeEquipee 		= null;
+		    this.idArmureEquipee 	= null;
+		    this.dernierMvt 		= null;
+		    this.listeMsgAtt 		= new Array();
+		    this.nbrNvMsg			= 0;
+		},
+		
+		setCompetence : function(competence, numEquipe)
+		{
+			// initialiser les attributs
+			this.initialiser();
+			
+			/*** - CALCUL SUR LES MULTI POINTS - ***/
+			if(competence == "brute")
+			{
+				this.setptSanteMax		(140);
+				this.setptDeplacementMax(15);
+				this.setptActionsMax		(20);
+				this.multiPtsAttaque	= 2;
+				this.multiPtsDefense	= 2;
+				this.multiProbaCache	= 0.5;
+				this.multiProbaFouille	= 1;
+				this.goulesMax			= 2;
+			}
+			else if(competence == "explorateur")
+			{
+				this.setptSanteMax		(100);
+				this.setptDeplacementMax(25);
+				this.setptActionsMax		(20);
+				this.multiPtsAttaque	= 1;
+				this.multiPtsDefense	= 0.3;
+				this.multiProbaCache	= 1;
+				this.multiProbaFouille	= 3;
+				this.goulesMax			= 5;
+			}
+			else if(competence == "chercheur")
+			{
+				this.setptSanteMax		(100);
+				this.setptDeplacementMax(15);
+				this.setptActionsMax		(30);
+				this.multiPtsAttaque	= 0.5;
+				this.multiPtsDefense	= 1.5;
+				this.multiProbaCache	= 3;
+				this.multiProbaFouille	= 0.5;
+				this.goulesMax			= 3;
+			}
+			this.competence=competence;
+			
+			if (numEquipe == 1)
+			{
+				this.idSalleEnCours = GameRules.idZoneSure_1(); 
+			}
+			else if (numEquipe == 2)
+			{
+				this.idSalleEnCours = GameRules.idZoneSure_2(); 
+			}
+			else
+			{
+				this.idSalleEnCours = GameRules.idZoneSure_3(); 
+			}
+			
+		},
 		/**
 		 * ECRITURE
 		 * 
@@ -322,9 +379,9 @@ var Personnage = (function() {
 		
 		setptAction : function(newPtAction)
 		{
-			if(newPtAction >= this.ptActionMax)
+			if(newPtAction >= this.ptActionsMax)
 			{
-				newPtAction = this.ptActionMax;
+				newPtAction = this.ptActionsMax;
 			}
 			else if(newPtAction <= 0)
 			{
@@ -333,10 +390,10 @@ var Personnage = (function() {
 			this.ptActions = newPtAction;
 		},
 		
-		setptActionMax : function(newPtActionMax)
+		setptActionsMax : function(newptActionsMax)
 		{
-			this.ptActionMax = newPtActionMax;
-			this.ptActions = this.ptActionMax;
+			this.ptActionsMax = newptActionsMax;
+			this.ptActions = this.ptActionsMax;
 		},
 		
 		setmultiPtsAttaque : function(multiPtsAttaque)
@@ -362,11 +419,6 @@ var Personnage = (function() {
 		setgoulesMax : function(goulesMax)
 		{
 			this.goulesMax = goulesMax;
-		},
-		
-		setCompetence : function(competence)
-		{
-			this.competence = competence;
 		},
 		
 		getCompetence : function()

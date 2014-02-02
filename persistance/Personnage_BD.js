@@ -162,40 +162,45 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
 
 /**
  * CREER UN PERSONNAGE A LA CREATION DE L'UTILISATEUR
- * retourn le personage si le perso est bien créer
+ * retourn le personage si le perso est bien créé
  *
  * @method Creation
  */
-Personnage_BD.Creation = function (vie, action, deplacement, poids, goule, competence) 
+Personnage_BD.Creation = function (id) 
 {
 	var a = 0;
 	a = a / 0;
     var PersonnageModel = mongoose.model('Personnage');
     var Perso = new PersonnageModel();
 
-    Perso.ptSanteMax		= vie;
-    Perso.ptSante 			= vie;
-    Perso.ptAction 			= action;
-    Perso.ptActionMax 		= action;
-    Perso.ptDeplacement 	= deplacement;
-    Perso.ptDeplacementMax 	= deplacement;
-    Perso.ptFaim		 	= 10;
-    Perso.ptFaimMax		 	= 10;
-    Perso.poidsMax 			= poids;
-    Perso.gouleLimite 		= goule;
-    Perso.competence 		= competence;
-    Perso.sacADos 			= new Array();
-    Perso.idSalleEnCours 	= 0;
-    Perso.mode 				= 0;
-    Perso.multiPtsAttaque 	= 1;
-    Perso.multiPtsDefense 	= 1;
-    Perso.multiProbaCache 	= 1;
-    Perso.multiProbaFouille = 1;
-    Perso.idArmeEquipee 	= null;
-    Perso.idArmureEquipee 	= null;
-    Perso.dernierMvt 		= null;
-    Perso.listeMsgAtt 		= new Array();
-    Perso.nbrNvMsg			= 0;
+    var nvPerso = new oPersonnage(0);
+    nvPerso.initialiser();
+    
+    Perso.ptSanteMax		= nvPerso.ptSanteMax;
+    Perso.ptSante 			= nvPerso.ptSante;
+    Perso.ptAction 			= nvPerso.ptAction;
+    Perso.ptActionMax 		= nvPerso.ptActionMax;
+    Perso.ptDeplacement 	= nvPerso.ptDeplacement;
+    Perso.ptDeplacementMax 	= nvPerso.ptDeplacementMax;
+    Perso.ptFaim		 	= nvPerso.ptFaim;
+    Perso.ptFaimMax		 	= nvPerso.ptFaimMax;
+    Perso.poidsMax 			= nvPerso.poidsMax;
+    Perso.gouleLimite 		= nvPerso.gouleLimite;
+    Perso.competence 		= nvPerso.competence;
+    Perso.sacADos 			= nvPerso.sacADos;
+    Perso.idSalleEnCours 	= nvPerso.idSalleEnCours;
+    Perso.mode 				= nvPerso.mode;
+    Perso.multiPtsAttaque 	= nvPerso.multiPtsAttaque;
+    Perso.multiPtsDefense 	= nvPerso.multiPtsDefense;
+    Perso.multiProbaCache 	= nvPerso.multiProbaCache;
+    Perso.multiProbaFouille = nvPerso.multiProbaFouille;
+    Perso.idArmeEquipee 	= nvPerso.idArmeEquipee;
+    Perso.idArmureEquipee 	= nvPerso.idArmureEquipee;
+    Perso.dernierMvt 		= nvPerso.dernierMvt;
+    Perso.listeMsgAtt 		= nvPerso.listeMsgAtt;
+    Perso.nbrNvMsg			= nvPerso.nbrNvMsg;
+    
+    console.log("----------------> sdsdfsf : " +   nvPerso.mode);
 
     Perso.save(function (err) {
         if (err) {

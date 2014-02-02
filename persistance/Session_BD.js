@@ -23,8 +23,6 @@ Session_BD.GetLastSessionId = function(callback)
 		{
 			tabId = session[i].id;
 		}
-		
-		
 		callback(tabId);
 	});
 },
@@ -47,7 +45,7 @@ Session_BD.GetSession = function(idSession, callbackGetSession) {
 		}
 		else
 		{
-			console.log("UTILISATEUR_BD : Chargement de la derniere session : " + Session[0].dateDebut +" -> " + Session[0].dateFin);
+			console.log("SESSION_BD : Chargement de la derniere session : " + " -> " + Session[0].id + " -> " + Session[0].dateDebut +" -> " + Session[0].dateFin);
 			callbackGetSession(Session[0].id, Session[0].dateDebut, Session[0].dateFin);
 		}
 	});
