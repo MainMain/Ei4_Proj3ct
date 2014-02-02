@@ -71,19 +71,19 @@ var _EspaceLabelY = 20;
 
 //Placement Conteneur ItemCase
 var _ContItemCaseX = 750;
-var _ContItemCaseY = 620-95	;
+var _ContItemCaseY = 530;
 
 //Dimension Conteneur ItemCase
 var _ContItemCaseH = 40;
 var _ContItemCaseW = 330;
 
 //Placement label ItemCase
-var _labelItemCaseX = _ContItemCaseX;
+var _labelItemCaseX = _ContItemCaseX + 180;
 var _labelItemCaseY = _ContItemCaseY - 20;
 
 //Placement label Arme
 var _labelArmeX = 750;
-var _labelArmeY = 15;
+var _labelArmeY = 5;
 
 //Placement label Armure
 var _labelArmureX = _labelArmeX + 180;
@@ -96,7 +96,7 @@ var _labelItemPersoY = _labelArmureY 	+ _EspaceLabelY + 15;
 
 //Placement Conteneur ItemPerso
 var _ContItemPersoX = _labelItemPersoX;
-var _ContItemPersoY = _labelItemPersoY + _EspaceLabelY+5;
+var _ContItemPersoY = _labelItemPersoY + _EspaceLabelY-5;
 
 //Dimension Conteneur ItemPerso
 var _ContItemPersoH = 40;
@@ -117,8 +117,8 @@ var _labelPtsAtqX = _labelPtsVX;
 var _labelPtsAtqY = _labelPtsFY + _EspaceLabelY;
 
 //Placement label Points de Défense
-var _labelPtsDefX = _labelPtsVX
-var _labelPtsDefY = _labelPtsAtqY +_EspaceLabelY;
+var _labelPtsDefX = _labelPtsAtqX +_EspaceLabelX;
+var _labelPtsDefY = _labelPtsAtqY;
 
 //------------------ Zone 2 : 2/2 barres perso -------------------------------------------------------
 
@@ -130,12 +130,6 @@ var _labelPtsAY = _labelPtsVY;
 var _labelPtsMX = _labelPtsAX;
 var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 
-//---------------------------------------------------------------------------------
-
-//Placement label id Salle en cours
-var _labelIdSalleX = _labelPtsAX;
-var _labelIdSalleY = _labelPtsMY + _EspaceLabelY;
-
 //------------------ Zone 9 : Infos Case -------------------------------------------------------
 
 //Placement label Description Item
@@ -143,26 +137,30 @@ var _labelDescribeItemX = _ContItemCaseX;
 var _labelDescribeItemY = _ContItemCaseY + 40;
 
 //Placement label Nombre d'Aliés
-var _labelNbAliesX = 350;
-var _labelNbAliesY = _labelItemCaseY;
+var _labelNbAlliesX  = 175;
+var _labelNbAlliesXY = 530;
 
 //Placement label Nombre d'Ennemis
-var _labelNbEnnemisX = _labelNbAliesX;
-var _labelNbEnnemisY = _labelNbAliesY + _EspaceLabelY;
+var _labelNbEnnemisX = _labelNbAlliesX ;
+var _labelNbEnnemisY = _labelNbAlliesXY + _EspaceLabelY;
 
 //Placement label Nombre de Goules
-var _labelNbGoulesX = _labelNbAliesX;
+var _labelNbGoulesX = _labelNbAlliesX ;
 var _labelNbGoulesY = _labelNbEnnemisY + _EspaceLabelY;
 
 //------------------ Zone 8 : Proba de la case -------------------------------------------------------
 
 //Placement label Probabilité de Cache
-var _labelProbaCacheX = _labelNbAliesX;
-var _labelProbaCacheY = _labelNbGoulesY + _EspaceLabelY;
+var _labelProbaCacheX = _labelNbAlliesX + 240;
+var _labelProbaCacheY = _labelNbAlliesXY ;
 
 //Placement label Probabilité de Fouille
-var _labelProbaFouilleX = _labelNbAliesX;
+var _labelProbaFouilleX = _labelProbaCacheX ;
 var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
+
+//Placement label id Salle en cours
+var _labelIdSalleX = _labelProbaCacheX;
+var _labelIdSalleY = _labelProbaCacheY + 2*_EspaceLabelY;
 
 //-----------------------------------------------------------------------------------
 
@@ -172,8 +170,8 @@ var _labelRetourGoulesY = 580;
 
 //------------------ Zone 13 : Modes-------------------------------------------------------
 
-//Placement Conteneur des boutons de mode
-var _ContModeX = 50;
+//Placement Conteneur des _labelProbaCacheYboutons de mode
+var _ContModeX = 20;
 var _ContModeY = 330;
 var _ContModeW = 140;
 var _ContModeH = 3*H;
@@ -203,7 +201,7 @@ var _ContArmureW = 30;
 //------------------ Zone 8 : Listes-------------------------------------------------------
 
 //Placement Conteneur des Boutons liste
-var _ContBtnsListesX = 50;
+var _ContBtnsListesX = _ContModeX;
 var _ContBtnsListesY = 510;
 var _ContBtnsListesW = 140;
 var _ContBtnsListesH = 2*H;
@@ -218,7 +216,7 @@ var _labelBtnsListesY = _ContBtnsListesY-20;
 
 //------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
 //Placement Conteneur des Boutons perso
-var _ContBtnsInvPersoX = 910;
+var _ContBtnsInvPersoX = 945;
 var _ContBtnsInvPersoY = 140;
 var _ContBtnsInvPersoW = 140;
 var _ContBtnsInvPersoH = 3*H;
@@ -280,10 +278,11 @@ var txtSalle, txtObjet, labelRetourFouilleRapide,
 labelObjetCase,	labelInventaire, labelDescribeItem, labelRetourMode,
 labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
 labelBonusArme, labelBonusArmure, labelIdSalle, labelRetourGoules,
-labelNbAlies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
+labelNbAllies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
 
-var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage, labelNombreNouvMsg;
+var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage,
+labelNombreNouvMsg, labelFichePerso;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
 contBtnsListes, contDead,
@@ -588,10 +587,10 @@ function game() {
 	contPerso = new createjs.Container();
 	/*contPerso.x = w/2 - 32/2;
 	contPerso.y = h/2 - 32/2;*/
-	contPerso.x = 5;
-	contPerso.y = 5;
-	contPerso.height = 32;
-	contPerso.width = 32;
+	contPerso.x = -10;
+	contPerso.y = 15;
+	contPerso.height = 64;
+	contPerso.width = 64;
 	stage.addChild(contPerso);
 
 	//------------------------- Zone 13 : Modes-----------------------------------------------
@@ -844,9 +843,15 @@ function game() {
 	stage.addChild(sacBarContainer);
 
 	// ******************************************
-	//********** Déclaration des labels *******
+	// ********* Déclaration des labels *********
 	// ******************************************
 
+	labelFichePerso = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelFichePerso.lineHeight = _LineHeight;
+	labelFichePerso.textBaseline = _TextBaseline;
+	labelFichePerso.x = contPerso.x + 64;
+	labelFichePerso.y = _labelPtsVY;
+	
 	labelNombreNouvMsg = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelNombreNouvMsg.lineHeight = _LineHeight;
 	labelNombreNouvMsg.textBaseline = _TextBaseline;
@@ -979,11 +984,11 @@ function game() {
 	labelBonusArmure.x = _labelPtsDefX + 170;
 	labelBonusArmure.y = _labelPtsDefY;
 
-	labelNbAlies = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	labelNbAlies.lineHeight = _LineHeight;
-	labelNbAlies.textBaseline = _TextBaseline;
-	labelNbAlies.x = _labelNbAliesX;
-	labelNbAlies.y = _labelNbAliesY;
+	labelNbAllies = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelNbAllies.lineHeight = _LineHeight;
+	labelNbAllies.textBaseline = _TextBaseline;
+	labelNbAllies.x = _labelNbAlliesX ;
+	labelNbAllies.y = _labelNbAlliesXY;
 
 	labelNbEnnemis = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelNbEnnemis.lineHeight = _LineHeight;
@@ -2030,7 +2035,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		ProbCache=(currentCase.probaCache * PersoProbaCache);
 		ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 
-		labelNbAlies.text=("Alliés dans la salle : " + nbrAllies + "");
+		labelNbAllies.text=("Alliés dans la salle : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %");
@@ -2040,8 +2045,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		fouilleBar.scaleX = (ProbFouille/100) * fouilleBarWidth;
 
 		labelObjetCase.text="";
-		labelObjetCase.text=("Objets de la case : "+ currentCase.nom + "");
-
+		//labelObjetCase.text=("Objets présents : "+ currentCase.nom + "");
+		labelObjetCase.text=("Objets présents : ");
+		
 		// CLear de la liste des items de case
 		contInvCase.removeAllChildren();
 
@@ -2200,23 +2206,29 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	this.listeItemsPerso = new Array();
+	
+	var classe;
 
 	// insertion de l'image du Perso
 	if(currentPerso.competence=="brute")
 	{
-		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute96.png");
+		classe="Brute";
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
 	}
 	else if(currentPerso.competence=="chercheur")
 	{
-		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur96.png");
+		classe="Chercheur";
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
 	}
 	else if(currentPerso.competence=="explorateur")
 	{
-		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur96.png");
+		classe="Explorateur";
+		imgPerso = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
 	}
 	else
 	{
 		imgPerso = new createjs.Bitmap("public/spritesheets/persos/perso.gif");
+		classe="Pas de compétence"
 	}
 	contPerso.addChild(imgPerso);
 
@@ -2245,7 +2257,14 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		PointsDefense = currentPerso.multiPtsDefense;
 	}
-
+	
+	labelFichePerso.text=(classe+"\n"+
+			"Zombies max : "+currentPerso.goulesMax+"\n"+
+			"Attaque x "+currentPerso.multiPtsAttaque+"\n"+
+			"Défense x "+currentPerso.multiPtsDefense+"\n"+
+			"Cache   x "+currentPerso.multiProbaCache+"\n"+
+			"Fouille x "+currentPerso.multiProbaFouille);
+		
 	// Mise à jour des labels
 	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
 	labelPtsDef.text=("Points de défense : " + PointsDefense + "");
