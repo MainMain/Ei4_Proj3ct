@@ -301,7 +301,7 @@ var ListeMessages;
 var imgPerso, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsListes, 
 shapeBtnsInvPerso, shapeBtnsInvCase;
 
-var BtnPageAlliesRight, BtnPageAlliesLeft, BtnPagePersoEnnRight, BtnPagePersoEnnLeft;
+var BtnPagePersoAlliesRight, BtnPagePersoAlliesLeft, BtnPagePersoEnnRight, BtnPagePersoEnnLeft;
 
 onload = initialize;
 
@@ -340,6 +340,7 @@ function initialize() {
 	                {src:"public/Background_11.jpg", id:"idBackground_11"},  
 	                {src:"public/Background_Dead.jpg", id:"idBackground_Dead"},
 	                {src:"public/blood.jpg", id:"idBackground_blood"}, 
+	                {src:"public/Black.png", id:"idBackground_Black"}, 
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
 	                {src:"public/Boutons/Attaquer.png", id:"idBtnAttaquer"},
 	                {src:"public/Boutons/AttaquerGris.png", id:"idBtnAttaquerGris"},
@@ -514,7 +515,7 @@ function game() {
 	// application du background
 	var background = new createjs.Bitmap("public/Background_11.jpg");
 	background.image.onload = setImg(background, 0, 0);
-	
+
 	// ******************************************
 	// ** creation des conteneurs               *
 	// ******************************************
@@ -838,13 +839,13 @@ function game() {
 	// ******************************************
 	//********** Déclaration des labels *******
 	// ******************************************
-	
+
 	labelNombreNouvMsg = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelNombreNouvMsg.lineHeight = _LineHeight;
 	labelNombreNouvMsg.textBaseline = _TextBaseline;
 	labelNombreNouvMsg.x = _labelNombreNouvMsgX;
 	labelNombreNouvMsg.y = _labelNombreNouvMsgY;
-	
+
 	labelDernierMessage = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelDernierMessage.lineHeight = _LineHeight;
 	labelDernierMessage.textBaseline = _TextBaseline;
@@ -930,7 +931,6 @@ function game() {
 	labelPtsFaim.textBaseline = _TextBaseline;
 	labelPtsFaim.x = _labelPtsFX;
 	labelPtsFaim.y = _labelPtsFY;
-	labelPtsFaim.text="Points de faim :";
 
 	//------------------- Zone 2 -----------------------------------------------------
 
@@ -1060,7 +1060,7 @@ function game() {
 	BtnHaut.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
 	});
-	
+
 	var Up = stage.addChild(new createjs.Bitmap("public/Boutons/Up.png"));
 	Up.x= BtnHaut.x + _ContMapW/2 - Up.image.width/2;
 	Up.y= BtnHaut.y;
@@ -1074,21 +1074,21 @@ function game() {
 	BtnBas.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 	});
-	
+
 	var Down = stage.addChild(new createjs.Bitmap("public/Boutons/Down.png"));
 	Down.x= BtnBas.x + _ContMapW/2 - Down.image.width/2;
 	Down.y= BtnBas.y;
 	Down.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 	});
-	
+
 	var BtnGauche = stage.addChild(new ButtonPad("", ColorPad, _EpaisseurBpPad, _ContMapH));
 	BtnGauche.x = _ContMapX;
 	BtnGauche.y = _ContMapY;
 	BtnGauche.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
 	});
-	
+
 	var Left = stage.addChild(new createjs.Bitmap("public/Boutons/Left.png"));
 	Left.x= BtnGauche.x;
 	Left.y= BtnGauche.y + _ContMapH/2 - Left.image.height/2;
@@ -1102,7 +1102,7 @@ function game() {
 	BtnDroite.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 	});
-	
+
 	var Right = stage.addChild(new createjs.Bitmap("public/Boutons/Right.png"));
 	Right.x= BtnDroite.x;
 	Right.y= BtnHaut.y + _ContMapH/2 - Right.image.height/2;
@@ -1249,7 +1249,7 @@ function liste()
 	// application du background liste au dessus de la map
 	//var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
 	var background_liste = new createjs.Bitmap("public/blood.jpg");
-	background_liste.alpha=0.95;
+	background_liste.alpha=1;
 	contListe.addChild(background_liste);
 
 	labelAlliesListe = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -1306,25 +1306,25 @@ function liste()
 		stage.removeChild(contListe);
 		game();
 	});
-	
-	BtnPageAlliesRight = new createjs.Bitmap("public/Boutons/RArrow.png");
-	BtnPageAlliesRight.x= contListeAllies.x + contListeAllies.w;
-	BtnPageAlliesRight.y= contListeAllies.y + 15;
-	contListe.addChild(BtnPageAlliesRight);
-	BtnPageAlliesRight.addEventListener('click', function(event) {
+
+	BtnPagePersoAlliesRight = new createjs.Bitmap("public/Boutons/RArrow.png");
+	BtnPagePersoAlliesRight.x= contListeAllies.x + contListeAllies.w;
+	BtnPagePersoAlliesRight.y= contListeAllies.y + 15;
+	contListe.addChild(BtnPagePersoAlliesRight);
+	BtnPagePersoAlliesRight.addEventListener('click', function(event) {
 		PagePersoAllies++;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
-	
-	BtnPageAlliesLeft = new createjs.Bitmap("public/Boutons/RArrow.png");
-	BtnPageAlliesLeft.x= contListeAllies.x + contListeAllies.w;
-	BtnPageAlliesLeft.y= contListeAllies.y + 15;
-	contListe.addChild(BtnPageAlliesLeft);
-	BtnPageAlliesLeft.addEventListener('click', function(event) {
+
+	BtnPagePersoAlliesLeft = new createjs.Bitmap("public/Boutons/RArrow.png");
+	BtnPagePersoAlliesLeft.x= contListeAllies.x + contListeAllies.w;
+	BtnPagePersoAlliesLeft.y= contListeAllies.y + 15;
+	contListe.addChild(BtnPagePersoAlliesLeft);
+	BtnPagePersoAlliesLeft.addEventListener('click', function(event) {
 		PagePersoAllies--;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
-	
+
 	BtnPagePersoEnnRight = new createjs.Bitmap("public/Boutons/RArrow.png");
 	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.w;
 	BtnPagePersoEnnRight.y= contListeEnnemis.y + 15;
@@ -1333,7 +1333,7 @@ function liste()
 		PagePersoEnnemis++;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
-	
+
 	BtnPagePersoEnnLeft = new createjs.Bitmap("public/Boutons/RArrow.png");
 	BtnPagePersoEnnLeft.x= contListeEnnemis.x + contListeEnnemis.w;
 	BtnPagePersoEnnLeft.y= contListeEnnemis.y + 15;
@@ -1346,7 +1346,7 @@ function liste()
 	setBtnAttaquer();
 
 	BtnCancelListe.cursor="pointer";
-	BtnPageAlliesRight.cursor=BtnPageAlliesLeft.cursor=BtnPagePersoEnnRight.cursor=BtnPagePersoEnnLeft.cursor="pointer";
+	BtnPagePersoAlliesRight.cursor=BtnPagePersoAlliesLeft.cursor=BtnPagePersoEnnRight.cursor=BtnPagePersoEnnLeft.cursor="pointer";
 
 	stage.update();
 }
@@ -1458,12 +1458,12 @@ function setBtnAttaquer()
 		contListe.addChild(BtnAttaquerListe);
 		BtnAttaquerListe.cursor="not-allowed";
 	}
-	
+
 }
 
 function setContPerso()
 {
-	
+
 	if(SelectedItemPerso!=-1 && SelectedItemPersoType>= 4 && SelectedItemPersoType <=6)
 	{
 		var BtnUtiliser = new createjs.Bitmap("public/Boutons/Utiliser.png");
@@ -1477,15 +1477,15 @@ function setContPerso()
 				SelectedItemPerso = -1;
 			}
 		});	
-		
+
 		BtnUtiliser.cursor ="pointer";
-		
+
 		var BtnEquiper = new createjs.Bitmap("public/Boutons/EquiperGris.png");
 		BtnEquiper.y=H;
 		contBtnsInvPerso.addChild(BtnEquiper);
-		
+
 		BtnEquiper.cursor ="not-allowed";
-		
+
 		var BtnDeposer = new createjs.Bitmap("public/Boutons/Deposer.png");
 		BtnDeposer.y =0;
 		contBtnsInvCase.addChild(BtnDeposer);
@@ -1512,15 +1512,15 @@ function setContPerso()
 				SelectedItemPerso = -1;
 			}
 		});
-		
+
 		BtnEquiper.cursor ="pointer";
-		
+
 		var BtnUtiliser = new createjs.Bitmap("public/Boutons/UtiliserGris.png");
 		BtnUtiliser.y=0;
 		contBtnsInvPerso.addChild(BtnUtiliser);
-		
+
 		BtnUtiliser.cursor ="not-allowed";		
-		
+
 		var BtnDeposer = new createjs.Bitmap("public/Boutons/Deposer.png");
 		BtnDeposer.y =0;
 		contBtnsInvCase.addChild(BtnDeposer);
@@ -1539,15 +1539,15 @@ function setContPerso()
 		var BtnEquiper = new createjs.Bitmap("public/Boutons/EquiperGris.png");
 		BtnEquiper.y=H;
 		contBtnsInvPerso.addChild(BtnEquiper);
-		
+
 		BtnEquiper.cursor ="not-allowed";
-		
+
 		var BtnUtiliser = new createjs.Bitmap("public/Boutons/UtiliserGris.png");
 		BtnUtiliser.y=0;
 		contBtnsInvPerso.addChild(BtnUtiliser);
-		
+
 		BtnUtiliser.cursor ="not-allowed";		
-		
+
 		var BtnDeposer = new createjs.Bitmap("public/Boutons/Deposer.png");
 		BtnDeposer.y =0;
 		contBtnsInvCase.addChild(BtnDeposer);
@@ -1563,19 +1563,19 @@ function setContPerso()
 	}
 	else
 	{
-		
+
 		var BtnUtiliser = new createjs.Bitmap("public/Boutons/UtiliserGris.png");
 		BtnUtiliser.y=0;
 		contBtnsInvPerso.addChild(BtnUtiliser);
-		
+
 		var BtnEquiper = new createjs.Bitmap("public/Boutons/EquiperGris.png");
 		BtnEquiper.y=H;
 		contBtnsInvPerso.addChild(BtnEquiper);
-		
+
 		var BtnDeposer = new createjs.Bitmap("public/Boutons/DeposerGris.png");
 		BtnDeposer.y = 0;
 		contBtnsInvCase.addChild(BtnDeposer);
-		
+
 		BtnUtiliser.cursor = BtnEquiper.cursor = BtnDeposer.cursor ="not-allowed";
 	}
 }
@@ -1604,11 +1604,11 @@ function setContEquipement()
 		var BtnDesequiper = new createjs.Bitmap("public/Boutons/DesequiperGris.png");
 		BtnDesequiper.y=2*H;
 		contBtnsInvPerso.addChild(BtnDesequiper);
-		
+
 		BtnDesequiper.cursor="not-allowed";
 	}
 }
-	
+
 
 function setContCase()
 {
@@ -1625,7 +1625,7 @@ function setContCase()
 				SelectedItemCase = -1;
 			}
 		});
-		
+
 		BtnRamasseObjet.cursor="pointer";
 	}
 	else
@@ -1633,10 +1633,10 @@ function setContCase()
 		var BtnRamasseObjet = new createjs.Bitmap("public/Boutons/RamasserGris.png");
 		BtnRamasseObjet.y=H;
 		contBtnsInvCase.addChild(BtnRamasseObjet);
-		
+
 		BtnRamasseObjet.cursor="not-allowed";
 	}
-	
+
 }
 
 function setBtnJoueurs(nbJoueurs)
@@ -1650,7 +1650,7 @@ function setBtnJoueurs(nbJoueurs)
 			liste();
 			//dead();
 		});	
-		
+
 		BtnJoueurs.cursor="pointer";
 	}
 	else
@@ -1658,7 +1658,7 @@ function setBtnJoueurs(nbJoueurs)
 		var BtnJoueurs = new createjs.Bitmap("public/Boutons/JoueursGris.png");
 		BtnJoueurs.y=0;
 		contBtnsListes.addChild(BtnJoueurs);
-		
+
 		BtnJoueurs.cursor="not-allowed";
 	}
 }
@@ -1845,13 +1845,13 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 				});
 			}
 			// log*/
-			
+
 			txtObjet.text = "";
 			txtObjet.text = ("Equipement de l'arme ok");
 			stage.update();
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
-			
+
 		case 2:
 			txtObjet.text = "";
 			txtObjet.text = ("Equipement de l'armure ok");
@@ -2005,9 +2005,9 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 	//socket.emit('CHECK_MSG_ATT_CS');	
-	
+
 	var nbJoueurs=nbrAllies+nbrEnnemis;
-	
+
 	setBtnJoueurs(nbJoueurs);
 	setBtnGoules(currentCase.nbrGoules);
 
@@ -2088,7 +2088,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		{
 			PageItemCase=0;
 		}
-		
+
 		if(PageItemCase==Taille-1)
 		{
 			BtnPageItemCaseRight.visible=false;
@@ -2097,7 +2097,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		{
 			BtnPageItemCaseRight.visible=true;
 		}
-		
+
 		if(PageItemCase==0)
 		{
 			BtnPageItemCaseLeft.visible=false;
@@ -2106,7 +2106,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		{
 			BtnPageItemCaseLeft.visible=true;
 		}
-		
+
 		if(Taille ==0)
 		{
 			BtnPageItemCaseLeft.visible=false;
@@ -2114,9 +2114,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		}
 
 		setContCase();
-	
+
 		var Select;
-		
+
 		try 
 		{
 			// instructions à essayer
@@ -2154,15 +2154,15 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 					Select = contInvCase.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 					Select.x=(num-7);
 					Select.y=0;
-					
+
 					setContCase();
-					
+
 					stage.update();
 				});
 
 				imgItem.x = 7+(iPositionItemInConteneur * SpaceItem);
 				imgItem.y = 4;
-	
+
 				contInvCase.addChild(imgItem);
 
 				// position de l'item dans le conteneur
@@ -2174,7 +2174,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		catch(e){
 			//alert("Page inexistante");
 		}
-		
+
 		// Changement de l'image de la Map
 		contMap.removeChild(map);
 		// insertion de la map
@@ -2191,7 +2191,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-	
+
 	this.listeItemsPerso = new Array();
 
 	// insertion de l'image du Perso
@@ -2212,7 +2212,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		imgPerso = new createjs.Bitmap("public/spritesheets/persos/perso.gif");
 	}
 	contPerso.addChild(imgPerso);
-	
+
 	var PoidsSac=0;
 	var PointsAttaque, PointsDefense;
 	var currentItem;
@@ -2238,23 +2238,22 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		PointsDefense = currentPerso.multiPtsDefense;
 	}
-	//PointsDefense = currentPerso.getValeurArmure();
 
 	// Mise à jour des labels
 	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
 	labelPtsDef.text=("Points de défense : " + PointsDefense + "");
 	labelIdSalle.text=("Salle en cours : " + currentPerso.idSalleEnCours + "");
+	
 
 	// Mise à jour des barres de vie, action, move		
 	// Sécurité pour le remplissage de la barre de vie
 	if(currentPerso.ptSante<=0)
 	{
-
 		//labelPtsVie.text=("Points de vie :         	 	0/" + currentPerso.ptSanteMax);
 		labelPtsVie.text=("Points de vie :        " + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 		lifeBar.scaleX = 0;
 	}
-	else if(currentPerso.ptSante> currentPerso.ptSanteMax)
+	else if(currentPerso.ptSante>=currentPerso.ptSanteMax)
 	{
 		labelPtsVie.text=("Points de vie :        " + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 		lifeBar.scaleX = lifeBarWidth;
@@ -2264,6 +2263,24 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		labelPtsVie.text=("Points de vie :       " + currentPerso.ptSante + "/" + currentPerso.ptSanteMax);
 		lifeBar.scaleX = (currentPerso.ptSante/currentPerso.ptSanteMax) * lifeBarWidth;
 	}
+	
+	// Sécurité pour le remplissage de la barre de faim
+	if(currentPerso.ptFaim<=0)
+	{
+		//labelPtsFaim.text=("Points de faim :         	 	0/" + currentPerso.ptFaimMax);
+		labelPtsFaim.text=("Points de faim :        " + currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
+		faimBar.scaleX = 0;
+	}
+	else if(currentPerso.ptFaim>=currentPerso.ptFaimMax)
+	{
+		labelPtsFaim.text=("Points de faim :        " + currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
+		faimBar.scaleX = faimBarWidth;	
+	}
+	else
+	{
+		labelPtsFaim.text=("Points de faim :       " + currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
+		faimBar.scaleX = (currentPerso.ptFaim/currentPerso.ptFaimMax) * faimBarWidth;
+	}
 
 	// Sécurité pour le remplissage de la barre d'action
 	if(currentPerso.ptActions<=0)
@@ -2272,7 +2289,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 		actionBar.scaleX = 0;
 	}
-	else if(currentPerso.ptActions> currentPerso.ptActionsMax)
+	else if(currentPerso.ptActions>=currentPerso.ptActionsMax)
 	{
 		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
 		actionBar.scaleX = actionBarWidth;
@@ -2284,7 +2301,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	}
 
 	// Sécurité pour le remplissage de la barre de move
-	if(currentPerso.ptDeplacement > currentPerso.ptDeplacementMax)
+	if(currentPerso.ptDeplacement >=currentPerso.ptDeplacementMax)
 	{
 		labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
 		moveBar.scaleX = moveBarWidth;
@@ -2385,7 +2402,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		//BtnCacher.image.onload = setImg(BtnCacher, AbsBtnD, BtnFouiller.y + H);
 		BtnCacher.y = BtnFouiller.y + H;
 		contMode.addChild(BtnCacher);
-		
+
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
 		//BtnDefendre.image.onload = setImg(BtnDefendre, AbsBtnD, BtnCacher.y + H);
 		BtnDefendre.y = BtnCacher.y + H;
@@ -2493,7 +2510,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		PageItemPerso=0;
 	}
-	
+
 	if(PageItemPerso==Taille-1)
 	{
 		BtnPageItemPersoRight.visible=false;
@@ -2502,7 +2519,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		BtnPageItemPersoRight.visible=true;
 	}
-	
+
 	if(PageItemPerso==0)
 	{
 		BtnPageItemPersoLeft.visible=false;
@@ -2511,17 +2528,17 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		BtnPageItemPersoLeft.visible=true;
 	}
-	
+
 	if(Taille ==0)
 	{
 		BtnPageItemPersoLeft.visible=false;
 		BtnPageItemPersoRight.visible=false;
 	}
-	
-	
+
+
 	// Appel de fonction pour créer les boutons liés au Perso
 	setContPerso();
-	
+
 	var Select;
 	var SelectEquipement;
 
@@ -2585,7 +2602,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	catch(e){
 		//alert("Page inexistante");
 	}
-	
+
 	setContEquipement();
 
 	if (currentPerso.armeEquipee != null) {
@@ -2678,7 +2695,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
-	
+
 	//alert("Messages : "+ currentPerso.listeMsgAtt.length);
 	if(currentPerso.listeMsgAtt.length > 0)
 	{
@@ -2696,13 +2713,13 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		labelDernierMessage.text="";
 		ListeMessages=null;
 	}
-	
+
 	if(ListeMessages!=null && currentPerso.nbrNvMsg >0)
 	{
 		//alert("3");
 		labelNombreNouvMsg.text="";
 		labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " )");
-		
+
 		var BtnMessages = new createjs.Bitmap("public/Boutons/Messages.png");
 		BtnMessages.y=H;
 		contBtnsListes.addChild(BtnMessages);
@@ -2722,7 +2739,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	{
 		//alert("4");
 		labelNombreNouvMsg.text="";
-		
+
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesVide.png");
 		BtnMessages.y=H;
 		contBtnsListes.addChild(BtnMessages);
@@ -2736,18 +2753,18 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 				alert("Pas de nouveaux messages");
 			}
 		});
-		
+
 		BtnMessages.cursor="pointer";
 	}
 	else
 	{
 		//alert("5");
 		labelNombreNouvMsg.text="";
-		
+
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
 		BtnMessages.y=H;
 		contBtnsListes.addChild(BtnMessages);
-		
+
 		BtnMessages.cursor="not-allowed";
 	}
 
@@ -2931,7 +2948,7 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, degatsInfliges, item, d
 		});
 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
-{
+		{
 	//alert("retour ok");
 	var i=0;
 	var iPositionPersoInConteneur=0;
@@ -2939,119 +2956,196 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 	contListeAllies.removeAllChildren();
 
 	listePersoAllies = new Array();
-	
+
 	var imgPersoAllie;
-	
-	//alert("longueur liste allies = " + listeAllies.length);
 
-	for(var perso in listeAllies)
+	// tableau qui contient toutes les listes d'objets
+	var TabListe=new Array();
+
+	var Taille = Math.ceil(listeAllies.length / 8);
+	var TailleFinListe =(listeAllies.length % 8);
+
+	for (var j=0; j<Taille; j++)
 	{
-		// mise du perso dans une variable
-		var persoA = listeAllies[perso];
+		var NewListe=new Array();
 
-		var ModePerso;
-		var DescriptionSac;
-		var PourcentVie;
-		var DescriptionVie;
-		var PourcentSac;
-
-		listePersoAllies.push(persoA);
-		
-		/// 0 à modifier par brute quand la liste sera ok  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		
-		if(persoA.competence==0)
+		if(j==Taille-1 && TailleFinListe!=0)
 		{
-			 imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
-			 imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
-			// imgPersoAllie.y = 2;
-			 imgPersoAllie.cursor= "normal";
+			//Boucle des items liste incomplète
+			for (var i=j*8; i<j*8+TailleFinListe; i++)
+			{
+				// mise de l'item dans une variable
+				var perso = listeAllies[i];
+
+				// ajout de l'item à la nouvelle liste
+				NewListe.push(perso);
+			}
+			// ajout de la nouvelle liste au tableau de listes
+			TabListe.push(NewListe);  
 		}
-		else if(persoA.competence=="chercheur")
+		else
 		{
-			 imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
-			 imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
-			// imgPersoAllie.y = 2;
-			 imgPersoAllie.cursor= "normal";
+			//Boucle normale : creation nouvelle liste de 10 items max
+			for (var i=j*8; i<(j*8+8); i++)
+			{
+
+				// mise de l'item dans une variable
+				var perso = listeAllies[i];
+
+				// mise de l'item dans une variable
+				NewListe.push(perso);
+			}
+			TabListe.push(NewListe);
 		}
-		else if(persoA.competence=="explorateur")
-		{
-			 imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
-			 imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
-			// imgPersoAllie.y = 2;
-			 imgPersoAllie.cursor= "normal";
-		}
-		
-		 imgPersoAllie.name = perso;
-
-		// Ajout de l'évenement a l'image
-		// ajout d'un texte quand l'user passera la souris dessus
-		 imgPersoAllie.addEventListener('mouseover', function(event) {
-			var currentPerso = listeAllies[event.target.name];
-			// Texte de description du Mode
-			ModePerso="";
-			switch(currentPerso.mode)
-			{
-			case 0:
-				ModePerso="Normal";
-				break;
-			case 1:
-				ModePerso="Fouille";
-				break;
-			case 2:
-				ModePerso="Caché";
-				break;
-			case 3:
-				ModePerso="Défense";
-				break;
-			}
-
-			labelDescribePerso.text = ("Competence : " + currentPerso.competence + 
-					"\nMode : " + ModePerso + 
-					"\nSanté : " + currentPerso.ptSante + " / " + currentPerso.ptSanteMax +
-					"\nSac rempli à : " + currentPerso.sacADos + " %");
-
-			if(currentPerso.armeEquipee!=null)
-			{
-				labelDescribePerso.text += "\nArme Equipée : " + currentPerso.armeEquipee.nom + " " + currentPerso.armeEquipee.valeur;
-			}
-			else
-			{
-				labelDescribePerso.text += "\nPas d'arme équipée";
-			}
-
-			if(currentPerso.armureEquipee!=null)
-			{
-				labelDescribePerso.text += "\nArmure Equipée : " + currentPerso.armureEquipee.nom + " " + currentPerso.armureEquipee.valeur;
-			}
-			else
-			{
-				labelDescribePerso.text += "\nPas d'armure équipée";
-
-			}
-			stage.update();
-		},false);
-
-		 imgPersoAllie.addEventListener('mouseout', function(event){
-			labelDescribePerso.text="";
-			stage.update();
-		},false);
-
-		contListeAllies.addChild( imgPersoAllie);
-
-		// position de l'item dans le conteneur
-		iPositionPersoInConteneur++;
 	}
-	stage.update();
-		});
+
+	if(PagePersoAllies>Taille-1)
+	{
+		PagePersoAllies=Taille-1;
+	}
+	else if (PagePersoAllies<0)
+	{
+		PagePersoAllies=0;
+	}
+
+	if(PagePersoAllies==Taille-1)
+	{
+		BtnPagePersoAlliesRight.visible=false;
+	}
+	else
+	{
+		BtnPagePersoAlliesRight.visible=true;
+	}
+
+	if(PagePersoAllies==0)
+	{
+		BtnPagePersoAlliesLeft.visible=false;
+	}
+	else
+	{
+		BtnPagePersoAlliesLeft.visible=true;
+	}
+
+	if(Taille ==0)
+	{
+		BtnPagePersoAlliesLeft.visible=false;
+		BtnPagePersoAlliesRight.visible=false;
+	}
+
+	try 
+	{
+		// instructions à essayer
+		for (var i = 0; i < TabListe[PagePersoAllies].length ; i++) 
+		{
+			var persoA=TabListe[PagePersoAllies][i];
+
+			var ModePerso;
+			var DescriptionSac;
+			var PourcentVie;
+			var DescriptionVie;
+			var PourcentSac;
+
+			listePersoAllies.push(persoA);
+
+			if(persoA.competence=="brute")
+			{
+				imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
+				imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
+				// imgPersoAllie.y = 2;
+				imgPersoAllie.cursor= "normal";
+			}
+			else if(persoA.competence=="chercheur")
+			{
+				imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
+				imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
+				// imgPersoAllie.y = 2;
+				imgPersoAllie.cursor= "normal";
+			}
+			else if(persoA.competence=="explorateur")
+			{
+				imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
+				imgPersoAllie.x = iPositionPersoInConteneur * SpacePerso;
+				// imgPersoAllie.y = 2;
+				imgPersoAllie.cursor= "normal";
+			}
+
+			imgPersoAllie.name = i;
+
+			// Ajout de l'évenement a l'image
+			// ajout d'un texte quand l'user passera la souris dessus
+			imgPersoAllie.addEventListener('mouseover', function(event) {
+				var currentPerso = TabListe[PagePersoAllies][event.target.name];
+				// Texte de description du Mode
+				ModePerso="";
+				switch(currentPerso.mode)
+				{
+				case 0:
+					ModePerso="Normal";
+					break;
+				case 1:
+					ModePerso="Fouille";
+					break;
+				case 2:
+					ModePerso="Caché";
+					break;
+				case 3:
+					ModePerso="Défense";
+					break;
+				}
+
+				labelDescribePerso.text = ("Competence : " + currentPerso.competence + 
+						"\nMode : " + ModePerso + 
+						"\nSanté : " + currentPerso.ptSante + " / " + currentPerso.ptSanteMax +
+						"\nSac rempli à : " + currentPerso.sacADos + " %");
+
+				if(currentPerso.armeEquipee!=null)
+				{
+					labelDescribePerso.text += "\nArme Equipée : " + currentPerso.armeEquipee.nom + " " + currentPerso.armeEquipee.valeur;
+				}
+				else
+				{
+					labelDescribePerso.text += "\nPas d'arme équipée";
+				}
+
+				if(currentPerso.armureEquipee!=null)
+				{
+					labelDescribePerso.text += "\nArmure Equipée : " + currentPerso.armureEquipee.nom + " " + currentPerso.armureEquipee.valeur;
+				}
+				else
+				{
+					labelDescribePerso.text += "\nPas d'armure équipée";
+
+				}
+				stage.update();
+			},false);
+
+			imgPersoAllie.addEventListener('mouseout', function(event){
+				labelDescribePerso.text="";
+				stage.update();
+			},false);
+
+			contListeAllies.addChild( imgPersoAllie);
+
+			// position de l'item dans le conteneur
+			iPositionPersoInConteneur++;
+		}
+	}
+	catch(e)
+	{
+		//alert("Page inexistante !");
+	}
+		stage.update();
+		socket.emit('INFO_PERSONNAGE_CS');
+	});
 
 socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
-{
+		{
 	var i=0;
 	var iPositionPersoInConteneur=0;
 
 	this.listePersoEnnemis = new Array();
 	contListeEnnemis.removeAllChildren();
-	
+
 	var imgPersoEnnemi;
 
 	// tableau qui contient toutes les listes d'objets
@@ -3071,7 +3165,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 			{
 				// mise de l'item dans une variable
 				var perso = listeEnn[i];
-				
+
 				// ajout de l'item à la nouvelle liste
 				NewListe.push(perso);
 			}
@@ -3086,7 +3180,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 
 				// mise de l'item dans une variable
 				var perso = listeEnn[i];
-				
+
 				// mise de l'item dans une variable
 				NewListe.push(perso);
 			}
@@ -3102,7 +3196,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	{
 		PagePersoEnn=0;
 	}
-	
+
 	if(PagePersoEnn==Taille-1)
 	{
 		BtnPagePersoEnnRight.visible=false;
@@ -3111,7 +3205,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	{
 		BtnPagePersoEnnRight.visible=true;
 	}
-	
+
 	if(PagePersoEnn==0)
 	{
 		BtnPagePersoEnnLeft.visible=false;
@@ -3120,7 +3214,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	{
 		BtnPagePersoEnnLeft.visible=true;
 	}
-	
+
 	if(Taille ==0)
 	{
 		BtnPagePersoEnnLeft.visible=false;
@@ -3132,189 +3226,177 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		// instructions à essayer
 		for (var i = 0; i < TabListe[PagePersoEnn].length ; i++) 
 		{
-				var persoE=TabListe[PagePersoEnn][i];
+			var persoE=TabListe[PagePersoEnn][i];
 
-				var ModePerso;
-				var DescriptionSac;
-				var PourcentVie;
-				var DescriptionVie;
+			var ModePerso;
+			var DescriptionSac;
+			var PourcentVie;
+			var DescriptionVie;
 
-				this.listePersoEnnemis.push(persoE);
+			this.listePersoEnnemis.push(persoE);
 
-				/// 0 à modifier par brute quand la liste sera ok  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			if(persoE.competence=="brute")
+			{
+				imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
+				imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+				imgPersoEnnemi.y = 2 ; 
+				imgPersoEnnemi.cursor= "pointer";
+			}
+			else if(persoE.competence=="chercheur")
+			{
+				imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
+				imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+				imgPersoEnnemi.y = 2 ; 
+				imgPersoEnnemi.cursor= "pointer";
+			}
+			else if(persoE.competence=="explorateur")
+			{
+				imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
+				imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+				imgPersoEnnemi.y = 2 ; 
+				imgPersoEnnemi.cursor= "pointer";
+			}
 
-				if(persoE.competence==0)
+			imgPersoEnnemi.name = i;
+
+			// Ajout de l'évenement a l'image
+			// ajout d'un texte quand l'user passera la souris dessus
+			imgPersoEnnemi.addEventListener('mouseover', function(event)
+					{
+				var currentPerso = TabListe[PagePersoEnn][event.target.name];
+
+				// Calcul du pourcentage de vie
+				PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
+				// Texte de Description de la vie
+				if(PourcentVie>=0 && PourcentVie==0)
 				{
-					 imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
-					 imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
-					 imgPersoEnnemi.y = 2 ; 
-					 imgPersoEnnemi.cursor= "pointer";
-					
+					DescriptionVie="";
+					DescriptionVie="Le corps de ce joueur gît au sol...";
 				}
-				else if(persoE.competence=="chercheur")
+				else if(PourcentVie>=0 && PourcentVie<20)
 				{
-					 imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
-					 imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
-					 imgPersoEnnemi.y = 2 ; 
-					 imgPersoEnnemi.cursor= "pointer";
+					DescriptionVie="";
+					DescriptionVie="Ce joueur n'a pas l'air très en forme";
 				}
-				else if(persoE.competence=="explorateur")
+				else if(PourcentVie>=20 && PourcentVie<40)
 				{
-					 imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
-					 imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
-					 imgPersoEnnemi.y = 2 ; 
-					 imgPersoEnnemi.cursor= "pointer";
+					DescriptionVie="";
+					DescriptionVie="Ce joueur n'a pas l'air peu en forme";
 				}
-				
-				 imgPersoEnnemi.name = perso;
-
-				// Ajout de l'évenement a l'image
-				// ajout d'un texte quand l'user passera la souris dessus
-				 imgPersoEnnemi.addEventListener('mouseover', function(event)
+				else if(PourcentVie>=40 && PourcentVie<60)
 				{
-					 
-					var currentPerso = [event.target.name];
-					alert("currentPerso : " + currentPerso);
-					// Calcul du pourcentage de vie
-					PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
-					// Texte de Description de la vie
-					if(PourcentVie>=0 && PourcentVie==0)
-					{
-						DescriptionVie="";
-						DescriptionVie="Le corps de ce joueur gît au sol...";
-					}
-					else if(PourcentVie>=0 && PourcentVie<20)
-					{
-						DescriptionVie="";
-						DescriptionVie="Ce joueur n'a pas l'air très en forme";
-					}
-					else if(PourcentVie>=20 && PourcentVie<40)
-					{
-						DescriptionVie="";
-						DescriptionVie="Ce joueur n'a pas l'air peu en forme";
-					}
-					else if(PourcentVie>=40 && PourcentVie<60)
-					{
-						DescriptionVie="";
-						DescriptionVie="Ce joueur a l'air en forme";
-					}
-					else if(PourcentVie>=60 && PourcentVie<80)
-					{
-						DescriptionVie="";
-						DescriptionVie="Ce joueur a l'air très en forme";
-					}
-					else if(PourcentVie>=80 && PourcentVie<=100)
-					{
-						DescriptionVie="";
-						DescriptionVie="Ce joueur a l'air au top de sa forme";
-					}
+					DescriptionVie="";
+					DescriptionVie="Ce joueur a l'air en forme";
+				}
+				else if(PourcentVie>=60 && PourcentVie<80)
+				{
+					DescriptionVie="";
+					DescriptionVie="Ce joueur a l'air très en forme";
+				}
+				else if(PourcentVie>=80 && PourcentVie<=100)
+				{
+					DescriptionVie="";
+					DescriptionVie="Ce joueur a l'air au top de sa forme";
+				}
 
-					// Texte de description du poids du sac
-					if(currentPerso.sacADos>=0 && currentPerso.sacADos<20)
-					{
-						DescriptionSac="";
-						DescriptionSac="Ce joueur n'a pas l'air très chargé !";
-					}
-					else if(currentPerso.sacADos>=20 && currentPerso.sacADos<40)
-					{
-						DescriptionSac="";
-						DescriptionSac="Ce joueur a l'air peu chargé !";
-					}
-					else if(currentPerso.sacADos>=40 && currentPerso.sacADos<60)
-					{
-						DescriptionSac="";
-						DescriptionSac="Ce joueur a l'air chargé !";
-					}
-					else if(currentPerso.sacADos>=60 && currentPerso.sacADos<80)
-					{
-						DescriptionSac="";
-						DescriptionSac="Ce joueur a l'air très chargé !";
-					}
-					else if(currentPerso.sacADos>=80 && currentPerso.sacADos<=100)
-					{
-						DescriptionSac="";
-						DescriptionSac="Ce joueur a l'air surchargé !";
-					}
+				// Texte de description du poids du sac
+				if(currentPerso.sacADos>=0 && currentPerso.sacADos<20)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur n'a pas l'air très chargé !";
+				}
+				else if(currentPerso.sacADos>=20 && currentPerso.sacADos<40)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur a l'air peu chargé !";
+				}
+				else if(currentPerso.sacADos>=40 && currentPerso.sacADos<60)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur a l'air chargé !";
+				}
+				else if(currentPerso.sacADos>=60 && currentPerso.sacADos<80)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur a l'air très chargé !";
+				}
+				else if(currentPerso.sacADos>=80 && currentPerso.sacADos<=100)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur a l'air surchargé !";
+				}
 
-					// Texte de description du Mode
-					switch(currentPerso.mode)
-					{
-					case 0: ModePerso="";
-					ModePerso="Normal";
-					break;
-					case 1: ModePerso="";
-					ModePerso="Fouille";
-					break;
-					case 2: ModePerso="";
-					ModePerso="Caché";
-					break;
-					case 3: ModePerso="";
-					ModePerso="Défense";
-					break;
-					}
+				// Texte de description du Mode
+				switch(currentPerso.mode)
+				{
+				case 0: ModePerso="";
+				ModePerso="Normal";
+				break;
+				case 1: ModePerso="";
+				ModePerso="Fouille";
+				break;
+				case 2: ModePerso="";
+				ModePerso="Caché";
+				break;
+				case 3: ModePerso="";
+				ModePerso="Défense";
+				break;
+				}
 
-					labelDescribePerso.text=("Competence : "+currentPerso.competence+
-							"\nMode : "+ModePerso+
-							"\n"+DescriptionVie+
-							"\n"+DescriptionSac);
+				labelDescribePerso.text=("Competence : "+currentPerso.competence+
+						"\nMode : "+ModePerso+
+						"\n"+DescriptionVie+
+						"\n"+DescriptionSac);
 
-					if(currentPerso.armeEquipee!=null)
-					{
-						labelDescribePerso.text +=("\nArme Equipée : " + currentPerso.armeEquipee.nom);
-					}
-					else
-					{
-						labelDescribePerso.text += "\nPas d'arme équipée";
-					}
+				if(currentPerso.armeEquipee!=null)
+				{
+					labelDescribePerso.text +=("\nArme Equipée : " + currentPerso.armeEquipee.nom);
+				}
+				else
+				{
+					labelDescribePerso.text += "\nPas d'arme équipée";
+				}
 
 
-					if(currentPerso.armureEquipee!=null)
-					{
-						labelDescribePerso.text +=("\nArmure Equipée :" + currentPerso.armureEquipee.nom);
-					}
-					else
-					{
-						labelDescribePerso.text += "\nPas d'armure équipée";
-					}
-					stage.update();
-						},false);
-
-				 imgPersoEnnemi.addEventListener('mouseout', function(event){
-					labelDescribePerso.text="";
-					stage.update();
-				},false);
-
-				 imgPersoEnnemi.addEventListener("click", function(event){
-					var currentPerso = TabListe[PagePersoEnn][event.target.name];
-					SelectedPerso=currentPerso.id;
-					setBtnAttaquer();
-					stage.update();
-				});
-
-				contListeEnnemis.addChild(imgPersoEnnemi);
-
-				// position de l'item dans le conteneur
-				iPositionPersoInConteneur++;
-
-				// Update l'ihm
+				if(currentPerso.armureEquipee!=null)
+				{
+					labelDescribePerso.text +=("\nArmure Equipée :" + currentPerso.armureEquipee.nom);
+				}
+				else
+				{
+					labelDescribePerso.text += "\nPas d'armure équipée";
+				}
 				stage.update();
+					},false);
+
+			imgPersoEnnemi.addEventListener('mouseout', function(event){
+				labelDescribePerso.text="";
+				stage.update();
+			},false);
+
+			imgPersoEnnemi.addEventListener("click", function(event){
+				var currentPerso = TabListe[PagePersoEnn][event.target.name];
+				SelectedPerso=currentPerso.id;
+				setBtnAttaquer();
+				stage.update();
+			});
+
+			contListeEnnemis.addChild(imgPersoEnnemi);
+
+			// position de l'item dans le conteneur
+			iPositionPersoInConteneur++;
+
+			// Update l'ihm
+			stage.update();
 		}
 	}
 	catch(e){
 		//alert("Page inexistante");
 	}
 
-	/*for(var perso in listeEnn)
-	{
-		// mise du perso dans une variable
-		var persoE = listeEnn[perso];
-
-		
-		
-	}*/
 	stage.update();
 	socket.emit('INFO_PERSONNAGE_CS');
-});
+		});
 
 
 
