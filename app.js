@@ -1056,6 +1056,22 @@ io.sockets.on('connection', function (socket)
 	{
     	SauvegardeGlobale();
     });
+    /*  
+    *
+    *
+    *
+    *
+    *
+    *
+    *
+   /******************************************************************************************************************
+    * RENVOI DE LA DATE DE LANCEMENT DU SERVEUR
+    * return date
+    */
+   socket.on('GET_DATE_CS', function ()
+	{
+		socket.emit('GET_DATE_SC', dateLancementSrv);
+   });
     /*
      * 
      *
