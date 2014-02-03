@@ -224,9 +224,58 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	return reponseServeur;
 }, 
 
-Personnage_Manager.AttaquerGoule = function(idUser, nbrG)
+Personnage_Manager.AttaquerGoule = function(idUser)
 {
+	// création de données de retour
+	var reponseServeur = {
+		"code" : 0,  
+		"degatSubisParGoules" : 0,  
+		"nbrGoulesAttaquantes" : 0};
+	
+	// récupération données utiles
+	var idCase = this.GetIdSalleEnCours(idUser);
+	
+	// si pas assez de pts d'actions
+	if(!this.TestPtActions(idUser, "attaqueGoule"))
+	{
+		reponseServeur["code"] = -10;
+		return reponseServeur;
+    }
+	
+	// si pas de goules dans la salle
+	if (oCase_Manager.GetNombreGoules(idCase) == 0)
+	{
+		reponseServeur["code"] = -2;
+		return reponseServeur;
+	}
+	
+	// calcul soutien alliés
+	var res = this.GetNbrAlliesEnemisDansSalle(idUser);
+	
+	// attaque d'une goule -> get goules tuées
+	var goulesTues = oCase_Manager.AttaqueGoule(idCase);
+	
+	// riposte des goules -> get dégats subiset nbr attaquantes
+	var ans = oCase_Manager.AttaqueDeGoules(idCase, res.nbrAllies);
+	var degatsSubis = this.subirDegats(idUser, ans["degats"]);
+	
+	
+	// mise en mode "oisif"
+	this.InitialiserMode(idUser);
+	
+	// diminution pts d'actions
 	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueGoule());
+	
+	// données au serveur
+	reponseServeur["code"]					= goulesTues;
+	reponseServeur["degatSubisParGoules"] 	= degatsSubis;
+	reponseServeur["nbrGoulesAttaquantes"] 	= ans["nbrGoulesA"];
+	
+	// log
+	console.log("PERSONNAGE_MANAGER : " +
+			"attaque goules ->  Goules tués : " + goulesTues + 
+			" - Degats " + degatsSubis +
+			" - nbr ripostes " + ans["nbrGoulesA"]);
 	
 	// si le joueur a été tué...
 	if (this.estMort(idUser))
@@ -238,6 +287,8 @@ Personnage_Manager.AttaquerGoule = function(idUser, nbrG)
 		// comptabiliser le socre
 		oScore_Manager.compabiliserGouleTue(idUser, nbrG);
 	}
+	
+	return reponseServeur;
 }, 
 
 Personnage_Manager.subirDegats = function (idUser,  degats)

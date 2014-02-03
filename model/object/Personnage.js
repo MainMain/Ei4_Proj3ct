@@ -650,10 +650,13 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
-			var date = new Date();
-			var mois = parseInt(date.getMonth()) + 1;
-			var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
-			this.listeMsgAtt.push(str + " : " + msg);
+			if (msg != "Z" && msg != "N")
+			{
+				var date = new Date();
+				var mois = parseInt(date.getMonth()) + 1;
+				var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
+				this.listeMsgAtt.push(str + " : " + msg);
+			}
 			this.nbrNvMsg++;
 			
 			console.log("PERSONNAGE : Ajout d'un message : " + msg);
@@ -662,6 +665,11 @@ var Personnage = (function() {
 		effacerMessage : function(msg)
 		{
 			this.listeMsgAtt = new Array();
+		},
+		
+		manger : function(valeur)
+		{
+			
 		},
 		
 		viderInventaire : function()

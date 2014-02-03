@@ -304,33 +304,6 @@ server.listen(app.get('port'), function ()
  */
 var io = require('socket.io').listen(server, { log: false });
 
-/*
- * INITIALISATION DE LA BD
- * Comme il n'y a pas de BD pour le moment, on en simule une...
- */
-//oItem_BD.Initialiser();
-
-
-/*
- * INITIALISATION DU PERSONNAGE ET DES MANAGERS
- */
-
-//try
-//{
-	
-	
-	/*, function()
-			{
-				console.log("Fin oPersonnage_Manager--------------------------");
-				var oCase_Manager = new oCase_Manager(oPersonnage_Manager.GetIdSalleEnCours());
-			});*/
-	
-//}catch(err)
-//{
-	//console.log("PAS DE PERSO CORRESPONDANT A CET USER !");
-//}
-
-
 
 /**
  * ********* EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION CLIENT -> SERVEUR
@@ -786,12 +759,19 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('PERSONNAGE_USE_CS', function (id_item)
     {
-    	console.log("*******************************************************");
+    	console.log("******************* UTILISER ***********************");
 		
+    	
+    	// délègue au manager et récupère le code retour
 		var reponse = oPersonnage_Manager.Utiliser(idUser, id_item);
 		
+		// renvoi au client
 		socket.emit('PERSONNAGE_USE_SC', id_item, reponse);
 		
+		// actualiser l'ihm pour les perso de la meme case connectés
+		ActualiserAllInCase();
+		
+		console.log("SERVEUR : UTILISER - " + idUser +" - Item " + id_item + " - Code : " + reponse);
 		console.log("*******************************************************");
     });
     /*
@@ -821,13 +801,18 @@ io.sockets.on('connection', function (socket)
     socket.on('PERSONNAGE_MODE_CS', function (mode)
 	{
         console.log("*******************************************************");
-		var reponse = oPersonnage_Manager.ChangementMode(idUser, mode);
 		
-		socket.emit('PERSONNAGE_MODE_SC', mode, reponse.reponseChargement, reponse.degatsSubis, reponse.nbrGoules);
+        // délègue au manager
+        var reponse = oPersonnage_Manager.ChangementMode(idUser, mode);
 		
+		// renvoi au client
+		socket.emit('PERSONNAGE_MODE_SC', mode, reponse.reponseChangement, reponse.degatsSubis, reponse.nbrGoules);
+		
+		// information avec message
 		if (mode == 1) InformerAllInCase("commence à fouiller la salle");
 		if (mode == 3) InformerAllInCase("se prépare au combat !");
 		
+		console.log("SERVEUR : CHGT MODE - " + idUser +" - Mode " + mode + " - Code : " + reponse.reponseChangement);
         console.log("*******************************************************");
     });
     /*
@@ -894,6 +879,7 @@ io.sockets.on('connection', function (socket)
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', 0, null, 0, 0, 0, 0);
     		break;
     	}
+    	console.log("SERVEUR : FOUILLE_RAPIDE - " + idUser +" - item découvert : " + reponse.itemDecouvert);
     	console.log("***************************************************************");
     });
     /*
@@ -926,47 +912,21 @@ io.sockets.on('connection', function (socket)
     	// récupèration de l'id de l'user propriétaire de ce perso
     	var idCible = oUtilisateur_Manager.findIdUser(idPersonnageCible);
     	var idCase = oPersonnage_Manager.GetIdSalleEnCours(idUser);
-        var ans = oPersonnage_Manager.Attaquer(idUser, idCible);
-		
-        // récupère les pseudo
         
-		console.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
+    	// délègue au manager
+    	var ans = oPersonnage_Manager.Attaquer(idUser, idCible);
 		
+    	// renvoi au client
         socket.emit('ACTION_ATTAQUE_SC', ans.reponseAttaque, ans.degatsInfliges,  ans.degatsRecus, ans.degatSubisParGoules, ans.nbrGoules);
 		
         // actualiser l'ihm pour les perso de la meme case connectés
 		ActualiserAllInCase();
 		
+		// informatique des autres joueurs avec message
 		InformerAllInCase("vient d'attaquer " + idPersonnageCible);
+		
+		console.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
 	});
-    /*
-     * 
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-    /******************************************************************************************************************
-	 * RECEPTION D'UNE DEMANDE POUR OBTENIR LES MESSAGES EN ATTENTE
-	 * return 1 si ok
-	 * erreur : 0 si erreur interne
-	 * erreur : -1 si aucun message
-	 * 
-	 * ET liste messages
-	 * 
-	 */
-    socket.on('CHECK_MSG_ATT_CS', function () {
-    	if (oPersonnage_Manager.GetListMsgAtt(idUser).count > 0)
-    	{
-    		socket.emit('CHECK_MSG_ATT_SC', 1, oPersonnage_Manager.GetListMsgAtt(idUser));
-    	}
-    	else
-    	{
-    		socket.emit('CHECK_MSG_ATT_SC', -1);
-    	}
-    });
     /*
      * 
      *
@@ -992,48 +952,24 @@ io.sockets.on('connection', function (socket)
     socket.on('ACTION_ATTAQUE_GOULE_CS', function ()
 	{
     	console.log("******************** ATTAQUE DE GOULES *****************");
-    	
-        // si pu de pts actions
-        if(!oPersonnage_Manager.TestPtActions(idUser, "attaqueGoule"))
-		{
-        	socket.emit('ACTION_ATTAQUE_GOULE_SC', -10, 0, 0);
-        }
-        else
-		{
-			// si pas de goules dans la salle
-			if (oCase_Manager.GetNombreGoules(oPersonnage_Manager.GetIdSalleEnCours(idUser)) == 0)
-			{
-				socket.emit('ACTION_ATTAQUE_GOULE_SC', -2, 0, 0);
-			}
-			else
-			{
-				// calcul soutien alliés
-				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
+    	// délègue au manager
+    	var reponseManager 			= oPersonnage_Manager.AttaquerGoule(idUser);
+		
+    	// récupère les réponses
+    	var code 					= reponseManager.code;
+		var degatSubisParGoules	 	= reponseManager.degatSubisParGoules;
+		var nbrGoulesAttaquantes 	= reponseManager.nbrGoulesAttaquantes;
+		
+		// réponse au canvas 
+		socket.emit('ACTION_ATTAQUE_GOULE_SC', code, degatSubisParGoules, nbrGoulesAttaquantes);
 				
-				// calcul des dégats subis
-				var ans = oCase_Manager.AttaqueDeGoules(oPersonnage_Manager.GetIdSalleEnCours(idUser), res.nbrAllies);
-				var degatsSubis = oPersonnage_Manager.subirDegats(idUser, ans["degats"]);
-				
-				// goules tuées
-				var goulesTues = oCase_Manager.AttaqueGoule(oPersonnage_Manager.GetIdSalleEnCours(idUser));
-				
-				// mise en mode "oisif"
-				oPersonnage_Manager.InitialiserMode(idUser);
-				
-				// informer le manager de perso de l'attaque
-				oPersonnage_Manager.AttaquerGoule(idUser, goulesTues);
-				
-				// informer les perso
-				InformerAllInCase("a courageusement tué " + goulesTues + " goules ! ");
-				
-				console.log("SERVEUR : attaque goules ->  Goules tués : " + goulesTues + " - Degats " + degatsSubis);
-				socket.emit('ACTION_ATTAQUE_GOULE_SC', goulesTues, degatsSubis, 0);
-				
-				// actualiser l'ihm pour les perso de la meme case connectés
-				ActualiserAllInCase();
-				console.log("*********************************************************");
-			}
-		}
+		// informer les perso
+		InformerAllInCase("a courageusement tué " + code + " goules ! ");
+		
+		// actualiser l'ihm pour les perso de la meme case connectés
+		ActualiserAllInCase();
+		
+		console.log("*********************************************************");
     });
     /*
      * 
