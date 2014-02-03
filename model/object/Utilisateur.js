@@ -88,6 +88,16 @@ var Utilisateur = (function() {
 		{
 			return this.idPersonnage;
 		},
+		
+		getScore : function()
+		{
+			return this.scoreByMeutreCumule;
+		},
+		
+		setScore : function(newScore)
+		{
+			this.scoreByMeutreCumule = newScore;
+		},
 
 	};
 	// On pense à retourner le constructeur (afin de pouvoir construire des

@@ -533,6 +533,12 @@ io.sockets.on('connection', function (socket)
 		usersOnline[idUser].pages[socket] = page;
 		usersOnline[idUser].sockets.push(socket);
 		
+		if(page == "classement")
+		{
+			users = oUtilisateur_Manager.GetUsersOrderedByScore();
+			socket.emit('CLASSEMENT_SC', users);
+		}
+		
 		console.log("Connexion de " + user + " à la page " + page);
 	});
 	
@@ -1040,7 +1046,7 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function ()
 	{
-    	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser));
+    	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.getPseudo(idUser));
     	
     	// effacement des messages
     	oPersonnage_Manager.EffacerMessages(idUser);
@@ -1191,7 +1197,7 @@ io.sockets.on('connection', function (socket)
 			// si le personnage n'est pas mort, on lui ajoute le message
 			if (!oPersonnage_Manager.estMort(id))
 			{
-				oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.GetPseudo(idUser) + " " + evenement);
+				oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.getPseudo(idUser) + " " + evenement);
 			}
 			
 			// pour ceux qui sont en ligne, on leurs rafraichit les infos sur leurs perso et la case

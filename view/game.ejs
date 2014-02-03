@@ -32,14 +32,20 @@
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 
+
+		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script>
+			window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')
+		</script>
+		
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			//var socket = io.connect('http://192.168.1.12:8080');
 			var socket = io.connect('http://localhost:443');
 			
 			$( document ).ready(function()
 			{
-				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "Jeu");
+				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "jeu");
 			});
 		
 		</script>
@@ -182,13 +188,6 @@
 
 		</footer>
 		<!-- #footer -->
-
-		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<script>
-			window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')
-		</script>
-
-
+		
 	</body>
 </html>
