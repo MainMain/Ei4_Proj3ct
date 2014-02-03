@@ -1219,7 +1219,7 @@ setInterval(function()
 { 
 	SauvegardeGlobale();
 	
-},  1000 * 60 * 10  ); // 1000 millisec * 60 sec * 10 min
+},  1000 * 60 * 60  ); // 1000 millisec * 60 sec * 60 min
 
 
 

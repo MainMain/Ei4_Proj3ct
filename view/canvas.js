@@ -1649,7 +1649,7 @@ function setBtnAttaquer(x,y)
 function setContPerso()
 {
 
-	if(SelectedItemPerso!=-1 && SelectedItemPersoType>= 4 && SelectedItemPersoType <=6)
+	if(SelectedItemPerso!=-1 && SelectedItemPersoType>= 4 && SelectedItemPersoType <=7)
 	{
 		var BtnUtiliser = new createjs.Bitmap("public/Boutons/Utiliser.png");
 		BtnUtiliser.y=0;
@@ -2468,21 +2468,21 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	}
 
 	// Sécurité pour le remplissage de la barre d'action
-	if(currentPerso.ptActions<=0)
+	if(currentPerso.ptAction<=0)
 	{
-		//labelPtsAction.text=("Points d'action :	 	 	    	0/" + currentPerso.ptActionsMax);
-		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
+		//labelPtsAction.text=("Points d'action :	 	 	    	0/" + currentPerso.ptActionMax);
+		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptAction + "/" + currentPerso.ptActionMax);
 		actionBar.scaleX = 0;
 	}
-	else if(currentPerso.ptActions>=currentPerso.ptActionsMax)
+	else if(currentPerso.ptAction>=currentPerso.ptActionMax)
 	{
-		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
+		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptAction + "/" + currentPerso.ptActionMax);
 		actionBar.scaleX = actionBarWidth;
 	}
 	else
 	{
-		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptActions + "/" + currentPerso.ptActionsMax);
-		actionBar.scaleX = (currentPerso.ptActions/currentPerso.ptActionsMax) * actionBarWidth;
+		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptAction + "/" + currentPerso.ptActionMax);
+		actionBar.scaleX = (currentPerso.ptAction/currentPerso.ptActionMax) * actionBarWidth;
 	}
 
 	// Sécurité pour le remplissage de la barre de move

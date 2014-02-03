@@ -760,13 +760,10 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 
 Personnage_Manager.SeRetablir = function(idUser)
 {
-	console.log("SERVEUR : SeRetablir()");
+	console.log("SERVEUR : SeRetablir() - " + idUser);
 	
-	// ajout de points de santé
-	this.listePersonnages[idUser].setPtsSante(20);
-	
-	// go a la zone sure
-	this.listePersonnages[idUser].setIdCase(oCase_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
+	var idZoneSure = oCase_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser));
+	this.listePersonnages[idUser].seRetablir(idZoneSure);
 }, 
 
 
