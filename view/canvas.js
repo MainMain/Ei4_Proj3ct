@@ -306,8 +306,7 @@ var imgPerso, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsLis
 shapeBtnsInvPerso, shapeBtnsInvCase;
 
 var BtnPagePersoAlliesRight, BtnPagePersoAlliesLeft, BtnPagePersoEnnRight, BtnPagePersoEnnLeft,
-BtnPageMessageDown, BtnPageMessageUp;
-
+BtnPageMessageDown, BtnPageMessageUp, BtnCancelListe;
 onload = initialize;
 
 function initialize() {
@@ -380,6 +379,7 @@ function initialize() {
 		{src:"public/Boutons/DArrow.png", id:"idBtnDArrow"},
 		{src:"public/Boutons/UArrow.png", id:"idBtnUArrow"},
 		{src:"public/Boutons/Select.png", id:"idSelect"},
+		{src:"public/Boutons/Select64.png", id:"idSelect64"},
 		{src:"public/Boutons/Messages.png", id:"idBtnMessages"},
 		{src:"public/Boutons/MessagesVide.png", id:"idBtnMessagesVide"},
 		{src:"public/Boutons/MessagesGris.png", id:"idBtnMessagesGris"},
@@ -863,9 +863,7 @@ function game() {
 	labelDescribeCase.textBaseline = _TextBaseline;
 	labelDescribeCase.x = _labelDescribeCaseX;
 	labelDescribeCase.y = _labelDescribeCaseY;
-	labelDescribeCase.text="azertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn " +
-			"\nazertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn " +
-			"\nFLOOOOOOazertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn";
+	
 	
 	labelFichePerso = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelFichePerso.lineHeight = _LineHeight;
@@ -1262,11 +1260,8 @@ function message()
 	
 	// tableau qui contient toutes les listes d'objets
 	var TabListe=new Array();
-	alert("ListeMessages.length : "+ListeMessages.length);
 	var Taille = Math.ceil(ListeMessages.length / 20);
-	alert("Taille : "+Taille);
 	var TailleFinListe =(ListeMessages.length % 20);
-	alert("TailleFinListe : " + TailleFinListe);
 	
 	for (var j=0; j<Taille; j++)
 	{
@@ -1275,11 +1270,9 @@ function message()
 		// Si derniere page
 		if(j==Taille-1 && TailleFinListe!=0)
 		{
-			alert("j : " + j);
 			//Boucle des items liste incomplète
 			for (var i=j*20; i<j*20+TailleFinListe; i++)
 			{
-				alert("i : " + i);
 				if(ListeMessages[i]!=undefined)
 				{
 					// mise de l'item dans une variable
@@ -1300,7 +1293,7 @@ function message()
 				if(ListeMessages[i]!=undefined)
 				{
 					// mise de l'item dans une variable
-					var msg = ListeMessages[i];
+					var msg = ListeMessages[i];+-
 
 					// mise de l'item dans une variable
 					NewListe.push(msg);
@@ -1320,7 +1313,6 @@ function afficherMessage(TabListeMessage)
 {
 	try 
 	{
-		alert("Page : "+PageMessage);
 		// instructions à essayer
 		labelMessage.text="";
 		for (var i = 0; i < TabListeMessage[PageMessage].length ; i++) 
@@ -1403,7 +1395,7 @@ function liste()
 			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
 
 	// Bouton ANNULER
-	var BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
+	BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
 	BtnCancelListe.x=600;
 	BtnCancelListe.y=365;
 	contListe.addChild(BtnCancelListe);
@@ -1413,36 +1405,36 @@ function liste()
 		game();
 	});
 
-	BtnPagePersoAlliesRight = new createjs.Bitmap("public/Boutons/RArrow.png");
-	BtnPagePersoAlliesRight.x= contListeAllies.x + contListeAllies.w;
-	BtnPagePersoAlliesRight.y= contListeAllies.y + 15;
+	BtnPagePersoAlliesRight = new createjs.Bitmap("public/Boutons/Right.png");
+	BtnPagePersoAlliesRight.x= contListeAllies.x + contListeAllies.width;
+	BtnPagePersoAlliesRight.y= contListeAllies.y + 8; //contListeAllies.height/2 - BtnPagePersoAlliesRight.image.height;
 	contListe.addChild(BtnPagePersoAlliesRight);
 	BtnPagePersoAlliesRight.addEventListener('click', function(event) {
 		PagePersoAllies++;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
 
-	BtnPagePersoAlliesLeft = new createjs.Bitmap("public/Boutons/RArrow.png");
-	BtnPagePersoAlliesLeft.x= contListeAllies.x + contListeAllies.w;
-	BtnPagePersoAlliesLeft.y= contListeAllies.y + 15;
+	BtnPagePersoAlliesLeft = new createjs.Bitmap("public/Boutons/Left.png");
+	BtnPagePersoAlliesLeft.x= contListeAllies.x - BtnPagePersoAlliesLeft.image.width -5;
+	BtnPagePersoAlliesLeft.y= contListeAllies.y + 8;
 	contListe.addChild(BtnPagePersoAlliesLeft);
 	BtnPagePersoAlliesLeft.addEventListener('click', function(event) {
 		PagePersoAllies--;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
 
-	BtnPagePersoEnnRight = new createjs.Bitmap("public/Boutons/RArrow.png");
+	BtnPagePersoEnnRight = new createjs.Bitmap("public/Boutons/Right.png");
 	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.w;
-	BtnPagePersoEnnRight.y= contListeEnnemis.y + 15;
+	BtnPagePersoEnnRight.y= contListeEnnemis.y + 8;
 	contListe.addChild(BtnPagePersoEnnRight);
 	BtnPagePersoEnnRight.addEventListener('click', function(event) {
 		PagePersoEnnemis++;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
 
-	BtnPagePersoEnnLeft = new createjs.Bitmap("public/Boutons/RArrow.png");
-	BtnPagePersoEnnLeft.x= contListeEnnemis.x + contListeEnnemis.w;
-	BtnPagePersoEnnLeft.y= contListeEnnemis.y + 15;
+	BtnPagePersoEnnLeft = new createjs.Bitmap("public/Boutons/Left.png");
+	BtnPagePersoEnnLeft.x= contListeEnnemis.x - BtnPagePersoEnnLeft.image.width - 5;
+	BtnPagePersoEnnLeft.y= contListeEnnemis.y +  8;
 	contListe.addChild(BtnPagePersoEnnLeft);
 	BtnPagePersoEnnLeft.addEventListener('click', function(event) {
 		PagePersoEnnemis--;
@@ -1536,7 +1528,7 @@ function dead()
 
 function setBtnMessage(TabListeMessage, Taille)
 {
-	BtnPageMessageDown = new createjs.Bitmap("public/Boutons/DArrow.png");
+	BtnPageMessageDown = new createjs.Bitmap("public/Boutons/Down.png");
 	BtnPageMessageDown.x= 746/2 - BtnPageMessageDown.image.width/2;
 	BtnPageMessageDown.y= 365;
 	contMessage.addChild(BtnPageMessageDown);
@@ -1547,7 +1539,7 @@ function setBtnMessage(TabListeMessage, Taille)
 		stage.update();
 	});
 
-	BtnPageMessageUp = new createjs.Bitmap("public/Boutons/UArrow.png");
+	BtnPageMessageUp = new createjs.Bitmap("public/Boutons/Up.png");
 	BtnPageMessageUp.x=746/2 - BtnPageMessageUp.image.width/2;
 	BtnPageMessageUp.y= 5;
 	contMessage.addChild(BtnPageMessageUp);
@@ -1558,7 +1550,7 @@ function setBtnMessage(TabListeMessage, Taille)
 		stage.update();
 	});
 	
-	if(PageMessage>Taille)
+	if(PageMessage==Taille-1)
 	{
 		BtnPageMessageDown.visible=false;
 	}
@@ -2190,6 +2182,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %");
 		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %");
+		
+		labelDescribeCase.text=currentCase.description;
 
 		if(ProbCache>100)
 		{
@@ -2312,7 +2306,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 				// ajout d'un texte quand l'user passera la souris dessus
 				imgItem.addEventListener('mouseover', function(event) {
 					var currentItem = TabListe[PageItemCase][event.target.name];
-					labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+					labelDescribeItem.text=(currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 					stage.update();
 				},false);
 
@@ -2753,7 +2747,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 				// ajout d'un texte quand l'user passera la souris dessus
 				imgItem.addEventListener('mouseover', function(event) {
 					var currentItem = TabListe[PageItemPerso][event.target.name];
-					labelDescribeItem.text=("Nom : " + currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+					labelDescribeItem.text=(currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
 					stage.update();
 				},false);
 
@@ -2829,7 +2823,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		});
 
 		contArme.addEventListener('mouseover', function(event) {
-			labelDescribeItem.text=("Nom : " + currentPerso.armeEquipee.nom + " (valeur : " + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
+			labelDescribeItem.text=(currentPerso.armeEquipee.nom + " (valeur : " + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
 			stage.update();
 		},false);
 
@@ -2871,7 +2865,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		});
 
 		contArmure.addEventListener('mouseover', function(event) {
-			labelDescribeItem.text=("Nom : " + currentPerso.armureEquipee.nom + " (valeur : " + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
+			labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (valeur : " + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
 			stage.update();
 		},false);
 
@@ -3417,6 +3411,8 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		BtnPagePersoEnnRight.visible=false;
 	}
 
+	var Select;
+	
 	try 
 	{
 		// instructions à essayer
@@ -3460,7 +3456,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 			imgPersoEnnemi.addEventListener('mouseover', function(event)
 					{
 				var currentPerso = TabListe[PagePersoEnn][event.target.name];
-
+				
 				// Calcul du pourcentage de vie
 				PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
 				// Texte de Description de la vie
@@ -3571,9 +3567,17 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 			},false);
 
 			imgPersoEnnemi.addEventListener("click", function(event){
+				if (Select!=null)
+				{
+					contListeEnnemis.removeChild(Select);
+				}
+				var num=event.target.x;
+				Select = contListeEnnemis.addChild(new createjs.Bitmap("public/Boutons/Select64.png"));
+				Select.x=(num);
+				Select.y=0;
 				var currentPerso = TabListe[PagePersoEnn][event.target.name];
 				SelectedPerso=currentPerso.id;
-				setBtnAttaquer();
+				setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
 				stage.update();
 			});
 
