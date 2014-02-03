@@ -20,6 +20,7 @@ var PageItemCase=0;
 
 var PagePersoEnn=0;
 var PagePersoAllies=0;
+var PageMessage=0;
 
 var background, backgroundPreload, map, perso;
 
@@ -147,6 +148,10 @@ var _labelNbEnnemisY = _labelNbAlliesXY + _EspaceLabelY;
 //Placement label Nombre de Goules
 var _labelNbGoulesX = _labelNbAlliesX ;
 var _labelNbGoulesY = _labelNbEnnemisY + _EspaceLabelY;
+
+// Placement label description case
+var _labelDescribeCaseX=_labelNbAlliesX;
+var _labelDescribeCaseY=_labelNbGoulesY + _EspaceLabelY;
 
 //------------------ Zone 8 : Proba de la case -------------------------------------------------------
 
@@ -282,7 +287,7 @@ labelNbAllies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
 
 var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage,
-labelNombreNouvMsg, labelFichePerso;
+labelNombreNouvMsg, labelFichePerso, labelDescribeCase;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
 contBtnsListes, contDead,
@@ -300,7 +305,8 @@ var ListeMessages;
 var imgPerso, shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsListes, 
 shapeBtnsInvPerso, shapeBtnsInvCase;
 
-var BtnPagePersoAlliesRight, BtnPagePersoAlliesLeft, BtnPagePersoEnnRight, BtnPagePersoEnnLeft;
+var BtnPagePersoAlliesRight, BtnPagePersoAlliesLeft, BtnPagePersoEnnRight, BtnPagePersoEnnLeft,
+BtnPageMessageDown, BtnPageMessageUp;
 
 onload = initialize;
 
@@ -371,6 +377,8 @@ function initialize() {
 		{src:"public/Boutons/Up.png", id:"idBtnUp"},
 		{src:"public/Boutons/Down.png", id:"idBtnDown"},
 		{src:"public/Boutons/RArrow.png", id:"idBtnRArrow"},
+		{src:"public/Boutons/DArrow.png", id:"idBtnDArrow"},
+		{src:"public/Boutons/UArrow.png", id:"idBtnUArrow"},
 		{src:"public/Boutons/Select.png", id:"idSelect"},
 		{src:"public/Boutons/Messages.png", id:"idBtnMessages"},
 		{src:"public/Boutons/MessagesVide.png", id:"idBtnMessagesVide"},
@@ -850,6 +858,15 @@ function game() {
 	// ********* Déclaration des labels *********
 	// ******************************************
 
+	labelDescribeCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelDescribeCase.lineHeight = _LineHeight;
+	labelDescribeCase.textBaseline = _TextBaseline;
+	labelDescribeCase.x = _labelDescribeCaseX;
+	labelDescribeCase.y = _labelDescribeCaseY;
+	labelDescribeCase.text="azertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn " +
+			"\nazertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn " +
+			"\nFLOOOOOOazertyuiopqsdfghjklmwxcvbnazertyuiopqsdfghjklmwxcvbn";
+	
 	labelFichePerso = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelFichePerso.lineHeight = _LineHeight;
 	labelFichePerso.textBaseline = _TextBaseline;
@@ -1208,7 +1225,7 @@ function game() {
 	stage.update();
 }
 
-function message(ListeMsg)
+function message()
 {
 	contMessage = new createjs.Container();
 	contMessage.x = canvas.width/2 - 746/2;
@@ -1228,21 +1245,94 @@ function message(ListeMsg)
 	labelMessage.lineHeight = _LineHeight;
 	labelMessage.textBaseline = _TextBaseline;
 	labelMessage.x = 20;
-	labelMessage.y = 5;
-	labelMessage.text=ListeMsg;
+	labelMessage.y = 50;
 
+	
 	var BtnValideMsg = new createjs.Bitmap("public/Boutons/Ok.png");
-	BtnValideMsg.x=330;
-	BtnValideMsg.y=330;
+	BtnValideMsg.x=600;
+	BtnValideMsg.y=365;
 	contMessage.addChild(BtnValideMsg);
-	BtnValideMsg.addEventListener('click', function (event) {
+	BtnValideMsg.addEventListener('click', function(event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contMessage);
 		game();
-	});	
-
+	});
+	
 	BtnValideMsg.cursor="pointer";
+	
+	// tableau qui contient toutes les listes d'objets
+	var TabListe=new Array();
+	alert("ListeMessages.length : "+ListeMessages.length);
+	var Taille = Math.ceil(ListeMessages.length / 20);
+	alert("Taille : "+Taille);
+	var TailleFinListe =(ListeMessages.length % 20);
+	alert("TailleFinListe : " + TailleFinListe);
+	
+	for (var j=0; j<Taille; j++)
+	{
+		var NewListe=new Array();
+		
+		// Si derniere page
+		if(j==Taille-1 && TailleFinListe!=0)
+		{
+			alert("j : " + j);
+			//Boucle des items liste incomplète
+			for (var i=j*20; i<j*20+TailleFinListe; i++)
+			{
+				alert("i : " + i);
+				if(ListeMessages[i]!=undefined)
+				{
+					// mise de l'item dans une variable
+					var msg = ListeMessages[i];
 
+					// mise de l'item dans une variable
+					NewListe.push(msg);
+				}
+			}
+			// ajout de la nouvelle liste au tableau de listes
+			TabListe.push(NewListe);  
+		}
+		else
+		{
+			//Boucle normale : creation nouvelle liste de 10 items max
+			for (var i=j*20; i<(j*20+20); i++)
+			{
+				if(ListeMessages[i]!=undefined)
+				{
+					// mise de l'item dans une variable
+					var msg = ListeMessages[i];
+
+					// mise de l'item dans une variable
+					NewListe.push(msg);
+				}
+			}
+			TabListe.push(NewListe);
+		}
+	}
+	
+	setBtnMessage(TabListe, Taille);
+	afficherMessage(TabListe);
+
+	stage.update();
+}
+
+function afficherMessage(TabListeMessage)
+{
+	try 
+	{
+		alert("Page : "+PageMessage);
+		// instructions à essayer
+		labelMessage.text="";
+		for (var i = 0; i < TabListeMessage[PageMessage].length ; i++) 
+		{
+			var message=TabListeMessage[PageMessage][i];
+			labelMessage.text+=message;
+		}
+	}
+	catch(e)
+	{
+		//alert("page inexistante");
+	}
 	stage.update();
 }
 
@@ -1367,7 +1457,7 @@ function liste()
 	stage.update();
 }
 
-function dead(ListeMsg) 
+function dead() 
 {
 	stage.removeAllChildren();
 
@@ -1408,18 +1498,18 @@ function dead(ListeMsg)
 	//labelDeadByWho.textBaseline = _TextBaseline;
 	labelDeadByWho.x = 465;
 	labelDeadByWho.y = 100;
-	alert(ListeMsg[ListeMsg.length -1]);
-	if (ListeMsg[ListeMsg.length -1]!=null && ListeMsg[ListeMsg.length -1] == "Z")
+	//alert(ListeMessages[0]);
+	if (ListeMessages[0]!=null && ListeMessages[0] == "Z")
 	{
 		Killer="un zombie rôdant dans la salle !";
 	}
-	else if(ListeMsg[ListeMsg.length -1]!=null && ListeMsg[ListeMsg.length -1] == "N")
+	else if(ListeMessages[0]!=null && ListeMessages[0] == "N")
 	{
 		Killer="un zombie durant l'attaque de nuit !";
 	}
-	else if(ListeMsg[ListeMsg.length -1]!=null && ListeMsg[ListeMsg.length -1] != "Z")
+	else if(ListeMessages[0]!=null && ListeMessages[0] != "Z")
 	{
-		Killer=ListeMsg[ListeMsg.length -1];
+		Killer=ListeMessages[0];
 	}
 	else
 	{
@@ -1442,6 +1532,93 @@ function dead(ListeMsg)
 	BtnCancelDead.cursor="pointer";
 
 	stage.update();
+}
+
+function setBtnMessage(TabListeMessage, Taille)
+{
+	BtnPageMessageDown = new createjs.Bitmap("public/Boutons/DArrow.png");
+	BtnPageMessageDown.x= 746/2 - BtnPageMessageDown.image.width/2;
+	BtnPageMessageDown.y= 365;
+	contMessage.addChild(BtnPageMessageDown);
+	BtnPageMessageDown.addEventListener('click', function(event) {
+		PageMessage++;
+		setbtnMessageVisible(Taille);
+		afficherMessage(TabListeMessage);
+		stage.update();
+	});
+
+	BtnPageMessageUp = new createjs.Bitmap("public/Boutons/UArrow.png");
+	BtnPageMessageUp.x=746/2 - BtnPageMessageUp.image.width/2;
+	BtnPageMessageUp.y= 5;
+	contMessage.addChild(BtnPageMessageUp);
+	BtnPageMessageUp.addEventListener('click', function(event) {
+		PageMessage--;
+		setbtnMessageVisible(Taille);
+		afficherMessage(TabListeMessage);
+		stage.update();
+	});
+	
+	if(PageMessage>Taille)
+	{
+		BtnPageMessageDown.visible=false;
+	}
+	else
+	{
+		BtnPageMessageDown.visible=true;
+	}
+
+	if(PageMessage==0)
+	{
+		BtnPageMessageUp.visible=false;
+	}
+	else
+	{
+		BtnPageMessageUp.visible=true;
+	}
+
+	if(Taille ==0)
+	{
+		BtnPageMessageUp.visible=false;
+		BtnPageMessageDown.visible=false;
+	}
+	
+	BtnPageMessageUp.cursor=BtnPageMessageDown.cursor="pointer";
+}
+
+function setbtnMessageVisible(Taille)
+{
+	if(PageMessage>Taille-1)
+	{
+		PageMessage=Taille-1;
+	}
+	else if (PageMessage<0)
+	{
+		PageMessage=0;
+	}
+
+	if(PageMessage==Taille-1)
+	{
+		BtnPageMessageDown.visible=false;
+	}
+	else
+	{
+		BtnPageMessageDown.visible=true;
+	}
+
+	if(PageMessage==0)
+	{
+		BtnPageMessageUp.visible=false;
+	}
+	else
+	{
+		BtnPageMessageUp.visible=true;
+	}
+
+	if(Taille ==0)
+	{
+		BtnPageMessageUp.visible=false;
+		BtnPageMessageDown.visible=false;
+	}
 }
 
 function setBtnAttaquer(x,y)
@@ -2710,20 +2887,16 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
 
-	//alert("Messages : "+ currentPerso.listeMsgAtt.length);
 	if(currentPerso.listeMsgAtt.length > 0)
 	{
-		//alert("1");
 		ListeMessages=currentPerso.listeMsgAtt;
-		var tailleListe=ListeMessages.length;
-		tailleListe--;
+		// inverse la liste des messages
+		ListeMessages.reverse();
 		labelDernierMessage.text="";
-		labelDernierMessage.text=ListeMessages[tailleListe];
-		//alert("Dernier msg : " + ListeMessages[tailleListe]);
+		labelDernierMessage.text=ListeMessages[0];
 	}
 	else
 	{
-		//alert("2");
 		labelDernierMessage.text="";
 		ListeMessages=null;
 	}
@@ -2740,7 +2913,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		BtnMessages.addEventListener('click', function(event) {
 			if(ListeMessages != null)
 			{
-				message(ListeMessages);
+				message();
 			}
 			else
 			{
@@ -2784,7 +2957,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	if(currentPerso.ptSante<=0 && currentPerso.listeMsgAtt.length > 0)
 	{
-		dead(ListeMessages);
+		dead();
 	}
 	// Update l'ihm
 	stage.update();
@@ -2966,6 +3139,12 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 	//alert("retour ok");
 	var i=0;
 	var iPositionPersoInConteneur=0;
+	
+	var labelPseudo = contListe.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelPseudo.lineHeight = _LineHeight;
+	labelPseudo.textBaseline = _TextBaseline;
+	labelPseudo.x = labelDescribePerso.x;
+	labelPseudo.y = labelDescribePerso.y - 20;
 
 	contListeAllies.removeAllChildren();
 
@@ -3106,6 +3285,8 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 					ModePerso="Défense";
 					break;
 				}
+				
+				labelPseudo.text=currentPerso.listeMsgAtt;
 
 				labelDescribePerso.text = ("Competence : " + currentPerso.competence + 
 						"\nMode : " + ModePerso + 
@@ -3135,6 +3316,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 
 			imgPersoAllie.addEventListener('mouseout', function(event){
 				labelDescribePerso.text="";
+				labelPseudo.text="";
 				stage.update();
 			},false);
 
