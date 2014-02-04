@@ -170,8 +170,8 @@ var _labelIdSalleY = _labelProbaCacheY + 2*_EspaceLabelY;
 //-----------------------------------------------------------------------------------
 
 //Placement label Retour Goules
-var _labelRetourGoulesX = 10;
-var _labelRetourGoulesY = 580;
+var _labelActionX = 10;
+var _labelActionY = 580;
 
 //------------------ Zone 13 : Modes-------------------------------------------------------
 
@@ -257,46 +257,28 @@ var _labelDernierMessageY = _ContMapY-20;
 
 //------------------- Zone 14 : Labels de retour------------------------------------------------------
 
-var _ContLabelsMoveX = 10;
-var _ContLabelsMoveY = 120;
-var _ContLabelsMoveW = 220;
-var _ContLabelsMoveH = 20;
-
-var _ContLabelsObjetX = 10;
-var _ContLabelsObjetY = _ContLabelsMoveY + 30;
-var _ContLabelsObjetW = 220;
-var _ContLabelsObjetH = 60;
-
-var _ContLabelsAtqX = 10;
-var _ContLabelsAtqY = _ContLabelsObjetY + 70;
-var _ContLabelsAtqW = 220;
-var _ContLabelsAtqH = 20;
-
-var _ContLabelsModeX = 10;
-var _ContLabelsModeY = _ContLabelsAtqY + 30;
-var _ContLabelsModeW = 220;
-var _ContLabelsModeH = 80;
+var _ContLabelsActionX = 10;
+var _ContLabelsActionY = 120;
+var _ContLabelsActionW = 220;
+var _ContLabelsActionH = 20*6;
 
 //-------------- Déclaration des labels----------------------------------------------
 
-var txtSalle, txtObjet, labelRetourFouilleRapide,
-labelObjetCase,	labelInventaire, labelDescribeItem, labelRetourMode,
+var labelAction, labelObjetCase, labelInventaire, labelDescribeItem,
 labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
-labelBonusArme, labelBonusArmure, labelIdSalle, labelRetourGoules,
-labelNbAllies, labelNbEnnemis, labelNbGoules, labelProbaCache, labelProbaFouille,
-labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim;
-
-var labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, labelDernierMessage,
-labelNombreNouvMsg, labelFichePerso, labelDescribeCase;
+labelBonusArme, labelBonusArmure, labelIdSalle, labelNbAllies, labelNbEnnemis,
+labelNbGoules, labelProbaCache, labelProbaFouille,
+labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim, 
+labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, 
+labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescribeCase;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
 contBtnsListes, contDead,
 contBtnsInvPerso, contBtnsInvCase, contListe, contListeAllies, contListeEnnemis,
-contLabelsMove, contLabelsObjet, contLabelsAtq, contLabelsMode, contMessage;
+contLabelsAction, contMessage;
 
 var shape, shape1, shape2, shape3, shape4, shape6, shape7, shape8, shapeMode,
-shapeLabelsMove, shapeLabelsObjet, shapeLabelsAtq, shapeLabelsMode, shapeMessage,
-shapeDead;
+shapeLabelsAction, shapeMessage, shapeDead;
 
 var _EpaisseurBpPad = 50;
 
@@ -307,6 +289,7 @@ shapeBtnsInvPerso, shapeBtnsInvCase;
 
 var BtnPagePersoAlliesRight, BtnPagePersoAlliesLeft, BtnPagePersoEnnRight, BtnPagePersoEnnLeft,
 BtnPageMessageDown, BtnPageMessageUp, BtnCancelListe;
+
 onload = initialize;
 
 function initialize() {
@@ -698,49 +681,16 @@ function game() {
 			_ContBtnsInvCaseX-4, _ContBtnsInvCaseY-4, _ContBtnsInvCaseW+5, _ContBtnsInvCaseH+5);
 
 	//------------------------- Zone 14 : Labels de retour ---------------------------------------
-	contLabelsMove = new createjs.Container();
-	contLabelsMove.x = _ContLabelsMoveX;
-	contLabelsMove.y = _ContLabelsMoveY;
-	contLabelsMove.height = _ContLabelsMoveH;
-	contLabelsMove.width = _ContLabelsMoveW;
-	stage.addChild(contLabelsMove);
-	shapeLabelsMove = new createjs.Shape();
-	stage.addChild(shapeLabelsMove);
-	shapeLabelsMove.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_ContLabelsMoveX-4, _ContLabelsMoveY-4, _ContLabelsMoveW+5, _ContLabelsMoveH+5);
-
-	contLabelsObjet = new createjs.Container();
-	contLabelsObjet.x = _ContLabelsObjetX;
-	contLabelsObjet.y = _ContLabelsObjetY;
-	contLabelsObjet.height = _ContLabelsObjetH;
-	contLabelsObjet.width = _ContLabelsObjetW;
-	stage.addChild(contLabelsObjet);
-	shapeLabelsObjet = new createjs.Shape();
-	stage.addChild(shapeLabelsObjet);
-	shapeLabelsObjet.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_ContLabelsObjetX-4, _ContLabelsObjetY-4, _ContLabelsObjetW+5, _ContLabelsObjetH+5);
-
-	contLabelsAtq = new createjs.Container();
-	contLabelsAtq.x = _ContLabelsAtqX;
-	contLabelsAtq.y = _ContLabelsAtqY;
-	contLabelsAtq.height = _ContLabelsAtqH;
-	contLabelsAtq.width = _ContLabelsAtqW;
-	stage.addChild(contLabelsAtq);
-	shapeLabelsAtq = new createjs.Shape();
-	stage.addChild(shapeLabelsAtq);
-	shapeLabelsAtq.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_ContLabelsAtqX-4, _ContLabelsAtqY-4, _ContLabelsAtqW+5, _ContLabelsAtqH+5);
-
-	contLabelsMode = new createjs.Container();
-	contLabelsMode.x = _ContLabelsModeX;
-	contLabelsMode.y = _ContLabelsModeY;
-	contLabelsMode.height = _ContLabelsModeH;
-	contLabelsMode.width = _ContLabelsModeW;
-	stage.addChild(contLabelsMode);
-	shapeLabelsMode = new createjs.Shape();
-	stage.addChild(shapeLabelsMode);
-	shapeLabelsMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_ContLabelsModeX-4, _ContLabelsModeY-4, _ContLabelsModeW+5, _ContLabelsModeH+5);
+	contLabelsAction = new createjs.Container();
+	contLabelsAction.x = _ContLabelsActionX;
+	contLabelsAction.y = _ContLabelsActionY;
+	contLabelsAction.height = _ContLabelsActionH;
+	contLabelsAction.width = _ContLabelsActionW;
+	stage.addChild(contLabelsAction);
+	shapeLabelsAction = new createjs.Shape();
+	stage.addChild(shapeLabelsAction);
+	shapeLabelsAction.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+			_ContLabelsActionX-4, _ContLabelsActionY-4, _ContLabelsActionW+5, _ContLabelsActionH+5);
 
 	// ******************************************
 	// ** Création des barres du perso 			*
@@ -1080,50 +1030,11 @@ function game() {
 	//----------------------- Zone 14 : labels de retour-------------------------
 
 	// Conteneur labels Move
-	txtSalle = contLabelsMove.addChild(new createjs.Text("", PoliceLabel, "#0033FF"));
-	txtSalle.lineHeight = _LineHeight;
-	txtSalle.textBaseline = _TextBaseline;
-	txtSalle.x = 0;
-	txtSalle.y = 0;
-	//txtSalle.text="txtSalle";
-
-	// Conteneur labels Objet
-	txtObjet = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
-	txtObjet.lineHeight = _LineHeight;
-	txtObjet.textBaseline = _TextBaseline;
-	txtObjet.x = 0;
-	txtObjet.y = 0;
-	txtObjet.text="";
-
-	labelRetourFouilleRapide = contLabelsObjet.addChild(new createjs.Text("", PoliceLabel, "#CC9900"));
-	labelRetourFouilleRapide.lineHeight = _LineHeight;
-	labelRetourFouilleRapide.textBaseline = _TextBaseline;
-	labelRetourFouilleRapide.x = 0;
-	labelRetourFouilleRapide.y = txtObjet.y + 40;
-	//labelRetourFouilleRapide.text="labelRetourFouilleRapide";
-
-	// Conteneur labels Attaque
-	labelRetourGoules = contLabelsAtq.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
-	labelRetourGoules.lineHeight = _LineHeight;
-	labelRetourGoules.textBaseline = _TextBaseline;
-	labelRetourGoules.x = 0;
-	labelRetourGoules.y = 0;
-	//labelRetourGoules.text="labelRetourGoules";
-
-	// Conteneur labels Mode
-	labelRetourMode = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
-	labelRetourMode.lineHeight = _LineHeight;
-	labelRetourMode.textBaseline = _TextBaseline;
-	labelRetourMode.x = 0;
-	labelRetourMode.y = 0;
-	//labelRetourMode.text="labelRetourMode";
-
-	labelRetourModeG = contLabelsMode.addChild(new createjs.Text("", PoliceLabel, "#FF0000"));
-	labelRetourModeG.lineHeight = _LineHeight;
-	labelRetourModeG.textBaseline = _TextBaseline;
-	labelRetourModeG.x = 0;
-	labelRetourModeG.y = labelRetourMode.y + 40;
-	//labelRetourModeG.text="labelRetourModeG";
+	labelAction = contLabelsAction.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelAction.lineHeight = _LineHeight;
+	labelAction.textBaseline = _TextBaseline;
+	labelAction.x = 0;
+	labelAction.y = 0;
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
@@ -1559,7 +1470,7 @@ function dead(currentPerso)
 
 	var labelDeadByWho = contDead.addChild(new createjs.Text("", PoliceDead, ColorDead));
 	var labelDeadHour = contDead.addChild(new createjs.Text("", PoliceDead, ColorHour));
-	labelDeadHour.x = 440 ;
+	labelDeadHour.x = 450 ;
 	labelDeadHour.y = 175;
 	labelDeadHour.text=ListeMessages[1];
 	
@@ -2082,56 +1993,11 @@ function setImg(img, X, Y)
 //******************************************
 
 /******************************************************************************************************************
- * RECEPTION D'UNE DEMANDE POUR ATTAQUER UN AUTRE JOUEUR
- * return 1 si ok
- * erreur : 0 si erreur interne
- * erreur : -1 si joueur n'est plus dans la caase
- * erreur : -5 si raté à cause goules
- * erreur : -10 si plus de pts actions
- * 
- * ET return dégats infligés
- * 
- * ET return dégats reçus (ennemi)
- * 
- * ET return dégats reçues (goules)
- * 
- * ET nbr goules attaquantes
- */
-socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbGoules){
-	switch(codeRetour)
-	{
-	case 0:
-		alert("erreur interne");
-		break;
-	case 1:
-		alert("attaque ok");
-		break;
-	case -1:
-		alert("attaque : joueur plu dans la case");
-		break;
-	case -5:
-		alert("attaque ratée à cause des goules");
-		break;
-	case -10:
-		alert("attaque plus de pts d'actions");
-		break;
-	}
-	/*
-	alert("dagats infligés : " + degatsI);
-	alert("dagats recus ennemi : " + degatsRecusE);
-	alert("dagats recus goules : " + degatsRecusG);
-	alert("nbr goules attaqués: " + nbGoules);
-	 */
-	socket.emit('INFO_PERSONNAGE_CS');
-	socket.emit('INFO_CASE_CS');
-});
-
-/******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
  * la case avec MOVE_PERSONNAGE_SC 
- * return : usersOnline[username].cManager.GetCopieCase() si ok
- * erreur : renvoi 0 si erreur de case
- * erreur : renvoi -1 si impossible de bouger 
+ * return : oCase_Manager[oPersonnage_Manager[idUser].GetIdSalleEnCours()].GetCopieCase() si ok
+ * erreur : 0 si erreur de case
+ * erreur : -1 si impossible de bouger 
  * erreur : -2 si aucun de Pts Mouvement
  * erreur : -3 si trop de goules
  * erreur : -4 si zone sure adverse
@@ -2141,30 +2007,30 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 	switch(currentCase)
 	{
-	case 0: txtSalle.text = "";
-	txtSalle.text = ("WARNING : ERREUR_CASE");
+	case 0: labelAction.text = "";
+	labelAction.text = ("WARNING : ERREUR_CASE");
 	break;
 
-	case -1: txtSalle.text = "";
-	txtSalle.text = ("Impossible d'aller par là !");
+	case -1: labelAction.text = "";
+	labelAction.text = ("Impossible d'aller par là !");
 	break;
 
-	case -2: txtSalle.text = "";
-	txtSalle.text = ("Vous n'avez plus de points de mouvements !");
+	case -2: labelAction.text = "";
+	labelAction.text = ("Plus de points de mouvements !");
 	break;
 
-	case -3: txtSalle.text = "";
-	txtSalle.text = ("Trop de Zombies dans cette salle !");
+	case -3: labelAction.text = "";
+	labelAction.text = ("Trop de Zombies ici !");
 	break;
 
-	case -4: txtSalle.text = "";
-	txtSalle.text = ("Impossible de pénétrer dans la Maison de l'ennemi!");
+	case -4: labelAction.text = "";
+	labelAction.text = ("Maison de l'ennemi !");
 	break;
 
 	default: socket.emit('INFO_CASE_CS');
-	labelRetourGoules.text="";
-	txtSalle.text = "";
-	txtSalle.text = ("Déplacement en salle " + currentCase.nom + "");
+	labelAction.text="";
+	labelAction.text = "";
+	labelAction.text = ("Déplacement en " + currentCase.nom + "");
 	socket.emit('INFO_PERSONNAGE_CS');
 	break;
 	}
@@ -2172,62 +2038,59 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 });
 
 /******************************************************************************************************************
- * RECEPTION DE LA REPONSE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM
+ * RECEPTION D'UNE DEMANDE POUR S'EQUIPER OU SE DESEQUIPER D'UN ITEM 
  * return 1 si arme équipée / déséquipée
  * return 2 si armure équipée / déséquipée
- * erreur : 0 si objet n'est pas dans le sac
- * erreur : -1 si il y a déja une arme d'équipée
- * erreur : -2 si il y a déja une armure d'équipée
+ * erreur : 0 si objet n'est pas dans le sac / Objet inexistant
  * erreur : -3 si item n'est ni arme ni armure
  * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
  */
 socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 	if (codeRetour == 0) {
-		txtObjet.text = "";
-		txtObjet.text = ("L'item " + currentItem.id + " n'est plus dans le sac ");
+		labelAction.text = "";
+		labelAction.text = ("L'objet " + currentItem.id + " plus dans le sac ");
 		SelectedItemEquip=-1;
 		// quitte la fonction
 		return;
 	}
 	if (type == "EQUIPER") {
-		//alert("LOG CODE : " + codeRetour);
 		switch (codeRetour) {
 		case 0:
-			txtObjet.text = "";
-			txtObjet.text = ("Item pas dans le sac !");
+			labelAction.text = "";
+			labelAction.text = ("Objet pas dans le sac !");
 			SelectedItemPerso=-1;
 			break;
 
 			// équipage ok
 		case 1:
-			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'arme ok");
+			labelAction.text = "";
+			labelAction.text = ("Arme équipée");
 			stage.update();
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 
 		case 2:
-			txtObjet.text = "";
-			txtObjet.text = ("Equipement de l'armure ok");
+			labelAction.text = "";
+			labelAction.text = ("Armure équipée");
 			stage.update();
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 
 		case -1:
-			txtObjet.text = "";
-			txtObjet.text = ("Arme déja équipée");
+			labelAction.text = "";
+			labelAction.text = ("Arme déja équipée");
 			SelectedItemPerso=-1;
 			break;
 
 		case -2:
-			txtObjet.text = "";
-			txtObjet.text = ("Armure déja équipée");
+			labelAction.text = "";
+			labelAction.text = ("Armure déja équipée");
 			SelectedItemPerso=-1;
 			break;
 
 		case -3:
-			txtObjet.text = "";
-			txtObjet.text = ("L'objet n'est pas équipable");
+			labelAction.text = "";
+			labelAction.text = ("Objet non équipable");
 			SelectedItemPerso=-1;
 			break;
 		}
@@ -2235,15 +2098,15 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 	} else if (type == "DEQUIPER") {
 		if (codeRetour == -4)
 		{
-			txtObjet.text = "";
-			txtObjet.tetx = ("Déséquipement impossible, vous n'en êtes pas équipé");
+			labelAction.text = "";
+			labelAction.tetx = ("Déséquipement impossible car pas équipé");
 			SelectedItemEquip=-1;
 		} else if (codeRetour == 1) {
 			// Si déquipe arme
 			// efface l'arme
 			contArme.removeAllChildren();
-			txtObjet.text = "";
-			txtObjet.text = ("Arme déséquipée !");
+			labelAction.text = "";
+			labelAction.text = ("Arme déséquipée");
 			socket.emit('INFO_PERSONNAGE_CS');		
 			SelectedItemEquip=-1;
 		}
@@ -2252,8 +2115,8 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 			// efface armure
 			contArmure.removeAllChildren();
 			SelectedItemEquip=-1;
-			txtObjet.text = "";
-			txtObjet.text = ("Armure déséquipée !");
+			labelAction.text = "";
+			labelAction.text = ("Armure déséquipée");
 			socket.emit('INFO_PERSONNAGE_CS');
 		}
 	}
@@ -2271,6 +2134,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
  * erreur : -3 si objet à déposer est équipé
  * erreur : -4 si autre
  * erreur : -5 si raté par goules
+ * erreur : -6 si tentative ramasser ODD dans zone sure
  * 
  * ET return id_item
  * 
@@ -2283,33 +2147,50 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		switch(codeRetour)
 		{
 		// erreur
+		case -4:
+			labelAction.text = "";
+			labelAction.text = ("Erreur inconnue");
+			SelectedItemCase=-1;
+			break;
 		case -3:
-			txtObjet.text = "";
-			txtObjet.text = ("Erreur inconnue");
+			labelAction.text = "";
+			labelAction.text = ("Erreur inconnue");
 			SelectedItemCase=-1;
 			break;
 			// poids insufisant
 		case -1:
-			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet,\npoids max atteint !");
+			labelAction.text = "";
+			labelAction.text = ("Objet trop lourd !");
 			SelectedItemCase=-1;
 			break;
 			// objet pas dans case
 		case -2:
-			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet,\nplus dans la salle !");
+			labelAction.text = "";
+			labelAction.text = ("Objet plus dans la salle !");
 			SelectedItemCase=-1;
 			break;
 		case -5:
-			txtObjet.text = "";
-			txtObjet.text = ("Impossible de ramasser l'objet à cause des Zombies !\n- " + DegatsG + " points de vie !");
+			labelAction.text = "";
+			labelAction.text = ("Ramassage impossible à cause des Zombies !");
+			if(DegatsG!=0)
+			{
+				labelAction.text +=("\n- " + DegatsG + " points de vie !");
+			}
 			SelectedItemCase=-1;
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
+		case -6:
+			labelAction.text = "";
+			labelAction.text = ("Ramassage d'ODD impossible ici !");
+			SelectedItemCase=-1;
 			// ramassage ok
 		default:
-			txtObjet.text = "";
-		txtObjet.text = ("Item ramassé ! Sac : " + codeRetour + " kg\n- " + DegatsG + " points de vie !\n"+ RestG + " Zombies restants");
+			labelAction.text = "";
+		labelAction.text = ("Objet ramassé");
+		if(DegatsG!=0)
+		{
+			labelAction.text +=("\n- "+ DegatsG + " points de vie !");//\n"+ RestG + " Zombies restants");
+		}
 		SelectedItemCase=-1;
 		socket.emit('INFO_PERSONNAGE_CS');
 		socket.emit('INFO_CASE_CS');
@@ -2323,25 +2204,28 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		{
 		// erreur
 		case -3:
-			txtObjet.text = "";
-			txtObjet.text = ("Déséquipez avant de déposer !");
+			labelAction.text = "";
+			labelAction.text = ("Déséquipez avant de déposer !");
 			SelectedItemPerso=-1;
 			break;
 		case -4:
-			txtObjet.text = "";
-			txtObjet.text = ("Erreur interne !");
+			labelAction.text = "";
+			labelAction.text = ("Erreur interne !");
 			SelectedItemPerso=-1;
 			break;
-			// objet pas dans sac (! pas normal)
 		case -2:
-			txtObjet.text = "";
-			txtObjet.text = ("L'item n'est plus dans le sac ");
+			labelAction.text = "";
+			labelAction.text = ("Objet plus dans le sac !");
 			SelectedItemPerso=-1;
 			break;
 			// dépôt ok
 		default:
-			txtObjet.text = "";
-		txtObjet.text = ("Item déposé !\nSac : " + codeRetour + " kg");
+			labelAction.text = "";
+		labelAction.text = ("Objet déposé");//\nSac : " + codeRetour + " kg");
+		if(DegatsG!=0)
+		{
+			labelAction.text +=("\n- "+ DegatsG + " points de vie !");//\n"+ RestG + " Zombies restants");
+		}
 		SelectedItemPerso=-1;
 		socket.emit('INFO_CASE_CS');
 		socket.emit('INFO_PERSONNAGE_CS');
@@ -2353,9 +2237,13 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 });
 
 /******************************************************************************************************************
- * RECEPTION DES INFORMATIONS SUR LA CASE
- *
- * @method INFO_CASE_SC
+ * RECEPTION D'UNE DEMANDE D'INFOS SUR UNE CASE 
+ * Renvoi la case 
+ * Si erreur : renvoi NULL
+ * 
+ * ET nbr allies
+ * 
+ * ET nbr ennemis
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 	//socket.emit('CHECK_MSG_ATT_CS');	
@@ -2368,8 +2256,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 	if (currentCase == "ERREUR_CASE")
 	{
 		//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
-		txtSalle.text="";
-		txtSalle.text=("CLIENT :: nom case = " + "ERREUR_CASE");
+		labelAction.text="";
+		labelAction.text=("CLIENT :: nom case = " + "ERREUR_CASE");
 	}
 	else {
 
@@ -3092,7 +2980,6 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	if(ListeMessages!=null && currentPerso.nbrNvMsg >0)
 	{
-		//alert("3");
 		labelNombreNouvMsg.text="";
 		labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " )");
 
@@ -3106,14 +2993,13 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			}
 			else
 			{
-				alert("Pas de nouveaux messages");
+				//alert("Pas de nouveaux messages");
 			}
 		});
 		BtnMessages.cursor="pointer";
 	}
 	else if(ListeMessages!=null && currentPerso.nbrNvMsg ==0)
 	{
-		//alert("4");
 		labelNombreNouvMsg.text="";
 
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesVide.png");
@@ -3126,7 +3012,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			}
 			else
 			{
-				alert("Pas de nouveaux messages");
+				//alert("Pas de nouveaux messages");
 			}
 		});
 
@@ -3134,7 +3020,6 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	}
 	else
 	{
-		//alert("5");
 		labelNombreNouvMsg.text="";
 
 		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
@@ -3165,25 +3050,214 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
 	switch(codeRetour)
 	{
 	case 1: 
-		//alert("objet utilisé !");
-		txtObjet.text="";
-		txtObjet.text=("objet utilisé !");
+		labelAction.text="";
+		labelAction.text=("Objet utilisé !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -1:
-		//alert("objet plus dans le sac !");
-		txtObjet.text="";
-		txtObjet.text=("objet plus dans le sac !");
+		labelAction.text="";
+		labelAction.text=("Objet plus dans le sac !");
 		break;
-
 	case -2:
-		//alert("objet inutilisable !");
-		txtObjet.text="";
-		txtObjet.text=("objet inutilisable !");
+		labelAction.text="";
+		labelAction.text=("Objet inutilisable !");
 		break;
 	}
 	stage.update();
 
+});
+
+/******************************************************************************************************************
+ * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
+ * 
+ * return mode
+ * 
+ * ET return 1 si ok
+ * erreur : 0 si erreur interne
+ * erreur : -4 si déja dans ce mode
+ * erreur : -5 si raté à cause goules
+ * erreur : -10 si plus de pts actions
+ * 
+ * ET return dégats infligés
+ * 
+ * ET nbr goules attaquantes
+ */
+socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoulesA) 
+{
+	switch(reponse)
+	{
+		case 1: 
+			labelAction.text = "";
+			labelAction.text = ("Changement de mode ok !");
+			socket.emit('INFO_PERSONNAGE_CS');
+			break;
+		case 0 : 
+			labelAction.text = "";
+			labelAction.text = ("Changement de mode raté !\nErreur interne");
+			break;
+		case -4 : 
+			labelAction.text = "";
+			labelAction.text = ("Changement de mode mode raté !\nDéja dans ce mode !");
+			break;
+		case -5: 
+			labelAction.text = "";
+			labelAction.text = ("Changement de mode raté !");
+			if(degatsInfliges!=0)
+			{
+				labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
+			}
+			
+			if(nbrGoulesA==1)
+			{
+				labelAction.text +=("\npar " + nbrGoulesA + " Zombie !");
+			}
+			else if(nbrGoulesA>1)
+			{
+				labelAction.text +=("\npar " + nbrGoulesA + " Zombies !");
+			}
+			break;
+		case -10:
+			labelAction.text = "";
+			labelAction.text = ("Changement de mode raté !\nPoints d'action insuffisants !");
+			break;
+	}
+});
+
+/******************************************************************************************************************
+ * RECEPTION D'UNE DEMANDE POUR EFFECTUER UNE FOUILLE RAPIDE
+ * 
+ * reponse :
+ * return : 1 si ok
+ * erreur : 0 si erreur interne
+ * erreur : -1 si fouille rate
+ * erreur : -5 si action raté
+ * erreur : -10 si plus de pts actions
+ * 
+ * ET return éventuels item découvert
+ * 
+ * ET return éventuel dégats subis
+ * 
+ * ET return 1 si objet ajouté au sac, 0 si a la salle
+ * 
+ * ET return nbr ennemis découverts
+ * 
+ * ET nbr goules attaquantes
+ */
+socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, ajouteAuSac, nbrEnnemisDecouverts, nbrGoulesA) 
+		{
+	socket.emit('INFO_PERSONNAGE_CS');
+	socket.emit('INFO_CASE_CS');
+	
+	labelAction.text="";
+	
+	//alert("reponse : " + reponse + "degats : " + degatsInfliges);
+	switch(reponse)
+	{
+	case  1 : 
+		labelAction.text =("Fouille rapide réussie !\n Objet découvert :\n" + item.nom);
+		
+		if (ajouteAuSac == 0)
+		{
+			labelAction.text += "\nAjouté à la case !";
+		}
+		else if (ajouteAuSac == 0)
+		{
+			labelAction.text += "\nAjouté au sac !";
+		}
+		
+		if(nbrEnnemisDecouverts==1)
+		{
+			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemi découvert !");
+		}
+		else if(nbrEnnemisDecouverts>1)
+		{
+			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemis découverts !");
+		}
+		
+		if(degatsInfliges!=0)
+		{
+			labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
+		}
+		
+		if(nbrGoulesA==1)
+		{
+			labelAction.text +=("\npar " + nbrGoulesA + " Zombie !");
+		}
+		else if(nbrGoulesA>1)
+		{
+			labelAction.text +=("\npar " + nbrGoulesA + " Zombies !");
+		}
+		break;
+	case  0 : 
+		labelAction.text = "Erreur interne";
+		break;
+	case -1 : 
+		labelAction.text = "Fouille rapide ratée !";
+		break;
+	case -5 : 
+		labelAction.text = "Action ratée !";
+		if(degatsInfliges!=0)
+		{
+			labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
+		}
+		if(nbrGoulesA==1)
+		{
+			labelAction.text +=("\npar " + nbrGoulesA + " Zombie !");
+		}
+		else if(nbrGoulesA>1)
+		{
+			labelAction.text +=("\npar " + nbrGoulesA + " Zombies !");
+		}
+		break;
+	case -10 :
+		labelAction.text = "Points d'action insuffisants !";
+		break;
+	}
+});
+
+/******************************************************************************************************************
+ * RECEPTION D'UNE DEMANDE POUR ATTAQUER UN AUTRE JOUEUR
+ * return 1 si ok
+ * erreur : 0 si erreur interne
+ * erreur : -1 si joueur n'est plus dans la case
+ * erreur : -5 si raté à cause goules
+ * erreur : -10 si plus de pts actions
+ * 
+ * ET return dégats infligés
+ * 
+ * ET return dégats reçus (ennemi)
+ * 
+ * ET return dégats reçues (goules)
+ * 
+ * ET nbr goules attaquantes
+ */
+socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbGoules){
+	switch(codeRetour)
+	{
+	case 0:
+		alert("erreur interne");
+		break;
+	case 1:
+		alert("attaque ok");
+		break;
+	case -1:
+		alert("attaque : joueur plu dans la case");
+		break;
+	case -5:
+		alert("attaque ratée à cause des goules");
+		break;
+	case -10:
+		alert("attaque plus de pts d'actions");
+		break;
+	}
+	/*
+	alert("dagats infligés : " + degatsI);
+	alert("dagats recus ennemi : " + degatsRecusE);
+	alert("dagats recus goules : " + degatsRecusG);
+	alert("nbr goules attaqués: " + nbGoules);
+	 */
+	socket.emit('INFO_PERSONNAGE_CS');
+	socket.emit('INFO_CASE_CS');
 });
 
 /******************************************************************************************************************
@@ -3201,127 +3275,36 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
 	switch(goulesTues)
 	{
 	case 2: 
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("2 Zombies tuées ! -" + degatsSubis + " points de vie");
+		labelAction.text="";
+		labelAction.text=("2 Zombies tuées ! -" + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 1: 
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("1 Zombie tuée ! -" + degatsSubis + " points de vie");
+		labelAction.text="";
+		labelAction.text=("1 Zombie tuée ! -" + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 0:
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("Attaque de Zombie(s) : erreur interne");
+		labelAction.text="";
+		labelAction.text=("Attaque de Zombie(s) : erreur interne");
 		break;
 
 	case -1:
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("Attaque de Zombie(s) échouée ! -" + degatsSubis + " points de vie");
+		labelAction.text="";
+		labelAction.text=("Attaque de Zombie(s) échouée ! -" + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case -2:
-		labelRetourGoules.text="";
-		labelRetourGoules.text=("Pas de Zombie dans la salle !");
+		labelAction.text="";
+		labelAction.text=("Pas de Zombie dans la salle !");
 		break;
 	}
 	socket.emit('INFO_CASE_CS');
 	stage.update();
 });
-
-
-/******************************************************************************************************************
- * RECEPTION D'UNE DEMANDE POUR CHANGER DE MODE
- * 
- * return mode
- * 
- * ET return 1 si ok
- * erreur : 0 si erreur interne
- * erreur : -4 si déja dans ce mode
- * erreur : -5 si raté à cause goules
- * erreur : -10 si plus de pts actions
- * 
- * ET return dégats infligés
- * 
- * ET nbr goules attaquantes
- */
-socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbGoulesAttaq) 
-		{
-	switch(reponse)
-	{
-	case 1: 
-		labelRetourMode.text = "";
-		labelRetourMode.text = ("Changement de mode ok !");
-		socket.emit('INFO_PERSONNAGE_CS');
-		break;
-	case 0 : 
-		labelRetourMode.text = "";
-		labelRetourMode.text = ("Changement de mode raté !\nErreur interne");
-		break;
-	case -4 : 
-		labelRetourMode.text = "";
-		labelRetourMode.text = ("Changement de mode mode raté !\nDéja dans ce mode");
-		break;
-	case -5: 
-		labelRetourMode.text = "";
-		labelRetourMode.text = ("Changement de mode raté !\nFaute aux Zombies");
-		break;
-	case -10:
-		labelRetourMode.text = "";
-		labelRetourMode.text = ("Changement de mode raté !\nPlus de points d'action");
-		break;
-	}
-	labelRetourModeG.text = "";
-	labelRetourModeG.text+=("Dégats infligés : " + degatsInfliges +" !\nAttaqué par " + nbGoulesAttaq+ " Zombies !");
-
-		});
-
-
-/* ET return éventuels dégats infligés
- * 
- * ET return éventuels item découvert
- * 
- * ET return 1 si objet ajouté au sac, 0 si a la salle
- */
-socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, degatsInfliges, item, degatsInfliges, ajouteAuSac) 
-		{
-	socket.emit('INFO_PERSONNAGE_CS');
-	socket.emit('INFO_CASE_CS');
-	//alert("reponse : " + reponse + "degats : " + degatsInfliges);
-	switch(reponse)
-	{
-	case  1 : 
-		labelRetourFouilleRapide.text = "Fouille ok ! Objet découvert : " + item.nom;
-		if (ajouteAuSac == 0) labelRetourFouilleRapide.text += " ! Ajouté à la case";
-		break;
-	case  0 : 
-		labelRetourFouilleRapide.text = "Fouille ok ! Objet découvert : " + item.nom;
-		labelRetourFouilleRapide.text = ". Mais vous avez été blessé ! " + degatsInfliges;
-		if (ajouteAuSac == 0) labelRetourFouilleRapide.text += " ! Ajouté à la case";
-		break;
-	case -1 : 
-		labelRetourFouilleRapide.text = "Fouille raté";
-		break;
-	case -2 : 
-		labelRetourFouilleRapide.text = "";
-		break;
-	case -4 :
-		labelRetourFouilleRapide.text = "";
-		break;
-	case -5 : 
-		labelRetourFouilleRapide.text = "";
-		break;
-	case -6 :
-		labelRetourFouilleRapide.text = "";
-		break;
-	case -7: 
-		labelRetourFouilleRapide.text = "";
-		break;
-	}
-		});
 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		{
