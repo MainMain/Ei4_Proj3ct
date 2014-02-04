@@ -2,7 +2,6 @@ var canvas;
 var stage, w, h, output;
 var context;
 
-
 var mouseTarget; // the display object currently under the mouse, or being dragged
 var dragStarted; // indicates whether we are currently in a drag operation
 var offset;
@@ -16,6 +15,7 @@ var PersoProbaCache=1;
 var PersoProbaFouille=1;
 
 var PageItemPerso=0;
+var PageItemPersoDead=0;
 var PageItemCase=0;
 
 var PagePersoEnn=0;
@@ -37,7 +37,7 @@ var _LineHeight = 15;
 //label.textBaseline
 var _TextBaseline = "top";
 
-var BtnPageItemPersoRight, BtnPageItemPersoLeft, BtnPageItemCaseRight, BtnPageItemCaseLeft;
+var BtnPageItemPersoRight, BtnPageItemPersoLeft, BtnPageItemCaseRight, BtnPageItemCaseLeft, BtnPageItemPersoDeadRight, BtnPageItemPersoDeadLeft;
 
 //******************************************
 //*  Réglages mise en forme (partie Design)*
@@ -530,16 +530,11 @@ function initialize() {
 	preload.addEventListener("progress", handleProgress);
 
 	preload.loadManifest(manifest);
-	/*preload.loadFile({src:"view/Manifest_Background.json", type:createjs.LoadQueue.JSON},
-					 {src:"view/Manifest_Boutons.json", type:createjs.LoadQueue.JSON},
-					 {src:"view/Manifest_Carte.json", type:createjs.LoadQueue.JSON},
-					 {src:"view/Manifest_Items.json", type:createjs.LoadQueue.JSON},
-					 {src:"view/Manifest_Persos.json", type:createjs.LoadQueue.JSON}
-					);*/
 	stage.update();
 }
 
-function handleProgress() {
+function handleProgress() 
+{
 
 	loadingBar.scaleX = preload.progress * loadingBarWidth;
 
@@ -549,11 +544,8 @@ function handleProgress() {
 	stage.update();
 }
 
-function handleComplete() {
-
-	/*background = preload.getResult("idBackground");
-	map = preload.getResult("idMap");
-	perso = preload.getResult("idPerso");*/
+function handleComplete() 
+{
 
 	backgroundPreload.cursor="pointer";
 	loadingBarContainer.cursor="pointer";
@@ -572,12 +564,6 @@ function handleClick() {
 
 function start()
 {
-	// ******************************************
-	// ********** Connexion au serveur  *********
-	// ******************************************
-
-	//var socket = io.connect('http://localhost:8080');
-
 	// Lancement du jeu si connexion ok
 	if(socket.socket.connected)
 		game();
@@ -1507,16 +1493,10 @@ function liste()
 	stage.update();
 }
 
-function dead() 
+function dead(currentPerso) 
 {
 	stage.removeAllChildren();
-
-	//Police des labels
-	var PoliceDead="40px monospace";
-	var ColorDead="#000000";
-
-	var Killer; //="un mec";
-
+	
 	contDead = new createjs.Container();
 	contDead.x = 0;
 	contDead.y = 0;
@@ -1527,46 +1507,88 @@ function dead()
 	stage.addChild(shapeDead);
 	shapeDead.graphics.setStrokeStyle(10).beginStroke("#990000").drawRect(
 			contDead.x, contDead.y, contDead.width, contDead.height);
+	
+	// Application du background qui va recouvrir le canvas
+	var background_dead = new createjs.Bitmap("public/Background_Dead.jpg");
+	contDead.addChild(background_dead);
 
-	contDeadLabel = new createjs.Container();
+	//Police des labels
+	var PoliceDead="30px monospace";
+	var ColorDead="#FFFFFF";
+
+	var Killer; //="un mec";
+
+	/*contDeadLabel = new createjs.Container();
 	contDeadLabel.x = 390;
 	contDeadLabel.y = 70;
 	contDeadLabel.height = 210;
 	contDeadLabel.width = 320;
 	contDead.addChild(contDeadLabel);
 	shapeDeadLabel = new createjs.Shape();
-	stage.addChild(shapeDeadLabel);
+	contDead.addChild(shapeDeadLabel);
 	shapeDeadLabel.graphics.setStrokeStyle(5).beginStroke("#FFFFFF").drawRect(
-			contDeadLabel.x, contDeadLabel.y, contDeadLabel.width, contDeadLabel.height);
+			contDeadLabel.x, contDeadLabel.y, contDeadLabel.width, contDeadLabel.height);*/
+	
+	contItemPersoDead  = new createjs.Container();
+	contItemPersoDead.x = 390;
+	contItemPersoDead.y = 580;
+	contItemPersoDead.height = 40;
+	contItemPersoDead.width = 330;
+	contDead.addChild(contItemPersoDead);
+	shapeInvDead = new createjs.Shape();
+	contDead.addChild(shapeInvDead);
+	shapeInvDead.graphics.setStrokeStyle(1).beginStroke("#FFFFFF").drawRect(
+			contItemPersoDead.x-4, contItemPersoDead.y-4, contItemPersoDead.width+4, contItemPersoDead.height+4);
+	
+	BtnPageItemPersoDeadRight= new createjs.Bitmap("public/Boutons/Right.png");
+	BtnPageItemPersoDeadRight.x= contItemPersoDead.x + BtnPageItemPersoDeadRight.width;
+	BtnPageItemPersoDeadRight.y= contItemPersoDead.y + 8;
+	contDead.addChild(BtnPageItemPersoDeadRight);
+	BtnPageItemPersoDeadRight.addEventListener('click', function(event) {
+		PageItemPersoDead++;
+	});
 
-	// Application du background qui va recouvrir le canvas
-	var background_dead = new createjs.Bitmap("public/Background_Dead.jpg");
-	contDead.addChild(background_dead);
+	BtnPageItemPersoDeadLeft = new createjs.Bitmap("public/Boutons/Left.png");
+	BtnPageItemPersoDeadLeft .x= contItemPersoDead.x - BtnPageItemPersoDeadLeft.image.width -5;
+	BtnPageItemPersoDeadLeft .y= contItemPersoDead.y + 8;
+	contDead.addChild(BtnPageItemPersoDeadLeft );
+	BtnPageItemPersoDeadLeft.addEventListener('click', function(event) {
+		PageItemPersoDead--;
+	});
 
-	labelDeadByWho = contDead.addChild(new createjs.Text("", PoliceDead, ColorDead));
-	//labelDeadByWho.lineHeight = _LineHeight;
-	//labelDeadByWho.textBaseline = _TextBaseline;
-	labelDeadByWho.x = 465;
-	labelDeadByWho.y = 100;
-	//alert(ListeMessages[0]);
+	var labelDeadByWho = contDead.addChild(new createjs.Text("", PoliceDead, ColorDead));
+	
+	//alert("ListeMessages[0] : "+ ListeMessages[0]);
 	if (ListeMessages[0]!=null && ListeMessages[0] == "Z")
 	{
-		Killer="un zombie rôdant dans la salle !";
+		//alert("Z");
+		Killer="Un zombie rôdant dans la salle vous a dévoré !";
 	}
 	else if(ListeMessages[0]!=null && ListeMessages[0] == "N")
 	{
-		Killer="un zombie durant l'attaque de nuit !";
+		//alert("N");
+		Killer="Un zombie vous a dévoré durant l'attaque de nuit !";
 	}
-	else if(ListeMessages[0]!=null && ListeMessages[0] != "Z")
+	else if(ListeMessages[0]!=null && ListeMessages[0] == "F")
 	{
-		Killer=ListeMessages[0];
+		//alert("F");
+		Killer="Vous êtes mort à cause de la faim !";
+	}
+	else if(ListeMessages[0]!=null && ListeMessages[0]!="Z" && ListeMessages[0]!="N" && ListeMessages[0]!="F")
+	{
+		//alert("joueur");
+		Killer=(ListeMessages[0]+" vous a tué !");
 	}
 	else
 	{
 		Killer="";
 	}
-	labelDeadByWho.text=("Tué par\n\n");
-	labelDeadByWho.text+=Killer;
+	alert("Killer.length : "+Killer.length);
+	//labelDeadByWho.lineHeight = _LineHeight;
+	//labelDeadByWho.textBaseline = _TextBaseline;
+	labelDeadByWho.x = 20 ;
+	labelDeadByWho.y = 20;
+	labelDeadByWho.text=Killer;
 
 	// Bouton ANNULER
 	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Ok.png");
@@ -1580,6 +1602,121 @@ function dead()
 	});
 
 	BtnCancelDead.cursor="pointer";
+	
+	// tableau qui contient toutes les listes d'objets
+	var TabListe=new Array();
+
+	var Taille = Math.ceil(currentPerso.sacADos.length / 10);
+	var TailleFinListe =(currentPerso.sacADos.length % 10);
+
+	var iPositionItemInConteneur=0;
+
+	for (var j=0; j<Taille; j++)
+	{
+		var NewListe=new Array();
+
+		if(j==Taille-1 && TailleFinListe!=0)
+		{
+			//Boucle des items liste incomplète
+			for (var i=j*10; i<j*10+TailleFinListe; i++)
+			{
+				// mise de l'item dans une variable
+				var item = currentPerso.sacADos[i];
+				
+				// ajout de l'item à la nouvelle liste
+				NewListe.push(item);
+			}
+			// ajout de la nouvelle liste au tableau de listes
+			TabListe.push(NewListe);  
+		}
+		else
+		{
+			//Boucle normale : creation nouvelle liste de 10 items max
+			for (var i=j*10; i<(j*10+10); i++)
+			{
+
+				// mise de l'item dans une variable
+				var item = currentPerso.sacADos[i];
+				
+				// mise de l'item dans une variable
+				NewListe.push(item);
+			}
+			TabListe.push(NewListe);
+		}
+	}
+
+	if(PageItemPersoDead>Taille-1)
+	{
+		PageItemPersoDead=Taille-1;
+	}
+	else if (PageItemPersoDead<0)
+	{
+		PageItemPersoDead=0;
+	}
+
+	if(PageItemPersoDead==Taille-1)
+	{
+		BtnPageItemPersoDeadRight.visible=false;
+	}
+	else
+	{
+		BtnPageItemPersoDeadRight.visible=true;
+	}
+
+	if(PageItemPersoDead==0)
+	{
+		BtnPageItemPersoDeadLeft.visible=false;
+	}
+	else
+	{
+		BtnPageItemPersoDeadLeft.visible=true;
+	}
+
+	if(Taille ==0)
+	{
+		BtnPageItemPersoDeadLeft.visible=false;
+		BtnPageItemPersoDeadRight.visible=false;
+	}
+
+	try 
+	{
+		// instructions à essayer
+		for (var i = 0; i < TabListe[PageItemPersoDead].length ; i++) 
+		{
+			var Obj=TabListe[PageItemPersoDead][i];
+
+			// Ajout de l'image à l'ihm
+			var imgItem = new createjs.Bitmap(Obj.imageName);
+
+			imgItem.name = i;
+			imgItem.cursor = "pointer";
+
+			// Ajout de l'évenement a l'image
+			// ajout d'un texte quand l'user passera la souris dessus
+			imgItem.addEventListener('mouseover', function(event) {
+				var currentItem = TabListe[PageItemPersoDead][event.target.name];
+				labelDescribeItemDead.text=(currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+				stage.update();
+			},false);
+
+			imgItem.addEventListener('mouseout', function(event){
+				labelDescribeItemDead.text="";
+				stage.update();
+			},false);
+
+			imgItem.x = 7+(iPositionItemInConteneur * SpaceItem);
+			imgItem.y = 4;
+			contItemPersoDead.addChild(imgItem);
+
+			// position de l'item dans le conteneur
+			iPositionItemInConteneur++;
+
+			stage.update();
+		}
+	}
+	catch(e){
+		//alert("Page inexistante");
+	}
 
 	stage.update();
 }
@@ -2421,8 +2558,6 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
-
-	this.listeItemsPerso = new Array();
 	
 	var classe;
 
@@ -2695,10 +2830,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 		break;
 	}
-
-
-	// CLear de la liste des items de case
-	listeItemsPerso = new Array();
+	
 	contInvPerso.removeAllChildren();
 
 	// tableau qui contient toutes les listes d'objets
@@ -3009,7 +3141,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	if(currentPerso.ptSante<=0 && currentPerso.listeMsgAtt.length > 0)
 	{
-		dead();
+		dead(currentPerso);
 	}
 	// Update l'ihm
 	stage.update();

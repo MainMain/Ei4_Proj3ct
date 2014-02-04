@@ -7,7 +7,7 @@ function GameRules() {
 
 //********** ID DES ZONES SURES **********
 GameRules.idZoneSure_1 = function() 						{ return 0; },
-GameRules.idZoneSure_2 = function() 						{ return 2; },
+GameRules.idZoneSure_2 = function() 						{ return 5; },
 
 
 //********** COUT EN PA **********
