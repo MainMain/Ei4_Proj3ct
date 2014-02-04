@@ -758,9 +758,9 @@ var Personnage = (function() {
 		{
 			if(this.competence == "brute")
 			{
-				this.ptActionMax 		= 140;
+				this.ptSanteMax 		= 140;
 				this.ptDeplacementMax	= 15;
-				this.ptSanteMax			= 20;
+				this.ptActionMax		= 20;
 				this.multiPtsAttaque	= 2;
 				this.multiPtsDefense	= 2;
 				this.multiProbaCache	= 0.5;
@@ -769,9 +769,9 @@ var Personnage = (function() {
 			}
 			else if(this.competence == "explorateur")
 			{
-				this.ptActionMax 		= 100;
+				this.ptSanteMax 		= 100;
 				this.ptDeplacementMax	= 20;
-				this.ptSanteMax			= 25;
+				this.ptActionMax		= 25;
 				this.multiPtsAttaque	= 1;
 				this.multiPtsDefense	= 0.3;
 				this.multiProbaCache	= 1;
@@ -780,9 +780,9 @@ var Personnage = (function() {
 			}
 			else if(this.competence == "chercheur")
 			{
-				this.ptActionMax 		= 100;
+				this.ptSanteMax 		= 100;
 				this.ptDeplacementMax	= 15;
-				this.ptSanteMax			= 30;
+				this.ptActionMax		= 30;
 				this.multiPtsAttaque	= 0.5;
 				this.multiPtsDefense	= 1.5;
 				this.multiProbaCache	= 3;
