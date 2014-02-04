@@ -109,12 +109,11 @@ var Personnage = (function() {
 		
 		setCompetence : function(competence, numEquipe)
 		{
+			// initialiser les attributs
+			this.initialiser();
 			
 			// attribuer competence
 			this.competence=competence;
-			
-			// initialiser les attributs
-			this.initialiser();
 			
 			// initaliser ptes de caract et multis
 			this.initialiserPtsCaract();
@@ -783,6 +782,7 @@ var Personnage = (function() {
 				this.goulesMax			= 3;
 			}
 		},
+		
 		seRetablir : function(idSalleReveil)
 		{
 			// ajout de points de santé
