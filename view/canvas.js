@@ -1515,6 +1515,7 @@ function dead(currentPerso)
 	//Police des labels
 	var PoliceDead="30px monospace";
 	var ColorDead="#FFFFFF";
+	var ColorHour="#000000";
 
 	var Killer; //="un mec";
 
@@ -1541,8 +1542,8 @@ function dead(currentPerso)
 			contItemPersoDead.x-4, contItemPersoDead.y-4, contItemPersoDead.width+4, contItemPersoDead.height+4);
 	
 	BtnPageItemPersoDeadRight= new createjs.Bitmap("public/Boutons/Right.png");
-	BtnPageItemPersoDeadRight.x= contItemPersoDead.x + BtnPageItemPersoDeadRight.width;
-	BtnPageItemPersoDeadRight.y= contItemPersoDead.y + 8;
+	BtnPageItemPersoDeadRight.x= contItemPersoDead.x + contItemPersoDead.width;
+	BtnPageItemPersoDeadRight.y= contItemPersoDead.y-3;
 	contDead.addChild(BtnPageItemPersoDeadRight);
 	BtnPageItemPersoDeadRight.addEventListener('click', function(event) {
 		PageItemPersoDead++;
@@ -1550,13 +1551,17 @@ function dead(currentPerso)
 
 	BtnPageItemPersoDeadLeft = new createjs.Bitmap("public/Boutons/Left.png");
 	BtnPageItemPersoDeadLeft .x= contItemPersoDead.x - BtnPageItemPersoDeadLeft.image.width -5;
-	BtnPageItemPersoDeadLeft .y= contItemPersoDead.y + 8;
+	BtnPageItemPersoDeadLeft .y= contItemPersoDead.y-3;
 	contDead.addChild(BtnPageItemPersoDeadLeft );
 	BtnPageItemPersoDeadLeft.addEventListener('click', function(event) {
 		PageItemPersoDead--;
 	});
 
 	var labelDeadByWho = contDead.addChild(new createjs.Text("", PoliceDead, ColorDead));
+	var labelDeadHour = contDead.addChild(new createjs.Text("", PoliceDead, ColorHour));
+	labelDeadHour.x = 440 ;
+	labelDeadHour.y = 175;
+	labelDeadHour.text=ListeMessages[1];
 	
 	//alert("ListeMessages[0] : "+ ListeMessages[0]);
 	if (ListeMessages[0]!=null && ListeMessages[0] == "Z")
@@ -1583,7 +1588,7 @@ function dead(currentPerso)
 	{
 		Killer="";
 	}
-	alert("Killer.length : "+Killer.length);
+	
 	//labelDeadByWho.lineHeight = _LineHeight;
 	//labelDeadByWho.textBaseline = _TextBaseline;
 	labelDeadByWho.x = 20 ;
@@ -1688,7 +1693,7 @@ function dead(currentPerso)
 			// Ajout de l'image à l'ihm
 			var imgItem = new createjs.Bitmap(Obj.imageName);
 
-			imgItem.name = i;
+			/*imgItem.name = i;
 			imgItem.cursor = "pointer";
 
 			// Ajout de l'évenement a l'image
@@ -1702,7 +1707,7 @@ function dead(currentPerso)
 			imgItem.addEventListener('mouseout', function(event){
 				labelDescribeItemDead.text="";
 				stage.update();
-			},false);
+			},false);*/
 
 			imgItem.x = 7+(iPositionItemInConteneur * SpaceItem);
 			imgItem.y = 4;
