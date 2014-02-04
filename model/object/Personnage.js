@@ -659,16 +659,23 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
-			if (msg != "Z" && msg != "N" && msg != "F")
+			console.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
+			if (msg == "Z" || msg == "N" || msg == "F")
+			{
+				this.listeMsgAtt.push(msg);
+				console.log("1111111");
+			}
+			else
 			{
 				var date = new Date();
 				var mois = parseInt(date.getMonth()) + 1;
 				var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
-				this.listeMsgAtt.push(str + " : " + msg);
+				this.listeMsgAtt.push(str + " : " + msg + "\n");
+				console.log("222222");
 			}
 			this.nbrNvMsg++;
 			
-			console.log("PERSONNAGE : Ajout d'un message : " + msg);
+			console.log("PERSONNAGE : Fin : Ajout d'un message : " + msg);
 		},
 		
 		effacerMessage : function(msg)
@@ -679,6 +686,7 @@ var Personnage = (function() {
 		manger : function(valeur)
 		{
 			this.ptFaim += valeur;
+			if (this.ptFaim > this.ptFaimMax) this.ptFaim = this.ptFaimMax;
 			this.calculerImpactFaim();
 		},
 		
@@ -871,7 +879,7 @@ var Personnage = (function() {
 		 * 
 		 * @method getptAction
 		 */
-		getptAction : function()
+		getPtAction : function()
 		{
 			return this.ptAction;
 		},

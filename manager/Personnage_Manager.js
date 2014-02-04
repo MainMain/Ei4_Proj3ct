@@ -110,7 +110,7 @@ Personnage_Manager.SetCompetence = function(idUser,  competence, numEquipe)
 Personnage_Manager.AddMessage = function(idUser,  msg)
 {
 	//console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
-	this.listePersonnages[idUser].ajouterMessage(msg + "\n");
+	this.listePersonnages[idUser].ajouterMessage(msg);
 }, 
 
 Personnage_Manager.EffacerMessages = function(idUser)
@@ -919,33 +919,33 @@ Personnage_Manager.PerteActionParGoules = function(idUser)
 
 Personnage_Manager.TestPtActions = function(idUser,  typeAction)
 {
-	var ptActions = this.listePersonnages[idUser].getPtActions();
+	var ptAction = this.listePersonnages[idUser].getPtAction();
 	
 	var ok = true;
 	
-	console.log("PMANGER : ptActions :  " + ptActions);
+	console.log("PMANGER : ptAction :  " + ptAction);
 	console.log("PMANGER : typeAction : " + typeAction);
 	
-	if(ptActions == 0)
+	if(ptAction == 0)
 	{
 		ok = false;
 	}
 	switch(typeAction)
 	{
 		case "fouilleRapide":
-			if(ptActions - GameRules.coutPA_FouilleRapide() < 0) ok = false;
+			if(ptAction - GameRules.coutPA_FouilleRapide() < 0) ok = false;
 			break;
 		case "attaqueGoule":
-			if(ptActions - GameRules.coutPA_AttaqueGoule() < 0) ok = false;
+			if(ptAction - GameRules.coutPA_AttaqueGoule() < 0) ok = false;
 			break;
 		case "attaqueEnnemi":
-			if(ptActions - GameRules.coutPA_AttaqueEnnemi() < 0)ok = false;
+			if(ptAction - GameRules.coutPA_AttaqueEnnemi() < 0)ok = false;
 			break;
 		case "chgtMode":
-			if(ptActions - GameRules.coutPA_ChgtMode() < 0) ok = false;
+			if(ptAction - GameRules.coutPA_ChgtMode() < 0) ok = false;
 			break;
 		case "chgtMode_def":
-			if(ptActions - GameRules.coutPA_ChgtMode_def() < 0) ok = false;
+			if(ptAction - GameRules.coutPA_ChgtMode_def() < 0) ok = false;
 			break;
 		default:
 			ok = false;
@@ -978,7 +978,17 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 
 Personnage_Manager.GetIdSalleEnCours = function(idUser)
 {
+	console.log("PERSONNAGE_MANAGER : GetIdSalleEnCours() - idUser = " + idUser);
+	try
+	{
 	return this.listePersonnages[idUser].getIdSalleEnCours();
+	}
+	catch(err)
+	{
+		console.log("PERSONNAGE_MANAGER : ERREUR : " + err);
+		console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
+		console.log(this.listePersonnages);
+	}
 }, 
 
 Personnage_Manager.GetIdNextSalle = function(idUser,  direction)
