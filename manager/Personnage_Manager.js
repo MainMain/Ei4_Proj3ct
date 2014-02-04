@@ -89,7 +89,7 @@ Personnage_Manager.SetCompetence = function(idUser,  competence, numEquipe)
 	// initialise le personnage
 	//var idPerso = this.listePersonnages[idUser].id;
 	//this.listePersonnages[idUser].initialiser();
-	
+	console.log("PERSON_MANAGER : SetCompetence() " + competence);
 	this.listePersonnages[idUser].setCompetence(competence, numEquipe);
 	
 	oPersonnage_BD.SetPersonnage(this.listePersonnages[idUser],  function(reponse)
