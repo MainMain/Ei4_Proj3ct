@@ -30,7 +30,7 @@ var SpaceItem = 32;
 var SpacePerso = 64;
 
 //Police des labels
-var PoliceLabel="14px monospace";
+var PoliceLabel="14px Consolas";
 
 //label.lineHeight
 var _LineHeight = 15;
@@ -1303,7 +1303,7 @@ function liste()
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
 
 	// application du background liste au dessus de la map
-	//var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
+	// var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
 	var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=1;
 	contListe.addChild(background_liste);
@@ -1452,9 +1452,8 @@ function dead(currentPerso)
 	contDead.addChild(contItemPersoDead);
 	shapeInvDead = new createjs.Shape();
 	contDead.addChild(shapeInvDead);
-	if(currentPerso.sacADos!=null)
+	if(currentPerso.sacADos.length>0)
 	{
-		alert(" if ok ");
 		shapeInvDead.graphics.setStrokeStyle(1).beginStroke("#FFFFFF").drawRect(
 				contItemPersoDead.x-4, contItemPersoDead.y-4, contItemPersoDead.width+4, contItemPersoDead.height+4);
 	}
@@ -3249,11 +3248,11 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 		labelAction.text=("Attaque réussie !");
 		if(degatsI!=0)
 		{
-			labelAction.text+=("L'ennemi a perdu :\n" + degatsI + " points de vies");
+			labelAction.text+=("\nL'ennemi a perdu :\n" + degatsI + " points de vies");
 		}
 		if(degatsRecusE!=0)
 		{
-			labelAction.text+=("L'ennemi a riposté :\n-" + degatsRecusE + " points de vies");
+			labelAction.text+=("\nL'ennemi a riposté :\n-" + degatsRecusE + " points de vies");
 		}
 		break;
 	case -1:
