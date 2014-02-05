@@ -60,8 +60,8 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
             {
                     ptSante: 			personnageToSave.ptSante,
                     ptSanteMax: 		personnageToSave.ptSanteMax,
-                    ptAction: 			personnageToSave.ptActions,
-                    ptActionMax: 		personnageToSave.ptActionsMax,
+                    ptAction: 			personnageToSave.ptAction,
+                    ptActionMax: 		personnageToSave.ptActionMax,
                     ptDeplacement: 		personnageToSave.ptDeplacement,
                     ptDeplacementMax: 	personnageToSave.ptDeplacementMax,
             		ptFaim : 			personnageToSave.ptFaim,
