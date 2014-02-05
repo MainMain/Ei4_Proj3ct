@@ -978,10 +978,20 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 
 Personnage_Manager.GetIdSalleEnCours = function(idUser)
 {
-	console.log("PERSONNAGE_MANAGER : GetIdSalleEnCours() - idUser = " + idUser);
+	//console.log("PERSONNAGE_MANAGER : GetIdSalleEnCours() - idUser = " + idUser);
 	try
 	{
-	return this.listePersonnages[idUser].getIdSalleEnCours();
+		//console.log("--------------> 1 : " + this.listePersonnages[idUser].getIdSalleEnCours());
+		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
+		
+		try
+		{
+			idCaseBrut = idCaseBrut.split("_");
+		}
+		catch (err) {}
+		console.log("__________________________________________>" + idCaseBrut);
+		return idCaseBrut;
+		
 	}
 	catch(err)
 	{

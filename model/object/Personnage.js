@@ -663,7 +663,6 @@ var Personnage = (function() {
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
 				this.listeMsgAtt.push(msg);
-				console.log("1111111");
 			}
 			else
 			{
@@ -671,7 +670,6 @@ var Personnage = (function() {
 				var mois = parseInt(date.getMonth()) + 1;
 				var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
 				this.listeMsgAtt.push(str + " : " + msg + "\n");
-				console.log("222222");
 			}
 			this.nbrNvMsg++;
 			

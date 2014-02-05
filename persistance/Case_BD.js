@@ -1,4 +1,5 @@
 // includes
+var fs = require('fs');
 var oCase = require('../model/object/Case');
 var oItem_BD = require('../persistance/Item_BD'); // devra disparaitre a
 // terme...
@@ -15,6 +16,24 @@ function Case_BD() {
 	}
 };
 
+Case_BD.GetCasesId = function(callback)
+{
+	var Casemodel = mongoose.model('Case'); 				
+	var tabId = new Array();
+	
+	Casemodel.find({}, function(err, users)
+	{
+		if(err)
+		{
+			throw err;
+		}
+		for(var i in users)
+		{
+			tabId[i] = users[i].id;
+		}
+		callback(tabId);
+	});
+},
 
 /**
  * ENVOIE UNE CASE POUR METTRE A JOUR CES PROPRIETES
@@ -152,10 +171,66 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
  * @method Initialiser
  */
 Case_BD.Initialiser = function() {
+	
+	// test si la table case est vide
+	this.GetCasesId(function(tabId)
+	{
+		// si table vide
+		if(tabId.length == 0)
+		{
+			// lecture dans le fichier
+			console.log("CASE_BD : Chargement des cases fichier -> base de données");
+			
+			// récupère le model de Item
+			CaseModel = mongoose.model('Case');
+
+			// ouerture du fichier en lecture
+			var file = fs.readFileSync('./persistance/caseListe.txt', "utf8");
+			
+			// récupération des tabLignes dans un tableau
+			var tabLignes = file.split("\r\n");
+			
+			// pour chaque ligne
+			for(var i in tabLignes)
+			{
+				// si elle est différente d'une chaine vide
+				if(tabLignes != "")
+				{
+					// récupérations des infosCase
+					var infosCase = tabLignes[i].split("-");
+					
+					if(infosCase[0])
+					{
+						var newCase = new CaseModel();
+						
+						newCase.id			= infosCase[0];
+						newCase.nom			= infosCase[1];
+						newCase.description	= infosCase[2];
+						newCase.probaObjet	= infosCase[3];
+						newCase.probaCache	= infosCase[4];
+						newCase.nbrGoules	= infosCase[5];
+						
+						// création de la liste des items
+						var listeItems = new Array();
+						for (var i = 6; i < infosCase.length; i++)
+						{
+							listeItems.push(oItem_BD.GetItemById(infosCase[7]));
+						}
+						newCase.listeItem	= listeItems;
+						
+						newCase.save();
+					}
+				}
+
+			}
+		}
+	});
+	
 	// vide la BD
 	
-	/*
+	
 	//
+	/*
 	console.log("CASE_BD : ajout des cases dans la BD");
 	var array1 = [ oItem_BD.GetItemById(100), oItem_BD.GetItemById(200),
 			oItem_BD.GetItemById(300), oItem_BD.GetItemById(401),
@@ -210,16 +285,6 @@ Case_BD.Initialiser = function() {
 	// this.listeCases = new Array(case1, case2, case3, case4, case5, case6,
 	// case7, case8, case9);// case10, case11);
 
-},
-
-Case_BD.GetCasesId = function() {
-	var tabId = new Array();
-	/*for ( var i in this.listeCases) {
-		tabId[i] = this.listeCases[i].id;
-	}*/
-	for(var i = 0; i<9; i++) tabId[i] = i; 
-
-	return tabId;
 },
 
 /*******************************************************************************

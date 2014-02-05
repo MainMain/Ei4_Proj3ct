@@ -23,27 +23,31 @@ Case_Manager.Load = function()
 	var context = this;
 	
 	// récupération des clés
-	idCases = oCase_BD.GetCasesId();
-	// pour chaque case
-	for(var i in idCases)
+	idCases = oCase_BD.GetCasesId(function(idCases)
 	{
-		var id = idCases[i];
-		// charge la case en mémoire par rapport à son id
-		oCase_BD.GetCaseById(id, function(idCase, reponse)
+		console.log(idCases);
+		// pour chaque case
+		for(var i in idCases)
 		{
-			// gestion des erreurs
-			if(reponse == -1 || reponse == -2)
+			var id = idCases[i];
+			// charge la case en mémoire par rapport à son id
+			oCase_BD.GetCaseById(id, function(idCase, reponse)
 			{
-				console.log("Erreur Case : " + idCase);
-			}
-			// enregistrement effectif
-			else
-			{
-				//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
-				context.listeCases[idCase] = reponse;
-			}
-		});
-	}
+				// gestion des erreurs
+				if(reponse == -1 || reponse == -2)
+				{
+					console.log("Erreur Case : " + idCase);
+				}
+				// enregistrement effectif
+				else
+				{
+					//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+					context.listeCases[idCase] = reponse;
+				}
+			});
+		}
+	});
+	
 },
 
 /*
