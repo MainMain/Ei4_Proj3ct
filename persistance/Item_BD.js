@@ -60,7 +60,7 @@ Item_BD.GetListItem = function()
 		{
 			throw err;
 		}
-		console.log('Items supprimés !');
+		console.log('ITEM_BD : Items supprimés !');
 	});
 	
 	this.listeItems = new Array();

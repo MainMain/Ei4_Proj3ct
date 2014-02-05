@@ -11,7 +11,7 @@ var Item = (function() {
 	Item.nom;
 	Item.description;
 	Item.poids;
-	// type : 0 : objet, 1 : arme, 2 : armure, 3 : ODD, 4 : bonusPS, 5 : bonusPA, 6 : bonus PD
+	// type : 0 : objet, 1 : arme, 2 : armure, 3 : ODD, 4 : bonusPS, 5 : bonusPA, 6 : bonus PM
 	Item.type;
 	Item.valeur;
 	Item.imageName;

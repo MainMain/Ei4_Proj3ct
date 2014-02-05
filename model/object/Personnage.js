@@ -19,6 +19,8 @@ var Personnage = (function() {
 	Personnage.ptActionsMax;
 	Personnage.ptDeplacement;
 	Personnage.ptDeplacementMax;
+	Personnage.ptFaim;
+	Personnage.ptFaimMax;
 	Personnage.poidsMax;
 	Personnage.goulesMax;
 	Personnage.competence;
@@ -33,59 +35,133 @@ var Personnage = (function() {
 	Personnage.sacADos;
 	Personnage.dernierMvt;
 	Personnage.listeMsgAtt;
+	Personnage.nbrNvMsg;
 
 	// --- ENUMERATIONS DE CLASSE ---
 	Personnage.DIRECTIONS = [ 'NORD', 'SUD', 'EST', 'OUEST' ];
 
 	// --- METHODES DE CLASSE ---
-	Personnage.build = function(ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, idSalleEnCours, mode,
-			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
-			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt) {
-		return new Personnage();
-
-	};
-
+	Personnage.build = function() {return new Personnage();};
+	
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
 	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
-			ptDeplacement, ptDeplacementMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
+			ptDeplacement, ptDeplacementMax, ptFaim, ptFaimMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
 			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
-			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt) {
+			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg) 
+	{
 		// --- Attributs d'instance
-		this.id = id;
-		this.ptSante = ptSante;
-		this.ptSanteMax = ptSanteMax;
-		this.ptActions = ptActions;
-		this.ptActionsMax = ptActionsMax;
-		this.ptDeplacement = ptDeplacement;
-		this.ptDeplacementMax = ptDeplacementMax;
-		this.poidsMax = poidsMax;
-		this.goulesMax = goulesMax;
-		this.competence = competence;
-		this.idSalleEnCours = idSalleEnCours;
-		this.mode = mode;
-		this.multiPtsAttaque = multiPtsAttaque;
-		this.multiPtsDefense = multiPtsDefense;
-	    this.multiProbaCache = multiProbaCache;
-	    this.multiProbaFouille = multiProbaFouille;
-		this.armeEquipee = armeEquipee;
-		this.armureEquipee = armureEquipee;
-		this.sacADos = sacADos;
-		this.dernierMvt = dernierMvt;
-		this.listeMsgAtt = listeMsgAtt;
-		
-		
-		
-		/*//console.log("PERSONNAGE : this.goulesMax : " + this.goulesMax);
-		//console.log("PERSONNAGE : this.competence : " + this.competence);
-		//console.log("PERSONNAGE : this.idSalleEnCours : " + this.idSalleEnCours);
-		
-		//console.log("PERSONNAGE : Nouveau personnage crée");*/
+				console.log("1");
+		this.id 				= id;
+		this.ptSante			= ptSante;
+		this.ptSanteMax 		= ptSanteMax;
+		this.ptActions 			= ptActions;
+		this.ptActionsMax		= ptActionsMax;
+		this.ptDeplacement 		= ptDeplacement;
+		this.ptDeplacementMax	= ptDeplacementMax;
+		this.ptFaim				= ptFaim;
+		this.ptFaimMax			= ptFaimMax;
+		this.poidsMax 			= poidsMax;
+		this.goulesMax 			= goulesMax;
+		this.competence 		= competence;
+		this.idSalleEnCours 	= idSalleEnCours;
+		this.mode 				= mode;
+		this.multiPtsAttaque	= multiPtsAttaque;
+		this.multiPtsDefense	= multiPtsDefense;
+	    this.multiProbaCache 	= multiProbaCache;
+	    this.multiProbaFouille 	= multiProbaFouille;
+		this.armeEquipee 		= armeEquipee;
+		this.armureEquipee 		= armureEquipee;
+		this.sacADos 			= sacADos;
+		this.dernierMvt 		= dernierMvt;
+		this.listeMsgAtt 		= listeMsgAtt;
+		this.nbrNvMsg			= nbrNvMsg;
 	}
 
 	// --- METHODES D'INSTANCE
 	Personnage.prototype =
 	{
+		initialiser : function()
+		{
+		 	this.ptSanteMax			= -1;
+		 	this.ptSante 			= -1;
+		    this.ptAction 			= -1;
+		    this.ptActionsMax 		= -1;
+		    this.ptDeplacement 		= -1;
+		    this.ptDeplacementMax 	= -1;
+		    this.ptFaim		 		= 10;
+		    this.ptFaimMax		 	= 10;
+		    this.poidsMax 			= 30;
+		    this.gouleLimite 		= -1;
+		    this.competence 		= -1;
+		    this.sacADos 			= new Array();
+		    this.idSalleEnCours 	= -1;
+		    this.mode 				= 0;
+		    this.multiPtsAttaque 	= -1;
+		    this.multiPtsDefense 	= -1;
+		    this.multiProbaCache 	= -1;
+		    this.multiProbaFouille	= -1;
+		    this.idArmeEquipee 		= null;
+		    this.idArmureEquipee 	= null;
+		    this.dernierMvt 		= null;
+		    this.listeMsgAtt 		= new Array();
+		    this.nbrNvMsg			= 0;
+		},
+		
+		setCompetence : function(competence, numEquipe)
+		{
+			// initialiser les attributs
+			this.initialiser();
+			
+			/*** - CALCUL SUR LES MULTI POINTS - ***/
+			if(competence == "brute")
+			{
+				this.setptSanteMax		(140);
+				this.setptDeplacementMax(15);
+				this.setptActionsMax		(20);
+				this.multiPtsAttaque	= 2;
+				this.multiPtsDefense	= 2;
+				this.multiProbaCache	= 0.5;
+				this.multiProbaFouille	= 1;
+				this.goulesMax			= 2;
+			}
+			else if(competence == "explorateur")
+			{
+				this.setptSanteMax		(100);
+				this.setptDeplacementMax(25);
+				this.setptActionsMax		(20);
+				this.multiPtsAttaque	= 1;
+				this.multiPtsDefense	= 0.3;
+				this.multiProbaCache	= 1;
+				this.multiProbaFouille	= 3;
+				this.goulesMax			= 5;
+			}
+			else if(competence == "chercheur")
+			{
+				this.setptSanteMax		(100);
+				this.setptDeplacementMax(15);
+				this.setptActionsMax		(30);
+				this.multiPtsAttaque	= 0.5;
+				this.multiPtsDefense	= 1.5;
+				this.multiProbaCache	= 3;
+				this.multiProbaFouille	= 0.5;
+				this.goulesMax			= 3;
+			}
+			this.competence=competence;
+			
+			if (numEquipe == 1)
+			{
+				this.idSalleEnCours = GameRules.idZoneSure_1(); 
+			}
+			else if (numEquipe == 2)
+			{
+				this.idSalleEnCours = GameRules.idZoneSure_2(); 
+			}
+			else
+			{
+				this.idSalleEnCours = GameRules.idZoneSure_3(); 
+			}
+			
+		},
 		/**
 		 * ECRITURE
 		 * 
@@ -116,7 +192,7 @@ var Personnage = (function() {
 			if (nbrGoules > this.goulesMax)
 			{
 				if (!
-						(direction == "OUEST" && this.dernierMvt == "EST" ||
+					(direction == "OUEST" && this.dernierMvt == "EST" ||
 					direction == "EST" && this.dernierMvt == "OUEST" ||
 					direction == "NORD" && this.dernierMvt == "SUD" ||
 					direction == "SUD" && this.dernierMvt == "NORD"))
@@ -134,7 +210,7 @@ var Personnage = (function() {
 			
 			// recupere l'id de la salle suivante
 			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours, direction);
-			
+ 
 			// si id de la salle -1, pas de salle dans la direction
 			if (ansIdSalle == -1)
 			{
@@ -145,7 +221,7 @@ var Personnage = (function() {
 			if(ansIdSalle == idZoneSureEnnemi)
 			{
 				console.log("PERSONNAGE : Déplacement impossible ! Zone sure Ennemi");
-				return -4
+				return -4;
 			}
 			
 			// Décrémente les points de déplacement
@@ -199,8 +275,21 @@ var Personnage = (function() {
 			this.logAfficherSacADos();
 			var index;
 			for (var i = 0; i < this.sacADos.length; i++) {
-				if (this.sacADos[i].id == item.id) {
+				if (this.sacADos[i].id == item.id) 
+				{
 					index = i;
+					
+					// si c'est l'arme équipe
+					console.log("---------------> RETRAIT DE L'ITEM " + this.sacADos[i].id);
+					if (this.armeEquipee != null) console.log("---------------> id arme " + this.armeEquipee.id);
+					if (this.armureEquipee != null) console.log("---------------> id armure " + this.armureEquipee.id);
+					
+					if (this.armeEquipee != null && this.sacADos[i].id == this.armeEquipee.id)
+						this.armeEquipee = null;
+					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id)
+						this.armureEquipee = null;
+					
+					
 					break;
 				}
 			}
@@ -227,6 +316,8 @@ var Personnage = (function() {
 			
 			this.ptSante -= degats;
 			
+			if (this.ptSante < 0) this.ptSante = 0;
+			
 			return degats;
 		},
 		
@@ -239,19 +330,25 @@ var Personnage = (function() {
 			}
 		},
 		
+		acquitterMsg : function()
+		{
+			console.log("PERSONNAGE : Acquittement des messages ! ");
+			this.nbrNvMsg = 0;
+ 		},
+		
 		setPtsSante : function(newPtSante)
 		{
-			if(ptSante >= this.ptSanteMax)
+			if(newPtSante >= this.ptSanteMax)
 			{
 				this.ptSante = this.ptSanteMax;
 			}
-			else if(ptSante <= 0)
+			else if(newPtSante <= 0)
 			{
 				this.ptSante = 0;
 			}
 			else
 			{
-				this.ptSante = ptSante;
+				this.ptSante = newPtSante;
 			}
 		},
 		
@@ -282,9 +379,9 @@ var Personnage = (function() {
 		
 		setptAction : function(newPtAction)
 		{
-			if(newPtAction >= this.ptActionMax)
+			if(newPtAction >= this.ptActionsMax)
 			{
-				newPtAction = this.ptActionMax;
+				newPtAction = this.ptActionsMax;
 			}
 			else if(newPtAction <= 0)
 			{
@@ -293,10 +390,10 @@ var Personnage = (function() {
 			this.ptActions = newPtAction;
 		},
 		
-		setptActionMax : function(newPtActionMax)
+		setptActionsMax : function(newptActionsMax)
 		{
-			this.ptActionMax = newPtActionMax;
-			this.ptActions = this.ptActionMax;
+			this.ptActionsMax = newptActionsMax;
+			this.ptActions = this.ptActionsMax;
 		},
 		
 		setmultiPtsAttaque : function(multiPtsAttaque)
@@ -324,11 +421,6 @@ var Personnage = (function() {
 			this.goulesMax = goulesMax;
 		},
 		
-		setCompetence : function(competence)
-		{
-			this.competence = competence;
-		},
-		
 		getCompetence : function()
 		{
 			return this.competence;
@@ -351,32 +443,27 @@ var Personnage = (function() {
 		getValeurAttaque : function()
 		{
 			var att;
-			if (this.armeEquipee == null)
+			if (this.competence == "brute") 		 att = GameRules.combat_ptsAttaque_base_brute();
+			if (this.competence == "explorateur") att = GameRules.combat_ptsAttaque_base_explorateur();
+			if (this.competence == "chercheur") 	 att = GameRules.combat_ptsAttaque_base_chercheur();
+			
+			if (this.armeEquipee != null)
 			{
-				att = 1;
-				//console.log("VALEUR ATTAQUE : " + att);
-				att+=1;
-				//console.log("VALEUR ATTAQUE : " + att);
+				att += this.armeEquipee.valeur;
 			}
-			else
-			{
-				att = this.armeEquipee.valeur;
-			}
+			
 			return (att * this.multiPtsAttaque);
 		},
 		
 		getValeurArmure : function()
 		{
-			var def;
-			if (this.armureEquipee == null)
+			var def = GameRules.combat_ptsDefense_base();
+			
+			if (this.armureEquipee != null)
 			{
-				def = 1;
+				def += this.armureEquipee.valeur;
 			}
-			else
-			{
-				def = this.armureEquipee.valeur;
-			}
-			//console.log("PERSONNAGE : Valeur Armure : " + def );
+
 			return (def * this.multiPtsDefense);
 		},
 		
@@ -387,6 +474,7 @@ var Personnage = (function() {
 		
 		changerMode : function(mode)
 		{
+			console.log("PERSONNAGE : passage en mode " + mode);
 			if(mode == 3)
 			{
 				this.ptActions -= GameRules.coutPA_ChgtMode_def();
@@ -562,7 +650,13 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
-			this.listeMsgAtt.push(msg);
+			var date = new Date();
+			var mois = parseInt(date.getMonth()) + 1;
+			var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
+			this.listeMsgAtt.push(str + " : " + msg);
+			this.nbrNvMsg++;
+			
+			console.log("PERSONNAGE : Ajout d'un message : " + msg);
 		},
 		
 		effacerMessage : function(msg)
@@ -575,6 +669,26 @@ var Personnage = (function() {
 			this.sacADos = new Array();
 			this.armeEquipee = null;
 			this.armureEquipee = null;
+		},
+		
+		nvlleJournee : function()
+		{
+			if(this.competence == "brute")
+			{
+				this.ptDeplacement = 15;
+				this.ptActions = 20;
+			}
+			else if(this.competence == "explorateur")
+			{
+				this.ptDeplacement = 25;
+				this.ptActions = 20;
+			}
+			else if(this.competence == "chercheur")
+			{
+				this.ptDeplacement = 15;
+				this.ptActions = 30;
+			}
+			this.ptFaim -= 3;
 		},
 		
 		/**
@@ -716,7 +830,7 @@ var Personnage = (function() {
 		
 		estMort : function()
 		{
-			return (this.ptSante == 0);
+			return (this.ptSante <= 0);
 		},
 		
 	};

@@ -5,8 +5,6 @@ var oPersonnageDB = require('../Persistance/Personnage_BD');
 var oUtilisateur = require('../model/object/Utilisateur');
 
 
-
-
 /**
  * UTILISATEUR : COMMUNICATION SERVEUR <-> BD
  * 
@@ -40,38 +38,22 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 		}
 		else
 		{
-			console.log(utilisateurToSave);
 			NewUser[0].pseudo				= utilisateurToSave.pseudo;
 			NewUser[0].email 				= utilisateurToSave.email;
 			NewUser[0].personnage 			= utilisateurToSave.idPersonnage;
-			NewUser[0].nbrMeurtres 			= utilisateurToSave.nbrMeurtres;
-			NewUser[0].nbrMeurtresCumule 	= utilisateurToSave.nbrMeurtresCumule;
-			NewUser[0].nbrFoisTue 			= utilisateurToSave.nbrFoisTue;
-			NewUser[0].nbrFoisTueCumule 	= utilisateurToSave.nbrFoisTueCumule;
-			
-			NewUser[0].scoreByMeutre 		= utilisateurToSave.scoreByMeutre;
-			NewUser[0].scoreByODD 			= utilisateurToSave.scoreByODD;
-			NewUser[0].scoreByMeutreCumule 	= utilisateurToSave.scoreByMeutreCumule;
-			NewUser[0].scoreByODDCumule 	= utilisateurToSave.scoreByODDCumule;
-			NewUser[0].nbrGoulesTues 		= utilisateurToSave.nbrGoulesTues;
-			NewUser[0].nbrGoulesTuesCumules = utilisateurToSave.nbrGoulesTuesCumules;
-			
-			NewUser[0].numEquipe = utilisateurToSave.numEquipe;
-			
-			console.log("--------> " + NewUser[0].nbrMeurtres);
+			NewUser[0].numEquipe 			= utilisateurToSave.numEquipe;
+			NewUser[0].idSession			= utilisateurToSave.idSession;
 			NewUser[0].save(function (err)
 					{
 						if (err)
 						{
 							throw err;
 						}
-						console.log('Mis a jour de l\'utilisateur!');
+						console.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 						
 						callbackSetUtilisateur(new oUtilisateur(
 							NewUser._id,			NewUser.pseudo,				NewUser.email,				NewUser.pass,
-							NewUser.nbrMeurtres,	NewUser.nbrMeurtresCumule,	NewUser.nbrFoisTue,			NewUser.nbrFoisTueCumule,
-							NewUser.scoreByMeutre,	NewUser.scoreByODD,			NewUser.scoreByMeutreCumule,NewUser.scoreByODDCumule,
-							NewUser.nbrGoulesTues, 	NewUser.nbrGoulesTuesCumules, NewUser.numEquipe,		NewUser.personnage));
+							NewUser.numEquipe,		NewUser.personnage, 		NewUser.idSession));
 					});
 			
 		}
@@ -104,13 +86,11 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) 
 		}
 		else
 		{
-			console.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
+			//console.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
 			var user = new oUtilisateur(
 					NewUser[0]._id,				NewUser[0].pseudo,				NewUser[0].email,				//NewUser[0].pass,
-					NewUser[0].nbrMeurtres,		NewUser[0].nbrMeurtresCumule,	NewUser[0].nbrFoisTue,			NewUser[0].nbrFoisTueCumule,
-					NewUser[0].scoreByMeutre,	NewUser[0].scoreByODD,			NewUser[0].scoreByMeutreCumule,	NewUser[0].scoreByODDCumule,
-					NewUser[0].nbrGoulesTues, 	NewUser[0].nbrGoulesTuesCumules,NewUser[0].numEquipe,			NewUser[0].personnage);
-			console.log(user);
+					NewUser[0].numEquipe,		NewUser[0].personnage,			NewUser[0].idSession);
+			console.log("UTILISATEUR_BD : Chargement de l'utilisateur : ["+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 			callbackGetUtilisateur(idUtilisateur, user);
 		}
 	});
@@ -132,101 +112,77 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	
 	var userExiste = true;
 	var mailExiste = true;
-	
 	var sauvegarde = 0;
+	var newUser = new Utilisateurmodel();
 	
-	var NewUser = new Utilisateurmodel();
+	newUser.pseudo 				= pseudoU;
+	newUser.pass 				= passU;
+	newUser.email 				= emailU;
+	newUser.numEquipe 			= 0;
+	newUser.idSession			= -1;
 	
-	NewUser.pseudo = pseudoU;
-	NewUser.pass = passU;
-	NewUser.email = emailU;
-	NewUser.nbrMeurtres = 0;
-	NewUser.nbrMeurtresCumule = 0;
-	NewUser.nbrFoisTue = 0;
-	NewUser.nbrFoisTueCumule = 0;
-	
-	NewUser.scoreByMeutre = 0;
-	NewUser.scoreByODD = 0;
-	NewUser.scoreByMeutreCumule = 0;
-	NewUser.scoreByODDCumule = 0;
-	NewUser.nbrGoulesTues = 0;
-	NewUser.nbrGoulesTuesCumules = 0;
-	
-	NewUser.numEquipe = 0;
-	
+	// on cherche si ce pseudo existee déja
 	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)
 	{
-		if (err)
-		{
-			throw err;
-		}		
+		// si erreur 
+		if (err){ throw err; }		
 
-		if(typeof testuseru[0] === "undefined")
-		{
-			userExiste = false;
-		}
-		else
-		{
-			userExiste = true;
-		}
+		// si pseudo pas trouvé
+		if(typeof testuseru[0] === "undefined") { userExiste = false; }
+		// si pseudo trouvé
+		else { userExiste = true; }
 		
+		// on cherche si cet email existe déja
 		Utilisateurmodel.find({email: emailU}, function (err, testusere)
 		{
-			if (err)
-			{
-				throw err;
-			}
+			// si erreur
+			if (err) { throw err; }
 			
-			if(typeof testusere[0] === "undefined")
-			{
-				mailExiste = false;
-			}
-			else
-			{
-				mailExiste = true;
-			}
+			// si email pas trouvé
+			if(typeof testusere[0] === "undefined") { mailExiste = false; }
+			// si email trouvé
+			else { mailExiste = true; }
 			
-			if (userExiste)
-			{
-				sauvegarde = -1;
-			}
+			// création des codes d'erreur
+			if (userExiste) { sauvegarde = -1; }
+			if (mailExiste) { sauvegarde = -2; }
 			
-			if(mailExiste)
-			{
-				sauvegarde = -2;
-			}
-			
-			if(sauvegarde == -1 || sauvegarde == -2)
-			{
-				callbackInscription(sauvegarde, req, res);
-			}
+			// renvoi des codes d'eeur
+			if(sauvegarde == -1 || sauvegarde == -2) { callbackInscription(sauvegarde, req, res); }
+			// si c'est ok
 			else
 			{		
 				var PersonnageModel = mongoose.model('Personnage');
-				var NewPerso = new PersonnageModel();
+				var newPerso = new PersonnageModel();
 				
-				NewPerso = oPersonnageDB.Creation(100,20,15,30,4,"");
+				// crée le perso en BD
+				newPerso = oPersonnageDB.Creation();
 				
-				console.log('BASE DE DONNEES : ID du perso cree ' + NewPerso._id);
-				NewUser.personnage = NewPerso._id;
+				// log
+				console.log('BASE DE DONNEES : ID du perso cree ' + newPerso._id);
 				
-				NewUser.save(function (err)
+				// on attribut l'id de personnage crée à l'attribut "personnage" du nouvel user
+				newUser.personnage = newPerso._id;
+				
+				// lance la sauvegarde de l'utilisateur
+				newUser.save(function (err)
 				{
 					if (err)
 					{
 						throw err;
 					}
 					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
-						
-					callbackInscription(NewUser._id, req, res);
+					
+					// renvoi réponse
+					callbackInscription(newUser._id, req, res);
 				});
 			}
 		});
 	});
 },
  
- /**
- *	Renvoi 1 si le pseudo n'existe pas, 2 si le mot de passe ne coresspond pas au pseudo et 0 si tout est en règle 
+/**
+ * Renvoi 1 si le pseudo n'existe pas, 2 si le mot de passe ne coresspond pas au pseudo et 0 si tout est en règle 
  * Renvoi 1 si conexion ok
  * Renvoi 0 si erreur
  * Renvoi -1 si le password ne corespond pas
@@ -256,15 +212,10 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		}
 		else
 		{
-			console.log("USER_BD : id de l'user = " + user[0].id);
+			console.log("USER_BD : connexion de l'user = " + user[0].pseudo);
 			callbackConnexion(user[0].id, req, res);
 		}
 	});
-},
- 
-Utilisateur_BD.test = function()
-{
-	console.log("COUCOU");
 },
  
  Utilisateur_BD.GetUsersId = function(callback)

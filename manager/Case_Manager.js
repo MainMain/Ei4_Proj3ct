@@ -4,9 +4,7 @@ var oCase_BD 	= require('../persistance/Case_BD');
 var oCarte 		= require('../model/object/Carte');
 var oCase_BD 	= require('../persistance/Case_BD');
 
-var oPersonnage_Manager  = require('./Personnage_Manager');
 var oItem_Manager        = require('./Item_Manager');
-var oUtilisateur_Manager = require('./Utilisateur_Manager');
 
 //inclusion des règles
 var GameRules	= require('../model/GameRules');
@@ -41,7 +39,7 @@ Case_Manager.Load = function()
 			// enregistrement effectif
 			else
 			{
-				console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+				//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
 				context.listeCases[idCase] = reponse;
 			}
 		});
@@ -91,7 +89,7 @@ Case_Manager.AttaqueGoule = function(idCase)
  */
 Case_Manager.GetCopieCase = function(idCase)
 {
-	console.log("CASE_MANAGER : GetCopieCase() : " + this.listeCases[idCase].id + " - " + this.listeCases[idCase].nom);
+	//console.log("CASE_MANAGER : GetCopieCase() : " + this.listeCases[idCase].id + " - " + this.listeCases[idCase].nom);
 	return this.listeCases[idCase];
 },
 
@@ -100,7 +98,7 @@ Case_Manager.ExistItem = function(idCase, item)
 	return this.listeCases[idCase].existItemInSalle(item);
 },
 
-Case_Manager.AttaqueDeGoules = function(idCase)
+Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 {
 	var a = {
 		"degats"	: 0,
@@ -109,18 +107,26 @@ Case_Manager.AttaqueDeGoules = function(idCase)
 	};
 	
 	// si pas de goules, on quitte 
-	if (this.listeCases[idCase].getNbrGoules() == 0) return a;
+	if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
+	
+	// calcul le nombre de goules attaquantes
+	var nbrGoulesAttaquantes = Math.floor(Math.random() * this.listeCases[idCase].getNbrGoules());
+	
+	// soustraction du nombre de goules par le nombre d'alliés
+	nbrGoulesAttaquantes -= parseInt(nbrAllies);
+	
+	// si aucune goule n'attaque, on quitte
+	if (nbrGoulesAttaquantes <= 0) return a;
 	
 	// génère la puissance des goules
 	var degatsGoules = GameRules.goules_GetPtsAttaque();
-	// calcul le nombre de goules attaquantes
-	var nbrGoulesAttaquantes = Math.floor(Math.random() * this.listeCases[idCase].getNbrGoules());
+	
 	// total des dégats infligés
 	var total = degatsGoules * nbrGoulesAttaquantes;
 	
-	
 	// action raté ou non
 	var actionOk;
+	
 	// s'il y a interception, action ratée
 	if (GameRules.goules_proba_Interception()) actionOk = false;
 	else actionOk = true;
@@ -167,6 +173,24 @@ Case_Manager.DecouverteEnnemi = function(idCase, probaObjetPerso, probaCacheEnn)
 	else return false;
 },
 
+Case_Manager.nouvelleJournee = function()
+{
+	// ajout de goules
+	for(var idCase in this.listeCases)
+	{
+		if (!((idCase == GameRules.idZoneSure_1()) || (idCase == GameRules.idZoneSure_2())))
+		{
+			// calcul du nombre de goules a ajouter
+			var nbrGoules = GameRules.goules_nbrNouvellesGoules();
+		
+			// log
+			console.log("CASE_MANAGER : case " + idCase + " : ajout de " + nbrGoules + " goules !");
+		
+			// ajout
+			this.listeCases[idCase].nbrGoules += nbrGoules;
+		}
+	}
+},
 Case_Manager.GetNombreGoules = function(idCase)
 {
 	return this.listeCases[idCase].getNbrGoules();
@@ -206,10 +230,10 @@ Case_Manager.Save = function()
 	
 	for(var idCase in this.listeCases)
 	{
-		console.log("CASE_MANAGER : Save() : Sauvegarde de la case [id="+idCase);
+		//console.log("CASE_MANAGER : Save() : Sauvegarde de la case [id="+idCase);
 		oCase_BD.SetCase(this.listeCases[idCase], function(reponse)
 		{
-			console.log("Enregistrement de case ok !");
+			//console.log("Enregistrement de case ok !");
 		});
 	}
 },

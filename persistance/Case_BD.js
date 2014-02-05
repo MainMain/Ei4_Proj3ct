@@ -21,32 +21,48 @@ function Case_BD() {
  * 
  * @method SetCase
  */
-Case_BD.SetCase = function(caseToSave, callSetCase) {
+Case_BD.SetCase = function(caseToSave, callSetCase) 
+{
 	var CaseModel = mongoose.model('Case');
 	var newCase = new CaseModel();
 
-	newCase.id = caseToSave.id;
-	newCase.nom = caseToSave.nom;
-	newCase.description = caseToSave.description;
-	newCase.probaObjet = caseToSave.probaObjet;
-	newCase.probaCache = caseToSave.probaCache;
-	newCase.nbrGoules = caseToSave.nbrGoules;
-	newCase.listeItem = caseToSave.listeItem;
-	newCase.pathImg = caseToSave.pathImg;
-
-	newCase.save(function(err)
+	CaseModel.find({_id: caseToSave.idmongo}, function (err, cCase) 
 	{
-		if (err)
+		if (err) 
 		{
-			callSetCase(-1);
-			console.log("CASE_BD : Creation() : ERREUR ");
-			
+			console.log("CASE_BD : SetCase() : erreur ! ");
 			throw err;
 		}
-		
-		callSetCase(1);
-		console.log('CASE_BD : Creation de case réussie !');
-	});
+		if (typeof cCase[0] === "undefined") 
+		{
+			console.log("CASEBD : SeCase() : undefined ! ");
+			callbackSetPersonnage(-1);
+		} 
+		else 
+		{
+			CaseModel.update({_id: caseToSave.idmongo},
+			{
+				id		 	: caseToSave.id,
+				nom 		: caseToSave.nom,
+				description : caseToSave.description,
+				probaObjet	: caseToSave.probaObjet,
+				probaCache 	: caseToSave.probaCache,
+				nbrGoules 	: caseToSave.nbrGoules,
+				listeItem 	: caseToSave.listeItem,
+				pathImg		: caseToSave.pathImg,
+			},
+			function (err) 
+			{
+				if (err) 
+				{
+					throw err;
+				}
+				console.log("CASE_BD : Mis à jour de la case : [" + caseToSave.id +"-"+caseToSave.nom+"]");
+				callbackSetPersonnage(1);
+			}
+		);
+		}
+	});	
 },
 
 /**
@@ -73,7 +89,7 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
 			console.log("CASE_BD : Creation() : ERREUR ");
 		}
 
-		console.log('CASE_BD : Creation de case réussie !');
+		console.log("CASE_BD : Creation de case réussie ! " + newCase.nom);
 
 	});
 },
@@ -85,7 +101,6 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
  */
 Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 	var caseModel = mongoose.model('Case');
-	console.log("CASE_BD : GetCaseById: id case demandé : " + idCase);
 	
 	var query = caseModel.find(null);
 	query.where('id', idCase);
@@ -108,7 +123,7 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 					currentCase[0].listeItem, 	currentCase[0].pathImg);
 
 			// log
-			console.log("CASE_BD : GetCase() : CALLBACK");
+			console.log("CASE_BD : Chargement de la case : [" + currentCase[0].id +"-"+currentCase[0].nom+"]");
 
 			// renvoi de la case
 			callbackGetCase(idCase, caseRecup);
@@ -152,12 +167,6 @@ Case_BD.Initialiser = function() {
 	var array4 = [ oItem_BD.GetItemById(103), oItem_BD.GetItemById(202),
 			oItem_BD.GetItemById(403), oItem_BD.GetItemById(601) ];
 	
-	/*
-	 * this.id = id; this.nom = nom; this.description = description;
-	 * this.probaObjet = probaObjet; this.probaCache = probaCache;
-	 * this.nbrGoules = nbrGoules; this.listeItem = listeItem; this.pathImg =
-	 * pathImg;
-	 *
 	var case1 = new oCase(0, 0, "E11", "Une mini salle", 20, 50, 1, array1,
 			"public/map/0-0.png");
 	var case2 = new oCase(0, 1, "E12", "Une petite salle", 24, 54, 2, array2,

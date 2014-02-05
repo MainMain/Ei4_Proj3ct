@@ -32,48 +32,44 @@ database.Initialiser = function() {
 
 	/***** CREATION DU SCHEMA "UTILISATEUR" ****/
 	var UtilisateurSchema = new mongoose.Schema({		//creation de la structure d'un utilisateur
-		pseudo					: String,
-		pass				 	: String,
-		email 					: String,
-		personnage 				: String,
-		nbrMeurtres 			: Number,
-		nbrMeurtresCumule 		: Number,
-		nbrFoisTue 				: Number,
-		nbrFoisTueCumule 		: Number,
-		scoreByMeutre 			: Number,
-		scoreByODD 				: Number,
-		scoreByMeutreCumule 	: Number,
-		scoreByODDCumule 		: Number,
-		nbrGoulesTues 			: Number,
-		nbrGoulesTuesCumules 	: Number,
-		numEquipe				: Number,
+		pseudo				: String,
+		pass				: String,
+		email 				: String,
+		personnage 			: String,
+		numEquipe			: Number,
+		idSession			: Number,
 	});
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
 	
+	
 	/***** CREATION DU SCHEMA "PERSONNAGE" ****/
 	var PersonnageSchema = new mongoose.Schema({
-		ptSante : Number,
-		ptSanteMax : Number,
-		ptAction : Number,
-		ptActionMax : Number,
-		ptDeplacement : Number,
-		ptDeplacementMax : Number,
-		poidsMax : Number,
-		gouleLimite : Number,
-		competence : String,
-		idSalleEnCours : Number,
-		mode : Number,
-		multiPtsAttaque : Number,
-		multiPtsDefense : Number,
-		multiProbaCache : Number,
-		multiProbaFouille : Number,
-		idArmeEquipee : Number,
-		idArmureEquipee : Number,
-		sacADos : Array,
-		dernierMvt : String,
-		listeMsgAtt : Array,
+		ptSante 			: Number,
+		ptSanteMax			: Number,
+		ptAction 			: Number,
+		ptActionMax 		: Number,
+		ptDeplacement 		: Number,
+		ptDeplacementMax 	: Number,
+		ptFaim 				: Number,
+		ptFaimMax 			: Number,
+		poidsMax 			: Number,
+		gouleLimite 		: Number,
+		competence 			: String,
+		idSalleEnCours 		: Number,
+		mode 				: Number,
+		multiPtsAttaque 	: Number,
+		multiPtsDefense 	: Number,
+		multiProbaCache 	: Number,
+		multiProbaFouille 	: Number,
+		idArmeEquipee 		: Number,
+		idArmureEquipee 	: Number,
+		sacADos 			: Array,
+		dernierMvt 			: String,
+		listeMsgAtt 		: Array,
+		nbrNvMsg			: Number,
 	});
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
+	
 	
 	/***** CREATION DU SCHEMA "ITEM" ****/
 	var ItemSchema = new mongoose.Schema({
@@ -85,8 +81,8 @@ database.Initialiser = function() {
 		valeur 		: Number,
 		imageName	: String,
 	});
-	
 	ItemModel = mongoose.model('Item',ItemSchema);
+	
 	
 	/***** CREATION DU SCHEMA "CASE" ****/
 	var CaseSchema = new mongoose.Schema({
@@ -99,10 +95,35 @@ database.Initialiser = function() {
 		listeItem : Array,
 		pathImg : String,
 	});
-
 	CaseModel = mongoose.model('Case',CaseSchema); 
 	
-	console.log("Initialisation Database");
+	
+	/***** CREATION DU SCHEMA "SESSION" ****/
+	var SessionSchema = new mongoose.Schema({
+		id 			: Number,
+		dateDebut 	: Date,
+		dateFin 	: Date,
+	});
+
+	SessionModel = mongoose.model('Session',SessionSchema); 
+	
+	
+	/***** CREATION DU SCHEMA "SCORE" ****/
+	var ScoreSchema = new mongoose.Schema({
+		idUser 			: String,
+		idSession		: Number,
+		scoreODD		: Number,
+		scoreByODD 		: Number,
+		scoreByMeutre 	: Number,
+		nbrFoisTue 		: Number,
+		nbrMeurtres 	: Number,
+		nbrGoulesTues 	: Number,
+		listeVictimes	: Array,
+		listeBourreaux	: Array,
+	});
+	ScoreModel = mongoose.model('Score',ScoreSchema); 
+	
+	console.log("SERVEUR : Initialisation Database OK !");
 },
 
 module.exports = database;
