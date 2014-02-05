@@ -257,10 +257,10 @@ var _labelDernierMessageY = _ContMapY-20;
 
 //------------------- Zone 14 : Labels de retour------------------------------------------------------
 
-var _ContLabelsActionX = 10;
+var _ContLabelsActionX = 5;
 var _ContLabelsActionY = 120;
-var _ContLabelsActionW = 220;
-var _ContLabelsActionH = 20*6;
+var _ContLabelsActionW = 165;
+var _ContLabelsActionH = 20*9;
 
 //-------------- Déclaration des labels----------------------------------------------
 
@@ -270,7 +270,8 @@ labelBonusArme, labelBonusArmure, labelIdSalle, labelNbAllies, labelNbEnnemis,
 labelNbGoules, labelProbaCache, labelProbaFouille,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim, 
 labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, 
-labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescribeCase;
+labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescribeCase,
+labelLancementServeur;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
 contBtnsListes, contDead,
@@ -1035,6 +1036,12 @@ function game() {
 	labelAction.textBaseline = _TextBaseline;
 	labelAction.x = 0;
 	labelAction.y = 0;
+	
+	labelLancementServeur = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelLancementServeur.lineHeight = _LineHeight;
+	labelLancementServeur.textBaseline = _TextBaseline;
+	labelLancementServeur.x = 0;
+	labelLancementServeur.y = 100;
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
@@ -1167,14 +1174,10 @@ function game() {
 	// ******************************************
 	// *********** INITIALISATION ***************
 	// ******************************************
-
+	socket.emit('GET_DATE_CS');
 	// AFFICHAGE DE L'IVENTAIRE DE CASE ET PERSO
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
-	//socket.emit('INFO_CASE_ALLIES_CS');
-	stage.update();
-	//Check message en attente (socket.emit)
-
 	stage.update();
 }
 
@@ -1449,8 +1452,12 @@ function dead(currentPerso)
 	contDead.addChild(contItemPersoDead);
 	shapeInvDead = new createjs.Shape();
 	contDead.addChild(shapeInvDead);
-	shapeInvDead.graphics.setStrokeStyle(1).beginStroke("#FFFFFF").drawRect(
-			contItemPersoDead.x-4, contItemPersoDead.y-4, contItemPersoDead.width+4, contItemPersoDead.height+4);
+	if(currentPerso.sacADos!=null)
+	{
+		alert(" if ok ");
+		shapeInvDead.graphics.setStrokeStyle(1).beginStroke("#FFFFFF").drawRect(
+				contItemPersoDead.x-4, contItemPersoDead.y-4, contItemPersoDead.width+4, contItemPersoDead.height+4);
+	}
 	
 	BtnPageItemPersoDeadRight= new createjs.Bitmap("public/Boutons/Right.png");
 	BtnPageItemPersoDeadRight.x= contItemPersoDead.x + contItemPersoDead.width;
@@ -3195,10 +3202,10 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		labelAction.text = "Fouille rapide ratée !";
 		break;
 	case -5 : 
-		labelAction.text = "Action ratée !";
+		labelAction.text = "Fouille rapide ratée !";
 		if(degatsInfliges!=0)
 		{
-			labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
+			labelAction.text +=("\nEt blessé (" + degatsInfliges + ")"); 
 		}
 		if(nbrGoulesA==1)
 		{
@@ -3231,31 +3238,47 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
  * 
  * ET nbr goules attaquantes
  */
-socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbGoules){
+socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbrGoulesA){
+	labelAction.text="";
 	switch(codeRetour)
 	{
-	case 0:
-		alert("erreur interne");
+	case 0: 
+		labelAction.text=("erreur interne");
 		break;
 	case 1:
-		alert("attaque ok");
+		labelAction.text=("Attaque réussie !");
+		if(degatsI!=0)
+		{
+			labelAction.text+=("L'ennemi a perdu :\n" + degatsI + " points de vies");
+		}
+		if(degatsRecusE!=0)
+		{
+			labelAction.text+=("L'ennemi a riposté :\n-" + degatsRecusE + " points de vies");
+		}
 		break;
 	case -1:
-		alert("attaque : joueur plu dans la case");
+		labelAction.text=("Ennemi plus ici !");
 		break;
 	case -5:
-		alert("attaque ratée à cause des goules");
+		labelAction.text=("Attaque ratée !");
+		if(degatsInfliges!=0)
+		{
+			labelAction.text +=("\nEt blessé (" + degatsRecusG + ")"); 
+		}
+		if(nbrGoulesA==1)
+		{
+			labelAction.text +=("\npar " + nbrGoulesA + " Zombie !");
+		}
+		else if(nbrGoulesA>1)
+		{
+			labelAction.text +=("\npar " + nbrGoulesA + " Zombies !");
+		}
 		break;
 	case -10:
-		alert("attaque plus de pts d'actions");
+		labelAction.text=("Points d'action insuffisants");
 		break;
 	}
-	/*
-	alert("dagats infligés : " + degatsI);
-	alert("dagats recus ennemi : " + degatsRecusE);
-	alert("dagats recus goules : " + degatsRecusG);
-	alert("nbr goules attaqués: " + nbGoules);
-	 */
+	stage.update();
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
 });
@@ -3302,10 +3325,17 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
 		labelAction.text=("Pas de Zombie dans la salle !");
 		break;
 	}
-	socket.emit('INFO_CASE_CS');
 	stage.update();
+	socket.emit('INFO_PERSONNAGE_CS');
+	socket.emit('INFO_CASE_CS');
 });
 
+/******************************************************************************************************************
+ * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ALLIES DANS LA CASE
+ * 
+ * return tableau associatif : [pseudo, personnageAAfficher]
+ * erreur : liste vide si aucun allié dans la case
+ */ 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		{
 	//alert("retour ok");
@@ -3506,6 +3536,12 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		socket.emit('INFO_PERSONNAGE_CS');
 	});
 
+/******************************************************************************************************************
+ * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
+ * 
+ * return liste des ennemis (tableau associatif) [idUtilisateur, personnageEnnemi]
+ * erreur : liste vide si aucun ennemis dans la case
+ */ 
 socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		{
 	var i=0;
@@ -3775,6 +3811,12 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	stage.update();
 	socket.emit('INFO_PERSONNAGE_CS');
 		});
+
+socket.on('GET_DATE_SC', function (dateLancementSrv)
+	{
+		labelLancementServeur.text="";
+		labelLancementServeur.text=dateLancementSrv;
+	});
 
 
 
