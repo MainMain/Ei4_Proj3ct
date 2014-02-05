@@ -2,8 +2,6 @@
 var oUtilisateur = require('../model/Object/Utilisateur');
 var oUtilisateur_BD = require('../persistance/Utilisateur_BD');
 
-//managers
-var oSession_Manager  	 = require('./Session_Manager');
 
 //inclusion des règles
 var GameRules	= require('../model/GameRules');
@@ -104,7 +102,7 @@ Utilisateur_Manager.GetNumEquipe = function(idUser)
 	return this.listeUtilisateurs[idUser].getNumEquipe();
 },
 
-Utilisateur_Manager.GetPseudo = function(idUser)
+Utilisateur_Manager.getPseudo = function(idUser)
 {
 	return this.listeUtilisateurs[idUser].getPseudo();
 },
@@ -130,6 +128,36 @@ Utilisateur_Manager.findIdUser = function(idPersonnage)
 		}
 	}
 	return -1;
+},
+
+Utilisateur_Manager.getScore = function(idUser)
+{
+	return this.listeUtilisateurs[idUser].getScore();
+},
+
+Utilisateur_Manager.setScore = function(idUser, newScore)
+{
+	return this.listeUtilisateurs[idUser].setScore(newScore);
+},
+
+Utilisateur_Manager.GetUsersOrderedByScore = function()
+{
+	var users = new Array();
+	var score;
+	
+	for(var i in this.listeUtilisateurs)
+	{
+		score = this.getScore(i);
+		user  = this.getPseudo(i);
+		if(!users[score])
+		{
+			users[score] = new Array();
+		}
+		users[score].push(user);
+		console.log("SCORE : " + score + " - " + user);
+	}
+	
+	return users;
 },
 
 Utilisateur_Manager.Save = function()
