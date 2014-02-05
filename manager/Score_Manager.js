@@ -3,6 +3,8 @@ var GameRules	= require('../model/GameRules');
 
 var oScore= require('../model/Object/Score');
 
+var oUtilisateur_Manager = require('../manager/Utilisateur_Manager');
+
 // persistance
 var oScore_BD = require('../persistance/Score_BD');
 var oUtilisateur_BD = require('../persistance/Utilisateur_BD');
@@ -12,7 +14,8 @@ Score_Manager.idSessionEnCours;
 
 function Score_Manager(){}
 
-Score_Manager.Load = function (idSession) {
+Score_Manager.Load = function (idSession)
+{
 	console.log("SCMANAGER : Chargement avec l'id session =  " + idSession);
     // initialise la liste
 
@@ -23,36 +26,36 @@ Score_Manager.Load = function (idSession) {
     this.idSessionEnCours = idSession;
     this.listeScores = new Array();
 
-        // pour chaque id de score....
-        oScore_BD.GetIds(function (listeId) 
-        {
-            // pour chaque id de score
-            for (var i = 0; i < listeId.length; i++) 
-            {
-                // essayer de charger son score de session
-                oScore_BD.GetScoreById(listeId[i], function (idScore, score) 
-                {
-                    if (score == -1)
-                    {
-                        console.log("/!\ WARNING : SCMANAGER : erreur lecture du score de " + idScore);
-                    } 
-                    else 
-                    {
-                        var iduser = score.idUser;
-                        var idsession = score.idSession;
+	// pour chaque id de score....
+	oScore_BD.GetIds(function (listeId) 
+	{
+		// pour chaque id de score
+		for (var i = 0; i < listeId.length; i++) 
+		{
+			// essayer de charger son score de session
+			oScore_BD.GetScoreById(listeId[i], function (idScore, score) 
+			{
+				if (score == -1)
+				{
+					console.log("/!\ WARNING : SCMANAGER : erreur lecture du score de " + idScore);
+				} 
+				else 
+				{
+					var iduser = score.idUser;
+					var idsession = score.idSession;
 
-                        // enregistrement du score
-                        //console.log("-> " + context.listeScores[iduser]);
-                        if (typeof context.listeScores[iduser] === "undefined")
-                        {
-                        	context.listeScores[iduser] = new Array();
-                        }
-                        context.listeScores[iduser][idsession] = score;
-                        //console.log("-> " + iduser + "<->" + idsession + "<->" + score.id);
-                    }
-                });
-            }
-        });
+					// enregistrement du score
+					//console.log("-> " + context.listeScores[iduser]);
+					if (typeof context.listeScores[iduser] === "undefined")
+					{
+						context.listeScores[iduser] = new Array();
+					}
+					context.listeScores[iduser][idsession] = score;
+					//console.log("-> " + iduser + "<->" + idsession + "<->" + score.id);
+				}
+			});
+		}
+	});
 },
 
 Score_Manager.Save = function()
@@ -159,6 +162,93 @@ Score_Manager.compabiliserGouleTue = function(idUser, nbr)
 {
 	console.log("------------------------------------- COMPTABILISE GOULE ");
 	this.listeScores[idUser][this.idSessionEnCours].ajoutGouleTue(nbr);
+},
+
+Score_Manager.getScoreCurrentSession = function(param)
+{
+	if(this.idSessionEnCours != -1)
+	{
+		var myArray = new Array();
+		var j = 0;
+		var sortFunction;
+		for(var i in this.listeScores)
+		{
+			if(this.listeScores[i][this.idSessionEnCours])
+			{
+				myArray.push(this.listeScores[i][this.idSessionEnCours]);
+				myArray[j].pseudo = oUtilisateur_Manager.getPseudo(i);
+				j++;
+			}
+		}
+		switch(param)
+		{
+			case 0:
+				sortFunction = sortByName;
+				break;
+			case 1:
+				sortFunction = sortByNbrMeurtres;
+				break;
+			case 2:
+				sortFunction = sortByNbrMorts;
+				break;
+			case 3:
+				sortFunction = sortByNbrGoules;
+				break;
+			case 4:
+				sortFunction = sortByScoreMeurtre;
+				break;
+			case 5:
+				sortFunction = sortByScoreODD;
+				break;
+			default:
+				sortFunction = sortByName;
+				break;
+		}
+		myArray.sort(sortFunction);
+		return myArray;
+	}
+	return null;
+},
+
+sortByName = function(a, b)
+{
+	var nameA=a.pseudo.toLowerCase();
+	var nameB=b.pseudo.toLowerCase();
+
+	if (nameA < nameB) //sort string ascending
+	{
+		return -1;
+	}
+	if (nameA > nameB)
+	{
+		return 1;
+	}
+	return 0;
+},
+
+sortByNbrMeurtres = function(a, b)
+{
+	return a.nbrMeurtres - b.nbrMeurtres;
+},
+
+sortByNbrMorts = function(a, b)
+{
+	return a.nbrFoisTue - b.nbrFoisTue;
+},
+
+sortByNbrGoules = function(a, b)
+{
+	return a.nbrGoulesTues - b.nbrGoulesTues;
+},
+
+sortByScoreMeurtre = function(a, b)
+{
+	return a.scoreByMeutre - b.scoreByMeutre;
+},
+
+sortByScoreODD = function(a, b)
+{
+	return a.scoreByODD - b.scoreByODD;
 },
 
 module.exports = Score_Manager;

@@ -115,6 +115,18 @@ function restrict(req, res, next)
 		optionAccueil.errorLogin = null;
 	}
 }
+
+function restrictAdmin(req, res, next)
+{
+	if(req.session.username == "a" || req.session.username == "Brendiche" || req.session.username == "MainMain" || req.session.username == "Flow" || req.session.username == "bibibibouch" || req.session.username == "papa")
+	{
+		next();
+	}
+	else
+	{
+		res.render('noAdmin');
+	}
+}
 /*
  * CONFIGURATION DES ROUTES
  */
@@ -130,6 +142,15 @@ app.get('/', function fonctionIndex(req, res)
 	optionAccueil.username = null;
 	optionAccueil.sessionID = null;
 });
+
+app.get('/admin', restrictAdmin, function fonctionIndex(req, res)
+{
+	var s = req.session;
+	var options = { "username" : s.username, "sessionID" : s.idUser};
+	
+	res.render('admin', options);
+});
+
 
 app.get('/jeu', function fonctionIndex(req, res)
 {
@@ -188,7 +209,18 @@ app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 app.get('/classement', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username":s.username, "sessionID" : s.idUser };
+	var options = { "username":s.username, "sessionID" : s.idUser, "order" : 0 };
+	
+	res.render('classement', options);
+});
+
+app.get('/classement/:order([0-9])', restrict, function fonctionIndex(req, res)
+{
+	var s = req.session;
+	var order = req.param('order');
+	var options = { "username":s.username, "sessionID" : s.idUser, "order" : order };
+	
+	console.log("order = " + order);
 	
 	res.render('classement', options);
 });
@@ -509,11 +541,6 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 	});
 });
 
-
-
-
-
-
 /*
  * CONNEXION D'UN CLIENT
  */
@@ -528,7 +555,7 @@ io.sockets.on('connection', function (socket)
     console.log('SERVER : Un client est connecté !');
     //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.GetIdSalleEnCours());
 
-	socket.on('INFO_USER_CS', function(sessionID, username, page)
+	socket.on('INFO_USER_CS', function(sessionID, username, page, param)
 	{
 		idUser = sessionID;
 		user = username;
@@ -545,6 +572,12 @@ io.sockets.on('connection', function (socket)
 		usersOnline[idUser].username = user;
 		usersOnline[idUser].pages[socket] = page;
 		usersOnline[idUser].sockets.push(socket);
+		
+		if(page == "classement")
+		{
+			scores = oScore_Manager.getScoreCurrentSession(param);
+			socket.emit('CLASSEMENT_SC', scores);
+		}
 		
 		console.log("Connexion de " + user + " à la page " + page);
 	});
@@ -985,7 +1018,7 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function ()
 	{
-    	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.GetPseudo(idUser));
+    	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.getPseudo(idUser));
     	
     	// aquittement
     	oPersonnage_Manager.acquitterMsg(idUser);
@@ -1110,7 +1143,7 @@ io.sockets.on('connection', function (socket)
 			 * */
 			if (id != idUser && !oPersonnage_Manager.estMort(id) && idCase == idCaseCurrentPerso)
 			{
-				oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.GetPseudo(idUser) + " " + evenement);
+				oPersonnage_Manager.AddMessage(id, "L'allié " + oUtilisateur_Manager.getPseudo(idUser) + " " + evenement);
 			}
 		}
     	

@@ -132,8 +132,8 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	var persoEnn = this.listePersonnages[idUserEnnemi];
 	
 	// logins
-	var loginUser = oUtilisateur_Manager.GetPseudo(idUser);
-	var loginEnn = oUtilisateur_Manager.GetPseudo(idUserEnnemi);
+	var loginUser = oUtilisateur_Manager.getPseudo(idUser);
+	var loginEnn = oUtilisateur_Manager.getPseudo(idUserEnnemi);
 	
 	var degatsInfligesParA;
 	var degatsInfligesParB;
@@ -730,7 +730,7 @@ Personnage_Manager.MisKo = function(idUser,  meurtrier)
 Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 {
 	// log
-	console.log("PERSONNAGE_MANAGER : Mourir() : mort du personnage " + oUtilisateur_Manager.GetPseudo(idTue)+ " par : " + loginTueur);
+	console.log("PERSONNAGE_MANAGER : Mourir() : mort du personnage " + oUtilisateur_Manager.getPseudo(idTue)+ " par : " + loginTueur);
 	
 	// recupère le perso tue
 	var currentPerso = this.listePersonnages[idTue];
@@ -964,7 +964,7 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 	var mode 		= this.listePersonnages[idUser].GetMode();
 	var arme 		= this.listePersonnages[idUser].getArmeEquipee();
 	var armure 		= this.listePersonnages[idUser].getArmureEquipee();
-	var pseudo		= oUtilisateur_Manager.GetPseudo(idUser);
+	var pseudo		= oUtilisateur_Manager.getPseudo(idUser);
 	if (allie == false) pseudo = -1;
 	
 	var perso = new oPersonnage(

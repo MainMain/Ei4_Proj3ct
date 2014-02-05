@@ -43,7 +43,7 @@
 	<header id="master-header" class="clearfix" role="banner">
 
 		<hgroup>
-			<h1 id="site-title"><a href="/" title="">Ei4 Proj3ct</a></h1>
+			<h1 id="site-title"><a href="/" title="">Zomb Istia</a></h1>
 			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
 		</hgroup>
 
@@ -155,7 +155,7 @@
 	
 	<script>
 		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-		var socket = io.connect('http://localhost:8080');
+		var socket = io.connect('http://localhost:443');
 		
 		<% if(sessionID) { %>
 			$( document ).ready(function()
@@ -163,23 +163,6 @@
 				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "accueil");
 			});
 		<% } %>
-		
-		socket.on('MESSAGE_USER_SC', function(user, message)
-		{
-			if(message == -1)
-			{
-				$("#buttonMessage").val("Erreur l'utilisateur " + user + " est actuellement hors ligne");
-			}
-			else
-			{
-				$("#buttonMessage").val("Nouveau message de " + user + " : \n" + message);
-			}
-		});
-		
-		$("#buttonMessage").click(function()
-		{
-			socket.emit('MESSAGE_USER_CS', "b", "Message test");
-		});
 		
 	</script>
 </body>

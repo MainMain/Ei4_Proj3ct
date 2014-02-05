@@ -877,7 +877,8 @@ input[type="submit"].primary:active {
  */
 .btn[disabled],
 button[disabled],
-input[disabled] {
+input[disabled]
+{
   cursor: not-allowed;
   background-color: #ededed;
   background-image: none !important;
@@ -895,15 +896,33 @@ textarea {
     resize: none;
 	margin: 10px 15px;
 }
+.classement
+{
+	background-color: #bbbbbb;
+}
+.classementHead
+{
+	background-color: #900000;
+}
+.classementHead a
+{
+	color: #FFFFFF;
+}
+.classementHead a:hover
+{
+	color: #F00000;
+}
 .msgTextArea
 {
 	min-height:200px;
-	border: 3px solid rgba(0, 0, 0, 0.75);
+	border: 1px solid rgba(0, 0, 0, 0.75);
+	background-color: #bbbbbb;
+	color:#000000;
 }
 .chat
 {
-	background-color: #f5f5f5;
-	border: 1px solid rgba(0, 0, 0, 0.05);
+	color:#FFFFFF;
+	background-color: rgba(245, 245, 245, 0.0);
 }
 .chatContols
 {
@@ -914,7 +933,8 @@ textarea {
 	margin: auto 15px;
 	padding: 6px 0px;
 	font-size: 20px;
-	border: 3px solid rgba(0, 0, 0, 0.75);
+	background: #bbbbbb;
+	border: 1px solid rgba(0, 0, 0, 0.75);
 }
 .chatContols input
 {
@@ -922,11 +942,15 @@ textarea {
 	margin: auto 15px;
 	padding: 6px 0px;
 	font-size: 20px;
+	background-color: #bbbbbb;
+	color:#000000;
 }
 .userArea
 {
-	border: 2px solid rgba(0, 0, 0, 0.5);
-	margin: -1px
+	border: 1px solid rgba(0, 0, 0, 0.5);
+	background-color: #bbbbbb;
+	margin: 80px -1px;
+	color:#FFFFFF;
 }
 .loginAlert
 {
@@ -973,30 +997,51 @@ textarea {
 .logoutform {
   min-height: 20px;
   padding: 15px;
-  background-color: #f5f5f5;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(200, 200, 200, 0.15);
   margin-top: 70px;
   margin-bottom: 25px;
   font-size: 20px;
-  line-height:10px;
+  line-height:1px;
 }
 .logoutform:before,
-.logoutform:after {
+.logoutform:after
+{
   display: table;
   content: "";
 }
-.logoutform:after {
+.logoutform:after
+{
   clear: both;
 }
+.logoutform div
+{
+  width: 30%;
+  margin: auto 5px;
+  padding: 15px 0px;
+  font-family: "calibri";
+  font-size: 20px;
+  color: #FFFFFF;
+  float:left;
+}
 
-.logoutform input[type="submit"]{
+.logoutform input[type="submit"]
+{
+  background-color: #100000;
+  background-image: -moz-linear-gradient(top, #900000, #100000 100%);
+  background-image: -ms-linear-gradient(top, #900000, #100000 100%);
+  background-image: -webkit-linear-gradient(top, #900000, #100000 100%);
+  background-image: -o-linear-gradient(top, #900000, #100000 100%);
+  background-image: linear-gradient(top, #900000, #100000 100%);
+  border-color: #100000 #100000 #100000 #100000;
+  border-radius: 5px;
+  
   width: 30%;
   margin: auto 15px;
   padding: 6px 6px;
   font-family: "calibri";
-  font-size: 20px;
-  color: #FF0000;
+  font-size: 17px;
   float:right;
+  color:#FFFFFF;
 }
 /*
  * Formulaire d'Inscription
@@ -1136,7 +1181,7 @@ textarea {
   font-size: 60px;
   font-weight: 900;
   font-family:"Infected";
-  letter-spacing: 1px;
+  letter-spacing: 7px;
   text-shadow: 0 1px 0 #00FF00;
   -webkit-transition: all 200ms ease-in-out;
   -moz-transition: all 200ms ease-in-out;
@@ -1264,24 +1309,24 @@ textarea {
   border-bottom: none;
 }
 /* Entry meta */
-.entry-meta {
-  background-color: #e6e6e6;
-  background-image: -moz-linear-gradient(top, #f2f2f2, #e6e6e6 100%);
-  background-image: -ms-linear-gradient(top, #f2f2f2, #e6e6e6 100%);
-  background-image: -webkit-linear-gradient(top, #f2f2f2, #e6e6e6 100%);
-  background-image: -o-linear-gradient(top, #f2f2f2, #e6e6e6 100%);
-  background-image: linear-gradient(top, #f2f2f2, #e6e6e6 100%);
+.entry-meta
+{
+  background-color: #100000;
+  background-image: -moz-linear-gradient(top, #900000, #100000 100%);
+  background-image: -ms-linear-gradient(top, #900000, #100000 100%);
+  background-image: -webkit-linear-gradient(top, #900000, #100000 100%);
+  background-image: -o-linear-gradient(top, #900000, #100000 100%);
+  background-image: linear-gradient(top, #900000, #100000 100%);
   border: 1px solid;
-  border-color: #ffffff #c9c9c9 #c9c9c9 #ffffff;
+  border-color: #900000 #900000 #900000 #900000;
   border-radius: 5px;
   box-shadow: -1px 0 4px rgba(0, 0, 0, 0.1);
-  color: #333333;
+  color: #FFFFFF;
   clear: both;
   font-size: 18px;
   line-height: 1.8;
   margin: 40px 40px 0 0px;
   padding: 14px 15px;
-  text-shadow: 0 1px 0 #ffffff;
 }
 .ie7 .entry-meta {
   margin-left: 0;
