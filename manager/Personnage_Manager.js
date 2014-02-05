@@ -89,7 +89,7 @@ Personnage_Manager.SetCompetence = function(idUser,  competence, numEquipe)
 	// initialise le personnage
 	//var idPerso = this.listePersonnages[idUser].id;
 	//this.listePersonnages[idUser].initialiser();
-	
+	console.log("PERSON_MANAGER : SetCompetence() " + competence);
 	this.listePersonnages[idUser].setCompetence(competence, numEquipe);
 	
 	oPersonnage_BD.SetPersonnage(this.listePersonnages[idUser],  function(reponse)
@@ -110,7 +110,7 @@ Personnage_Manager.SetCompetence = function(idUser,  competence, numEquipe)
 Personnage_Manager.AddMessage = function(idUser,  msg)
 {
 	//console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
-	this.listePersonnages[idUser].ajouterMessage(msg + "\n");
+	this.listePersonnages[idUser].ajouterMessage(msg);
 }, 
 
 Personnage_Manager.EffacerMessages = function(idUser)
@@ -224,9 +224,58 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	return reponseServeur;
 }, 
 
-Personnage_Manager.AttaquerGoule = function(idUser, nbrG)
+Personnage_Manager.AttaquerGoule = function(idUser)
 {
+	// création de données de retour
+	var reponseServeur = {
+		"code" : 0,  
+		"degatSubisParGoules" : 0,  
+		"nbrGoulesAttaquantes" : 0};
+	
+	// récupération données utiles
+	var idCase = this.GetIdSalleEnCours(idUser);
+	
+	// si pas assez de pts d'actions
+	if(!this.TestPtActions(idUser, "attaqueGoule"))
+	{
+		reponseServeur["code"] = -10;
+		return reponseServeur;
+    }
+	
+	// si pas de goules dans la salle
+	if (oCase_Manager.GetNombreGoules(idCase) == 0)
+	{
+		reponseServeur["code"] = -2;
+		return reponseServeur;
+	}
+	
+	// calcul soutien alliés
+	var res = this.GetNbrAlliesEnemisDansSalle(idUser);
+	
+	// attaque d'une goule -> get goules tuées
+	var goulesTues = oCase_Manager.AttaqueGoule(idCase);
+	
+	// riposte des goules -> get dégats subiset nbr attaquantes
+	var ans = oCase_Manager.AttaqueDeGoules(idCase, res.nbrAllies);
+	var degatsSubis = this.subirDegats(idUser, ans["degats"]);
+	
+	
+	// mise en mode "oisif"
+	this.InitialiserMode(idUser);
+	
+	// diminution pts d'actions
 	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_AttaqueGoule());
+	
+	// données au serveur
+	reponseServeur["code"]					= goulesTues;
+	reponseServeur["degatSubisParGoules"] 	= degatsSubis;
+	reponseServeur["nbrGoulesAttaquantes"] 	= ans["nbrGoulesA"];
+	
+	// log
+	console.log("PERSONNAGE_MANAGER : " +
+			"attaque goules ->  Goules tués : " + goulesTues + 
+			" - Degats " + degatsSubis +
+			" - nbr ripostes " + ans["nbrGoulesA"]);
 	
 	// si le joueur a été tué...
 	if (this.estMort(idUser))
@@ -238,6 +287,8 @@ Personnage_Manager.AttaquerGoule = function(idUser, nbrG)
 		// comptabiliser le socre
 		oScore_Manager.compabiliserGouleTue(idUser, nbrG);
 	}
+	
+	return reponseServeur;
 }, 
 
 Personnage_Manager.subirDegats = function (idUser,  degats)
@@ -709,13 +760,10 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 
 Personnage_Manager.SeRetablir = function(idUser)
 {
-	console.log("SERVEUR : SeRetablir()");
+	console.log("SERVEUR : SeRetablir() - " + idUser);
 	
-	// ajout de points de santé
-	this.listePersonnages[idUser].setPtsSante(20);
-	
-	// go a la zone sure
-	this.listePersonnages[idUser].setIdCase(oCase_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser)));
+	var idZoneSure = oCase_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser));
+	this.listePersonnages[idUser].seRetablir(idZoneSure);
 }, 
 
 
@@ -871,33 +919,33 @@ Personnage_Manager.PerteActionParGoules = function(idUser)
 
 Personnage_Manager.TestPtActions = function(idUser,  typeAction)
 {
-	var ptActions = this.listePersonnages[idUser].getPtActions();
+	var ptAction = this.listePersonnages[idUser].getPtAction();
 	
 	var ok = true;
 	
-	console.log("PMANGER : ptActions :  " + ptActions);
+	console.log("PMANGER : ptAction :  " + ptAction);
 	console.log("PMANGER : typeAction : " + typeAction);
 	
-	if(ptActions == 0)
+	if(ptAction == 0)
 	{
 		ok = false;
 	}
 	switch(typeAction)
 	{
 		case "fouilleRapide":
-			if(ptActions - GameRules.coutPA_FouilleRapide() < 0) ok = false;
+			if(ptAction - GameRules.coutPA_FouilleRapide() < 0) ok = false;
 			break;
 		case "attaqueGoule":
-			if(ptActions - GameRules.coutPA_AttaqueGoule() < 0) ok = false;
+			if(ptAction - GameRules.coutPA_AttaqueGoule() < 0) ok = false;
 			break;
 		case "attaqueEnnemi":
-			if(ptActions - GameRules.coutPA_AttaqueEnnemi() < 0)ok = false;
+			if(ptAction - GameRules.coutPA_AttaqueEnnemi() < 0)ok = false;
 			break;
 		case "chgtMode":
-			if(ptActions - GameRules.coutPA_ChgtMode() < 0) ok = false;
+			if(ptAction - GameRules.coutPA_ChgtMode() < 0) ok = false;
 			break;
 		case "chgtMode_def":
-			if(ptActions - GameRules.coutPA_ChgtMode_def() < 0) ok = false;
+			if(ptAction - GameRules.coutPA_ChgtMode_def() < 0) ok = false;
 			break;
 		default:
 			ok = false;
@@ -930,7 +978,17 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 
 Personnage_Manager.GetIdSalleEnCours = function(idUser)
 {
+	console.log("PERSONNAGE_MANAGER : GetIdSalleEnCours() - idUser = " + idUser);
+	try
+	{
 	return this.listePersonnages[idUser].getIdSalleEnCours();
+	}
+	catch(err)
+	{
+		console.log("PERSONNAGE_MANAGER : ERREUR : " + err);
+		console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
+		console.log(this.listePersonnages);
+	}
 }, 
 
 Personnage_Manager.GetIdNextSalle = function(idUser,  direction)

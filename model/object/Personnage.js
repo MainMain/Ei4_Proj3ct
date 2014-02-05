@@ -15,8 +15,8 @@ var Personnage = (function() {
 	Personnage.id;
 	Personnage.ptSante;
 	Personnage.ptSanteMax;
-	Personnage.ptActions;
-	Personnage.ptActionsMax;
+	Personnage.ptAction;
+	Personnage.ptActionMax;
 	Personnage.ptDeplacement;
 	Personnage.ptDeplacementMax;
 	Personnage.ptFaim;
@@ -44,7 +44,7 @@ var Personnage = (function() {
 	Personnage.build = function() {return new Personnage();};
 	
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	function Personnage(id, ptSante, ptSanteMax, ptActions, ptActionsMax,
+	function Personnage(id, ptSante, ptSanteMax, ptAction, ptActionMax,
 			ptDeplacement, ptDeplacementMax, ptFaim, ptFaimMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
 			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
 			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg) 
@@ -54,8 +54,8 @@ var Personnage = (function() {
 		this.id 				= id;
 		this.ptSante			= ptSante;
 		this.ptSanteMax 		= ptSanteMax;
-		this.ptActions 			= ptActions;
-		this.ptActionsMax		= ptActionsMax;
+		this.ptAction 			= ptAction;
+		this.ptActionMax		= ptActionMax;
 		this.ptDeplacement 		= ptDeplacement;
 		this.ptDeplacementMax	= ptDeplacementMax;
 		this.ptFaim				= ptFaim;
@@ -85,11 +85,11 @@ var Personnage = (function() {
 		 	this.ptSanteMax			= -1;
 		 	this.ptSante 			= -1;
 		    this.ptAction 			= -1;
-		    this.ptActionsMax 		= -1;
+		    this.ptActionMax 		= -1;
 		    this.ptDeplacement 		= -1;
 		    this.ptDeplacementMax 	= -1;
-		    this.ptFaim		 		= 10;
-		    this.ptFaimMax		 	= 10;
+		    this.ptFaim		 		= 20;
+		    this.ptFaimMax		 	= 20;
 		    this.poidsMax 			= 30;
 		    this.gouleLimite 		= -1;
 		    this.competence 		= -1;
@@ -112,12 +112,24 @@ var Personnage = (function() {
 			// initialiser les attributs
 			this.initialiser();
 			
-			/*** - CALCUL SUR LES MULTI POINTS - ***/
-			if(competence == "brute")
+			// attribuer competence
+			this.competence=competence;
+			
+			// initaliser ptes de caract et multis
+			this.initialiserPtsCaract();
+			
+			// mettre jauges à fond
+			this.ptSante 		= this.ptSanteMax;
+			this.ptAction 		= this.ptActionMax;
+			this.ptDeplacement 	= this.ptDeplacementMax;
+			this.ptFaim 		= this.ptFaimMax;
+			
+
+			/*if(competence == "brute")
 			{
 				this.setptSanteMax		(140);
 				this.setptDeplacementMax(15);
-				this.setptActionsMax		(20);
+				this.setptActionMax		(20);
 				this.multiPtsAttaque	= 2;
 				this.multiPtsDefense	= 2;
 				this.multiProbaCache	= 0.5;
@@ -128,7 +140,7 @@ var Personnage = (function() {
 			{
 				this.setptSanteMax		(100);
 				this.setptDeplacementMax(25);
-				this.setptActionsMax		(20);
+				this.setptActionMax	(20);
 				this.multiPtsAttaque	= 1;
 				this.multiPtsDefense	= 0.3;
 				this.multiProbaCache	= 1;
@@ -139,14 +151,14 @@ var Personnage = (function() {
 			{
 				this.setptSanteMax		(100);
 				this.setptDeplacementMax(15);
-				this.setptActionsMax		(30);
+				this.setptActionMax		(30);
 				this.multiPtsAttaque	= 0.5;
 				this.multiPtsDefense	= 1.5;
 				this.multiProbaCache	= 3;
 				this.multiProbaFouille	= 0.5;
 				this.goulesMax			= 3;
-			}
-			this.competence=competence;
+			}*/
+			
 			
 			if (numEquipe == 1)
 			{
@@ -323,10 +335,10 @@ var Personnage = (function() {
 		
 		diminuerPointAction : function(coutAction)
 		{
-			this.ptActions -= coutAction;
-			if(this.ptActions < 0)
+			this.ptAction -= coutAction;
+			if(this.ptAction < 0)
 			{
-				this.ptActions = 0;
+				this.ptAction = 0;
 			}
 		},
 		
@@ -336,7 +348,7 @@ var Personnage = (function() {
 			this.nbrNvMsg = 0;
  		},
 		
-		setPtsSante : function(newPtSante)
+		/*setPtsSante : function(newPtSante)
 		{
 			if(newPtSante >= this.ptSanteMax)
 			{
@@ -379,21 +391,21 @@ var Personnage = (function() {
 		
 		setptAction : function(newPtAction)
 		{
-			if(newPtAction >= this.ptActionsMax)
+			if(newPtAction >= this.ptActionMax)
 			{
-				newPtAction = this.ptActionsMax;
+				newPtAction = this.ptActionMax;
 			}
 			else if(newPtAction <= 0)
 			{
 				newPtAction = 0;
 			}
-			this.ptActions = newPtAction;
+			this.ptAction = newPtAction;
 		},
 		
-		setptActionsMax : function(newptActionsMax)
+		setptActionMax : function(newptActionMax)
 		{
-			this.ptActionsMax = newptActionsMax;
-			this.ptActions = this.ptActionsMax;
+			this.ptActionMax = newptActionMax;
+			this.ptAction = this.ptActionMax;
 		},
 		
 		setmultiPtsAttaque : function(multiPtsAttaque)
@@ -419,7 +431,7 @@ var Personnage = (function() {
 		setgoulesMax : function(goulesMax)
 		{
 			this.goulesMax = goulesMax;
-		},
+		},*/
 		
 		getCompetence : function()
 		{
@@ -477,11 +489,11 @@ var Personnage = (function() {
 			console.log("PERSONNAGE : passage en mode " + mode);
 			if(mode == 3)
 			{
-				this.ptActions -= GameRules.coutPA_ChgtMode_def();
+				this.ptAction -= GameRules.coutPA_ChgtMode_def();
 			}
 			else
 			{
-				this.ptActions -= GameRules.coutPA_ChgtMode();
+				this.ptAction -= GameRules.coutPA_ChgtMode();
 			}
 			
 			this.mode = mode;
@@ -496,7 +508,7 @@ var Personnage = (function() {
 		
 		Attaquer : function(coutAttaquer)
 		{
-			this.ptActions -= coutAttaquer;
+			this.ptAction -= coutAttaquer;
 		},
 		
 		testDeplacement : function(nbrGoules, direction)
@@ -609,14 +621,14 @@ var Personnage = (function() {
 		{
 			var type = parseInt(item.type);
 			var valeur = parseInt(item.valeur);
-			//console.log("PERSONNAGE : utiliser() : utilisation de l'item" + item.nom + " de type : " + type + " de valeur " + valeur);
+			console.log("PERSONNAGE : utiliser() : utilisation de l'item" + item.nom + " de type : " + type + " de valeur " + valeur);
 			
 			if(!this.existItemInSac(item))
 			{
 				return -2;
 			}
 			
-			if (type < 4 || type > 6)
+			if (type < 4 || type > 7)
 			{
 				return -1;
 			}
@@ -624,21 +636,18 @@ var Personnage = (function() {
 			{
 				case 4:
 					this.ptSante += valeur;
-					if(this.ptSante > this.ptSanteMax)
-					{
-						this.ptSante = this.ptSanteMax;
-					}
-					//console.log("valeur = " + valeur);
+					if(this.ptSante > this.ptSanteMax) this.ptSante = this.ptSanteMax;
 					break;
 				case 5:
-					this.ptActions += valeur;
-					if(this.ptActions > this.ptActionsMax) this.ptActions = this.ptActionsMax;
-					//console.log("valeur = " + valeur);
+					this.ptAction += valeur;
+					if(this.ptAction > this.ptActionMax) this.ptAction = this.ptActionMax;
 					break;
 				case 6:
 					this.ptDeplacement += valeur;
 					if(this.ptDeplacement > this.ptDeplacementMax) this.ptDeplacement = this.ptDeplacementMax;
-					//console.log("valeur = " + valeur);
+					break;
+				case 7:
+					this.manger(valeur);
 					break;
 				default:
 					break;
@@ -650,18 +659,35 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
-			var date = new Date();
-			var mois = parseInt(date.getMonth()) + 1;
-			var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
-			this.listeMsgAtt.push(str + " : " + msg);
+			console.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
+			if (msg == "Z" || msg == "N" || msg == "F")
+			{
+				this.listeMsgAtt.push(msg);
+				console.log("1111111");
+			}
+			else
+			{
+				var date = new Date();
+				var mois = parseInt(date.getMonth()) + 1;
+				var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
+				this.listeMsgAtt.push(str + " : " + msg + "\n");
+				console.log("222222");
+			}
 			this.nbrNvMsg++;
 			
-			console.log("PERSONNAGE : Ajout d'un message : " + msg);
+			console.log("PERSONNAGE : Fin : Ajout d'un message : " + msg);
 		},
 		
 		effacerMessage : function(msg)
 		{
 			this.listeMsgAtt = new Array();
+		},
+		
+		manger : function(valeur)
+		{
+			this.ptFaim += valeur;
+			if (this.ptFaim > this.ptFaimMax) this.ptFaim = this.ptFaimMax;
+			this.calculerImpactFaim();
 		},
 		
 		viderInventaire : function()
@@ -676,21 +702,106 @@ var Personnage = (function() {
 			if(this.competence == "brute")
 			{
 				this.ptDeplacement = 15;
-				this.ptActions = 20;
+				this.ptAction = 20;
 			}
 			else if(this.competence == "explorateur")
 			{
 				this.ptDeplacement = 25;
-				this.ptActions = 20;
+				this.ptAction = 20;
 			}
 			else if(this.competence == "chercheur")
 			{
 				this.ptDeplacement = 15;
-				this.ptActions = 30;
+				this.ptAction = 30;
 			}
-			this.ptFaim -= 3;
+			
+			this.augmenterFaim();
 		},
 		
+		augmenterFaim : function()
+		{
+			this.ptFaim -= 3;
+			
+			if (this.ptFaim <= 0)
+			{
+				this.ptFaim = 0;
+				this.ptSante = 0;
+				this.ajouterMessage("Vous êtes mort à cause de la faim !");
+				this.ajouterMessage("F");
+			}
+			else
+			{
+				this.calculerImpactFaim();
+			}
+		},
+		
+		calculerImpactFaim : function()
+		{
+			var malus = this.ptFaim / GameRules.faim_malus();
+			if (malus < 1)
+			{
+				// on ne veut pas d'un malus trop grand
+				if (malus < GameRules.faim_malus_max()) malus =  GameRules.faim_malus_max();
+				
+				// altération des caractéristiques
+				this.ptActionMax 		= Math.floor(this.ptActionMax		*malus);
+				this.ptDeplacementMax	= Math.floor(this.ptDeplacementMax  *malus);
+				this.ptSanteMax			= Math.floor(this.ptSanteMax		*malus);
+			}
+			else
+			{
+				this.initialiserPtsCaract();
+			}
+		},
+		
+		initialiserPtsCaract : function()
+		{
+			if(this.competence == "brute")
+			{
+				this.ptSanteMax 		= 140;
+				this.ptDeplacementMax	= 15;
+				this.ptActionMax		= 20;
+				this.multiPtsAttaque	= 2;
+				this.multiPtsDefense	= 2;
+				this.multiProbaCache	= 0.5;
+				this.multiProbaFouille	= 1;
+				this.goulesMax			= 2;
+			}
+			else if(this.competence == "explorateur")
+			{
+				this.ptSanteMax 		= 100;
+				this.ptDeplacementMax	= 20;
+				this.ptActionMax		= 25;
+				this.multiPtsAttaque	= 1;
+				this.multiPtsDefense	= 0.3;
+				this.multiProbaCache	= 1;
+				this.multiProbaFouille	= 3;
+				this.goulesMax			= 5;
+			}
+			else if(this.competence == "chercheur")
+			{
+				this.ptSanteMax 		= 100;
+				this.ptDeplacementMax	= 15;
+				this.ptActionMax		= 30;
+				this.multiPtsAttaque	= 0.5;
+				this.multiPtsDefense	= 1.5;
+				this.multiProbaCache	= 3;
+				this.multiProbaFouille	= 0.5;
+				this.goulesMax			= 3;
+			}
+		},
+		
+		seRetablir : function(idSalleReveil)
+		{
+			// ajout de points de santé
+			this.ptSante = 20;
+			
+			// go a la zone sure
+			this.idSalleEnCours = idSalleReveil;
+
+			// remonter pts faim
+			this.manger(15);
+		},
 		/**
 		 * LECTURE
 		 * 
@@ -766,11 +877,11 @@ var Personnage = (function() {
 		/**
 		 * Retourne les points d'action du personnage
 		 * 
-		 * @method getPtActions
+		 * @method getptAction
 		 */
-		getPtActions : function()
+		getPtAction : function()
 		{
-			return this.ptActions;
+			return this.ptAction;
 		},
 
 		/**

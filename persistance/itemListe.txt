@@ -22,3 +22,4 @@
 601-Moyenne potion de mouvement-Rends 5 points de mouvement-1-6-5-/public/spritesheets/potionMouvement/601.png
 602-Grande potion de mouvement-Rends 10 points de mouvement-1-6-10-/public/spritesheets/potionMouvement/602.png
 603-Géante potion de mouvement-Rends 15 points de mouvement-2-6-15-/public/spritesheets/potionMouvement/603.png
+700-A MANGERRR-Rends 5 points de faim-2-7-2-/public/spritesheets/potionMouvement/603.png
