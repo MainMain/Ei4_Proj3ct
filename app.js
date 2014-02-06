@@ -84,7 +84,7 @@ oSession_Manager.Load(function(idSession)
 /*
  * CONFIGURATION DU SERVEUR
  */
-app.set('port', process.env.PORT || 443);
+app.set('port', process.env.PORT || 24535);
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
 
