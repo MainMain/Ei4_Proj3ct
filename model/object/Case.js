@@ -32,7 +32,7 @@ var Case = (function() {
 		this.probaCache = probaCache;
 		this.nbrGoules = nbrGoules;
 		this.listeItem = listeItem;
-		this.pathImg = id+".png";
+		this.pathImg = "/public/map/"+id;
 	}
 
 	// --- METHODES D'INSTANCE

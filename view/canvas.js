@@ -2250,9 +2250,18 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
  * 
  * ET nbr ennemis
  */
-socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
-	//socket.emit('CHECK_MSG_ATT_CS');	
+socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase) {
 
+	// modification du nom de l'image a afficher
+	if (idSousCase == -1)
+	{
+		currentCase.pathImg += ".png";
+	}
+	else
+	{
+		currentCase.pathImg += "_"+idSousCase;
+		currentCase.pathImg += ".png";
+	}
 	var nbJoueurs=nbrAllies+nbrEnnemis;
 
 	setBtnJoueurs(nbJoueurs);

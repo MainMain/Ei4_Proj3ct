@@ -273,7 +273,7 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	
 	// log
 	console.log("PERSONNAGE_MANAGER : " +
-			"attaque goules ->  Goules tués : " + goulesTues + 
+			" - attaque goules ->  Goules tués : " + goulesTues + 
 			" - Degats " + degatsSubis +
 			" - nbr ripostes " + ans["nbrGoulesA"]);
 	
@@ -285,7 +285,7 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	else
 	{
 		// comptabiliser le socre
-		oScore_Manager.compabiliserGouleTue(idUser, nbrG);
+		oScore_Manager.compabiliserGouleTue(idUser, ans["nbrGoulesA"]);
 	}
 	
 	return reponseServeur;
