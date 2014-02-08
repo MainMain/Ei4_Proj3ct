@@ -742,7 +742,7 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 	oScore_Manager.compabiliserMeurtre(idTueur, idTue);
 	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
-	this.AddMessage(idUser, "");
+	this.AddMessage(idTue, "");
 	this.AddMessage(idTue,  loginTueur);
 	
 	// mettre son inventaire dans la case
@@ -751,7 +751,8 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 		if (GameRules.combat_proba_perdreItem())
 		{
 			// transfert de l'item en cours dans la case
-			oCase_Manager.AjouterItem(currentPerso.getIdSalleEnCours(),  currentPerso.GetSac()[i]);
+			console.log("PERSO MANAGER : TUER JOUEUR : IDSALLE = " + this.GetIdSalleEnCours(idTue));
+			oCase_Manager.AjouterItem(this.GetIdSalleEnCours(idTue),  currentPerso.GetSac()[i]);
 			
 			// l'enlever de son inventaire
 			currentPerso.supprimerDuSac(currentPerso.GetSac()[i]);
@@ -804,7 +805,7 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 	var a = { "nbrAllies"	: -1,  "nbrEnnemis" : 0};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -824,7 +825,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -844,7 +845,7 @@ Personnage_Manager.GetPersonnagesDansSalle = function(idCase)
 	var a = new Array();
 	for(var i in this.listePersonnages)
 	{
-		if(this.listePersonnages[i].getIdSalleEnCours() == idCase)
+		if(this.GetIdSalleEnCours(i) == idCase)
 		{
 			a.push(i);
 		}
@@ -857,7 +858,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{

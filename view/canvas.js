@@ -3296,7 +3296,8 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
  * return 1 si une goules tuée
  * erreur : 0 si erreur interne
  * erreur : -1 si aucune goule tuée
- * erreut : -2 si pas de goules dans la salle
+ * erreur : -2 si pas de goules dans la salle
+ *  erreur : -10 si pas assez de PA
  * 
  * ET degats reçus
  * 
@@ -3330,6 +3331,11 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
 	case -2:
 		labelAction.text="";
 		labelAction.text=("Pas de Zombie dans la salle !");
+		break;
+		
+	case -10:
+		labelAction.text="";
+		labelAction.text=("Pas assez de points d'actions !");
 		break;
 	}
 	stage.update();

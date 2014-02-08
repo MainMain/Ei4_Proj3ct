@@ -117,7 +117,7 @@ Carte.GetCoordSalleById = function(idSalle)
 	{
 		for (var j = 0; j < this.largeur; j++) 
 		{
-			console.log("[i="+i+";j="+j+"]");
+			//console.log("[i="+i+";j="+j+"]");
 			// si on arrive a bon port
 			if (this.matrice[i][j] == idSalle)
 			{

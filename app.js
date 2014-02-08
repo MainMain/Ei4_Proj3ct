@@ -979,6 +979,7 @@ io.sockets.on('connection', function (socket)
 	 * erreur : 0 si erreur interne
 	 * erreur : -1 si aucune goule tuée
 	 * erreut : -2 si pas de goules dans la salle
+	 * erreur : -10 si pas assez de PA
 	 * 
 	 * ET degats reçus
 	 * 

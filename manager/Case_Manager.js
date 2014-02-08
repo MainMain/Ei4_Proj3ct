@@ -56,8 +56,9 @@ Case_Manager.Load = function()
 Case_Manager.AjouterItem = function(idCase, item)
 {
 	// ajoute de l'objet case
-	this.listeCases[idCase].ajouterItem(item);
 	console.log("CASE_MANAGER : AjouterItem() : Ajout de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
+	this.listeCases[idCase].ajouterItem(item);
+	
 },
 
 Case_Manager.SupprimerItem = function(idCase, item)
