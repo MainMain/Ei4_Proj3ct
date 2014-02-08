@@ -749,11 +749,14 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_CASE_CS', function ()
 	{
-		var liste	= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
-		var idSalle	= oPersonnage_Manager.GetIdSalleEnCours(idUser);
-		var maCase	= oCase_Manager.GetCopieCase(idSalle);
+		var liste		= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
+		var idSalle		= oPersonnage_Manager.GetIdSalleEnCours(idUser);
+		var idSousSalle = oPersonnage_Manager.GetIdSousSalleEnCours(idUser);
+		var maCase		= oCase_Manager.GetCopieCase(idSalle);
 		
-		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis);
+		console.log("SERVER : INFO_CASE() : Renvoi de l'id de case : " + idSalle + " - Sous case : " + idSousSalle);
+		console.log(maCase);
+		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis, idSousSalle);
     });
     /*
      * 
@@ -1192,7 +1195,7 @@ io.sockets.on('connection', function (socket)
 				for(var j in usersOnline[id].sockets)
 				{
 					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis);
+					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousSalleEnCours(idUser));
 				}
 			}
 		}
@@ -1214,7 +1217,7 @@ function ActualiserAllGlobal(idCase)
 			for(var j in usersOnline[id].sockets)
 			{
 				usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-				usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis);
+				usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousSalleEnCours(idUser));
 			}
 		}
 	}
@@ -1244,7 +1247,7 @@ function SauvegardeGlobale()
 			//oPersonnage_Manager.AddMessage(id, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
 			var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
 			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(id)), res.nbrAllies, res.nbrEnnemis);
+			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(id)), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousSalleEnCours(idUser));
 		}
 	}
 }
@@ -1252,7 +1255,7 @@ setInterval(function()
 { 
 	SauvegardeGlobale();
 	
-},  1000 * 60 * 60  ); // 1000 millisec * 60 sec * 60 min
+},  1000 * 60 * 60  ); // (1000) millisec * 60 sec * 60 min
 
 
 

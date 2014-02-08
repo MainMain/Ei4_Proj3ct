@@ -34,11 +34,11 @@ Carte.Initialiser = function(largeur, hauteur) {
 	{
 		this.matrice[i]=new Array(largeur);
 	}
-	this.matrice[0]=([-1,-1,-1,-1,-1]);
-	this.matrice[1]=([-1, 0,-1, 1,-1]);
-	this.matrice[2]=([-1, 2, 3, 4,-1]);
-	this.matrice[3]=([-1, 5, 6, 7,-1]);
-	this.matrice[4]=([-1,-1,-1,-1,-1]);
+	this.matrice[0]=([-1,-	1,		-1,	-1,	-1]);
+	this.matrice[1]=([-1, 	0,		-1,  1,	-1]);
+	this.matrice[2]=([-1, 	'1_a', 	 2,	 4,	-1]);
+	this.matrice[3]=([-1, 	'1_b', 	 6,	 7,	-1]);
+	this.matrice[4]=([-1,	-1,		-1,	-1,	-1]);
 	
 	 /*this.matrice[0]=([-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
 
@@ -119,6 +119,8 @@ Carte.GetCoordSalleById = function(idSalle) {
 					x : i,
 					y : j
 				};
+				console.log("CARTE : GetCoordSalleById : ");
+				console.log(tuple);
 				return tuple;
 			}
 		}

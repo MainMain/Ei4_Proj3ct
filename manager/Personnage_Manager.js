@@ -742,6 +742,7 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 	oScore_Manager.compabiliserMeurtre(idTueur, idTue);
 	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
+	this.AddMessage(idUser, "");
 	this.AddMessage(idTue,  loginTueur);
 	
 	// mettre son inventaire dans la case
@@ -975,6 +976,34 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 			pseudo);
 	return perso;
 }, 
+Personnage_Manager.GetIdSousSalleEnCours = function(idUser)
+{
+	try
+	{
+		var idSousCase = 0;
+		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
+		//console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut);
+		var tab;
+		
+		try
+		{
+			tab = idCaseBrut.split("_");
+			//console.log(tab);
+		}
+		catch (err) {}
+		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + tab[1]);
+		return tab[1];
+		
+	}
+	catch(err)
+	{
+		//console.log("PERSONNAGE_MANAGER : ERREUR GET ID SOUS CASE: " + err);
+		//console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
+		//console.log(this.listePersonnages);
+		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + -1);
+		return -1;
+	}
+},
 
 Personnage_Manager.GetIdSalleEnCours = function(idUser)
 {
@@ -983,21 +1012,25 @@ Personnage_Manager.GetIdSalleEnCours = function(idUser)
 	{
 		//console.log("--------------> 1 : " + this.listePersonnages[idUser].getIdSalleEnCours());
 		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
-		
+		//console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut);
+		var tab;
 		try
 		{
-			idCaseBrut = idCaseBrut.split("_");
+			tab = idCaseBrut.split("_");
+			//console.log(tab);
 		}
 		catch (err) {}
-		console.log("__________________________________________>" + idCaseBrut);
-		return idCaseBrut;
+		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + tab[1]);
+		return tab[0];
 		
 	}
 	catch(err)
 	{
-		console.log("PERSONNAGE_MANAGER : ERREUR : " + err);
-		console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
-		console.log(this.listePersonnages);
+		//console.log("PERSONNAGE_MANAGER : ERREUR GET ID CASE: " + err);
+		//console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
+		//console.log(this.listePersonnages);
+		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + idCaseBrut);
+		return idCaseBrut;
 	}
 }, 
 

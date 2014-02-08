@@ -67,6 +67,20 @@ Case_Manager.SupprimerItem = function(idCase, item)
 	console.log("CASE_MANAGER : SupprimerItem() : Suppression de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
 },
 
+Case_Manager.RemplirCases = function()
+{
+	// =>rempli aléatoirement les cases d'items
+	
+	var nbrItems;
+	// pour chaque case
+	for (curCase in this.listeCases)
+	{
+		// génére le nombre d'item pour cette case
+		nbrItems = (Math.floor(Math.random() * (5-0) + 0 ));
+		
+	}
+},
+
 Case_Manager.AttaqueGoule = function(idCase)
 {
 	// détermine si on tue une ou deux goules
