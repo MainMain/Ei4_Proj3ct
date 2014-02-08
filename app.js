@@ -47,7 +47,7 @@ var usersOnline = new Array();
 oDatabase.Initialiser();
 
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
-oCarte.Initialiser(6, 6);
+oCarte.Initialiser(28, 17);
 
 
 

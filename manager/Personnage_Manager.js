@@ -983,6 +983,7 @@ Personnage_Manager.GetIdSousSalleEnCours = function(idUser)
 		var idSousCase = 0;
 		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
 		//console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut);
+		idCaseBrut = "1_a";
 		var tab;
 		
 		try
@@ -1013,6 +1014,7 @@ Personnage_Manager.GetIdSalleEnCours = function(idUser)
 		//console.log("--------------> 1 : " + this.listePersonnages[idUser].getIdSalleEnCours());
 		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
 		//console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut);
+		idCaseBrut = "1_a";
 		var tab;
 		try
 		{
@@ -1020,7 +1022,7 @@ Personnage_Manager.GetIdSalleEnCours = function(idUser)
 			//console.log(tab);
 		}
 		catch (err) {}
-		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + tab[1]);
+		console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut + " NET : " + tab[0]);
 		return tab[0];
 		
 	}
@@ -1029,7 +1031,7 @@ Personnage_Manager.GetIdSalleEnCours = function(idUser)
 		//console.log("PERSONNAGE_MANAGER : ERREUR GET ID CASE: " + err);
 		//console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
 		//console.log(this.listePersonnages);
-		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + idCaseBrut);
+		console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut + " NET : " + idCaseBrut);
 		return idCaseBrut;
 	}
 }, 
