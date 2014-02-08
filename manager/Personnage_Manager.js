@@ -983,7 +983,7 @@ Personnage_Manager.GetIdSousSalleEnCours = function(idUser)
 		var idSousCase = 0;
 		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
 		//console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut);
-		idCaseBrut = "1_a";
+		//idCaseBrut = "1_a";
 		var tab;
 		
 		try
@@ -1014,7 +1014,7 @@ Personnage_Manager.GetIdSalleEnCours = function(idUser)
 		//console.log("--------------> 1 : " + this.listePersonnages[idUser].getIdSalleEnCours());
 		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
 		//console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut);
-		idCaseBrut = "1_a";
+		//idCaseBrut = "1_a";
 		var tab;
 		try
 		{

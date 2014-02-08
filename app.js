@@ -1246,8 +1246,9 @@ function SauvegardeGlobale()
 		{
 			//oPersonnage_Manager.AddMessage(id, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
 			var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
+			var idSousSalle = oPersonnage_Manager.GetIdSousSalleEnCours(id);
 			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(id)), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousSalleEnCours(idUser));
+			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(id)), res.nbrAllies, res.nbrEnnemis, idSousSalle);
 		}
 	}
 }
@@ -1264,4 +1265,4 @@ app.on('close', function () { // On écoute l'évènement close
     console.log('Bye bye !');
 });
 
-console.log("SERVEUR : Script lancé ! sur http://127.0.0.1:8080");
+//console.log("SERVEUR : Script lancé ! sur http://127.0.0.1:8080");
