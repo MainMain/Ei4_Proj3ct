@@ -207,13 +207,13 @@ var _ContArmureW = 30;
 
 //Placement Conteneur des Boutons liste
 var _ContBtnsListesX = _ContModeX;
-var _ContBtnsListesY = 510;
+var _ContBtnsListesY = 500;
 var _ContBtnsListesW = 140;
 var _ContBtnsListesH = 2*H;
 
 //Placement du label nombre de nouveaux messages
-var _labelNombreNouvMsgX=_ContBtnsListesX + 150;
-var _labelNombreNouvMsgY=_ContBtnsListesY + 20;
+var _labelNombreNouvMsgX=_ContBtnsListesX + _ContBtnsListesW/3;
+var _labelNombreNouvMsgY=_ContBtnsListesY + 100;
 
 //Placement label Choix Mode
 var _labelBtnsListesX = _ContBtnsListesX+2;
@@ -252,7 +252,7 @@ var _ContMapH = 420;
 var _ContMapW = 746;
 
 //Placement du dernier message
-var _labelDernierMessageX = _ContMapX;
+var _labelDernierMessageX = _labelPtsVX;
 var _labelDernierMessageY = _ContMapY-20;
 
 //------------------- Zone 14 : Labels de retour------------------------------------------------------
@@ -353,6 +353,8 @@ function initialize() {
 		{src:"public/Boutons/Annuler.png", id:"idBtnAnnuler"},
 		{src:"public/Boutons/Zombie.png", id:"idBtnZombie"},
 		{src:"public/Boutons/ZombieGris.png", id:"idBtnZombieGris"},
+		{src:"public/Boutons/Revivre.png", id:"idBtnRevivre"},
+		{src:"public/Boutons/Retour.png", id:"idBtnRetour"},
 		{src:"public/Boutons/LArrow.png", id:"idBtnLArrow"},
 		{src:"public/Boutons/Left.png", id:"idBtnLeft"},
 		{src:"public/Boutons/Right.png", id:"idBtnRight"},
@@ -627,10 +629,10 @@ function game() {
 	contPerso.height = 64;
 	contPerso.width = 64;
 	stage.addChild(contPerso);
-	shapePerso = new createjs.Shape();
+	/*shapePerso = new createjs.Shape();
 	stage.addChild(shapePerso);
 	shapePerso.graphics.setStrokeStyle(4).beginStroke("#850000").drawRect(
-			2, 2, 173, 96);
+			2, 2, 173, 96);*/
 
 	//------------------------- Zone 13 : Modes-----------------------------------------------
 	contMode = new createjs.Container();
@@ -918,16 +920,16 @@ function game() {
 	labelBtnsInvPerso = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelBtnsInvPerso.lineHeight = _LineHeight;
 	labelBtnsInvPerso.textBaseline = _TextBaseline;
-	labelBtnsInvPerso.x = _labelBtnsInvPersoX;
+	labelBtnsInvPerso.x = _labelBtnsInvPersoX-5;
 	labelBtnsInvPerso.y = _labelBtnsInvPersoY;
-	labelBtnsInvPerso.text="Action sur Perso :";
+	labelBtnsInvPerso.text="Actions sur le Sac :";
 
 	labelBtnsInvCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelBtnsInvCase.lineHeight = _LineHeight;
 	labelBtnsInvCase.textBaseline = _TextBaseline;
-	labelBtnsInvCase.x = _labelBtnsInvCaseX;
+	labelBtnsInvCase.x = _labelBtnsInvCaseX-8;
 	labelBtnsInvCase.y = _labelBtnsInvCaseY;
-	labelBtnsInvCase.text="Action sur Case :";
+	labelBtnsInvCase.text="Actions sur la Case :";
 
 	labelArme = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelArme.lineHeight = _LineHeight;
@@ -1039,7 +1041,7 @@ function game() {
 	labelLancementServeur = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelLancementServeur.lineHeight = _LineHeight;
 	labelLancementServeur.textBaseline = _TextBaseline;
-	labelLancementServeur.x = 0;
+	labelLancementServeur.x = 5;
 	labelLancementServeur.y = 100;
 
 	// ******************************************
@@ -1134,6 +1136,7 @@ function game() {
 	BtnPageItemPersoRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
 	BtnPageItemPersoRight.x= _ContItemPersoX + _ContItemPersoW;
 	BtnPageItemPersoRight.y= _ContItemPersoY + 5;
+	BtnPageItemPersoRight.visible=false;
 	BtnPageItemPersoRight.addEventListener('click', function(event) {
 		PageItemPerso++;
 		socket.emit('INFO_PERSONNAGE_CS');
@@ -1143,6 +1146,7 @@ function game() {
 	BtnPageItemPersoLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
 	BtnPageItemPersoLeft.x= _ContItemPersoX - 30;
 	BtnPageItemPersoLeft.y= _ContItemPersoY + 5;
+	BtnPageItemPersoLeft.visible=false;
 	BtnPageItemPersoLeft.addEventListener('click', function(event) {
 		PageItemPerso--;
 		socket.emit('INFO_PERSONNAGE_CS');
@@ -1151,6 +1155,7 @@ function game() {
 	BtnPageItemCaseRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
 	BtnPageItemCaseRight.x= _ContItemCaseX  + _ContItemCaseW;
 	BtnPageItemCaseRight.y= _ContItemCaseY + 5;
+	BtnPageItemCaseRight.visible=false;
 	BtnPageItemCaseRight.addEventListener('click', function(event) {
 		PageItemCase++;
 		socket.emit('INFO_CASE_CS');
@@ -1160,6 +1165,7 @@ function game() {
 	BtnPageItemCaseLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
 	BtnPageItemCaseLeft.x= _ContItemCaseX - 30;
 	BtnPageItemCaseLeft.y= _ContItemCaseY + 5;
+	BtnPageItemCaseLeft.visible=false;
 	BtnPageItemCaseLeft.addEventListener('click', function(event) {
 		PageItemCase--;
 		socket.emit('INFO_CASE_CS');
@@ -1182,6 +1188,8 @@ function game() {
 
 function message()
 {
+	var nbMsgAffiches=10;
+	
 	contMessage = new createjs.Container();
 	contMessage.x = canvas.width/2 - 746/2;
 	contMessage.y = canvas.height/2 - 420/2;
@@ -1217,8 +1225,8 @@ function message()
 	
 	// tableau qui contient toutes les listes d'objets
 	var TabListe=new Array();
-	var Taille = Math.ceil(ListeMessages.length / 20);
-	var TailleFinListe =(ListeMessages.length % 20);
+	var Taille = Math.ceil(ListeMessages.length / nbMsgAffiches);
+	var TailleFinListe =(ListeMessages.length % nbMsgAffiches);
 	
 	for (var j=0; j<Taille; j++)
 	{
@@ -1228,7 +1236,7 @@ function message()
 		if(j==Taille-1 && TailleFinListe!=0)
 		{
 			//Boucle des items liste incomplète
-			for (var i=j*20; i<j*20+TailleFinListe; i++)
+			for (var i=j*nbMsgAffiches; i<j*nbMsgAffiches+TailleFinListe; i++)
 			{
 				if(ListeMessages[i]!=undefined)
 				{
@@ -1244,8 +1252,7 @@ function message()
 		}
 		else
 		{
-			//Boucle normale : creation nouvelle liste de 10 items max
-			for (var i=j*20; i<(j*20+20); i++)
+			for (var i=j*nbMsgAffiches; i<(j*nbMsgAffiches+nbMsgAffiches); i++)
 			{
 				if(ListeMessages[i]!=undefined)
 				{
@@ -1268,14 +1275,20 @@ function message()
 
 function afficherMessage(TabListeMessage)
 {
+	var longLigneMax=85;
 	try 
 	{
 		// instructions à essayer
 		labelMessage.text="";
 		for (var i = 0; i < TabListeMessage[PageMessage].length ; i++) 
 		{
-			var message=TabListeMessage[PageMessage][i];
-			labelMessage.text+=message;
+			//alert(TabListeMessage[PageMessage][i].length);
+			for (var j=0; j<TabListeMessage[PageMessage][i].length ; j+=longLigneMax)
+			{
+				var message=TabListeMessage[PageMessage][i].substring(j,j+longLigneMax);
+				labelMessage.text+=message;
+				labelMessage.text+="\n";
+			}
 		}
 	}
 	catch(e)
@@ -1352,7 +1365,7 @@ function liste()
 			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
 
 	// Bouton ANNULER
-	BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
+	BtnCancelListe = new createjs.Bitmap("public/Boutons/Retour.png");
 	BtnCancelListe.x=600;
 	BtnCancelListe.y=365;
 	contListe.addChild(BtnCancelListe);
@@ -1364,7 +1377,8 @@ function liste()
 
 	BtnPagePersoAlliesRight = new createjs.Bitmap("public/Boutons/Right.png");
 	BtnPagePersoAlliesRight.x= contListeAllies.x + contListeAllies.width;
-	BtnPagePersoAlliesRight.y= contListeAllies.y + 8; //contListeAllies.height/2 - BtnPagePersoAlliesRight.image.height;
+	BtnPagePersoAlliesRight.y= contListeAllies.y + 8;
+	BtnPagePersoAlliesRight.visible=false;
 	contListe.addChild(BtnPagePersoAlliesRight);
 	BtnPagePersoAlliesRight.addEventListener('click', function(event) {
 		PagePersoAllies++;
@@ -1375,14 +1389,16 @@ function liste()
 	BtnPagePersoAlliesLeft.x= contListeAllies.x - BtnPagePersoAlliesLeft.image.width -5;
 	BtnPagePersoAlliesLeft.y= contListeAllies.y + 8;
 	contListe.addChild(BtnPagePersoAlliesLeft);
+	BtnPagePersoAlliesLeft.visible=false;
 	BtnPagePersoAlliesLeft.addEventListener('click', function(event) {
 		PagePersoAllies--;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
 
 	BtnPagePersoEnnRight = new createjs.Bitmap("public/Boutons/Right.png");
-	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.w;
+	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.witdh;
 	BtnPagePersoEnnRight.y= contListeEnnemis.y + 8;
+	BtnPagePersoEnnRight.visible=false;
 	contListe.addChild(BtnPagePersoEnnRight);
 	BtnPagePersoEnnRight.addEventListener('click', function(event) {
 		PagePersoEnnemis++;
@@ -1392,6 +1408,7 @@ function liste()
 	BtnPagePersoEnnLeft = new createjs.Bitmap("public/Boutons/Left.png");
 	BtnPagePersoEnnLeft.x= contListeEnnemis.x - BtnPagePersoEnnLeft.image.width - 5;
 	BtnPagePersoEnnLeft.y= contListeEnnemis.y +  8;
+	BtnPagePersoEnnLeft.visible=false;
 	contListe.addChild(BtnPagePersoEnnLeft);
 	BtnPagePersoEnnLeft.addEventListener('click', function(event) {
 		PagePersoEnnemis--;
@@ -1477,28 +1494,26 @@ function dead(currentPerso)
 	var labelDeadHour = contDead.addChild(new createjs.Text("", PoliceDead, ColorHour));
 	labelDeadHour.x = 450 ;
 	labelDeadHour.y = 175;
-	labelDeadHour.text=ListeMessages[1];
+	labelDeadHour.text="";
 	
-	//alert("ListeMessages[0] : "+ ListeMessages[0]);
-	if (ListeMessages[0]!=null && ListeMessages[0] == "Z")
+	var date = ListeMessages[0].split(" :");
+	labelDeadHour.text=date[0];
+	
+	if (date[1]!=null && date[1] == "Z")
 	{
-		//alert("Z");
 		Killer="Un zombie rôdant dans la salle vous a dévoré !";
 	}
-	else if(ListeMessages[0]!=null && ListeMessages[0] == "N")
+	else if(date[1]!=null && date[1] == "N")
 	{
-		//alert("N");
 		Killer="Un zombie vous a dévoré durant l'attaque de nuit !";
 	}
-	else if(ListeMessages[0]!=null && ListeMessages[0] == "F")
+	else if(date[1]!=null && date[1] == "F")
 	{
-		//alert("F");
 		Killer="Vous êtes mort à cause de la faim !";
 	}
-	else if(ListeMessages[0]!=null && ListeMessages[0]!="Z" && ListeMessages[0]!="N" && ListeMessages[0]!="F")
+	else if(date[1]!=null && date[1]!="Z" && date[1]!="N" && date[1]!="F")
 	{
-		//alert("joueur");
-		Killer=(ListeMessages[0]+" vous a tué !");
+		Killer=(date[1]+" vous a tué !");
 	}
 	else
 	{
@@ -1512,7 +1527,7 @@ function dead(currentPerso)
 	labelDeadByWho.text=Killer;
 
 	// Bouton ANNULER
-	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Ok.png");
+	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Revivre.png");
 	BtnCancelDead.x=960;
 	BtnCancelDead.y=570;
 	contDead.addChild(BtnCancelDead);
@@ -2017,11 +2032,11 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 	break;
 
 	case -1: labelAction.text = "";
-	labelAction.text = ("Impossible d'aller par là !");
+	labelAction.text = ("Impossible \nd'aller par là !");
 	break;
 
 	case -2: labelAction.text = "";
-	labelAction.text = ("Plus de points de mouvements !");
+	labelAction.text = ("Plus de points \nde mouvement !");
 	break;
 
 	case -3: labelAction.text = "";
@@ -2029,13 +2044,13 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 	break;
 
 	case -4: labelAction.text = "";
-	labelAction.text = ("Maison de l'ennemi !");
+	labelAction.text = ("Impossible de \npénetrer dans la \nMaison de l'ennemi !");
 	break;
 
 	default: socket.emit('INFO_CASE_CS');
 	labelAction.text="";
 	labelAction.text = "";
-	labelAction.text = ("Déplacement en " + currentCase.nom + "");
+	labelAction.text = ("Déplacement en\n" + currentCase.nom + "");
 	socket.emit('INFO_PERSONNAGE_CS');
 	break;
 	}
@@ -2279,6 +2294,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		ProbCache=(currentCase.probaCache * PersoProbaCache);
 		ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 
+		labelIdSalle.text=("Salle en cours : " + currentCase.nom + "");
 		labelNbAllies.text=("Alliés dans la salle : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
@@ -2526,9 +2542,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		
 	// Mise à jour des labels
 	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
-	labelPtsDef.text=("Points de défense : " + PointsDefense + "");
-	labelIdSalle.text=("Salle en cours : " + currentPerso.idSalleEnCours + "");
-	
+	labelPtsDef.text=("Points de défense : " + PointsDefense + "");	
 
 	// Mise à jour des barres de vie, action, move		
 	// Sécurité pour le remplissage de la barre de vie
@@ -2978,13 +2992,26 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
 
+	var longDernierMsg=60;
+	
 	if(currentPerso.listeMsgAtt.length > 0)
 	{
 		ListeMessages=currentPerso.listeMsgAtt;
 		// inverse la liste des messages
 		ListeMessages.reverse();
-		labelDernierMessage.text="";
-		labelDernierMessage.text=ListeMessages[0];
+		// Raccourcissement du dernier message
+		if(ListeMessages[0].length<longDernierMsg)
+		{
+			var dernierMsg=ListeMessages[0].substring(0,ListeMessages[0].length-1);
+			labelDernierMessage.text="";
+			labelDernierMessage.text=dernierMsg;
+		}
+		else
+		{
+			var dernierMsg=ListeMessages[0].substring(0,longDernierMsg);
+			labelDernierMessage.text="";
+			labelDernierMessage.text=dernierMsg+"...";
+		}
 	}
 	else
 	{
@@ -2995,6 +3022,14 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	if(ListeMessages!=null && currentPerso.nbrNvMsg >0)
 	{
 		labelNombreNouvMsg.text="";
+		/*if(currentPerso.nbrNvMsg == 1)
+		{
+			labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " nouveau message)");
+		}
+		else
+		{
+			labelNombreNouvMsg.text=("("+ currentPerso.nbrNvMsg + " nouveaux messages)");
+		}*/
 		labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " )");
 
 		var BtnMessages = new createjs.Bitmap("public/Boutons/Messages.png");
@@ -3828,7 +3863,11 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 socket.on('GET_DATE_SC', function (dateLancementSrv)
 	{
 		labelLancementServeur.text="";
-		labelLancementServeur.text=dateLancementSrv;
+		var annee = dateLancementSrv.substring(0,4);
+		var mois = dateLancementSrv.substring(5,7);
+		var jour = dateLancementSrv.substring(8,10);
+		var heure = dateLancementSrv.substring(11,19);
+		labelLancementServeur.text="Le "+jour+"/"+mois+" à "+heure;
 	});
 
 
