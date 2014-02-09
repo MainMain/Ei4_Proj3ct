@@ -146,14 +146,14 @@ Carte.GetIdSalleSuivante = function(idSalleEnCours, direction) {
 	// récupère les coordonnées de la position en cours
 	var tuple = this.GetCoordSalleById(idSalleEnCours);
 	console.log("CARTE : DEBUG GetIdSalleSuivante : x = " + tuple.x + " y = " + tuple.y + " direction = " + direction);
-	var i=1;
+	var i = 1;
 	if (direction.toUpperCase() == 'NORD') 
 	{
 		while(this.GetIdSalleByCoord(tuple.x -i, tuple.y)==0)
 		{
 			i++;
 		}
-		return this.GetIdSalleByCoord(tuple.x -1, tuple.y);
+		return this.GetIdSalleByCoord(tuple.x -i, tuple.y);
 	} 
 	else if (direction.toUpperCase() == 'SUD') 
 	{
@@ -161,7 +161,7 @@ Carte.GetIdSalleSuivante = function(idSalleEnCours, direction) {
 		{
 			i++;
 		}
-		return this.GetIdSalleByCoord(tuple.x + 1, tuple.y);
+		return this.GetIdSalleByCoord(tuple.x + i, tuple.y);
 	} 
 	else if (direction.toUpperCase() == 'EST') 
 	{
@@ -169,7 +169,7 @@ Carte.GetIdSalleSuivante = function(idSalleEnCours, direction) {
 		{
 			i++;
 		}
-		return this.GetIdSalleByCoord(tuple.x, tuple.y + 1);
+		return this.GetIdSalleByCoord(tuple.x, tuple.y + i);
 	} 
 	else if (direction.toUpperCase() == 'OUEST')
 	{
@@ -177,7 +177,7 @@ Carte.GetIdSalleSuivante = function(idSalleEnCours, direction) {
 		{
 			i++;
 		}
-		return this.GetIdSalleByCoord(tuple.x, tuple.y - 1);
+		return this.GetIdSalleByCoord(tuple.x, tuple.y - i);
 	}
 	console.log("## WARNING ## CARTE :: return -1 (Carte.js)");
 	return -1;

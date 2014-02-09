@@ -2050,7 +2050,7 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 	default: socket.emit('INFO_CASE_CS');
 	labelAction.text="";
 	labelAction.text = "";
-	labelAction.text = ("Déplacement en\n" + currentCase.nom + "");
+	labelAction.text = ("Déplacement réussi !");
 	socket.emit('INFO_PERSONNAGE_CS');
 	break;
 	}

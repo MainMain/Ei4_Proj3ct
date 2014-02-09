@@ -25,7 +25,7 @@
 25-Salle cach�e de l'Amphi E-Cette petite salle est remplie d'objets rares !-5-0-1
 26-Passage de l'Amphi E-Rentrer ou sortir ?-15-15-7
 27-Grand parking des profs-On dirait que quelque chose de fou s'est pass� ici !-5-40-5
-28-Derri�re l'IstiA, c�t� Ouest-5-0-2
+28-Derri�re l'IstiA- c�t� Ouest-5-0-2
 29-Coin fumeur c�t� Ouest-Dommage qu'on n'ait plus de tabac...-10-0-2
 30-Entr�e derri�re l'IstiA-Un peu d'air frais ne fait pas de mal-5-0-1
 31-Coin fumeur c�t� Est-Dommage qu'on n'ait plus de tabac...-5-0-2

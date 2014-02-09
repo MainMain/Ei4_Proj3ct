@@ -79,6 +79,11 @@ Case_Manager.RemplirCases = function()
 		// génére le nombre d'item pour cette case
 		nbrItems = (Math.floor(Math.random() * (5-0) + 0 ));
 		
+		for (var i = 0; i < nbrItems; i++)
+		{
+			var item = oItem_Manager.GetItemAleatoire();
+curCase.ajouterItem(item);
+		}
 	}
 },
 
@@ -125,6 +130,7 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 		"actionOk" 	: true,
 	};
 	
+	console.log(">> CASE_MANAGER : AttaqueDeGoules() : " + idCase);
 	// si pas de goules, on quitte 
 	if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
 	
@@ -212,6 +218,7 @@ Case_Manager.nouvelleJournee = function()
 },
 Case_Manager.GetNombreGoules = function(idCase)
 {
+	console.log(">> CASE_MANAGER : GetNombreGoules - idCase = " + idCase);
 	return this.listeCases[idCase].getNbrGoules();
 },
 

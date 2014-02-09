@@ -45,6 +45,7 @@ Case_BD.SetCase = function(caseToSave, callSetCase)
 	var CaseModel = mongoose.model('Case');
 	var newCase = new CaseModel();
 
+	//console.log(caseToSave);
 	CaseModel.find({_id: caseToSave.idmongo}, function (err, cCase) 
 	{
 		if (err) 

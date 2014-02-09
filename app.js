@@ -56,7 +56,7 @@ oUtilisateur_Manager.Load();
 callbackFinFouille = function(idUser)
 {
 	// actualiser joueurs, au cas où l'item est arrivé dans la case
-	var idCase = oPersonnage_Manager.GetIdSalleEnCours(idUser);
+	var idCase = oPersonnage_Manager.GetIdCase(idUser);
 	ActualiserAllGlobal(idCase);
 	
 	// si le joueur qui a fini la fouille est online
@@ -553,7 +553,7 @@ io.sockets.on('connection', function (socket)
     socket.broadcast.emit('MESSAGE_TEST', 'Un autre client vient de se connecter !');
 	
     console.log('SERVER : Un client est connecté !');
-    //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.GetIdSalleEnCours());
+    //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.GetIdCase());
 
 	socket.on('INFO_USER_CS', function(sessionID, username, page, param)
 	{
@@ -614,7 +614,7 @@ io.sockets.on('connection', function (socket)
     /******************************************************************************************************************
      * RECEPTION D'UNE DEMANDE DE DEPLACEMENT VERS UNE DIRECTION DONNEE Renvoi
      * la case avec MOVE_PERSONNAGE_SC 
-     * return : oCase_Manager[oPersonnage_Manager[idUser].GetIdSalleEnCours()].GetCopieCase() si ok
+     * return : oCase_Manager[oPersonnage_Manager[idUser].GetIdCase()].GetCopieCase() si ok
      * erreur : renvoi 0 si erreur de case
      * erreur : renvoi -1 si impossible de bouger 
      * erreur : -2 si aucun de Pts Mouvement
@@ -625,18 +625,18 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('MOVE_PERSONNAGE_CS', function (move)
 	{
-		var idCasePrecedente = oPersonnage_Manager.GetIdSalleEnCours(idUser);
+		var idCasePrecedente = oPersonnage_Manager.GetIdCase(idUser);
 		
 		var reponseDeplacement = oPersonnage_Manager.Deplacement(idUser, move);
 		
 		// on ne rafraichit que si le deplacement à réussi
-		if (reponseDeplacement.id || reponseDeplacement.id >= 0)
+		if (reponseDeplacement || reponseDeplacement >= 0)
 		{
 			ActualiserAllInCase(idCasePrecedente);
-			ActualiserAllInCase(reponseDeplacement.id);
+			ActualiserAllInCase(reponseDeplacement);
 			
 			InformerAllInCase(" vient de quitter la salle", idCasePrecedente);
-			InformerAllInCase(" vient d'entrer dans la salle", reponseDeplacement.id);
+			InformerAllInCase(" vient d'entrer dans la salle", reponseDeplacement);
 		}
 		
 		
@@ -750,12 +750,11 @@ io.sockets.on('connection', function (socket)
     socket.on('INFO_CASE_CS', function ()
 	{
 		var liste		= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
-		var idSalle		= oPersonnage_Manager.GetIdSalleEnCours(idUser);
-		var idSousSalle = oPersonnage_Manager.GetIdSousSalleEnCours(idUser);
+		var idSalle		= oPersonnage_Manager.GetIdCase(idUser);
+		var idSousSalle = oPersonnage_Manager.GetIdSousCase(idUser);
 		var maCase		= oCase_Manager.GetCopieCase(idSalle);
 		
 		console.log("SERVER : INFO_CASE() : Renvoi de l'id de case : " + idSalle + " - Sous case : " + idSousSalle);
-		console.log(maCase);
 		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis, idSousSalle);
     });
     /*
@@ -903,7 +902,7 @@ io.sockets.on('connection', function (socket)
     			
     		case -5 : 
     			console.log("SERVEUR : Fouille Rapide() : Intercepté par goule !");
-    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, reponse.degatSubis, 
+    			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, null, reponse.degatSubis, 
     					0, 0, reponse.nbrGoulesA);
     			break;
     			
@@ -947,7 +946,7 @@ io.sockets.on('connection', function (socket)
 	{
     	// récupèration de l'id de l'user propriétaire de ce perso
     	var idCible = oUtilisateur_Manager.findIdUser(idPersonnageCible);
-    	var idCase = oPersonnage_Manager.GetIdSalleEnCours(idUser);
+    	var idCase = oPersonnage_Manager.GetIdCase(idUser);
         
     	// délègue au manager
     	var ans = oPersonnage_Manager.Attaquer(idUser, idCible);
@@ -1125,7 +1124,7 @@ io.sockets.on('connection', function (socket)
     {
     	// on récupère l'id de la case
     	if (typeof idCase === "undefined")
-    		var idCase = oPersonnage_Manager.GetIdSalleEnCours(idUser);
+    		var idCase = oPersonnage_Manager.GetIdCase(idUser);
     	
     	// on récupère la liste des persos de la case
 		var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalle(idUser);
@@ -1139,7 +1138,7 @@ io.sockets.on('connection', function (socket)
 			var id = liste.Allies[i];
 			
 			// et son id de case
-			idCaseCurrentPerso = oPersonnage_Manager.GetIdSalleEnCours(id);
+			idCaseCurrentPerso = oPersonnage_Manager.GetIdCase(id);
 			
 			/* si ce n'est pas l'user qui a crée l'event 
 			 * et que le joueur n'est pas mort
@@ -1158,7 +1157,7 @@ io.sockets.on('connection', function (socket)
 			var id = liste.Ennemis[i];
 			
 			// et son id de case
-			idCaseCurrentPerso = oPersonnage_Manager.GetIdSalleEnCours(id);
+			idCaseCurrentPerso = oPersonnage_Manager.GetIdCase(id);
 			
 			/* si ce n'est pas l'user qui a crée l'event 
 			 * et que le joueur n'est pas mort
@@ -1178,7 +1177,7 @@ io.sockets.on('connection', function (socket)
     {
     	// on récupère l'id de la case
     	if (typeof idCase === "undefined")
-    		var idCase = oPersonnage_Manager.GetIdSalleEnCours(idUser);
+    		var idCase = oPersonnage_Manager.GetIdCase(idUser);
 		
     	// on récupère la liste des personnages de la case
 		var listePerso = oPersonnage_Manager.GetPersonnagesDansSalle(idCase);
@@ -1196,7 +1195,7 @@ io.sockets.on('connection', function (socket)
 				for(var j in usersOnline[id].sockets)
 				{
 					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousSalleEnCours(idUser));
+					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousCase(idUser));
 				}
 			}
 		}
@@ -1218,7 +1217,7 @@ function ActualiserAllGlobal(idCase)
 			for(var j in usersOnline[id].sockets)
 			{
 				usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-				usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousSalleEnCours(idUser));
+				usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousCase(idUser));
 			}
 		}
 	}
@@ -1232,6 +1231,7 @@ function SauvegardeGlobale()
    				
 	// regain des pts move et action
 	oPersonnage_Manager.nouvelleJournee();
+	// rajout des goules
 	oCase_Manager.nouvelleJournee();
 			
    	// sauvegarde de données
@@ -1246,10 +1246,10 @@ function SauvegardeGlobale()
 		for(var j in usersOnline[id].sockets)
 		{
 			//oPersonnage_Manager.AddMessage(id, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
-			var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
-			var idSousSalle = oPersonnage_Manager.GetIdSousSalleEnCours(id);
+			var res 		= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
+			var idSousSalle = oPersonnage_Manager.GetIdSousCase(id);
 			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(id)), res.nbrAllies, res.nbrEnnemis, idSousSalle);
+			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdCase(id)), res.nbrAllies, res.nbrEnnemis, idSousSalle);
 		}
 	}
 }
