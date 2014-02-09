@@ -19,15 +19,11 @@ var Case = (function() {
 	Case.pathImg;
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	Case.build = function(idmongo, id, nom, description, probaObjet, probaCache,
-			nbrGoules, listeItem) {
-		return new Case(idmongo, id, nom, description, probaObjet, probaCache,
-			nbrGoules, listeItem);
-	};
+	Case.build = function() {return new Case();};
 
 	// --- METHODES DE CLASSE ---
 	function Case(idmongo, id, nom, description, probaObjet, probaCache,
-			nbrGoules, listeItem, pathImg) {
+			nbrGoules, listeItem) {
 		this.idmongo = idmongo;
 		this.id = id;
 		this.nom = nom;
@@ -36,7 +32,7 @@ var Case = (function() {
 		this.probaCache = probaCache;
 		this.nbrGoules = nbrGoules;
 		this.listeItem = listeItem;
-		this.pathImg = pathImg;
+		this.pathImg = "/public/map/"+id;
 	}
 
 	// --- METHODES D'INSTANCE

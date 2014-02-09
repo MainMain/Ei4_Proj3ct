@@ -23,27 +23,31 @@ Case_Manager.Load = function()
 	var context = this;
 	
 	// récupération des clés
-	idCases = oCase_BD.GetCasesId();
-	// pour chaque case
-	for(var i in idCases)
+	idCases = oCase_BD.GetCasesId(function(idCases)
 	{
-		var id = idCases[i];
-		// charge la case en mémoire par rapport à son id
-		oCase_BD.GetCaseById(id, function(idCase, reponse)
+		console.log(idCases);
+		// pour chaque case
+		for(var i in idCases)
 		{
-			// gestion des erreurs
-			if(reponse == -1 || reponse == -2)
+			var id = idCases[i];
+			// charge la case en mémoire par rapport à son id
+			oCase_BD.GetCaseById(id, function(idCase, reponse)
 			{
-				console.log("Erreur Case : " + idCase);
-			}
-			// enregistrement effectif
-			else
-			{
-				//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
-				context.listeCases[idCase] = reponse;
-			}
-		});
-	}
+				// gestion des erreurs
+				if(reponse == -1 || reponse == -2)
+				{
+					console.log("Erreur Case : " + idCase);
+				}
+				// enregistrement effectif
+				else
+				{
+					//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+					context.listeCases[idCase] = reponse;
+				}
+			});
+		}
+	});
+	
 },
 
 /*
@@ -52,8 +56,9 @@ Case_Manager.Load = function()
 Case_Manager.AjouterItem = function(idCase, item)
 {
 	// ajoute de l'objet case
-	this.listeCases[idCase].ajouterItem(item);
 	console.log("CASE_MANAGER : AjouterItem() : Ajout de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
+	this.listeCases[idCase].ajouterItem(item);
+	
 },
 
 Case_Manager.SupprimerItem = function(idCase, item)
@@ -61,6 +66,20 @@ Case_Manager.SupprimerItem = function(idCase, item)
 	// suprime de l'objet case
 	this.listeCases[idCase].supprimerItem(item);
 	console.log("CASE_MANAGER : SupprimerItem() : Suppression de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
+},
+
+Case_Manager.RemplirCases = function()
+{
+	// =>rempli aléatoirement les cases d'items
+	
+	var nbrItems;
+	// pour chaque case
+	for (curCase in this.listeCases)
+	{
+		// génére le nombre d'item pour cette case
+		nbrItems = (Math.floor(Math.random() * (5-0) + 0 ));
+		
+	}
 },
 
 Case_Manager.AttaqueGoule = function(idCase)

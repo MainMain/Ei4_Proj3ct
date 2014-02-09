@@ -1,0 +1,39 @@
+1-Zone sure �quipe 1-Ouf ici on ne risque rien !-0-0-0
+2-Espace caf�-On va pouvoir se d�tendre un peu, mais pas trop longtemps non plus...-30-15-3
+3-Aquarium-Cette salle est pleine de choses �tranges-45-25-6
+4-Hall d'entr�e-Que s'est t'il pass� ici, et ces marques au sol ?-5-5-8
+5-Bureau du gardien-Ha! Il n'est pas l�, on va pouvoir manger des sandwichs !-20-50-1
+6-Toilettes du hall-Mais c'est horrible d'o� vient cette odeur ?-5-10-1
+7-Escalier du hall-O� peut bien mener cet escalier ? Il va quand m�me falloir se m�fier...-0-0-0
+8-Entr�e principale-Et bien, je me demande quand les poussi�res ont �t� faites pour la derni�re fois ?-10-0-3
+9-Couloir rez de chauss�e-Tout est d�labr� et en plus on n'y voit rien !-0-5-10
+10-Salle 11-Ancienne salle d'examen d�labr�e : Vive les partiels !-55-70-2
+11-Ascenseur-Ce vieil ascenseur fonctionne toujours ?-0-0-0
+12-Toilettes principales-Des choses pas nettes se sont pass�es ici on dirait...-5-0-2
+13-Salle 12-Ancienne salle de cours d�labr�e : Vive les cours !-35-55-3
+14-Zone sure �quipe 2-Ouf ici on ne risque rien !-0-0-0
+15-Devant l'entr�e-Entrer ou ne pas entrer ? Tel est le dilemme...-0-5-5
+16-Devant l'IstiA c�t� Ouest-A gauche o� � droite ?-0-5-3
+17-All�� entre les deux b�timents-Cette all�e semble d�serte, mieux vaut se m�fier...-0-0-6
+18-Toilettes du b�timent E-Qu'est ce qui se cache dans ces toilettes ?-0-5-3
+19-Couloir du b�timent E-Cette pi�ce est la plus propre de l'IstiA !-0-10-6
+20-Bureaux informatique-Ce bureau semble abandonn�...-85-75-4
+21-Centre de Documentation et d'Information-Qui a encore le temps de lire des livres ?-55-85-8
+22-Hall technologique-Il y a des machines bisares dans cette salle, � quoi cela peut bien servir ?-90-85-12
+23-Escaliers du b�timent E-Par l�, on ne peut que monter !-0-0-0
+24-Amphi E-Cette grande salle renferme un tr�sor cach�, qu'attendez vous pour le trouver ?-50-70-25
+25-Salle cach�e de l'Amphi E-Cette petite salle est remplie d'objets rares !-5-0-1
+26-Passage de l'Amphi E-Rentrer ou sortir ?-15-15-7
+27-Grand parking des profs-On dirait que quelque chose de fou s'est pass� ici !-5-40-5
+28-Derri�re l'IstiA, c�t� Ouest-5-0-2
+29-Coin fumeur c�t� Ouest-Dommage qu'on n'ait plus de tabac...-10-0-2
+30-Entr�e derri�re l'IstiA-Un peu d'air frais ne fait pas de mal-5-0-1
+31-Coin fumeur c�t� Est-Dommage qu'on n'ait plus de tabac...-5-0-2
+32-Petit parking-Ici git des cadavres de voiture, ce ne sont pas les m�mes cadavres qu'� l'int�rieur-20-35-3
+33-F�ret myst�rieuse-D'�tranges ph�nom�nes �tranges ont lieu dans cette f�ret...-25-90-5
+34-All�e c�t� Est de l'IstiA-Et si on allait se balader ?-0-0-2
+35-Devant l'IstiA c�t� Est-A gauche o� � droite ?-0-5-2
+36-Amphi A-Ce tr�s grand endroit donne la chair de poule, il a du se passer des choses terribles ici !-30-60-20
+37-Toilettes Amphi A-Que dire de cet endroit ? Ce n'est pas les �gouts ?-0-0-1
+38-?-Tiens, il y a une salle ici ? O_o-20-20-2
+39-Salle cach�e de l'Amphi A-Cette salle est certes petite, mais pr�cieuse !-5-0-1

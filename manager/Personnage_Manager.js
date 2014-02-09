@@ -273,7 +273,7 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	
 	// log
 	console.log("PERSONNAGE_MANAGER : " +
-			"attaque goules ->  Goules tués : " + goulesTues + 
+			" - attaque goules ->  Goules tués : " + goulesTues + 
 			" - Degats " + degatsSubis +
 			" - nbr ripostes " + ans["nbrGoulesA"]);
 	
@@ -285,7 +285,7 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	else
 	{
 		// comptabiliser le socre
-		oScore_Manager.compabiliserGouleTue(idUser, nbrG);
+		oScore_Manager.compabiliserGouleTue(idUser, ans["nbrGoulesA"]);
 	}
 	
 	return reponseServeur;
@@ -742,6 +742,7 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 	oScore_Manager.compabiliserMeurtre(idTueur, idTue);
 	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
+	this.AddMessage(idTue, "");
 	this.AddMessage(idTue,  loginTueur);
 	
 	// mettre son inventaire dans la case
@@ -750,7 +751,8 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 		if (GameRules.combat_proba_perdreItem())
 		{
 			// transfert de l'item en cours dans la case
-			oCase_Manager.AjouterItem(currentPerso.getIdSalleEnCours(),  currentPerso.GetSac()[i]);
+			console.log("PERSO MANAGER : TUER JOUEUR : IDSALLE = " + this.GetIdSalleEnCours(idTue));
+			oCase_Manager.AjouterItem(this.GetIdSalleEnCours(idTue),  currentPerso.GetSac()[i]);
 			
 			// l'enlever de son inventaire
 			currentPerso.supprimerDuSac(currentPerso.GetSac()[i]);
@@ -803,7 +805,7 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 	var a = { "nbrAllies"	: -1,  "nbrEnnemis" : 0};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -823,7 +825,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -843,7 +845,7 @@ Personnage_Manager.GetPersonnagesDansSalle = function(idCase)
 	var a = new Array();
 	for(var i in this.listePersonnages)
 	{
-		if(this.listePersonnages[i].getIdSalleEnCours() == idCase)
+		if(this.GetIdSalleEnCours(i) == idCase)
 		{
 			a.push(i);
 		}
@@ -856,7 +858,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.listePersonnages[i].getIdSalleEnCours())
+		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -975,19 +977,63 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 			pseudo);
 	return perso;
 }, 
+Personnage_Manager.GetIdSousSalleEnCours = function(idUser)
+{
+	try
+	{
+		var idSousCase = 0;
+		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
+		//console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut);
+		//idCaseBrut = "1_a";
+		var tab;
+		
+		try
+		{
+			tab = idCaseBrut.split("_");
+			//console.log(tab);
+		}
+		catch (err) {}
+		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + tab[1]);
+		return tab[1];
+		
+	}
+	catch(err)
+	{
+		//console.log("PERSONNAGE_MANAGER : ERREUR GET ID SOUS CASE: " + err);
+		//console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
+		//console.log(this.listePersonnages);
+		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + -1);
+		return -1;
+	}
+},
 
 Personnage_Manager.GetIdSalleEnCours = function(idUser)
 {
 	//console.log("PERSONNAGE_MANAGER : GetIdSalleEnCours() - idUser = " + idUser);
 	try
 	{
-	return this.listePersonnages[idUser].getIdSalleEnCours();
+		//console.log("--------------> 1 : " + this.listePersonnages[idUser].getIdSalleEnCours());
+		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
+		//console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut);
+		//idCaseBrut = "1_a";
+		var tab;
+		try
+		{
+			tab = idCaseBrut.split("_");
+			//console.log(tab);
+		}
+		catch (err) {}
+		console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut + " NET : " + tab[0]);
+		return tab[0];
+		
 	}
 	catch(err)
 	{
-		console.log("/!\ PERSONNAGE_MANAGER : ERREUR : " + err);
-		console.log("/!\ PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
-		console.log(this.listePersonnages);
+		//console.log("PERSONNAGE_MANAGER : ERREUR GET ID CASE: " + err);
+		//console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
+		//console.log(this.listePersonnages);
+		console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut + " NET : " + idCaseBrut);
+		return idCaseBrut;
 	}
 }, 
 

@@ -749,11 +749,14 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_CASE_CS', function ()
 	{
-		var liste	= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
-		var idSalle	= oPersonnage_Manager.GetIdSalleEnCours(idUser);
-		var maCase	= oCase_Manager.GetCopieCase(idSalle);
+		var liste		= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
+		var idSalle		= oPersonnage_Manager.GetIdSalleEnCours(idUser);
+		var idSousSalle = oPersonnage_Manager.GetIdSousSalleEnCours(idUser);
+		var maCase		= oCase_Manager.GetCopieCase(idSalle);
 		
-		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis);
+		console.log("SERVER : INFO_CASE() : Renvoi de l'id de case : " + idSalle + " - Sous case : " + idSousSalle);
+		console.log(maCase);
+		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis, idSousSalle);
     });
     /*
      * 
@@ -976,6 +979,7 @@ io.sockets.on('connection', function (socket)
 	 * erreur : 0 si erreur interne
 	 * erreur : -1 si aucune goule tuée
 	 * erreut : -2 si pas de goules dans la salle
+	 * erreur : -10 si pas assez de PA
 	 * 
 	 * ET degats reçus
 	 * 
@@ -1192,7 +1196,7 @@ io.sockets.on('connection', function (socket)
 				for(var j in usersOnline[id].sockets)
 				{
 					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis);
+					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousSalleEnCours(idUser));
 				}
 			}
 		}
@@ -1214,7 +1218,7 @@ function ActualiserAllGlobal(idCase)
 			for(var j in usersOnline[id].sockets)
 			{
 				usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-				usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis);
+				usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousSalleEnCours(idUser));
 			}
 		}
 	}
@@ -1243,8 +1247,9 @@ function SauvegardeGlobale()
 		{
 			//oPersonnage_Manager.AddMessage(id, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
 			var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
+			var idSousSalle = oPersonnage_Manager.GetIdSousSalleEnCours(id);
 			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(id)), res.nbrAllies, res.nbrEnnemis);
+			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdSalleEnCours(id)), res.nbrAllies, res.nbrEnnemis, idSousSalle);
 		}
 	}
 }
@@ -1252,7 +1257,7 @@ setInterval(function()
 { 
 	SauvegardeGlobale();
 	
-},  1000 * 60 * 60  ); // 1000 millisec * 60 sec * 60 min
+},  1000 * 60 * 60  ); // (1000) millisec * 60 sec * 60 min
 
 
 
@@ -1261,4 +1266,4 @@ app.on('close', function () { // On écoute l'évènement close
     console.log('Bye bye !');
 });
 
-console.log("SERVEUR : Script lancé ! sur http://127.0.0.1:8080");
+//console.log("SERVEUR : Script lancé ! sur http://127.0.0.1:8080");

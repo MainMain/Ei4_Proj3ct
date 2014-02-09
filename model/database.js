@@ -86,7 +86,7 @@ database.Initialiser = function() {
 	
 	/***** CREATION DU SCHEMA "CASE" ****/
 	var CaseSchema = new mongoose.Schema({
-		id : Number,
+		id : String,
 		nom : String,
 		description : String,
 		probaObjet : Number,

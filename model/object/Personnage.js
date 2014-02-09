@@ -191,7 +191,8 @@ var Personnage = (function() {
 		 */
 		deplacement : function(direction, nbrGoules, idZoneSureEnnemi)
 		{
-			//console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
+			
+			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
 			
 			// si pu de pts de mouvement, on peut s'arreter là
 			if (this.ptDeplacement <= 0)
@@ -248,6 +249,7 @@ var Personnage = (function() {
 			// on gère son dernier mouvement
 			this.dernierMvt = direction;
 			
+			console.log("PERSONNAGE : Deplacement ok ! id salle en cours : " + this.idSalleEnCours);
 			// return
 			return this.idSalleEnCours;
 		},
@@ -663,7 +665,6 @@ var Personnage = (function() {
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
 				this.listeMsgAtt.push(msg);
-				console.log("1111111");
 			}
 			else
 			{
@@ -671,7 +672,6 @@ var Personnage = (function() {
 				var mois = parseInt(date.getMonth()) + 1;
 				var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
 				this.listeMsgAtt.push(str + " : " + msg + "\n");
-				console.log("222222");
 			}
 			this.nbrNvMsg++;
 			
