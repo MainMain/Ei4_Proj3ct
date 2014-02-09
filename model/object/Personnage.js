@@ -472,7 +472,7 @@ var Personnage = (function() {
 		{
 			var att;
 			if (this.competence == "brute") 		 att = GameRules.combat_ptsAttaque_base_brute();
-			if (this.competence == "explorateur") att = GameRules.combat_ptsAttaque_base_explorateur();
+			if (this.competence == "explorateur")	 att = GameRules.combat_ptsAttaque_base_explo();
 			if (this.competence == "chercheur") 	 att = GameRules.combat_ptsAttaque_base_chercheur();
 			
 			if (this.armeEquipee != null)

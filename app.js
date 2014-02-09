@@ -957,8 +957,8 @@ io.sockets.on('connection', function (socket)
         // actualiser l'ihm pour les perso de la meme case connectés
 		ActualiserAllInCase();
 		
-		// informatique des autres joueurs avec message
-		InformerAllInCase("vient d'attaquer " + idPersonnageCible);
+		// information des autres joueurs avec message
+		InformerAllInCase("vient d'attaquer un autre joueur ! ");
 		
 		console.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
 	});
