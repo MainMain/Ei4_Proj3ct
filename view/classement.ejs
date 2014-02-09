@@ -56,15 +56,15 @@
 		<h3 class="assistive-text">Menu principal</h3>
 		<ul>
 			<li class="span2"><a href="/">Accueil</a></li>
-			<li class="span2"><a href="regles">But du jeu</a></li>
+			<li class="span2"><a href="/regles">But du jeu</a></li>
 			<li class="span2">
-				<a href="jeu">Jeu</a>
+				<a href="/jeu">Jeu</a>
 				<ul class="sub-menu">
-					<li><a href="chat-equipe">Chat de l'équipe</a></li>
+					<li><a href="/chat-equipe">Chat de l'équipe</a></li>
 				</ul>
 			</li>
-			<li class="current span2"><a href="classement">Classement</a></li>
-			<li class="span2"><a href="chat-general">Chat</a></li>
+			<li class="current span2"><a href="/classement">Classement</a></li>
+			<li class="span2"><a href="/chat-general">Chat</a></li>
 		</ul>
 	</nav> <!-- #main-navigation -->
 	
@@ -81,6 +81,23 @@
 	</h1>
 	
 	<!-- Classement -->
+		<div class="span12">
+			<table class="row">
+				<thead class="classementHead">
+					 <tr>
+						<th><a href="/classement/0">Joueurs</a></th>
+						<th><a href="/classement/1">Nombre de meurtres</a></th>
+						<th><a href="/classement/2">Nombre de fois tués</a></th>
+						<th><a href="/classement/3">Nombre de goules tuées</a></th>
+						<th><a href="/classement/4">Score par meurtres</a></th>
+						<th><a href="/classement/5">Score par ODD</a></th>
+					</tr>
+				</thead>
+				<tbody class="classement" id="listUsers">
+				
+				</tbody>
+			</table>
+		</div>
 	
 	<!-- #Classement -->
 </div> <!-- #content -->
@@ -94,7 +111,7 @@
 		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script>
-			window.jQuery || document.write('<script src="js/jquery-1.7.2.min.js"><\/script>')
+			window.jQuery || document.write('<script src="view/js/jquery-1.7.2.min.js"><\/script>')
 		</script>
 
 		<!-- Script nécessaires pour le serveur -->
@@ -104,14 +121,28 @@
 
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:8080');
+			var socket = io.connect('http://localhost:443');
 				
 			$( document ).ready(function()
 			{
-				alert(1);
-				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "classement";
+				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "classement", <%= order %>);
 			});
-		
+			
+			socket.on('CLASSEMENT_SC', function(listScore)
+			{
+				for(var i in listScore)
+				{
+					var maChaine = "<tr>";
+					maChaine += "<td>" + listScore[i].pseudo + "</td>";
+					maChaine += "<td>" + listScore[i].nbrMeurtres + "</td>";
+					maChaine += "<td>" + listScore[i].nbrFoisTue + "</td>";
+					maChaine += "<td>" + listScore[i].nbrGoulesTues + "</td>";
+					maChaine += "<td>" + listScore[i].scoreByMeutre + "</td>";
+					maChaine += "<td>" + listScore[i].scoreByODD + "</td>";
+					maChaine += "</tr>";
+					$("#listUsers").prepend(maChaine);
+				}
+			});
 		</script>
 </body>
 </html>
