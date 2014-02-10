@@ -15,39 +15,42 @@ function Case_Manager(){}
 
 Case_Manager.Load = function()
 {
-	// creation des listes
-	var idCases = new Array();
-	this.listeCases = new Array();
-	
-	// pr le callback
-	var context = this;
-	
-	// récupération des clés
-	idCases = oCase_BD.GetCasesId(function(idCases)
+	oCase_BD.Initialiser(function()
 	{
-		console.log(idCases);
-		// pour chaque case
-		for(var i in idCases)
-		{
-			var id = idCases[i];
-			// charge la case en mémoire par rapport à son id
-			oCase_BD.GetCaseById(id, function(idCase, reponse)
-			{
-				// gestion des erreurs
-				if(reponse == -1 || reponse == -2)
-				{
-					console.log("Erreur Case : " + idCase);
-				}
-				// enregistrement effectif
-				else
-				{
-					//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
-					context.listeCases[idCase] = reponse;
-				}
-			});
-		}
-	});
+		// creation des listes
+		var idCases = new Array();
+		this.listeCases = new Array();
 	
+		// pr le callback
+		var context = this;
+	
+		// récupération des clés
+		idCases = oCase_BD.GetCasesId(function(idCases)
+		{
+			console.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
+			// pour chaque case
+			for(var i in idCases)
+			{
+				var id = idCases[i];
+			
+				// charge la case en mémoire par rapport à son id
+				oCase_BD.GetCaseById(id, function(idCase, reponse)
+				{
+					// gestion des erreurs
+					if(reponse == -1 || reponse == -2)
+					{
+						console.log("Erreur Case : " + idCase);
+					}
+					// enregistrement effectif
+					else
+					{
+						//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+						context.listeCases[idCase] = reponse;
+					}
+				});
+			}
+		});
+	});
 },
 
 /*

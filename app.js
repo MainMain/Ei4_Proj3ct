@@ -1,5 +1,6 @@
-//appel aux modules
-// require model
+/*
+ * *************************** 1 - IMPORTATION DES MODULES REQUIS ***************************
+ */
 var oDatabase	= require('./model/database');
 
 var url         = require("url");
@@ -11,24 +12,14 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 
-var dateLancementSrv = new Date();
-console.log(dateLancementSrv);
-/*
- *
- */
-
-
 // require objets
-//var oPersonnage = require('./model/object/Personnage');
 var oCarte	= require('./model/object/Carte');
 
 //require persistance
 var oCase_BD       = require('./persistance/Case_BD');
-//var oItem_BD       = require('./persistance/Item_BD');
 var oUtilisateur_BD  = require('./persistance/Utilisateur_BD');
-//var oPersonnage_BD = require('./persistance/Personnage_BD');
 
-//require manager
+// require manager
 var oPersonnage_Manager  = require('./manager/Personnage_Manager');
 var oItem_Manager        = require('./manager/Item_Manager');
 var oCase_Manager        = require('./manager/Case_Manager');
@@ -36,12 +27,15 @@ var oUtilisateur_Manager = require('./manager/Utilisateur_Manager');
 var oScore_Manager       = require('./manager/Score_Manager');
 var oSession_Manager	 = require('./manager/Session_Manager');
 
+/*
+ * *************************** 2 - CHARGEMENT EN MEMOIRE DES DONNES ***************************
+ */
+
+var dateLancementSrv = new Date();
+console.log(dateLancementSrv);
 
 //Tableau des utilisateur en ligne
 var usersOnline = new Array();
-
-
-
 
 //Initialisation de la base de données
 oDatabase.Initialiser();
@@ -49,41 +43,37 @@ oDatabase.Initialiser();
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(28, 17);
 
-
-
+// Chargement des utilisateurs en mémoire
 oUtilisateur_Manager.Load();
 
-callbackFinFouille = function(idUser)
+// Chargement des personnages en mémoire
+oPersonnage_Manager.Load(function(idUser)
 {
 	// actualiser joueurs, au cas où l'item est arrivé dans la case
 	var idCase = oPersonnage_Manager.GetIdCase(idUser);
 	ActualiserAllGlobal(idCase);
-	
-	// si le joueur qui a fini la fouille est online
-	//ActualiserGlobal(idUser);
-	
-};
+});
 
-oPersonnage_Manager.Load(callbackFinFouille);
+// Chargement de la liste des items en mémoire
 oItem_Manager.Load();
 
-oCase_BD.Initialiser();
-
+// Chargement des cases en mémoire
 oCase_Manager.Load();
 
 //////////////TEST SESSIONJEU
 var date = new Date(2016, 12, 1, 1, 1, 1, 1);
-
 //oSession_Manager.demarrer(date);
 
+// Chargement des sessions de jeu en mémoire
 oSession_Manager.Load(function(idSession)
 {
 	oScore_Manager.Load(idSession);
 });
 
 /*
- * CONFIGURATION DU SERVEUR
+ * *************************** 3 - CONFIGURATION DU SERVEUR ***************************
  */
+
 app.set('port', process.env.PORT || 443);
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
@@ -97,10 +87,17 @@ app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '/')));
 
+
 /*
- * CONFIGURATION DES MANAGERS
+ * *************************** 4 - CONFIGURATION DES ROUTES ***************************
  */
-var optionAccueil = {"username": null, "errorLogin": null, "InfoInscription": null, "usernameInscription": null, "sessionID": null}
+
+var optionAccueil = {
+	"username": null, 
+	"errorLogin": null, 
+	"InfoInscription": null,
+	"usernameInscription": null, 
+	"sessionID": null};
 
 function restrict(req, res, next)
 {
@@ -118,7 +115,12 @@ function restrict(req, res, next)
 
 function restrictAdmin(req, res, next)
 {
-	if(req.session.username == "a" || req.session.username == "Brendiche" || req.session.username == "MainMain" || req.session.username == "Flow" || req.session.username == "bibibibouch" || req.session.username == "papa")
+	if(	   req.session.username == "a" 
+		|| req.session.username == "Brendiche" 
+		|| req.session.username == "MainMain" 
+		|| req.session.username == "Flow" 
+		|| req.session.username == "bibibibouch" 
+		|| req.session.username == "papa")
 	{
 		next();
 	}
@@ -146,7 +148,10 @@ app.get('/', function fonctionIndex(req, res)
 app.get('/admin', restrictAdmin, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username" : s.username, "sessionID" : s.idUser};
+	var options = { 
+		"username" : s.username,
+		"sessionID" : s.idUser
+		};
 	
 	res.render('admin', options);
 });
@@ -167,7 +172,11 @@ app.get('/jeu', function fonctionIndex(req, res)
 	}
 	else
 	{
-		options = { "username": s.username, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), "sessionID" : s.idUser };
+		options = { 
+			"username": s.username, 
+			"idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), 
+			"sessionID" : s.idUser 
+			};
 		
 		res.render('game', options);
 	}
@@ -177,7 +186,11 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 {
 	var b = req.body;
 	var s = req.session;
-	var options = { "username": s.username, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), "sessionID" : s.idUser };
+	var options = { 
+		"username": s.username, 
+		"idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), 
+		"sessionID" : s.idUser 
+		};
 	
 	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")
 	{
@@ -193,7 +206,10 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 app.get('/regles', function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": s.username, "sessionID" : s.idUser };
+	var options = { 
+		"username": s.username, 
+		"sessionID" : s.idUser 
+		};
 	
 	res.render('regles', options);
 });
@@ -201,7 +217,11 @@ app.get('/regles', function fonctionIndex(req, res)
 app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": s.username, "sessionID" : s.idUser, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser) };
+	var options = { 
+		"username": s.username, 
+		"sessionID" : s.idUser, 
+		"idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser) 
+		};
 	
 	res.render('chat-equipe', options);
 });
@@ -209,7 +229,11 @@ app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 app.get('/classement', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username":s.username, "sessionID" : s.idUser, "order" : 0 };
+	var options = { 
+		"username":s.username, 
+		"sessionID" : s.idUser, 
+		"order" : 0 
+		};
 	
 	res.render('classement', options);
 });
@@ -218,7 +242,11 @@ app.get('/classement/:order([0-9])', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
 	var order = req.param('order');
-	var options = { "username":s.username, "sessionID" : s.idUser, "order" : order };
+	var options = { 
+		"username":s.username, 
+		"sessionID" : s.idUser, 
+		"order" : order 
+		};
 	
 	console.log("order = " + order);
 	
@@ -228,7 +256,10 @@ app.get('/classement/:order([0-9])', restrict, function fonctionIndex(req, res)
 app.get('/chat-general', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": s.username, "sessionID" : s.idUser };
+	var options = { 
+		"username": s.username, 
+		"sessionID" : s.idUser 
+		};
 	res.render('chat', options);
 });
 
@@ -323,23 +354,22 @@ app.delete("/", function (req, res)
 	res.render('accueil', optionAccueil);
 });
 
+
 /*
- * LANCEMENT DU SERVEUR
+ * *************************** 5- LANCEMENT DU SERVEUR ***************************
  */
 server.listen(app.get('port'), function ()
 {
     console.log("Express server listening on port " + app.get('port'));
 });
 
-/*
- * CHARGEMENT DE SOCKET.IO
- */
+
 var io = require('socket.io').listen(server, { log: false });
 
 
-/**
- * ********* EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION CLIENT -> SERVEUR
- * *************
+
+/*
+ * *************************** 6 - CONFIGURATION DES TCHATS ***************************
  */
  
  var usersInTeamChat = new Array();
@@ -541,8 +571,9 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 	});
 });
 
+
 /*
- * CONNEXION D'UN CLIENT
+ * *************************** 7 - INTERACTIONS AVEC UN CLIENT CONNECTE ***************************
  */
 io.sockets.on('connection', function (socket)
 {
@@ -1223,6 +1254,10 @@ function ActualiserAllGlobal(idCase)
 	}
 }
 
+
+/*
+ * *************************** 8 - CONFIGURATION DE LA SAUVEGARDE PERIODIQUE ***************************
+ */
 function SauvegardeGlobale()
 {
 	console.log("***************** SAUVEGARDE GLOBALE DES DONNEES *****************************");

@@ -108,7 +108,6 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
 			throw err;
 			console.log("CASE_BD : Creation() : ERREUR ");
 		}
-
 		console.log("CASE_BD : Creation de case réussie ! " + newCase.nom);
 
 	});
@@ -171,8 +170,8 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
  * 
  * @method Initialiser
  */
-Case_BD.Initialiser = function() {
-	
+Case_BD.Initialiser = function(callBack) 
+{	
 	// test si la table case est vide
 	this.GetCasesId(function(tabId)
 	{
@@ -220,11 +219,15 @@ Case_BD.Initialiser = function() {
 						newCase.listeItem	= listeItems;
 						
 						newCase.save();
+						
+						console.log("CASE_BD : Creation de la case [" + newCase.nom + "] en BD");
 					}
 				}
 
 			}
 		}
+		console.log("CALLBACK ! ");
+		callBack();
 	});
 	
 	// vide la BD
