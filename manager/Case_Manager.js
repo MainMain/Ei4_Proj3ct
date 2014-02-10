@@ -15,14 +15,12 @@ function Case_Manager(){}
 
 Case_Manager.Load = function()
 {
+	var context = this;
 	oCase_BD.Initialiser(function()
 	{
 		// creation des listes
 		var idCases = new Array();
-		this.listeCases = new Array();
-	
-		// pr le callback
-		var context = this;
+		context.listeCases = new Array();
 	
 		// récupération des clés
 		idCases = oCase_BD.GetCasesId(function(idCases)
@@ -44,7 +42,7 @@ Case_Manager.Load = function()
 					// enregistrement effectif
 					else
 					{
-						//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+						console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
 						context.listeCases[idCase] = reponse;
 					}
 				});
@@ -135,7 +133,10 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 	
 	console.log(">> CASE_MANAGER : AttaqueDeGoules() : " + idCase);
 	// si pas de goules, on quitte 
-	if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
+	try
+	{
+		if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
+	
 	
 	// calcul le nombre de goules attaquantes
 	var nbrGoulesAttaquantes = Math.floor(Math.random() * this.listeCases[idCase].getNbrGoules());
@@ -167,6 +168,12 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 			"actionOk" 	: actionOk,
 		};
 		console.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
+	
+	}
+	catch(err)
+	{
+		console.log("/!\ >>> ERREUR : CASE_MANAGER : AttaqueDeGoules : " + err);
+	}
 	return a;
 },
 
@@ -222,7 +229,15 @@ Case_Manager.nouvelleJournee = function()
 Case_Manager.GetNombreGoules = function(idCase)
 {
 	console.log(">> CASE_MANAGER : GetNombreGoules - idCase = " + idCase);
-	return this.listeCases[idCase].getNbrGoules();
+	try
+	{
+		return this.listeCases[idCase].getNbrGoules();
+	}
+	catch(err)
+	{
+		console.log("/!\ >>> ERREUR : CASE_MANAGER : GetNombreGoules : " + err);
+		return -1;
+	}
 },
 
 Case_Manager.getZoneSure = function(numEquipe)

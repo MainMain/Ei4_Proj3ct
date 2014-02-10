@@ -651,15 +651,15 @@ io.sockets.on('connection', function (socket)
      * erreur : -2 si aucun de Pts Mouvement
      * erreur : -3 si trop de goules
      * erreur : -4 si zone sure adverse
-     * 
+     * erreur : -100 si erreur interne
      * 
      */
     socket.on('MOVE_PERSONNAGE_CS', function (move)
 	{
-		var idCasePrecedente = oPersonnage_Manager.GetIdCase(idUser);
-		
-		var reponseDeplacement = oPersonnage_Manager.Deplacement(idUser, move);
-		
+		try
+		{
+			var idCasePrecedente = oPersonnage_Manager.GetIdCase(idUser);
+			var reponseDeplacement = oPersonnage_Manager.Deplacement(idUser, move);
 		// on ne rafraichit que si le deplacement à réussi
 		if (reponseDeplacement || reponseDeplacement >= 0)
 		{
@@ -670,8 +670,13 @@ io.sockets.on('connection', function (socket)
 			InformerAllInCase(" vient d'entrer dans la salle", reponseDeplacement);
 		}
 		
-		
 		socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
+		}
+		catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
+			return;
+		}
     });
     /*
      * 
@@ -692,6 +697,8 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INV_PERSONNAGE_CS', function (type, id_item)
 	{
+		try
+		{
 		var currentItem = oItem_Manager.GetItem(id_item);
 		var reponse;
 		
@@ -714,6 +721,12 @@ io.sockets.on('connection', function (socket)
 		ActualiserAllInCase();
 		
 		console.log("*******************************************************");
+		}
+		catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : INV_PERSONNAGE_CS : " + err);
+			return;
+		}
     });
     /*
      * 
@@ -745,6 +758,8 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
+		try
+		{
 		var currentItem = oItem_Manager.GetItem(id_item);
 		var reponse;
 		
@@ -767,6 +782,11 @@ io.sockets.on('connection', function (socket)
 		
 		
 		console.log("*******************************************************");
+		}
+		catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
+		}
     });
 	
     /******************************************************************************************************************
@@ -780,6 +800,8 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_CASE_CS', function ()
 	{
+		try
+		{
 		var liste		= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
 		var idSalle		= oPersonnage_Manager.GetIdCase(idUser);
 		var idSousSalle = oPersonnage_Manager.GetIdSousCase(idUser);
@@ -787,6 +809,11 @@ io.sockets.on('connection', function (socket)
 		
 		console.log("SERVER : INFO_CASE() : Renvoi de l'id de case : " + idSalle + " - Sous case : " + idSousSalle);
 		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis, idSousSalle);
+		}
+		catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : INFO_CASE_CS : " + err);
+		}
     });
     /*
      * 
@@ -802,8 +829,15 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
-		var monPerso = oPersonnage_Manager.GetCopiePerso(idUser);
-		socket.emit('INFO_PERSONNAGE_SC', monPerso);
+		try
+		{
+			var monPerso = oPersonnage_Manager.GetCopiePerso(idUser);
+			socket.emit('INFO_PERSONNAGE_SC', monPerso);
+		}
+		catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
+		}
     });
     /*
      * 
@@ -825,6 +859,8 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('PERSONNAGE_USE_CS', function (id_item)
     {
+    	try
+    	{
     	console.log("******************* UTILISER ***********************");
 		
     	
@@ -839,6 +875,12 @@ io.sockets.on('connection', function (socket)
 		
 		console.log("SERVEUR : UTILISER - " + idUser +" - Item " + id_item + " - Code : " + reponse);
 		console.log("*******************************************************");
+    	}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : PERSONNAGE_USE_CS : " + err);
+		}
+    	
     });
     /*
      * 
@@ -866,6 +908,8 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('PERSONNAGE_MODE_CS', function (mode)
 	{
+		try
+		{
         console.log("*******************************************************");
 		
         // délègue au manager
@@ -880,6 +924,11 @@ io.sockets.on('connection', function (socket)
 		
 		console.log("SERVEUR : CHGT MODE - " + idUser +" - Mode " + mode + " - Code : " + reponse.reponseChangement);
         console.log("*******************************************************");
+		}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : PERSONNAGE_MODE_CS : " + err);
+		}
     });
     /*
      * 
@@ -912,6 +961,9 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_FOUILLE_RAPIDE_CS', function ()
     {
+    	try
+    	{
+    		
     	console.log("***************** FOUILLE RAPIDE ******************************");
        
     	var reponse = oPersonnage_Manager.fouilleRapide(idUser);
@@ -947,6 +999,11 @@ io.sockets.on('connection', function (socket)
     	}
     	console.log("SERVEUR : FOUILLE_RAPIDE - " + idUser +" - item découvert : " + reponse.itemDecouvert);
     	console.log("***************************************************************");
+    	}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : ACTION_FOUILLE_RAPIDE_CS : " + err);
+		}
     });
     /*
      * 
@@ -975,6 +1032,8 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (idPersonnageCible)
 	{
+		try
+		{
     	// récupèration de l'id de l'user propriétaire de ce perso
     	var idCible = oUtilisateur_Manager.findIdUser(idPersonnageCible);
     	var idCase = oPersonnage_Manager.GetIdCase(idUser);
@@ -992,6 +1051,11 @@ io.sockets.on('connection', function (socket)
 		InformerAllInCase("vient d'attaquer un autre joueur ! ");
 		
 		console.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
+		}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : ACTION_ATTAQUE_CS : " + err);
+		}
 	});
     /*
      * 
@@ -1018,6 +1082,8 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_GOULE_CS', function ()
 	{
+		try
+		{
     	console.log("******************** ATTAQUE DE GOULES *****************");
     	// délègue au manager
     	var reponseManager 			= oPersonnage_Manager.AttaquerGoule(idUser);
@@ -1037,6 +1103,11 @@ io.sockets.on('connection', function (socket)
 		ActualiserAllInCase();
 		
 		console.log("*********************************************************");
+		}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : ACTION_ATTAQUE_GOULE_CS : " + err);
+		}
     });
     /*
      * 
@@ -1052,6 +1123,8 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function ()
 	{
+		try
+		{
     	console.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.getPseudo(idUser));
     	
     	// aquittement
@@ -1066,6 +1139,11 @@ io.sockets.on('connection', function (socket)
     		// retablissement de la sante et transfert en zone sure
     		oPersonnage_Manager.SeRetablir(idUser);
     	}
+		}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : ACCUSE_LECTURE_MSG_CS : " + err);
+		}
     });
     /*
      * 
@@ -1084,8 +1162,15 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('INFO_CASE_ALLIES_CS', function ()
 	{
+		try
+		{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, false);
     	socket.emit('INFO_CASE_ALLIES_SC', liste.Allies);
+		}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : INFO_CASE_ALLIES_CS : " + err);
+		}
     });
     /*
      * 
@@ -1104,8 +1189,15 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('INFO_CASE_ENNEMIS_CS', function ()
 	{
+		try
+		{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
     	socket.emit('INFO_CASE_ENNEMIS_SC', liste.Ennemis);
+		}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
+		}
     });
     /*  
      *
@@ -1121,7 +1213,14 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('SAVE_BD_DEBUG_CS', function ()
 	{
+		try
+		{
     	SauvegardeGlobale();
+		}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : SAVE_BD_DEBUG_CS : " + err);
+		}
     });
     /*  
     *
@@ -1137,7 +1236,14 @@ io.sockets.on('connection', function (socket)
     */
    socket.on('GET_DATE_CS', function ()
 	{
+		try
+		{
 		socket.emit('GET_DATE_SC', dateLancementSrv);
+		}
+    	catch(err)
+		{
+			console.log("/!\ ERREUR : SERVEUR : GET_DATE_CS : " + err);
+		}
    });
     /*
      * 

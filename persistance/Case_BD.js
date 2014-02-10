@@ -142,7 +142,7 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 					currentCase[0].listeItem, 	currentCase[0].pathImg);
 
 			// log
-			console.log("CASE_BD : Chargement de la case : [" + currentCase[0].id +"-"+currentCase[0].nom+"]");
+			//console.log("CASE_BD : Chargement de la case : [" + currentCase[0].id +"-"+currentCase[0].nom+"]");
 
 			// renvoi de la case
 			callbackGetCase(idCase, caseRecup);
@@ -188,7 +188,7 @@ Case_BD.Initialiser = function(callBack)
 			var file = fs.readFileSync('./persistance/caseListe.txt', "utf8");
 			
 			// récupération des tabLignes dans un tableau
-			var tabLignes = file.split("\r\n");
+			var tabLignes = file.split("\n");
 			
 			// pour chaque ligne
 			for(var i in tabLignes)

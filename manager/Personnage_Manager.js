@@ -139,7 +139,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	var degatsInfligesParA;
 	var degatsInfligesParB;
 	
-	var idSalle = this.GetIdCase(idUser);
+	var idCase = this.GetIdCase(idUser);
 	
 	// création de données de retour
 	var reponseServeur = {"reponseAttaque" : 0,  "degatsRecus" : 0,  "degatsInfliges" : 0,  "degatSubisParGoules" : 0,  "nbrGoules" : 0};
@@ -171,7 +171,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 		else
 		{
 			// infliger les dégats de goules 
-			resultatGoules 						= oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
+			resultatGoules 						= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
 			reponseServeur.nbrGoules			= resultatGoules.nbrGoulesA;
 			reponseServeur.degatSubisParGoules 	= this.subirDegats(idUser,  resultatGoules.degats);
 			
@@ -542,7 +542,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			}
 
 			// impact des goules
-			resultatGoules 				= oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
+			resultatGoules 				= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
 			reponseServeur.degatsSubis	= this.subirDegats(idUser,  resultatGoules["degats"]);
 			reponseServeur.nbrGoules	= resultatGoules.nbrGoulesA;
 
@@ -650,7 +650,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	var codeRetour = 0;
 	var itemDecouvert;
 	var nbrEnnDecouverts = 0;
-	var idSalle = this.GetIdCase(idUser);;
+	var idCase = this.GetIdCase(idUser);;
 		
 	// tests pts actions
     if(!this.TestPtActions(idUser,  "fouilleRapide"))
@@ -660,7 +660,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
     }
 			
 	// Calcul des dégats de goules et nombre de goules attaquantes
-	resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
+	resultatGoules = oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
 	
 	// remplissage de la structure de réponse
 	reponseServeur.degatSubis = this.subirDegats(idUser,  resultatGoules["degats"]);
@@ -752,7 +752,7 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 		if (GameRules.combat_proba_perdreItem())
 		{
 			// transfert de l'item en cours dans la case
-			console.log("PERSO MANAGER : TUER JOUEUR : IDSALLE = " + this.GetIdCase(idTue));
+			console.log("PERSO MANAGER : TUER JOUEUR : idCase = " + this.GetIdCase(idTue));
 			oCase_Manager.AjouterItem(this.GetIdCase(idTue),  currentPerso.GetSac()[i]);
 			
 			// l'enlever de son inventaire
@@ -985,7 +985,16 @@ Personnage_Manager.GetIdSousCase = function(idUser)
 
 Personnage_Manager.GetIdCase = function(idUser)
 {
-	return this.listePersonnages[idUser].getIdCase();
+	
+	try
+	{
+		return this.listePersonnages[idUser].getIdCase();
+	}
+	catch(err)
+	{
+		console.log("/!\ >>> ERREUR : PERSO_MANAGER : GetIdCase : " + err);
+		return -1;
+	}
 	
 }, 
 
