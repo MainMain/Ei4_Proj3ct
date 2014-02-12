@@ -80,6 +80,43 @@ var Personnage = (function() {
 	// --- METHODES D'INSTANCE
 	Personnage.prototype =
 	{
+		initialiserPtsCaract : function()
+		{
+			if(this.competence == "brute")
+			{
+				this.ptSanteMax 		= 140;
+				this.ptDeplacementMax	= 25;
+				this.ptActionMax		= 30;
+				this.multiPtsAttaque	= 2;
+				this.multiPtsDefense	= 2;
+				this.multiProbaCache	= 0.5;
+				this.multiProbaFouille	= 1;
+				this.goulesMax			= 2;
+			}
+			else if(this.competence == "explorateur")
+			{
+				this.ptSanteMax 		= 100;
+				this.ptDeplacementMax	= 50;
+				this.ptActionMax		= 40;
+				this.multiPtsAttaque	= 1;
+				this.multiPtsDefense	= 0.3;
+				this.multiProbaCache	= 1;
+				this.multiProbaFouille	= 3;
+				this.goulesMax			= 5;
+			}
+			else if(this.competence == "chercheur")
+			{
+				this.ptSanteMax 		= 100;
+				this.ptDeplacementMax	= 25;
+				this.ptActionMax		= 50;
+				this.multiPtsAttaque	= 0.5;
+				this.multiPtsDefense	= 1.5;
+				this.multiProbaCache	= 3;
+				this.multiProbaFouille	= 0.5;
+				this.goulesMax			= 3;
+			}
+		},
+		
 		initialiser : function()
 		{
 		 	this.ptSanteMax			= -1;
@@ -88,9 +125,9 @@ var Personnage = (function() {
 		    this.ptActionMax 		= -1;
 		    this.ptDeplacement 		= -1;
 		    this.ptDeplacementMax 	= -1;
-		    this.ptFaim		 		= 20;
-		    this.ptFaimMax		 	= 20;
-		    this.poidsMax 			= 50;
+		    this.ptFaim		 		= GameRules.init_faimMax();
+		    this.ptFaimMax		 	= GameRules.init_faimMax();
+		    this.poidsMax 			= GameRules.init_poidsMax();
 		    this.gouleLimite 		= -1;
 		    this.competence 		= -1;
 		    this.sacADos 			= new Array();
@@ -781,42 +818,7 @@ var Personnage = (function() {
 			}
 		},
 		
-		initialiserPtsCaract : function()
-		{
-			if(this.competence == "brute")
-			{
-				this.ptSanteMax 		= 140;
-				this.ptDeplacementMax	= 25;
-				this.ptActionMax		= 30;
-				this.multiPtsAttaque	= 2;
-				this.multiPtsDefense	= 2;
-				this.multiProbaCache	= 0.5;
-				this.multiProbaFouille	= 1;
-				this.goulesMax			= 2;
-			}
-			else if(this.competence == "explorateur")
-			{
-				this.ptSanteMax 		= 100;
-				this.ptDeplacementMax	= 50;
-				this.ptActionMax		= 40;
-				this.multiPtsAttaque	= 1;
-				this.multiPtsDefense	= 0.3;
-				this.multiProbaCache	= 1;
-				this.multiProbaFouille	= 3;
-				this.goulesMax			= 5;
-			}
-			else if(this.competence == "chercheur")
-			{
-				this.ptSanteMax 		= 100;
-				this.ptDeplacementMax	= 25;
-				this.ptActionMax		= 50;
-				this.multiPtsAttaque	= 0.5;
-				this.multiPtsDefense	= 1.5;
-				this.multiProbaCache	= 3;
-				this.multiProbaFouille	= 0.5;
-				this.goulesMax			= 3;
-			}
-		},
+		
 		
 		seRetablir : function(idSalleReveil)
 		{

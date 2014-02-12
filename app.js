@@ -1398,6 +1398,7 @@ io.sockets.on('connection', function (socket)
     	{
     		// on récupère son id
 			var id = listePerso[i];
+			var idSousCase = oPersonnage_Manager.GetIdSousCase(id);
 			
 			// si en ligne ET différent de l'user qui a crée l'event
 			if(usersOnline[id] && !oPersonnage_Manager.estMort(id))
@@ -1406,7 +1407,7 @@ io.sockets.on('connection', function (socket)
 				for(var j in usersOnline[id].sockets)
 				{
 					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
-					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousCase(idUser));
+					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, idSousCase);
 				}
 			}
 		}
