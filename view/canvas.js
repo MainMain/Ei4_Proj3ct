@@ -505,19 +505,19 @@ function initialize() {
 		{src:"public/spritesheets/potionMouvement/601.png", id:"601"},
 		{src:"public/spritesheets/potionMouvement/602.png", id:"602"},
 		{src:"public/spritesheets/potionMouvement/603.png", id:"603"}
-		{src:"public/spritesheets/nourriture/700.png", id:"700"}
-		{src:"public/spritesheets/nourriture/701.png", id:"701"}
-		{src:"public/spritesheets/nourriture/702.png", id:"702"}
-		{src:"public/spritesheets/nourriture/703.png", id:"703"}
-		{src:"public/spritesheets/nourriture/704.png", id:"704"}
-		{src:"public/spritesheets/nourriture/705.png", id:"705"}
-		{src:"public/spritesheets/nourriture/706.png", id:"706"}
-		{src:"public/spritesheets/nourriture/707.png", id:"707"}
-		{src:"public/spritesheets/nourriture/708.png", id:"708"}
-		{src:"public/spritesheets/nourriture/709.png", id:"709"}
-		{src:"public/spritesheets/nourriture/710.png", id:"710"}
-		{src:"public/spritesheets/nourriture/711.png", id:"711"}
-		{src:"public/spritesheets/nourriture/712.png", id:"712"}
+		{src:"public/spritesheets/nourriture/700.png", id:"700"},
+		{src:"public/spritesheets/nourriture/701.png", id:"701"},
+		{src:"public/spritesheets/nourriture/702.png", id:"702"},
+		{src:"public/spritesheets/nourriture/703.png", id:"703"},
+		{src:"public/spritesheets/nourriture/704.png", id:"704"},
+		{src:"public/spritesheets/nourriture/705.png", id:"705"},
+		{src:"public/spritesheets/nourriture/706.png", id:"706"},
+		{src:"public/spritesheets/nourriture/707.png", id:"707"},
+		{src:"public/spritesheets/nourriture/708.png", id:"708"},
+		{src:"public/spritesheets/nourriture/709.png", id:"709"},
+		{src:"public/spritesheets/nourriture/710.png", id:"710"},
+		{src:"public/spritesheets/nourriture/711.png", id:"711"},
+		{src:"public/spritesheets/nourriture/712.png", id:"712"},
 		{src:"public/spritesheets/nourriture/713.png", id:"713"}
 	];
 
