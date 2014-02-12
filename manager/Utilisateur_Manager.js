@@ -13,8 +13,6 @@ function Utilisateur_Manager(){}
 
 // --- METHODES D'INSTANCE
 
-
-
 Utilisateur_Manager.Load = function()
 {
 	var context = Utilisateur_Manager;
@@ -69,25 +67,25 @@ Utilisateur_Manager.LoadUser = function(idUser)
  */
 Utilisateur_Manager.SetNumEquipe = function(idUser, numEquipe, idSession)
 {
-	this.listeUtilisateurs[idUser].numEquipe = numEquipe;
-	this.listeUtilisateurs[idUser].idSession = idSession;
+	this.listeUtilisateurs[idUser].setNumEquipe(numEquipe);
+	this.listeUtilisateurs[idUser].setIdSession(idSession);
 	
-	oUtilisateur_BD.SetUtilisateur(this.listeUtilisateurs[idUser], function(reponse)
-	{
-		if (reponse == -1)
-		{
-			console.log("/!\ UTILISATEUR_MANAGER : erreur ecriture ");
-		}
-		else
-		{
-			console.log("UTILISATEUR_MANAGER : MAJ du numéro d'équipe pour l'id " + idUser + " OK!");
-		}
-	});
+	oUtilisateur_BD.SetUtilisateur(this.listeUtilisateurs[idUser], function(reponse){});
 },
 
 /*
  * FONCTIONS DE LECTURE
  */
+ 
+Utilisateur_Manager.getIdSession = function(idUser)
+{
+	if(this.listeUtilisateurs[idUser])
+	{
+		return this.listeUtilisateurs[idUser].getIdSession();
+	}
+	return -1;
+},
+
 Utilisateur_Manager.exist = function(idUser)
 {
 	if(this.listeUtilisateurs[idUser])
@@ -104,6 +102,7 @@ Utilisateur_Manager.GetNumEquipe = function(idUser)
 
 Utilisateur_Manager.getPseudo = function(idUser)
 {
+	console.log("idUser = " + idUser);
 	return this.listeUtilisateurs[idUser].getPseudo();
 },
 
@@ -130,34 +129,38 @@ Utilisateur_Manager.findIdUser = function(idPersonnage)
 	return -1;
 },
 
-Utilisateur_Manager.getScore = function(idUser)
-{
-	return this.listeUtilisateurs[idUser].getScore();
-},
-
-Utilisateur_Manager.setScore = function(idUser, newScore)
-{
-	return this.listeUtilisateurs[idUser].setScore(newScore);
-},
-
-Utilisateur_Manager.GetUsersOrderedByScore = function()
+Utilisateur_Manager.getUsers = function()
 {
 	var users = new Array();
-	var score;
-	
 	for(var i in this.listeUtilisateurs)
 	{
-		score = this.getScore(i);
-		user  = this.getPseudo(i);
-		if(!users[score])
-		{
-			users[score] = new Array();
-		}
-		users[score].push(user);
-		console.log("SCORE : " + score + " - " + user);
+		users.push(this.listeUtilisateurs[i].getUser());
 	}
-	
 	return users;
+},
+
+Utilisateur_Manager.getUser = function(idUser)
+{
+	if(this.listeUtilisateurs[idUser])
+	{
+		return this.listeUtilisateurs[idUser].getUser();
+	}
+	else
+	{
+		return -1;
+	}
+},
+
+Utilisateur_Manager.deleteUser = function(idUser)
+{
+	var context = this;
+	oUtilisateur_BD.deleteUser(idUser, function(reponse)
+	{
+		if(reponse == 1)
+		{
+			delete context.listeUtilisateurs[idUser];
+		}
+	});
 },
 
 Utilisateur_Manager.Save = function()

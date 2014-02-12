@@ -160,6 +160,48 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
     });
 },
 
+Personnage_BD.deletePerso = function(id, callbackDeletePerso)
+{
+	var PersonnageModel = mongoose.model('Personnage');
+    var Utilisateurmodel = mongoose.model('Utilisateur');
+	
+	Utilisateurmodel.find({_id : id}, function(err, users)
+	{
+		if(err)
+		{
+			callbackDeletePerso(-1);
+			throw err;
+		}
+		
+		if(users[0])
+		{
+			PersonnageModel.find({_id: users[0].personnage}, function (err, perso)
+			{
+				if(perso[0])
+				{
+					PersonnageModel.remove({_id : id}, function(err)
+					{
+						if(err)
+						{
+							callbackDeletePerso(-1);
+							throw err;
+						}
+						callbackDeletePerso(1);
+					});
+				}
+				else
+				{
+					callbackDeletePerso(-1);
+				}
+			});
+		}
+		else
+		{
+			callbackDeletePerso(-1);
+		}
+	});
+},
+
 /**
  * CREER UN PERSONNAGE A LA CREATION DE L'UTILISATEUR
  * retourn le personage si le perso est bien créé

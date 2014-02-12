@@ -96,6 +96,12 @@ app.use(express.session({secret: "testDeMainMain"}));
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(path.join(__dirname, '/')));
+app.use(function(req, res, next)
+{
+	res.status(404);
+	
+	res.send('Not found');
+});
 
 /*
  * CONFIGURATION DES MANAGERS
@@ -104,14 +110,26 @@ var optionAccueil = {"username": null, "errorLogin": null, "InfoInscription": nu
 
 function restrict(req, res, next)
 {
-	if (req.session.username)
+	var idSession = oSession_Manager.getIdSessionEnCours();
+	console.log("SUCE MON GROS : " + idSession + " ! ");
+	if (req.session.username && idSession >= 0)
 	{
 		next();
 	}
 	else
 	{
-		optionAccueil.errorLogin = 'Veuillez vous connectez !';
+		if(req.session.username)
+		{
+			optionAccueil.username = req.session.username;
+			optionAccueil.errorLogin = 'Aucune session en cours !';
+		}
+		else
+		{
+			optionAccueil.errorLogin = 'Veuillez vous connectez !';
+		}
 		res.render('accueil', optionAccueil);
+		
+		optionAccueil.username = null;
 		optionAccueil.errorLogin = null;
 	}
 }
@@ -124,12 +142,15 @@ function restrictAdmin(req, res, next)
 	}
 	else
 	{
-		res.render('noAdmin');
+		res.status(404);
+		
+		res.send('Not found');
 	}
 }
 /*
  * CONFIGURATION DES ROUTES
  */
+
 app.get('/', function fonctionIndex(req, res)
 {
 	var s = req.session;
@@ -143,7 +164,7 @@ app.get('/', function fonctionIndex(req, res)
 	optionAccueil.sessionID = null;
 });
 
-app.get('/admin', restrictAdmin, function fonctionIndex(req, res)
+app.get('/admin', restrictAdmin, function fonctionAdmin(req, res)
 {
 	var s = req.session;
 	var options = { "username" : s.username, "sessionID" : s.idUser};
@@ -151,33 +172,72 @@ app.get('/admin', restrictAdmin, function fonctionIndex(req, res)
 	res.render('admin', options);
 });
 
+app.post('/admin', restrictAdmin, function fonctionAdmin(req, res)
+{
+	var s = req.session;
+	var idUser = req.param("idUser");
+	var options = { "username" : s.username, "sessionID" : s.idUser};
+	
+	oPersonnage_Manager.deletePerso(idUser);
+	
+	if(usersOnline[idUser])
+	{
+		for(var i in usersOnline[idUser].sockets)
+		{
+			usersOnline[idUser].sockets[i].emit("DECONEXION_SC", "Un administrateur a supprimer votre compte ! Vous aller être déconnecté.");
+		}
+	}
+	
+	res.render('admin', options);
+});
 
-app.get('/jeu', function fonctionIndex(req, res)
+app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
+{
+	var s		= req.session;
+	var action	= req.param("action");
+	var year	= parseInt(req.param("year"));
+	var month	= parseInt(req.param("month"));
+	var day		= parseInt(req.param("day"));
+	var options = { "username" : s.username, "sessionID" : s.idUser};
+	
+	var date = new Date(year, month, day, 0, 0, 0, 0);
+	
+	switch(action)
+	{
+		case "demarrer":
+			oSession_Manager.demarrer(date);
+			break;
+		case "update":
+			oSession_Manager.definirDateFin(date);
+			break;
+		case "stop":
+			oSession_Manager.stopper();
+			break;
+	}
+	res.render('admin', options);
+});
+
+app.get('/jeu', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
 	var options;
 	
-	if (typeof s.username === "undefined")
-	{
-		optionAccueil.errorLogin = "Vous devez vous connecter avant de jouer ! ";
-		
-		res.render('accueil', optionAccueil);
-		
-		optionAccueil.errorLogin = null;
-	}
-	else
-	{
-		options = { "username": s.username, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), "sessionID" : s.idUser };
-		
-		res.render('game', options);
-	}
+	var isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
+	options = { "username": s.username, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), "sessionID" : s.idUser, "isUpToDate" : isUpToDate};
+	
+	console.log("Id Session En Cours : " + oSession_Manager.getIdSessionEnCours());
+	console.log("Id Session Du Joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
+	
+	res.render('game', options);
 });
 
 app.put('/jeu', restrict, function fonctionJeu(req, res)
 {
 	var b = req.body;
 	var s = req.session;
-	var options = { "username": s.username, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), "sessionID" : s.idUser };
+	var idSession = oSession_Manager.getIdSessionEnCours();
+	var isUpToDate = (idSession == oUtilisateur_Manager.getIdSession(s.idUser));
+	var options = { "username": s.username, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), "sessionID" : s.idUser, "isUpToDate" : isUpToDate};
 	
 	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")
 	{
@@ -185,6 +245,7 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe, idSession);
 		oPersonnage_Manager.SetCompetence(s.idUser, b.competence, b.equipe);
 		options.idEquipe = b.equipe;
+		options.isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
 	}
 	
 	res.render('game', options);
@@ -201,7 +262,9 @@ app.get('/regles', function fonctionIndex(req, res)
 app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options = { "username": s.username, "sessionID" : s.idUser, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser) };
+	var idSession = oSession_Manager.getIdSessionEnCours();
+	var isUpToDate = (idSession == oUtilisateur_Manager.getIdSession(s.idUser));
+	var options = { "username": s.username, "sessionID" : s.idUser, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), "isUpToDate" : isUpToDate};
 	
 	res.render('chat-equipe', options);
 });
@@ -319,7 +382,10 @@ callbackInscription = function(reponseInscription, req, res)
 
 app.delete("/", function (req, res)
 {
-	req.session.destroy();
+	if(req.session.username)
+	{
+		req.session.destroy();
+	}
 	res.render('accueil', optionAccueil);
 });
 
@@ -577,6 +643,18 @@ io.sockets.on('connection', function (socket)
 		{
 			scores = oScore_Manager.getScoreCurrentSession(param);
 			socket.emit('CLASSEMENT_SC', scores);
+		}
+		
+		if(page == "admin")
+		{
+			users = oUtilisateur_Manager.getUsers();
+			socket.emit('USERS_ADMIN_SC', users);
+		}
+		
+		if(page == "adminEdit")
+		{
+			user = oUtilisateur_Manager.getUser(param);
+			socket.emit('EDIT_ADMIN_SC', user);
 		}
 		
 		console.log("Connexion de " + user + " à la page " + page);

@@ -141,7 +141,7 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
     });
 },
 
-Score_BD.Creation = function (idUser, idSession, callback) {
+Score_BD.Creation = function (idUser, idSession) {
 
     var ScoreModel = mongoose.model('Score');
     var newScore = new ScoreModel();
@@ -161,7 +161,6 @@ Score_BD.Creation = function (idUser, idSession, callback) {
             throw err;
         }
         console.log("SCORE_BD : Ajout d'un score -> " + idUser + " <-> " + idSession);
-        callback();
 	});
     return newScore;
 },

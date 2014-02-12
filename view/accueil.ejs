@@ -69,14 +69,14 @@
 	</nav> <!-- #main-navigation -->
 	<!-- Login form -->
 	<% if (username == null) { %>
-		<form id="LoginForm" name=LoginForm" class="loginform" method=POST action="/">
+		<form id="LoginForm" name="LoginForm" class="loginform" method="POST" action="/">
 			Connectez vous : <input type="text" id="PseudoLogin" name="username" placeholder="Entrez votre Pseudo" value="" required="">
 			Mot de passe : <input type="password" id="PasswordLogin" name="password" placeholder="Entrez votre Mot de passe" value="" required="">
 			<input type="submit" id="SubmitLogin" name="Submit" value="Encore vivant ?!">
 		</form>
 	<% } else { %>
 		<form id="LogoutForm" class="logoutform" action="/" method=POST>
-			<input type=hidden name="_method" value="delete"/>
+			<input type="hidden"name="_method" value="delete"/>
 			<div> Bonjour <%= username %></div>
 			<input type="submit" value="Retourner chez les vivants ?" align=right>
 		</form>
@@ -163,6 +163,13 @@
 				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "accueil");
 			});
 		<% } %>
+		
+		socket.on("DECONEXION_SC", function(msg)
+		{
+			alert(msg);
+			$.post("/", { _method: "delete" } );
+			document.location = "/";
+		});
 		
 	</script>
 </body>
