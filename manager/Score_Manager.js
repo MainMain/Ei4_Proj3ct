@@ -83,7 +83,6 @@ Score_Manager.Save = function()
 					console.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess+" OK !");
 				}
 			});
-			//}
 		}
 	});
 },
@@ -101,7 +100,26 @@ Score_Manager.nouvelleSession = function(idSession)
 		{
 			console.log("------> SC_MANAGER : nvlle session : creation score : idUser = " + tabId[i]);
 			// il crée un score avec l'id de ma nouvelle session
-			oScore_BD.Creation(tabId[i], idSession);
+			oScore_BD.Creation(tabId[i], idSession, function(idScore)
+			{
+				oScore_BD.GetScoreByIdUser(idScore, function(score)
+				{
+					// chargement des scores en mémoire
+					console.log("SC_MANAGER : nouvelleSession() - idSession = " + idSession );
+					if (score == -1)
+					{
+						console.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
+					}
+					else
+					{
+						// enregistrement du score
+						context.listeScores[idUser] = {};
+						context.listeScores[idUser][idSession] = score;
+						console.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser+"<->"+idSession+"<->"+score.id);
+					}
+				});		
+			});
+			
 		}
 	});
 },
@@ -127,9 +145,6 @@ Score_Manager.nouveauJoueur = function(idUser, idSession)
 			}
 			else
 			{
-				//var iduser =  score.idUser;
-				//var idsession =  score.idSession;
-				
 				// enregistrement du score
 				context.listeScores[idUser] = {};
 				context.listeScores[idUser][idSession] = score;
