@@ -160,7 +160,15 @@
 				}
 				$("#msgTextBox").val("");
 			}
-
+			
+			socket.on("DECONEXION_SC", function(msg)
+			{
+				alert(msg);
+				$.post("/", { _method: "delete" }, function()
+				{
+					document.location = "/";
+				});
+			});
 		</script>
 </body>
 </html>

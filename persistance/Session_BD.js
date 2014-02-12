@@ -52,12 +52,12 @@ Session_BD.GetSession = function(idSession, callbackGetSession) {
 	
 },
 
-Session_BD.SetSession = function (sessionToSave, callbackSetSession)
+Session_BD.SetSession = function (idSessionSet, dateDebutSet, dateFinSet)
 {
     var SessionModel = mongoose.model('Session');
     var newSession = SessionModel();
 
-    SessionModel.find({id: session.id}, function (err, newSession) 
+    SessionModel.find({id: idSessionSet}, function (err, newSession) 
     {
         if (err) 
         {
@@ -65,17 +65,17 @@ Session_BD.SetSession = function (sessionToSave, callbackSetSession)
             throw err;
         }
 
-        if (typeof newSession[0] === "undefined") {
+        if (typeof newSession[0] === "undefined")
+		{
             console.log("SESSION_BD : SetSession() : undefined ! ");
-            callbackSetPersonnage(-1);
         } 
         else 
         {
-        	SessionModel.update({id: session.id}, 
+        	SessionModel.update({id: idSessionSet}, 
         	{
-        		idSessionEnCours	: sessionToSave.idSessionEnCours,
-        		dateDebut			: sessionToSave.dateDebut,
-        		dateFin				: sessionToSave.dateFin,
+        		idSessionEnCours	: idSessionSet,
+        		dateDebut			: dateDebutSet,
+        		dateFin				: dateFinSet
             },
             function (err) 
             {
@@ -83,12 +83,9 @@ Session_BD.SetSession = function (sessionToSave, callbackSetSession)
                 {
                 	throw err;
                 }
-					
-                console.log("SESSION_BD : Mis à jour de la session : " + Session[0].dateDebut +" -> " + Session[0].dateFin);
-				callbackSetPersonnage(1);
+                console.log("SESSION_BD : Mis à jour de la session : " + newSession[0].dateDebut +" -> " + newSession[0].dateFin);
             });
         }
-
     });
 },
 

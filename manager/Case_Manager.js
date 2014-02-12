@@ -80,6 +80,7 @@ Case_Manager.RemplirCases = function()
 		// génére le nombre d'item pour cette case
 		nbrItems = (Math.floor(Math.random() * (5-0) + 0 ));
 		
+		// récupération et ajout d'items
 		for (var i = 0; i < nbrItems; i++)
 		{
 			var item = oItem_Manager.GetItemAleatoire();
@@ -188,7 +189,7 @@ Case_Manager.Fouille = function(idCase, probaObjetPerso)
 	console.log("CASE_MANAGER : Fouille() : proba = " + proba + " - probaObjetCase  => brut = " + this.listeCases[idCase].probaObjet + " - net = " + probaObjetCase);
 	if (proba < probaObjetCase)
 	{
-	// création d'un item
+		// création d'un item
 		newItem = oItem_Manager.GetItemAleatoire();
 		console.log("CASE_MANAGER : Fouille() : Nouvel objet decouvert ! : "+ newItem.nom);
 	}

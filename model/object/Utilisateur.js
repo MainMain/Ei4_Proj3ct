@@ -14,7 +14,6 @@ var Utilisateur = (function() {
 	Utilisateur.id;
 	Utilisateur.pseudo;
 	Utilisateur.email;
-	Utilisateur.pass;
 	Utilisateur.numEquipe;
 	Utilisateur.idPersonnage;
 	Utilisateur.idSession;
@@ -34,8 +33,23 @@ var Utilisateur = (function() {
 	}
 
 	// --- METHODES D'INSTANCE
-	Utilisateur.prototype = {
-
+	Utilisateur.prototype =
+	{
+		setScore : function(newScore)
+		{
+			this.scoreByMeutreCumule = newScore;
+		},
+		
+		setNumEquipe : function(newNumEquipe)
+		{
+			this.numEquipe = newNumEquipe;
+		},
+		
+		setIdSession : function(newIdSession)
+		{
+			this.idSession = newIdSession;
+		},
+		
 		getIdSession : function()
 		{
 			return this.idSession;
@@ -61,9 +75,9 @@ var Utilisateur = (function() {
 			return this.scoreByMeutreCumule;
 		},
 		
-		setScore : function(newScore)
+		getUser : function()
 		{
-			this.scoreByMeutreCumule = newScore;
+			return this;
 		},
 
 	};

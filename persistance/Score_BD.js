@@ -161,9 +161,9 @@ Score_BD.Creation = function (idUser, idSession, callback) {
             throw err;
         }
         console.log("SCORE_BD : Ajout d'un score -> " + idUser + " <-> " + idSession);
-        callback();
+        callback(newScore.id);
 	});
-    return newScore;
+	
 },
 
 

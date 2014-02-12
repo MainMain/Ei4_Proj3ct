@@ -65,5 +65,11 @@ GameRules.jeu_score_perte_tue = function() 					{ return 1; },
 GameRules.faim_malus = function()							{ return 10; },
 // multiplicateur minimal de malus
 GameRules.faim_malus_max = function()						{ return 0.3; },
+
+//********** INITIALISATION DU PERSONNAGE **********
+GameRules.init_faimMax = function()							{ return 20; },
+GameRules.init_poidsMax = function()						{ return 50; },
+
+
 // export
 module.exports = GameRules;
