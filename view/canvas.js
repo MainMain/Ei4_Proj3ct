@@ -453,14 +453,46 @@ function initialize() {
 		{src:"public/spritesheets/arme/101.png", id:"101"},
 		{src:"public/spritesheets/arme/102.png", id:"102"},
 		{src:"public/spritesheets/arme/103.png", id:"103"},
+		{src:"public/spritesheets/arme/104.png", id:"104"},
+		{src:"public/spritesheets/arme/105.png", id:"105"},
+		{src:"public/spritesheets/arme/106.png", id:"106"},
+		{src:"public/spritesheets/arme/107.png", id:"107"},
+		{src:"public/spritesheets/arme/108.png", id:"108"},
+		{src:"public/spritesheets/arme/109.png", id:"109"},
+		{src:"public/spritesheets/arme/110.png", id:"110"},
+		{src:"public/spritesheets/arme/111.png", id:"111"},
+		{src:"public/spritesheets/arme/112.png", id:"112"},
+		{src:"public/spritesheets/arme/113.png", id:"113"},
+		{src:"public/spritesheets/arme/114.png", id:"114"},
+		{src:"public/spritesheets/arme/115.png", id:"115"},
+		{src:"public/spritesheets/arme/116.png", id:"116"},
+		{src:"public/spritesheets/arme/117.png", id:"117"},
+		{src:"public/spritesheets/arme/118.png", id:"118"},
+		{src:"public/spritesheets/arme/119.png", id:"119"},
+		{src:"public/spritesheets/arme/120.png", id:"120"},
+		{src:"public/spritesheets/arme/121.png", id:"121"},
 		{src:"public/spritesheets/armure/200.png", id:"200"},
 		{src:"public/spritesheets/armure/201.png", id:"201"},
 		{src:"public/spritesheets/armure/202.png", id:"202"},
 		{src:"public/spritesheets/armure/203.png", id:"203"},
+		{src:"public/spritesheets/armure/204.png", id:"204"},
+		{src:"public/spritesheets/armure/205.png", id:"205"},
+		{src:"public/spritesheets/armure/206.png", id:"206"},
+		{src:"public/spritesheets/armure/207.png", id:"207"},
+		{src:"public/spritesheets/armure/208.png", id:"208"},
+		{src:"public/spritesheets/armure/209.png", id:"209"},
+		{src:"public/spritesheets/armure/210.png", id:"210"},
+		{src:"public/spritesheets/armure/211.png", id:"211"},
+		{src:"public/spritesheets/armure/212.png", id:"212"},
 		{src:"public/spritesheets/odd/300.png", id:"300"},
 		{src:"public/spritesheets/odd/301.png", id:"301"},
 		{src:"public/spritesheets/odd/302.png", id:"302"},
 		{src:"public/spritesheets/odd/303.png", id:"303"},
+		{src:"public/spritesheets/odd/304.png", id:"304"},
+		{src:"public/spritesheets/odd/305.png", id:"305"},
+		{src:"public/spritesheets/odd/306.png", id:"306"},
+		{src:"public/spritesheets/odd/307.png", id:"307"},
+		{src:"public/spritesheets/odd/308.png", id:"308"},
 		{src:"public/spritesheets/potionSoin/400.png", id:"400"},
 		{src:"public/spritesheets/potionSoin/401.png", id:"401"},
 		{src:"public/spritesheets/potionSoin/402.png", id:"402"},
@@ -473,6 +505,20 @@ function initialize() {
 		{src:"public/spritesheets/potionMouvement/601.png", id:"601"},
 		{src:"public/spritesheets/potionMouvement/602.png", id:"602"},
 		{src:"public/spritesheets/potionMouvement/603.png", id:"603"}
+		{src:"public/spritesheets/nourriture/700.png", id:"700"}
+		{src:"public/spritesheets/nourriture/701.png", id:"701"}
+		{src:"public/spritesheets/nourriture/702.png", id:"702"}
+		{src:"public/spritesheets/nourriture/703.png", id:"703"}
+		{src:"public/spritesheets/nourriture/704.png", id:"704"}
+		{src:"public/spritesheets/nourriture/705.png", id:"705"}
+		{src:"public/spritesheets/nourriture/706.png", id:"706"}
+		{src:"public/spritesheets/nourriture/707.png", id:"707"}
+		{src:"public/spritesheets/nourriture/708.png", id:"708"}
+		{src:"public/spritesheets/nourriture/709.png", id:"709"}
+		{src:"public/spritesheets/nourriture/710.png", id:"710"}
+		{src:"public/spritesheets/nourriture/711.png", id:"711"}
+		{src:"public/spritesheets/nourriture/712.png", id:"712"}
+		{src:"public/spritesheets/nourriture/713.png", id:"713"}
 	];
 
 	// application du background Preload
@@ -1257,7 +1303,7 @@ function message()
 				if(ListeMessages[i]!=undefined)
 				{
 					// mise de l'item dans une variable
-					var msg = ListeMessages[i];+-
+					var msg = ListeMessages[i];
 
 					// mise de l'item dans une variable
 					NewListe.push(msg);
