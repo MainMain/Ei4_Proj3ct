@@ -112,14 +112,14 @@ Utilisateur_Manager.GetNumEquipe = function(idUser)
 
 Utilisateur_Manager.getPseudo = function(idUser)
 {
-	try
-	{
+	//try
+	//{
 		return this.listeUtilisateurs[idUser].getPseudo();
-	}
-	catch(err)
-	{
-		console.log("/!\ ERREUR ! UTILISATEUR_MANAGER : getPseudo : " + err);
-	}
+	//}
+	//catch(err)
+	//{
+	//	console.log("/!\ ERREUR ! UTILISATEUR_MANAGER : getPseudo : " + err);
+	//}
 	return 0;
 },
 

@@ -71,7 +71,7 @@ Item_BD.GetListItem = function()
 	var file = fs.readFileSync('./persistance/itemListe.txt', "utf8");
 
 	
-	var lignes = file.split("\r\n");
+	var lignes = file.split("\n");
 	
 	for(var i in lignes)
 	{
