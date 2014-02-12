@@ -15,35 +15,40 @@ function Case_Manager(){}
 
 Case_Manager.Load = function()
 {
-	// creation des listes
-	var idCases = new Array();
-	this.listeCases = new Array();
-	
-	// pr le callback
 	var context = this;
-	
-	// récupération des clés
-	idCases = oCase_BD.GetCasesId();
-	// pour chaque case
-	for(var i in idCases)
+	oCase_BD.Initialiser(function()
 	{
-		var id = idCases[i];
-		// charge la case en mémoire par rapport à son id
-		oCase_BD.GetCaseById(id, function(idCase, reponse)
+		// creation des listes
+		var idCases = new Array();
+		context.listeCases = new Array();
+	
+		// récupération des clés
+		idCases = oCase_BD.GetCasesId(function(idCases)
 		{
-			// gestion des erreurs
-			if(reponse == -1 || reponse == -2)
+			console.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
+			// pour chaque case
+			for(var i in idCases)
 			{
-				console.log("Erreur Case : " + idCase);
-			}
-			// enregistrement effectif
-			else
-			{
-				//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
-				context.listeCases[idCase] = reponse;
+				var id = idCases[i];
+			
+				// charge la case en mémoire par rapport à son id
+				oCase_BD.GetCaseById(id, function(idCase, reponse)
+				{
+					// gestion des erreurs
+					if(reponse == -1 || reponse == -2)
+					{
+						console.log("Erreur Case : " + idCase);
+					}
+					// enregistrement effectif
+					else
+					{
+						console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+						context.listeCases[idCase] = reponse;
+					}
+				});
 			}
 		});
-	}
+	});
 },
 
 /*
@@ -52,8 +57,9 @@ Case_Manager.Load = function()
 Case_Manager.AjouterItem = function(idCase, item)
 {
 	// ajoute de l'objet case
-	this.listeCases[idCase].ajouterItem(item);
 	console.log("CASE_MANAGER : AjouterItem() : Ajout de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
+	this.listeCases[idCase].ajouterItem(item);
+	
 },
 
 Case_Manager.SupprimerItem = function(idCase, item)
@@ -61,6 +67,25 @@ Case_Manager.SupprimerItem = function(idCase, item)
 	// suprime de l'objet case
 	this.listeCases[idCase].supprimerItem(item);
 	console.log("CASE_MANAGER : SupprimerItem() : Suppression de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
+},
+
+Case_Manager.RemplirCases = function()
+{
+	// =>rempli aléatoirement les cases d'items
+	
+	var nbrItems;
+	// pour chaque case
+	for (curCase in this.listeCases)
+	{
+		// génére le nombre d'item pour cette case
+		nbrItems = (Math.floor(Math.random() * (5-0) + 0 ));
+		
+		for (var i = 0; i < nbrItems; i++)
+		{
+			var item = oItem_Manager.GetItemAleatoire();
+			curCase.ajouterItem(item);
+		}
+	}
 },
 
 Case_Manager.AttaqueGoule = function(idCase)
@@ -106,8 +131,12 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 		"actionOk" 	: true,
 	};
 	
+	console.log(">> CASE_MANAGER : AttaqueDeGoules() : " + idCase);
 	// si pas de goules, on quitte 
-	if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
+	try
+	{
+		if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
+	
 	
 	// calcul le nombre de goules attaquantes
 	var nbrGoulesAttaquantes = Math.floor(Math.random() * this.listeCases[idCase].getNbrGoules());
@@ -139,6 +168,12 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 			"actionOk" 	: actionOk,
 		};
 		console.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
+	
+	}
+	catch(err)
+	{
+		console.log("/!\ >>> ERREUR : CASE_MANAGER : AttaqueDeGoules : " + err);
+	}
 	return a;
 },
 
@@ -193,7 +228,16 @@ Case_Manager.nouvelleJournee = function()
 },
 Case_Manager.GetNombreGoules = function(idCase)
 {
-	return this.listeCases[idCase].getNbrGoules();
+	console.log(">> CASE_MANAGER : GetNombreGoules - idCase = " + idCase);
+	try
+	{
+		return this.listeCases[idCase].getNbrGoules();
+	}
+	catch(err)
+	{
+		console.log("/!\ >>> ERREUR : CASE_MANAGER : GetNombreGoules : " + err);
+		return -1;
+	}
 },
 
 Case_Manager.getZoneSure = function(numEquipe)

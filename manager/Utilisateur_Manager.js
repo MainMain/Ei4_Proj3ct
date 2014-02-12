@@ -97,13 +97,28 @@ Utilisateur_Manager.exist = function(idUser)
 
 Utilisateur_Manager.GetNumEquipe = function(idUser)
 {
-	return this.listeUtilisateurs[idUser].getNumEquipe();
+	try 
+	{
+		return this.listeUtilisateurs[idUser].getNumEquipe();
+	}
+	catch(err)
+	{
+		console.log("/!\ ERREUR ! UTILISATEUR_MANAGER : GetNumEquipe : " + err);
+		return -1;
+	}
 },
 
 Utilisateur_Manager.getPseudo = function(idUser)
 {
-	console.log("idUser = " + idUser);
-	return this.listeUtilisateurs[idUser].getPseudo();
+	try
+	{
+		return this.listeUtilisateurs[idUser].getPseudo();
+	}
+	catch(err)
+	{
+		console.log("/!\ ERREUR ! UTILISATEUR_MANAGER : getPseudo : " + err);
+	}
+	return 0;
 },
 
 Utilisateur_Manager.GetIdPersonnage = function(idUser)

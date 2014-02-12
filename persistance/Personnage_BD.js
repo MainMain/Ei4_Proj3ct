@@ -26,6 +26,7 @@ function Personnage_BD() {
  */
 Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
 {
+	console.log("------------------------------_-_-> " + personnageToSave.ptFaim);
     var PersonnageModel = mongoose.model('Personnage');
     var nouveauPerso = PersonnageModel();
 

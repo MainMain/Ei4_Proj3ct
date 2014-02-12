@@ -55,7 +55,7 @@ database.Initialiser = function() {
 		poidsMax 			: Number,
 		gouleLimite 		: Number,
 		competence 			: String,
-		idSalleEnCours 		: Number,
+		idSalleEnCours 		: String,
 		mode 				: Number,
 		multiPtsAttaque 	: Number,
 		multiPtsDefense 	: Number,
@@ -86,7 +86,7 @@ database.Initialiser = function() {
 	
 	/***** CREATION DU SCHEMA "CASE" ****/
 	var CaseSchema = new mongoose.Schema({
-		id : Number,
+		id : String,
 		nom : String,
 		description : String,
 		probaObjet : Number,

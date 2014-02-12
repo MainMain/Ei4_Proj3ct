@@ -30,7 +30,7 @@ var SpaceItem = 32;
 var SpacePerso = 64;
 
 //Police des labels
-var PoliceLabel="14px monospace";
+var PoliceLabel="14px Consolas";
 
 //label.lineHeight
 var _LineHeight = 15;
@@ -207,13 +207,13 @@ var _ContArmureW = 30;
 
 //Placement Conteneur des Boutons liste
 var _ContBtnsListesX = _ContModeX;
-var _ContBtnsListesY = 510;
+var _ContBtnsListesY = 500;
 var _ContBtnsListesW = 140;
 var _ContBtnsListesH = 2*H;
 
 //Placement du label nombre de nouveaux messages
-var _labelNombreNouvMsgX=_ContBtnsListesX + 150;
-var _labelNombreNouvMsgY=_ContBtnsListesY + 20;
+var _labelNombreNouvMsgX=_ContBtnsListesX + _ContBtnsListesW/3;
+var _labelNombreNouvMsgY=_ContBtnsListesY + 100;
 
 //Placement label Choix Mode
 var _labelBtnsListesX = _ContBtnsListesX+2;
@@ -252,7 +252,7 @@ var _ContMapH = 420;
 var _ContMapW = 746;
 
 //Placement du dernier message
-var _labelDernierMessageX = _ContMapX;
+var _labelDernierMessageX = _labelPtsVX;
 var _labelDernierMessageY = _ContMapY-20;
 
 //------------------- Zone 14 : Labels de retour------------------------------------------------------
@@ -322,7 +322,6 @@ function initialize() {
 	// ** Mise en place barre de chargement      * 
 	// *******************************************
 	var manifest = [
-		{src:"public/BackgroundPreload.jpg", id:"idBackgroundPreload"}, 
 		{src:"public/Background_liste.jpg", id:"idBackgroundListe"},   
 		{src:"public/Background_1.jpg", id:"idBackground_1"}, 
 		{src:"public/Background_11.jpg", id:"idBackground_11"},  
@@ -348,12 +347,14 @@ function initialize() {
 		{src:"public/Boutons/FouilleGreen.png", id:"idBtnFouilleGreen"},
 		{src:"public/Boutons/FouilleRed.png", id:"idBtnFouilleRed"},
 		{src:"public/Boutons/Joueurs.png", id:"idBtnJoueurs"},
-		{src:"public/Boutons/JoueurGris.png", id:"idBtnJoueurGris"},
+		{src:"public/Boutons/JoueursGris.png", id:"idBtnJoueursGris"},
 		{src:"public/Boutons/Utiliser.png", id:"idBtnUtiliser"},
 		{src:"public/Boutons/UtiliserGris.png", id:"idBtnUtiliserGris"},
 		{src:"public/Boutons/Annuler.png", id:"idBtnAnnuler"},
 		{src:"public/Boutons/Zombie.png", id:"idBtnZombie"},
 		{src:"public/Boutons/ZombieGris.png", id:"idBtnZombieGris"},
+		{src:"public/Boutons/Revivre.png", id:"idBtnRevivre"},
+		{src:"public/Boutons/Retour.png", id:"idBtnRetour"},
 		{src:"public/Boutons/LArrow.png", id:"idBtnLArrow"},
 		{src:"public/Boutons/Left.png", id:"idBtnLeft"},
 		{src:"public/Boutons/Right.png", id:"idBtnRight"},
@@ -391,27 +392,42 @@ function initialize() {
 		{src:"public/map/2-1.png", id:"2-1"},
 		{src:"public/map/2-2.png", id:"2-2"},
 		{src:"public/map/1.png", id:"1"},
-		{src:"public/map/2.png", id:"2"},
+		{src:"public/map/2_a.png", id:"2_a"},
+		{src:"public/map/2_b.png", id:"2_b"},
 		{src:"public/map/3.png", id:"3"},
-		{src:"public/map/4.png", id:"4"},
+		{src:"public/map/4_a.png", id:"4_a"},
+		{src:"public/map/4_b.png", id:"4_b"},
+		{src:"public/map/4_c.png", id:"4_c"},
+		{src:"public/map/4_d.png", id:"4_d"},
 		{src:"public/map/5.png", id:"5"},
 		{src:"public/map/6.png", id:"6"},
 		{src:"public/map/7.png", id:"7"},
 		{src:"public/map/8.png", id:"8"},
-		{src:"public/map/9.png", id:"9"},
+		{src:"public/map/9_a.png", id:"9_a"},
+		{src:"public/map/9_b.png", id:"9_b"},
+		{src:"public/map/9_c.png", id:"9_c"},
+		{src:"public/map/9_d.png", id:"9_d"},
 		{src:"public/map/10.png", id:"10"},
 		{src:"public/map/11.png", id:"11"},
 		{src:"public/map/12.png", id:"12"},
 		{src:"public/map/13.png", id:"13"},
 		{src:"public/map/14.png", id:"14"},
 		{src:"public/map/15.png", id:"15"},
-		{src:"public/map/16.png", id:"16"},
-		{src:"public/map/17.png", id:"17"},
-		{src:"public/map/18.png", id:"18"},
-		{src:"public/map/19.png", id:"19"},
+		{src:"public/map/16_a.png", id:"16_a"},
+		{src:"public/map/16_b.png", id:"16_b"},
+		{src:"public/map/16_c.png", id:"16_c"},
+		{src:"public/map/17_a.png", id:"17_a"},
+		{src:"public/map/17_b.png", id:"17_b"},
+		{src:"public/map/17_c.png", id:"17_c"},
+		{src:"public/map/18_a.png", id:"18_a"},
+		{src:"public/map/18_b.png", id:"18_b"},
+		{src:"public/map/19_a.png", id:"19_a"},
+		{src:"public/map/19_b.png", id:"19_b"},
+		{src:"public/map/19_c.png", id:"19_c"},
 		{src:"public/map/20.png", id:"20"},
 		{src:"public/map/21.png", id:"21"},
-		{src:"public/map/22.png", id:"22"},
+		{src:"public/map/22_a.png", id:"22_a"},
+		{src:"public/map/22_b.png", id:"22_b"},
 		{src:"public/map/23.png", id:"23"},
 		{src:"public/map/24.png", id:"24"},
 		{src:"public/map/25.png", id:"25"},
@@ -423,31 +439,16 @@ function initialize() {
 		{src:"public/map/31.png", id:"31"},
 		{src:"public/map/32.png", id:"32"},
 		{src:"public/map/33.png", id:"33"},
-		{src:"public/map/34.png", id:"34"},
-		{src:"public/map/35.png", id:"35"},
-		{src:"public/map/36.png", id:"36"},
+		{src:"public/map/34_a.png", id:"34_a"},
+		{src:"public/map/34_b.png", id:"34_b"},
+		{src:"public/map/35_a.png", id:"35_a"},
+		{src:"public/map/35_b.png", id:"35_b"},
+		{src:"public/map/35_c.png", id:"35_c"},
+		{src:"public/map/36_a.png", id:"36_a"},
+		{src:"public/map/36_b.png", id:"36_b"},
 		{src:"public/map/37.png", id:"37"},
 		{src:"public/map/38.png", id:"38"},
 		{src:"public/map/39.png", id:"39"},
-		{src:"public/map/40.png", id:"40"},
-		{src:"public/map/41.png", id:"41"},
-		{src:"public/map/42.png", id:"42"},
-		{src:"public/map/43.png", id:"43"},
-		{src:"public/map/44.png", id:"44"},
-		{src:"public/map/45.png", id:"45"},
-		{src:"public/map/46.png", id:"46"},
-		{src:"public/map/47.png", id:"47"},
-		{src:"public/map/48.png", id:"48"},
-		{src:"public/map/49.png", id:"49"},
-		{src:"public/map/50.png", id:"50"},
-		{src:"public/map/51.png", id:"51"},
-		{src:"public/map/52.png", id:"52"},
-		{src:"public/map/53.png", id:"53"},
-		{src:"public/map/54.png", id:"54"},
-		{src:"public/map/55.png", id:"55"},
-		{src:"public/map/56.png", id:"56"},
-		{src:"public/map/57.png", id:"57"},
-		{src:"public/map/58.png", id:"58"},
 		{src:"public/spritesheets/arme/100.png", id:"100"},
 		{src:"public/spritesheets/arme/101.png", id:"101"},
 		{src:"public/spritesheets/arme/102.png", id:"102"},
@@ -628,10 +629,10 @@ function game() {
 	contPerso.height = 64;
 	contPerso.width = 64;
 	stage.addChild(contPerso);
-	shapePerso = new createjs.Shape();
+	/*shapePerso = new createjs.Shape();
 	stage.addChild(shapePerso);
 	shapePerso.graphics.setStrokeStyle(4).beginStroke("#850000").drawRect(
-			2, 2, 173, 96);
+			2, 2, 173, 96);*/
 
 	//------------------------- Zone 13 : Modes-----------------------------------------------
 	contMode = new createjs.Container();
@@ -919,16 +920,16 @@ function game() {
 	labelBtnsInvPerso = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelBtnsInvPerso.lineHeight = _LineHeight;
 	labelBtnsInvPerso.textBaseline = _TextBaseline;
-	labelBtnsInvPerso.x = _labelBtnsInvPersoX;
+	labelBtnsInvPerso.x = _labelBtnsInvPersoX-5;
 	labelBtnsInvPerso.y = _labelBtnsInvPersoY;
-	labelBtnsInvPerso.text="Action sur Perso :";
+	labelBtnsInvPerso.text="Actions sur le Sac :";
 
 	labelBtnsInvCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelBtnsInvCase.lineHeight = _LineHeight;
 	labelBtnsInvCase.textBaseline = _TextBaseline;
-	labelBtnsInvCase.x = _labelBtnsInvCaseX;
+	labelBtnsInvCase.x = _labelBtnsInvCaseX-8;
 	labelBtnsInvCase.y = _labelBtnsInvCaseY;
-	labelBtnsInvCase.text="Action sur Case :";
+	labelBtnsInvCase.text="Actions sur la Case :";
 
 	labelArme = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelArme.lineHeight = _LineHeight;
@@ -1040,7 +1041,7 @@ function game() {
 	labelLancementServeur = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelLancementServeur.lineHeight = _LineHeight;
 	labelLancementServeur.textBaseline = _TextBaseline;
-	labelLancementServeur.x = 0;
+	labelLancementServeur.x = 5;
 	labelLancementServeur.y = 100;
 
 	// ******************************************
@@ -1135,6 +1136,7 @@ function game() {
 	BtnPageItemPersoRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
 	BtnPageItemPersoRight.x= _ContItemPersoX + _ContItemPersoW;
 	BtnPageItemPersoRight.y= _ContItemPersoY + 5;
+	BtnPageItemPersoRight.visible=false;
 	BtnPageItemPersoRight.addEventListener('click', function(event) {
 		PageItemPerso++;
 		socket.emit('INFO_PERSONNAGE_CS');
@@ -1144,6 +1146,7 @@ function game() {
 	BtnPageItemPersoLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
 	BtnPageItemPersoLeft.x= _ContItemPersoX - 30;
 	BtnPageItemPersoLeft.y= _ContItemPersoY + 5;
+	BtnPageItemPersoLeft.visible=false;
 	BtnPageItemPersoLeft.addEventListener('click', function(event) {
 		PageItemPerso--;
 		socket.emit('INFO_PERSONNAGE_CS');
@@ -1152,6 +1155,7 @@ function game() {
 	BtnPageItemCaseRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
 	BtnPageItemCaseRight.x= _ContItemCaseX  + _ContItemCaseW;
 	BtnPageItemCaseRight.y= _ContItemCaseY + 5;
+	BtnPageItemCaseRight.visible=false;
 	BtnPageItemCaseRight.addEventListener('click', function(event) {
 		PageItemCase++;
 		socket.emit('INFO_CASE_CS');
@@ -1161,6 +1165,7 @@ function game() {
 	BtnPageItemCaseLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
 	BtnPageItemCaseLeft.x= _ContItemCaseX - 30;
 	BtnPageItemCaseLeft.y= _ContItemCaseY + 5;
+	BtnPageItemCaseLeft.visible=false;
 	BtnPageItemCaseLeft.addEventListener('click', function(event) {
 		PageItemCase--;
 		socket.emit('INFO_CASE_CS');
@@ -1183,6 +1188,8 @@ function game() {
 
 function message()
 {
+	var nbMsgAffiches=10;
+	
 	contMessage = new createjs.Container();
 	contMessage.x = canvas.width/2 - 746/2;
 	contMessage.y = canvas.height/2 - 420/2;
@@ -1218,8 +1225,8 @@ function message()
 	
 	// tableau qui contient toutes les listes d'objets
 	var TabListe=new Array();
-	var Taille = Math.ceil(ListeMessages.length / 20);
-	var TailleFinListe =(ListeMessages.length % 20);
+	var Taille = Math.ceil(ListeMessages.length / nbMsgAffiches);
+	var TailleFinListe =(ListeMessages.length % nbMsgAffiches);
 	
 	for (var j=0; j<Taille; j++)
 	{
@@ -1229,7 +1236,7 @@ function message()
 		if(j==Taille-1 && TailleFinListe!=0)
 		{
 			//Boucle des items liste incomplète
-			for (var i=j*20; i<j*20+TailleFinListe; i++)
+			for (var i=j*nbMsgAffiches; i<j*nbMsgAffiches+TailleFinListe; i++)
 			{
 				if(ListeMessages[i]!=undefined)
 				{
@@ -1245,8 +1252,7 @@ function message()
 		}
 		else
 		{
-			//Boucle normale : creation nouvelle liste de 10 items max
-			for (var i=j*20; i<(j*20+20); i++)
+			for (var i=j*nbMsgAffiches; i<(j*nbMsgAffiches+nbMsgAffiches); i++)
 			{
 				if(ListeMessages[i]!=undefined)
 				{
@@ -1269,14 +1275,20 @@ function message()
 
 function afficherMessage(TabListeMessage)
 {
+	var longLigneMax=85;
 	try 
 	{
 		// instructions à essayer
 		labelMessage.text="";
 		for (var i = 0; i < TabListeMessage[PageMessage].length ; i++) 
 		{
-			var message=TabListeMessage[PageMessage][i];
-			labelMessage.text+=message;
+			//alert(TabListeMessage[PageMessage][i].length);
+			for (var j=0; j<TabListeMessage[PageMessage][i].length ; j+=longLigneMax)
+			{
+				var message=TabListeMessage[PageMessage][i].substring(j,j+longLigneMax);
+				labelMessage.text+=message;
+				labelMessage.text+="\n";
+			}
 		}
 	}
 	catch(e)
@@ -1303,7 +1315,7 @@ function liste()
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
 
 	// application du background liste au dessus de la map
-	//var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
+	// var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
 	var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=1;
 	contListe.addChild(background_liste);
@@ -1353,7 +1365,7 @@ function liste()
 			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
 
 	// Bouton ANNULER
-	BtnCancelListe = new createjs.Bitmap("public/Boutons/Annuler.png");
+	BtnCancelListe = new createjs.Bitmap("public/Boutons/Retour.png");
 	BtnCancelListe.x=600;
 	BtnCancelListe.y=365;
 	contListe.addChild(BtnCancelListe);
@@ -1365,7 +1377,8 @@ function liste()
 
 	BtnPagePersoAlliesRight = new createjs.Bitmap("public/Boutons/Right.png");
 	BtnPagePersoAlliesRight.x= contListeAllies.x + contListeAllies.width;
-	BtnPagePersoAlliesRight.y= contListeAllies.y + 8; //contListeAllies.height/2 - BtnPagePersoAlliesRight.image.height;
+	BtnPagePersoAlliesRight.y= contListeAllies.y + 8;
+	BtnPagePersoAlliesRight.visible=false;
 	contListe.addChild(BtnPagePersoAlliesRight);
 	BtnPagePersoAlliesRight.addEventListener('click', function(event) {
 		PagePersoAllies++;
@@ -1376,14 +1389,16 @@ function liste()
 	BtnPagePersoAlliesLeft.x= contListeAllies.x - BtnPagePersoAlliesLeft.image.width -5;
 	BtnPagePersoAlliesLeft.y= contListeAllies.y + 8;
 	contListe.addChild(BtnPagePersoAlliesLeft);
+	BtnPagePersoAlliesLeft.visible=false;
 	BtnPagePersoAlliesLeft.addEventListener('click', function(event) {
 		PagePersoAllies--;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
 
 	BtnPagePersoEnnRight = new createjs.Bitmap("public/Boutons/Right.png");
-	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.w;
+	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.witdh;
 	BtnPagePersoEnnRight.y= contListeEnnemis.y + 8;
+	BtnPagePersoEnnRight.visible=false;
 	contListe.addChild(BtnPagePersoEnnRight);
 	BtnPagePersoEnnRight.addEventListener('click', function(event) {
 		PagePersoEnnemis++;
@@ -1393,6 +1408,7 @@ function liste()
 	BtnPagePersoEnnLeft = new createjs.Bitmap("public/Boutons/Left.png");
 	BtnPagePersoEnnLeft.x= contListeEnnemis.x - BtnPagePersoEnnLeft.image.width - 5;
 	BtnPagePersoEnnLeft.y= contListeEnnemis.y +  8;
+	BtnPagePersoEnnLeft.visible=false;
 	contListe.addChild(BtnPagePersoEnnLeft);
 	BtnPagePersoEnnLeft.addEventListener('click', function(event) {
 		PagePersoEnnemis--;
@@ -1452,9 +1468,8 @@ function dead(currentPerso)
 	contDead.addChild(contItemPersoDead);
 	shapeInvDead = new createjs.Shape();
 	contDead.addChild(shapeInvDead);
-	if(currentPerso.sacADos!=null)
+	if(currentPerso.sacADos.length>0)
 	{
-		alert(" if ok ");
 		shapeInvDead.graphics.setStrokeStyle(1).beginStroke("#FFFFFF").drawRect(
 				contItemPersoDead.x-4, contItemPersoDead.y-4, contItemPersoDead.width+4, contItemPersoDead.height+4);
 	}
@@ -1479,28 +1494,26 @@ function dead(currentPerso)
 	var labelDeadHour = contDead.addChild(new createjs.Text("", PoliceDead, ColorHour));
 	labelDeadHour.x = 450 ;
 	labelDeadHour.y = 175;
-	labelDeadHour.text=ListeMessages[1];
+	labelDeadHour.text="";
 	
-	//alert("ListeMessages[0] : "+ ListeMessages[0]);
-	if (ListeMessages[0]!=null && ListeMessages[0] == "Z")
+	var date = ListeMessages[0].split(" :");
+	labelDeadHour.text=date[0];
+	
+	if (date[1]!=null && date[1] == "Z")
 	{
-		//alert("Z");
 		Killer="Un zombie rôdant dans la salle vous a dévoré !";
 	}
-	else if(ListeMessages[0]!=null && ListeMessages[0] == "N")
+	else if(date[1]!=null && date[1] == "N")
 	{
-		//alert("N");
 		Killer="Un zombie vous a dévoré durant l'attaque de nuit !";
 	}
-	else if(ListeMessages[0]!=null && ListeMessages[0] == "F")
+	else if(date[1]!=null && date[1] == "F")
 	{
-		//alert("F");
 		Killer="Vous êtes mort à cause de la faim !";
 	}
-	else if(ListeMessages[0]!=null && ListeMessages[0]!="Z" && ListeMessages[0]!="N" && ListeMessages[0]!="F")
+	else if(date[1]!=null && date[1]!="Z" && date[1]!="N" && date[1]!="F")
 	{
-		//alert("joueur");
-		Killer=(ListeMessages[0]+" vous a tué !");
+		Killer=(date[1]+" vous a tué !");
 	}
 	else
 	{
@@ -1514,7 +1527,7 @@ function dead(currentPerso)
 	labelDeadByWho.text=Killer;
 
 	// Bouton ANNULER
-	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Ok.png");
+	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Revivre.png");
 	BtnCancelDead.x=960;
 	BtnCancelDead.y=570;
 	contDead.addChild(BtnCancelDead);
@@ -2019,11 +2032,11 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 	break;
 
 	case -1: labelAction.text = "";
-	labelAction.text = ("Impossible d'aller par là !");
+	labelAction.text = ("Impossible \nd'aller par là !");
 	break;
 
 	case -2: labelAction.text = "";
-	labelAction.text = ("Plus de points de mouvements !");
+	labelAction.text = ("Plus de points \nde mouvement !");
 	break;
 
 	case -3: labelAction.text = "";
@@ -2031,13 +2044,13 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 	break;
 
 	case -4: labelAction.text = "";
-	labelAction.text = ("Maison de l'ennemi !");
+	labelAction.text = ("Impossible de \npénetrer dans la \nMaison de l'ennemi !");
 	break;
 
 	default: socket.emit('INFO_CASE_CS');
 	labelAction.text="";
 	labelAction.text = "";
-	labelAction.text = ("Déplacement en " + currentCase.nom + "");
+	labelAction.text = ("Déplacement réussi !");
 	socket.emit('INFO_PERSONNAGE_CS');
 	break;
 	}
@@ -2252,9 +2265,18 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
  * 
  * ET nbr ennemis
  */
-socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
-	//socket.emit('CHECK_MSG_ATT_CS');	
+socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase) {
 
+	// modification du nom de l'image a afficher
+	if (idSousCase == -1)
+	{
+		currentCase.pathImg += ".png";
+	}
+	else
+	{
+		currentCase.pathImg += "_"+idSousCase;
+		currentCase.pathImg += ".png";
+	}
 	var nbJoueurs=nbrAllies+nbrEnnemis;
 
 	setBtnJoueurs(nbJoueurs);
@@ -2272,6 +2294,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis) {
 		ProbCache=(currentCase.probaCache * PersoProbaCache);
 		ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 
+		labelIdSalle.text=("Salle en cours : " + currentCase.nom + "");
 		labelNbAllies.text=("Alliés dans la salle : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
@@ -2519,9 +2542,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		
 	// Mise à jour des labels
 	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
-	labelPtsDef.text=("Points de défense : " + PointsDefense + "");
-	labelIdSalle.text=("Salle en cours : " + currentPerso.idSalleEnCours + "");
-	
+	labelPtsDef.text=("Points de défense : " + PointsDefense + "");	
 
 	// Mise à jour des barres de vie, action, move		
 	// Sécurité pour le remplissage de la barre de vie
@@ -2971,13 +2992,26 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
 
+	var longDernierMsg=60;
+	
 	if(currentPerso.listeMsgAtt.length > 0)
 	{
 		ListeMessages=currentPerso.listeMsgAtt;
 		// inverse la liste des messages
 		ListeMessages.reverse();
-		labelDernierMessage.text="";
-		labelDernierMessage.text=ListeMessages[0];
+		// Raccourcissement du dernier message
+		if(ListeMessages[0].length<longDernierMsg)
+		{
+			var dernierMsg=ListeMessages[0].substring(0,ListeMessages[0].length-1);
+			labelDernierMessage.text="";
+			labelDernierMessage.text=dernierMsg;
+		}
+		else
+		{
+			var dernierMsg=ListeMessages[0].substring(0,longDernierMsg);
+			labelDernierMessage.text="";
+			labelDernierMessage.text=dernierMsg+"...";
+		}
 	}
 	else
 	{
@@ -2988,6 +3022,14 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	if(ListeMessages!=null && currentPerso.nbrNvMsg >0)
 	{
 		labelNombreNouvMsg.text="";
+		/*if(currentPerso.nbrNvMsg == 1)
+		{
+			labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " nouveau message)");
+		}
+		else
+		{
+			labelNombreNouvMsg.text=("("+ currentPerso.nbrNvMsg + " nouveaux messages)");
+		}*/
 		labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " )");
 
 		var BtnMessages = new createjs.Bitmap("public/Boutons/Messages.png");
@@ -3249,11 +3291,11 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 		labelAction.text=("Attaque réussie !");
 		if(degatsI!=0)
 		{
-			labelAction.text+=("L'ennemi a perdu :\n" + degatsI + " points de vies");
+			labelAction.text+=("\nL'ennemi a perdu :\n" + degatsI + " points de vies");
 		}
 		if(degatsRecusE!=0)
 		{
-			labelAction.text+=("L'ennemi a riposté :\n-" + degatsRecusE + " points de vies");
+			labelAction.text+=("\nL'ennemi a riposté :\n-" + degatsRecusE + " points de vies");
 		}
 		break;
 	case -1:
@@ -3289,7 +3331,8 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
  * return 1 si une goules tuée
  * erreur : 0 si erreur interne
  * erreur : -1 si aucune goule tuée
- * erreut : -2 si pas de goules dans la salle
+ * erreur : -2 si pas de goules dans la salle
+ *  erreur : -10 si pas assez de PA
  * 
  * ET degats reçus
  * 
@@ -3323,6 +3366,11 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
 	case -2:
 		labelAction.text="";
 		labelAction.text=("Pas de Zombie dans la salle !");
+		break;
+		
+	case -10:
+		labelAction.text="";
+		labelAction.text=("Pas assez de points d'actions !");
 		break;
 	}
 	stage.update();
@@ -3815,7 +3863,11 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 socket.on('GET_DATE_SC', function (dateLancementSrv)
 	{
 		labelLancementServeur.text="";
-		labelLancementServeur.text=dateLancementSrv;
+		var annee = dateLancementSrv.substring(0,4);
+		var mois = dateLancementSrv.substring(5,7);
+		var jour = dateLancementSrv.substring(8,10);
+		var heure = dateLancementSrv.substring(11,19);
+		labelLancementServeur.text="Le "+jour+"/"+mois+" à "+heure;
 	});
 
 
