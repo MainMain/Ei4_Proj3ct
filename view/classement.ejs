@@ -143,6 +143,13 @@
 					$("#listUsers").prepend(maChaine);
 				}
 			});
+			
+			socket.on("DECONEXION_SC", function(msg)
+			{
+				alert(msg);
+				$.post("/", { _method: "delete" } );
+				document.location = "/";
+			});
 		</script>
 </body>
 </html>

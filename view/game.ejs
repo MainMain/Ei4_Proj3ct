@@ -44,6 +44,13 @@
 			{
 				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "jeu");
 			});
+			
+			socket.on("DECONEXION_SC", function(msg)
+			{
+				alert(msg);
+				$.post("/", { _method: "delete" } );
+				document.location = "/";
+			});
 		
 		</script>
 		
@@ -147,13 +154,18 @@
 			</form>
 
 			<div id="content" role="main" class="span12">
-				<% if(idEquipe == 0) { %>
+				<% if(idEquipe == 0 || !isUpToDate) { %>
 					<h1>Bienvenue !</h1>
+					<% if(!isUpToDate) { %>
+					<div class="alert-error" style="font-size: 20px;">
+						Erreur : Une nouvelle session a commencé depuis votre dernière connexion !
+					</div>
+					<% } %>
 					<p>Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spécial de votre personnage.<br>
 					Vous avez le choix entre trois compétences :<br>
 					Vous pouvez être <b>UNE BRUTE</b>: Cela signifie alors que votre personnage a des <b>dégats d'attaque</b> et une <b>défense augmentée</b>. En revanche il aura moins de chance de pouvoir se cacher.<br>
 					Vous pouvez être <b>UN EXPLORATEUR</b>: Dans ce cas là c'est au contraire la <b>probabilité de se cacher</b> vos <b>points de mouvements maximum</b> qui sont augmentés. Par contre faites attention à ne pas vous faire attaquer car vos points de défense sont relativement faibles.<br>
-					Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu celà a un coup, vos dégats sont réduits ainsi que votre probabilité de cache.<br>
+					Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu cela a un côut, vos dégats sont réduits ainsi que votre probabilité de cache.<br>
 					</p>
 					<form name="formInitPerso" method="POST" action="/jeu">
 						<input type="hidden" name="_method" value="PUT">
