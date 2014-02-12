@@ -189,7 +189,7 @@ app.post('/admin', restrictAdmin, function fonctionAdmin(req, res)
 	{
 		for(var i in usersOnline[idUser].sockets)
 		{
-			usersOnline[idUser].sockets[i].emit("DECONEXION_SC", "Un administrateur a supprimer votre compte ! Vous aller être déconnecté.");
+			usersOnline[idUser].sockets[i].emit("DECONEXION_SC", "Un administrateur a supprimé votre compte ! Vous allez être déconnecté.");
 		}
 	}
 	
@@ -411,10 +411,8 @@ callbackInscription = function(reponseInscription, req, res)
 
 app.delete("/", function (req, res)
 {
-	if(req.session.username)
-	{
-		req.session.destroy();
-	}
+	console.log("OH : Deconnexion de " + req.session.username);
+	req.session.destroy();
 	res.render('accueil', optionAccueil);
 });
 
@@ -1160,25 +1158,25 @@ io.sockets.on('connection', function (socket)
 	{
 		try
 		{
-    	console.log("******************** ATTAQUE DE GOULES *****************");
-    	// délègue au manager
-    	var reponseManager 			= oPersonnage_Manager.AttaquerGoule(idUser);
-		
-    	// récupère les réponses
-    	var code 					= reponseManager.code;
-		var degatSubisParGoules	 	= reponseManager.degatSubisParGoules;
-		var nbrGoulesAttaquantes 	= reponseManager.nbrGoulesAttaquantes;
-		
-		// réponse au canvas 
-		socket.emit('ACTION_ATTAQUE_GOULE_SC', code, degatSubisParGoules, nbrGoulesAttaquantes);
-				
-		// informer les perso
-		InformerAllInCase("a courageusement tué " + code + " goules ! ");
-		
-		// actualiser l'ihm pour les perso de la meme case connectés
-		ActualiserAllInCase();
-		
-		console.log("*********************************************************");
+			console.log("******************** ATTAQUE DE GOULES *****************");
+			// délègue au manager
+			var reponseManager 			= oPersonnage_Manager.AttaquerGoule(idUser);
+			
+			// récupère les réponses
+			var code 					= reponseManager.code;
+			var degatSubisParGoules	 	= reponseManager.degatSubisParGoules;
+			var nbrGoulesAttaquantes 	= reponseManager.nbrGoulesAttaquantes;
+			
+			// réponse au canvas 
+			socket.emit('ACTION_ATTAQUE_GOULE_SC', code, degatSubisParGoules, nbrGoulesAttaquantes);
+					
+			// informer les perso
+			InformerAllInCase("a courageusement tué " + code + " goules ! ");
+			
+			// actualiser l'ihm pour les perso de la meme case connectés
+			ActualiserAllInCase();
+			
+			console.log("*********************************************************");
 		}
     	catch(err)
 		{

@@ -48,8 +48,10 @@
 			socket.on("DECONEXION_SC", function(msg)
 			{
 				alert(msg);
-				$.post("/", { _method: "delete" } );
-				document.location = "/";
+				$.post("/", { _method: "delete" }, function()
+				{
+					document.location = "/";
+				});
 			});
 		
 		</script>
