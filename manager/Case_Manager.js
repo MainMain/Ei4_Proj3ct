@@ -15,39 +15,40 @@ function Case_Manager(){}
 
 Case_Manager.Load = function()
 {
-	// creation des listes
-	var idCases = new Array();
-	this.listeCases = new Array();
-	
-	// pr le callback
 	var context = this;
-	
-	// récupération des clés
-	idCases = oCase_BD.GetCasesId(function(idCases)
+	oCase_BD.Initialiser(function()
 	{
-		console.log(idCases);
-		// pour chaque case
-		for(var i in idCases)
-		{
-			var id = idCases[i];
-			// charge la case en mémoire par rapport à son id
-			oCase_BD.GetCaseById(id, function(idCase, reponse)
-			{
-				// gestion des erreurs
-				if(reponse == -1 || reponse == -2)
-				{
-					console.log("Erreur Case : " + idCase);
-				}
-				// enregistrement effectif
-				else
-				{
-					//console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
-					context.listeCases[idCase] = reponse;
-				}
-			});
-		}
-	});
+		// creation des listes
+		var idCases = new Array();
+		context.listeCases = new Array();
 	
+		// récupération des clés
+		idCases = oCase_BD.GetCasesId(function(idCases)
+		{
+			console.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
+			// pour chaque case
+			for(var i in idCases)
+			{
+				var id = idCases[i];
+			
+				// charge la case en mémoire par rapport à son id
+				oCase_BD.GetCaseById(id, function(idCase, reponse)
+				{
+					// gestion des erreurs
+					if(reponse == -1 || reponse == -2)
+					{
+						console.log("Erreur Case : " + idCase);
+					}
+					// enregistrement effectif
+					else
+					{
+						console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+						context.listeCases[idCase] = reponse;
+					}
+				});
+			}
+		});
+	});
 },
 
 /*
@@ -79,6 +80,11 @@ Case_Manager.RemplirCases = function()
 		// génére le nombre d'item pour cette case
 		nbrItems = (Math.floor(Math.random() * (5-0) + 0 ));
 		
+		for (var i = 0; i < nbrItems; i++)
+		{
+			var item = oItem_Manager.GetItemAleatoire();
+			curCase.ajouterItem(item);
+		}
 	}
 },
 
@@ -125,8 +131,12 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 		"actionOk" 	: true,
 	};
 	
+	console.log(">> CASE_MANAGER : AttaqueDeGoules() : " + idCase);
 	// si pas de goules, on quitte 
-	if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
+	try
+	{
+		if (this.listeCases[idCase].getNbrGoules() <= 0) return a;
+	
 	
 	// calcul le nombre de goules attaquantes
 	var nbrGoulesAttaquantes = Math.floor(Math.random() * this.listeCases[idCase].getNbrGoules());
@@ -158,6 +168,12 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 			"actionOk" 	: actionOk,
 		};
 		console.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
+	
+	}
+	catch(err)
+	{
+		console.log("/!\ >>> ERREUR : CASE_MANAGER : AttaqueDeGoules : " + err);
+	}
 	return a;
 },
 
@@ -212,7 +228,16 @@ Case_Manager.nouvelleJournee = function()
 },
 Case_Manager.GetNombreGoules = function(idCase)
 {
-	return this.listeCases[idCase].getNbrGoules();
+	console.log(">> CASE_MANAGER : GetNombreGoules - idCase = " + idCase);
+	try
+	{
+		return this.listeCases[idCase].getNbrGoules();
+	}
+	catch(err)
+	{
+		console.log("/!\ >>> ERREUR : CASE_MANAGER : GetNombreGoules : " + err);
+		return -1;
+	}
 },
 
 Case_Manager.getZoneSure = function(numEquipe)

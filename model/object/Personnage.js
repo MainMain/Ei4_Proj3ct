@@ -90,7 +90,7 @@ var Personnage = (function() {
 		    this.ptDeplacementMax 	= -1;
 		    this.ptFaim		 		= 20;
 		    this.ptFaimMax		 	= 20;
-		    this.poidsMax 			= 30;
+		    this.poidsMax 			= 50;
 		    this.gouleLimite 		= -1;
 		    this.competence 		= -1;
 		    this.sacADos 			= new Array();
@@ -123,42 +123,6 @@ var Personnage = (function() {
 			this.ptAction 		= this.ptActionMax;
 			this.ptDeplacement 	= this.ptDeplacementMax;
 			this.ptFaim 		= this.ptFaimMax;
-			
-
-			/*if(competence == "brute")
-			{
-				this.setptSanteMax		(140);
-				this.setptDeplacementMax(15);
-				this.setptActionMax		(20);
-				this.multiPtsAttaque	= 2;
-				this.multiPtsDefense	= 2;
-				this.multiProbaCache	= 0.5;
-				this.multiProbaFouille	= 1;
-				this.goulesMax			= 2;
-			}
-			else if(competence == "explorateur")
-			{
-				this.setptSanteMax		(100);
-				this.setptDeplacementMax(25);
-				this.setptActionMax	(20);
-				this.multiPtsAttaque	= 1;
-				this.multiPtsDefense	= 0.3;
-				this.multiProbaCache	= 1;
-				this.multiProbaFouille	= 3;
-				this.goulesMax			= 5;
-			}
-			else if(competence == "chercheur")
-			{
-				this.setptSanteMax		(100);
-				this.setptDeplacementMax(15);
-				this.setptActionMax		(30);
-				this.multiPtsAttaque	= 0.5;
-				this.multiPtsDefense	= 1.5;
-				this.multiProbaCache	= 3;
-				this.multiProbaFouille	= 0.5;
-				this.goulesMax			= 3;
-			}*/
-			
 			
 			if (numEquipe == 1)
 			{
@@ -223,7 +187,8 @@ var Personnage = (function() {
 			
 			// recupere l'id de la salle suivante
 			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours, direction);
- 
+			console.log(">> PERSONNAGE : DEPLACEMENT : idCaseRecu : " + ansIdSalle);
+			
 			// si id de la salle -1, pas de salle dans la direction
 			if (ansIdSalle == -1)
 			{
@@ -240,6 +205,7 @@ var Personnage = (function() {
 			// Décrémente les points de déplacement
 			this.ptDeplacement--;
 			
+			
 			//  on modifie l'id de salle du perso
 			this.idSalleEnCours = ansIdSalle;
 			
@@ -254,6 +220,54 @@ var Personnage = (function() {
 			return this.idSalleEnCours;
 		},
 
+		getIdCase : function()
+		{
+			try
+			{
+				var idCaseBrut = this.idSalleEnCours;
+				var tab;
+				try
+				{
+					tab = idCaseBrut.split("_");
+				}
+				catch (err) {}
+				if (typeof tab[0] === 'undefined')
+				{
+					return idCaseBrut;
+				}
+				return tab[0];
+			}
+			catch(err)
+			{
+				return idCaseBrut;
+			}
+		},
+		
+		getIdSousCase : function()
+		{
+			try
+			{
+				var idSousCase = 0;
+				console.log(">>>>>>>>>>> " + this.idSalleEnCours);
+				var idCaseBrut = this.idSalleEnCours;
+				var tab;
+				try
+				{
+					tab = idCaseBrut.split("_");
+				}
+				catch (err) {}
+				if (typeof tab[1] === 'undefined')
+				{
+					return -1;
+				}
+				return tab[1];
+				
+			}
+			catch(err)
+			{
+				return -1;
+			}
+		},
 		/**
 		 * ECRITURE
 		 * 
@@ -458,7 +472,7 @@ var Personnage = (function() {
 		{
 			var att;
 			if (this.competence == "brute") 		 att = GameRules.combat_ptsAttaque_base_brute();
-			if (this.competence == "explorateur") att = GameRules.combat_ptsAttaque_base_explorateur();
+			if (this.competence == "explorateur")	 att = GameRules.combat_ptsAttaque_base_explo();
 			if (this.competence == "chercheur") 	 att = GameRules.combat_ptsAttaque_base_chercheur();
 			
 			if (this.armeEquipee != null)
@@ -678,7 +692,7 @@ var Personnage = (function() {
 			console.log("PERSONNAGE : Fin : Ajout d'un message : " + msg);
 		},
 		
-		effacerMessage : function(msg)
+		effacerMessages : function(msg)
 		{
 			this.listeMsgAtt = new Array();
 		},
@@ -699,11 +713,20 @@ var Personnage = (function() {
 		
 		nvlleJournee : function()
 		{
-			if(this.competence == "brute")
-			{
-				this.ptDeplacement = 15;
-				this.ptAction = 20;
-			}
+			
+			// augmenter la faim
+			this.augmenterFaim();
+			
+			//if(this.competence == "brute")
+			//{
+			// mise en max pour les pts de deplacement et ptAction
+			this.ptDeplacement = this.ptDeplacementMax;
+			this.ptAction 	= this.ptActionMax;
+			
+			// check max sante
+			if (this.ptSante > this.ptSanteMax) this.ptSante = this.ptSanteMax;
+			
+			/*}
 			else if(this.competence == "explorateur")
 			{
 				this.ptDeplacement = 25;
@@ -711,11 +734,15 @@ var Personnage = (function() {
 			}
 			else if(this.competence == "chercheur")
 			{
-				this.ptDeplacement = 15;
-				this.ptAction = 30;
+				this.ptDeplacement = this.ptDeplacementMax;
+				this.ptAction = this.ptActionMax;
 			}
+
 			
-			this.augmenterFaim();
+			// check max
+			if (this.ptDeplacement > this.ptDeplacementMax) this.ptDeplacement = this.ptDeplacementMax;
+			if (this.ptSante > this.ptSanteMax) 			this.ptSante = this.ptSanteMax;
+			if (this.ptAction > this.ptActionmax) 			this.ptAction = this.ptActionMax;*/
 		},
 		
 		augmenterFaim : function()
@@ -759,8 +786,8 @@ var Personnage = (function() {
 			if(this.competence == "brute")
 			{
 				this.ptSanteMax 		= 140;
-				this.ptDeplacementMax	= 15;
-				this.ptActionMax		= 20;
+				this.ptDeplacementMax	= 25;
+				this.ptActionMax		= 30;
 				this.multiPtsAttaque	= 2;
 				this.multiPtsDefense	= 2;
 				this.multiProbaCache	= 0.5;
@@ -770,8 +797,8 @@ var Personnage = (function() {
 			else if(this.competence == "explorateur")
 			{
 				this.ptSanteMax 		= 100;
-				this.ptDeplacementMax	= 20;
-				this.ptActionMax		= 25;
+				this.ptDeplacementMax	= 50;
+				this.ptActionMax		= 40;
 				this.multiPtsAttaque	= 1;
 				this.multiPtsDefense	= 0.3;
 				this.multiProbaCache	= 1;
@@ -781,8 +808,8 @@ var Personnage = (function() {
 			else if(this.competence == "chercheur")
 			{
 				this.ptSanteMax 		= 100;
-				this.ptDeplacementMax	= 15;
-				this.ptActionMax		= 30;
+				this.ptDeplacementMax	= 25;
+				this.ptActionMax		= 50;
 				this.multiPtsAttaque	= 0.5;
 				this.multiPtsDefense	= 1.5;
 				this.multiProbaCache	= 3;
@@ -799,8 +826,11 @@ var Personnage = (function() {
 			// go a la zone sure
 			this.idSalleEnCours = idSalleReveil;
 
-			// remonter pts faim
-			this.manger(15);
+			// remonter pts faim à 10
+			if (this.ptFaim < 10)
+			{
+				this.manger(10 - this.ptFaim);
+			}
 		},
 		/**
 		 * LECTURE

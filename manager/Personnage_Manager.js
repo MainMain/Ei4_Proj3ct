@@ -116,6 +116,7 @@ Personnage_Manager.AddMessage = function(idUser,  msg)
 Personnage_Manager.EffacerMessages = function(idUser)
 {
 	console.log("PERSONNAGE_MANAGER : EffacerMessages() : Effacement de la liste des messages");
+	this.listePersonnages[idUser].effacerMessages();
 }, 
 
 Personnage_Manager.acquitterMsg = function(idUser)
@@ -138,7 +139,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	var degatsInfligesParA;
 	var degatsInfligesParB;
 	
-	var idSalle = this.GetIdSalleEnCours(idUser);
+	var idCase = this.GetIdCase(idUser);
 	
 	// création de données de retour
 	var reponseServeur = {"reponseAttaque" : 0,  "degatsRecus" : 0,  "degatsInfliges" : 0,  "degatSubisParGoules" : 0,  "nbrGoules" : 0};
@@ -170,7 +171,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 		else
 		{
 			// infliger les dégats de goules 
-			resultatGoules 						= oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
+			resultatGoules 						= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
 			reponseServeur.nbrGoules			= resultatGoules.nbrGoulesA;
 			reponseServeur.degatSubisParGoules 	= this.subirDegats(idUser,  resultatGoules.degats);
 			
@@ -233,7 +234,7 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 		"nbrGoulesAttaquantes" : 0};
 	
 	// récupération données utiles
-	var idCase = this.GetIdSalleEnCours(idUser);
+	var idCase = this.GetIdCase(idUser);
 	
 	// si pas assez de pts d'actions
 	if(!this.TestPtActions(idUser, "attaqueGoule"))
@@ -300,7 +301,7 @@ Personnage_Manager.subirDegats = function (idUser,  degats)
 /////////////////////////////////////////// EN RAPPORT AVEC LES ACTIONS DU JOUEUR //////////////////////////////////
 Personnage_Manager.Deplacement = function (idUser,  move)
 {
-	var nbrGoules = oCase_Manager.GetNombreGoules(this.GetIdSalleEnCours(idUser));
+	var nbrGoules = oCase_Manager.GetNombreGoules(this.GetIdCase(idUser));
 	var a = this.GetNbrAlliesEnemisDansSalle(idUser);
 	var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
 	var idZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
@@ -325,7 +326,7 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 
 Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 {
-	var o_____O = this.GetIdSalleEnCours(idUser);
+	var o_____O = this.GetIdCase(idUser);
 	
 	var resultatGoules;
 	
@@ -441,7 +442,7 @@ Personnage_Manager.ChercherEnnemi = function(idUser)
 	{
 		if( this.MemeSalle(idUser,  i) && !oUtilisateur_Manager.MemeEquipe(idUser,  i) && this.listePersonnages[i].GetMode() == 2)
 		{
-			if(oCase_Manager.DecouverteEnnemi(this.GetIdSalleEnCours(idUser),  this.GetMultiFouille(idUser),  this.GetMultiCache(i)))
+			if(oCase_Manager.DecouverteEnnemi(this.GetIdCase(idUser),  this.GetMultiFouille(idUser),  this.GetMultiCache(i)))
 			{
 				nbrEnnemiDecouvert += 1;
 				this.Decouvert(i);
@@ -505,7 +506,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 {
 	var reponseServeur = {"reponseChangement" : 0,  "degatsSubis" : 0,  "nbrGoules" : 0};
 	var resultatGoules;
-	var idCase = this.GetIdSalleEnCours(idUser);
+	var idCase = this.GetIdCase(idUser);
 	
 	if(this.GetMode(idUser) == mode)
 	{
@@ -541,7 +542,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			}
 
 			// impact des goules
-			resultatGoules 				= oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
+			resultatGoules 				= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
 			reponseServeur.degatsSubis	= this.subirDegats(idUser,  resultatGoules["degats"]);
 			reponseServeur.nbrGoules	= resultatGoules.nbrGoulesA;
 
@@ -604,7 +605,7 @@ Personnage_Manager.fouille1Hr = function(idUser)
 	console.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
 	
 	// calcul de decouverte d'un item
-	var idCase 			= this.GetIdSalleEnCours(idUser);
+	var idCase 			= this.GetIdCase(idUser);
 	var multiFouille 	= this.listePersonnages[idUser].getMultiFouille();
 	var itemDecouvert 	= oCase_Manager.Fouille(idCase,  multiFouille);
 	
@@ -649,7 +650,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	var codeRetour = 0;
 	var itemDecouvert;
 	var nbrEnnDecouverts = 0;
-	var idSalle = this.GetIdSalleEnCours(idUser);;
+	var idCase = this.GetIdCase(idUser);;
 		
 	// tests pts actions
     if(!this.TestPtActions(idUser,  "fouilleRapide"))
@@ -659,7 +660,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
     }
 			
 	// Calcul des dégats de goules et nombre de goules attaquantes
-	resultatGoules = oCase_Manager.AttaqueDeGoules(idSalle, this.GetNbrAllies(idUser));
+	resultatGoules = oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
 	
 	// remplissage de la structure de réponse
 	reponseServeur.degatSubis = this.subirDegats(idUser,  resultatGoules["degats"]);
@@ -685,7 +686,7 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	this.listePersonnages[idUser].diminuerPointAction(GameRules.coutPA_FouilleRapide());
 	
 	// id case du perso
-	var idCase = this.GetIdSalleEnCours(idUser);
+	var idCase = this.GetIdCase(idUser);
 	// multi du perso
 	var multiFouille = this.listePersonnages[idUser].getMultiFouille();
 	
@@ -751,8 +752,8 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 		if (GameRules.combat_proba_perdreItem())
 		{
 			// transfert de l'item en cours dans la case
-			console.log("PERSO MANAGER : TUER JOUEUR : IDSALLE = " + this.GetIdSalleEnCours(idTue));
-			oCase_Manager.AjouterItem(this.GetIdSalleEnCours(idTue),  currentPerso.GetSac()[i]);
+			console.log("PERSO MANAGER : TUER JOUEUR : idCase = " + this.GetIdCase(idTue));
+			oCase_Manager.AjouterItem(this.GetIdCase(idTue),  currentPerso.GetSac()[i]);
 			
 			// l'enlever de son inventaire
 			currentPerso.supprimerDuSac(currentPerso.GetSac()[i]);
@@ -785,7 +786,7 @@ Personnage_Manager.estMort = function(idUser)
 
 Personnage_Manager.MemeSalle = function(idUser1,  idUser2)
 {
-	return this.GetIdSalleEnCours(idUser1) == this.GetIdSalleEnCours(idUser2);
+	return this.GetIdCase(idUser1) == this.GetIdCase(idUser2);
 }, 
 
 Personnage_Manager.GetCopiePerso = function(idUser)
@@ -805,7 +806,7 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 	var a = { "nbrAllies"	: -1,  "nbrEnnemis" : 0};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
+		if(this.GetIdCase(idUser) == this.GetIdCase(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -825,7 +826,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
+		if(this.GetIdCase(idUser) == this.GetIdCase(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -845,7 +846,7 @@ Personnage_Manager.GetPersonnagesDansSalle = function(idCase)
 	var a = new Array();
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(i) == idCase)
+		if(this.GetIdCase(i) == idCase)
 		{
 			a.push(i);
 		}
@@ -858,7 +859,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdSalleEnCours(idUser) == this.GetIdSalleEnCours(i))
+		if(this.GetIdCase(idUser) == this.GetIdCase(i))
 		{
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
@@ -977,69 +978,29 @@ Personnage_Manager.getPersonnageToDisplay = function(idUser, allie)
 			pseudo);
 	return perso;
 }, 
-Personnage_Manager.GetIdSousSalleEnCours = function(idUser)
+Personnage_Manager.GetIdSousCase = function(idUser)
 {
-	try
-	{
-		var idSousCase = 0;
-		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
-		//console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut);
-		//idCaseBrut = "1_a";
-		var tab;
-		
-		try
-		{
-			tab = idCaseBrut.split("_");
-			//console.log(tab);
-		}
-		catch (err) {}
-		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + tab[1]);
-		return tab[1];
-		
-	}
-	catch(err)
-	{
-		//console.log("PERSONNAGE_MANAGER : ERREUR GET ID SOUS CASE: " + err);
-		//console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
-		//console.log(this.listePersonnages);
-		console.log("> PERSONNAGE_MANAGER : GetIdSousSalleEnCours BRUT : "+idCaseBrut + " NET : " + -1);
-		return -1;
-	}
+	return this.listePersonnages[idUser].getIdSousCase();
 },
 
-Personnage_Manager.GetIdSalleEnCours = function(idUser)
+Personnage_Manager.GetIdCase = function(idUser)
 {
-	//console.log("PERSONNAGE_MANAGER : GetIdSalleEnCours() - idUser = " + idUser);
+	
 	try
 	{
-		//console.log("--------------> 1 : " + this.listePersonnages[idUser].getIdSalleEnCours());
-		var idCaseBrut = this.listePersonnages[idUser].getIdSalleEnCours();
-		//console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut);
-		//idCaseBrut = "1_a";
-		var tab;
-		try
-		{
-			tab = idCaseBrut.split("_");
-			//console.log(tab);
-		}
-		catch (err) {}
-		console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut + " NET : " + tab[0]);
-		return tab[0];
-		
+		return this.listePersonnages[idUser].getIdCase();
 	}
 	catch(err)
 	{
-		//console.log("PERSONNAGE_MANAGER : ERREUR GET ID CASE: " + err);
-		//console.log("PERSONNAGE_MANAGER : AFFICHAGE DE LA LISTE :");
-		//console.log(this.listePersonnages);
-		console.log("> PERSONNAGE_MANAGER : GetIdSalleEnCours BRUT : "+idCaseBrut + " NET : " + idCaseBrut);
-		return idCaseBrut;
+		console.log("/!\ >>> ERREUR : PERSO_MANAGER : GetIdCase : " + err);
+		return -1;
 	}
+	
 }, 
 
 Personnage_Manager.GetIdNextSalle = function(idUser,  direction)
 {
-	return oCarte.GetIdSalleSuivante(this.GetIdSalleEnCours(idUser),  direction);
+	return oCarte.GetIdSalleSuivante(this.GetIdCase(idUser),  direction);
 }, 
 
 Personnage_Manager.Save = function()
@@ -1072,21 +1033,22 @@ Personnage_Manager.nouvelleJournee = function()
 		// regain de pts de vie
 		this.listePersonnages[idUser].nvlleJournee();
 		
-		idCase = this.listePersonnages[idUser].getIdSalleEnCours();
+		idCase = this.GetIdCase(idUser);
 		
-		// si le perso n'est pas caché -> attaque de la nuit
-		if (!this.listePersonnages[idUser].estMort()
-				&& this.listePersonnages[idUser].mode != 2 
-				&& !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2()))
+		// SI le perso n'est pas mort
+		// ...ET si le perso n'est pas caché 
+		// .. ET si il n'est pas en zone sûre 
+		// ALORS -> attaque de la nuit
+		if (!this.listePersonnages[idUser].estMort() && this.listePersonnages[idUser].mode != 2 && !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2()))
 		{
 			// infliger les dégats de goules 
 			resultatGoules 			= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
 			nbrGoules				= resultatGoules.nbrGoulesA;
 			degatSubisParGoules 	= this.subirDegats(idUser,  resultatGoules.degats);
 		
-			this.listePersonnages[idUser].ajouterMessage("Vous avez été attaqué durant l'attaque de la nuit ! "
-				+"Vous avez subi un total de " + degatSubisParGoules + " pts de dégâts infligés par " 
-				+ nbrGoules + " zombies ! ");
+			//this.listePersonnages[idUser].ajouterMessage("Vous avez été attaqué durant l'attaque de la nuit ! "
+			//	+"Vous avez subi un total de " + degatSubisParGoules + " pts de dégâts infligés par " 
+			//	+ nbrGoules + " zombies ! ");
 		
 			// si le joueur a été tué...
 			if (this.estMort(idUser))

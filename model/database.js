@@ -55,7 +55,7 @@ database.Initialiser = function() {
 		poidsMax 			: Number,
 		gouleLimite 		: Number,
 		competence 			: String,
-		idSalleEnCours 		: Number,
+		idSalleEnCours 		: String,
 		mode 				: Number,
 		multiPtsAttaque 	: Number,
 		multiPtsDefense 	: Number,

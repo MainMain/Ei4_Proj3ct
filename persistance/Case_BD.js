@@ -45,6 +45,7 @@ Case_BD.SetCase = function(caseToSave, callSetCase)
 	var CaseModel = mongoose.model('Case');
 	var newCase = new CaseModel();
 
+	//console.log(caseToSave);
 	CaseModel.find({_id: caseToSave.idmongo}, function (err, cCase) 
 	{
 		if (err) 
@@ -107,7 +108,6 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
 			throw err;
 			console.log("CASE_BD : Creation() : ERREUR ");
 		}
-
 		console.log("CASE_BD : Creation de case réussie ! " + newCase.nom);
 
 	});
@@ -142,7 +142,7 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 					currentCase[0].listeItem, 	currentCase[0].pathImg);
 
 			// log
-			console.log("CASE_BD : Chargement de la case : [" + currentCase[0].id +"-"+currentCase[0].nom+"]");
+			//console.log("CASE_BD : Chargement de la case : [" + currentCase[0].id +"-"+currentCase[0].nom+"]");
 
 			// renvoi de la case
 			callbackGetCase(idCase, caseRecup);
@@ -170,8 +170,8 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
  * 
  * @method Initialiser
  */
-Case_BD.Initialiser = function() {
-	
+Case_BD.Initialiser = function(callBack) 
+{	
 	// test si la table case est vide
 	this.GetCasesId(function(tabId)
 	{
@@ -188,7 +188,7 @@ Case_BD.Initialiser = function() {
 			var file = fs.readFileSync('./persistance/caseListe.txt', "utf8");
 			
 			// récupération des tabLignes dans un tableau
-			var tabLignes = file.split("\r\n");
+			var tabLignes = file.split("\n");
 			
 			// pour chaque ligne
 			for(var i in tabLignes)
@@ -219,11 +219,15 @@ Case_BD.Initialiser = function() {
 						newCase.listeItem	= listeItems;
 						
 						newCase.save();
+						
+						console.log("CASE_BD : Creation de la case [" + newCase.nom + "] en BD");
 					}
 				}
 
 			}
 		}
+		console.log("CALLBACK ! ");
+		callBack();
 	});
 	
 	// vide la BD
