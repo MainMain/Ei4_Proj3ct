@@ -84,7 +84,7 @@ Case_Manager.RemplirCases = function()
 		for (var i = 0; i < nbrItems; i++)
 		{
 			var item = oItem_Manager.GetItemAleatoire();
-			curCase.ajouterItem(item);
+			this.listeCases[curCase].ajouterItem(item);
 		}
 	}
 },
