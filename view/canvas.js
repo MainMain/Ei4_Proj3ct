@@ -504,7 +504,7 @@ function initialize() {
 		{src:"public/spritesheets/potionMouvement/600.png", id:"600"},
 		{src:"public/spritesheets/potionMouvement/601.png", id:"601"},
 		{src:"public/spritesheets/potionMouvement/602.png", id:"602"},
-		{src:"public/spritesheets/potionMouvement/603.png", id:"603"}
+		{src:"public/spritesheets/potionMouvement/603.png", id:"603"},
 		{src:"public/spritesheets/nourriture/700.png", id:"700"},
 		{src:"public/spritesheets/nourriture/701.png", id:"701"},
 		{src:"public/spritesheets/nourriture/702.png", id:"702"},

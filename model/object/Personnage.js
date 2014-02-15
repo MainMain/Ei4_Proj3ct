@@ -750,41 +750,28 @@ var Personnage = (function() {
 		
 		nvlleJournee : function()
 		{
+			//regain de sante
+			this.ptSante += GameRules.regain_sante();
 			
 			// augmenter la faim
 			this.augmenterFaim();
 			
-			//if(this.competence == "brute")
-			//{
 			// mise en max pour les pts de deplacement et ptAction
 			this.ptDeplacement = this.ptDeplacementMax;
-			this.ptAction 	= this.ptActionMax;
+			this.ptAction = this.ptActionMax;
 			
 			// check max sante
 			if (this.ptSante > this.ptSanteMax) this.ptSante = this.ptSanteMax;
 			
-			/*}
-			else if(this.competence == "explorateur")
-			{
-				this.ptDeplacement = 25;
-				this.ptAction = 20;
-			}
-			else if(this.competence == "chercheur")
-			{
-				this.ptDeplacement = this.ptDeplacementMax;
-				this.ptAction = this.ptActionMax;
-			}
-
-			
 			// check max
 			if (this.ptDeplacement > this.ptDeplacementMax) this.ptDeplacement = this.ptDeplacementMax;
 			if (this.ptSante > this.ptSanteMax) 			this.ptSante = this.ptSanteMax;
-			if (this.ptAction > this.ptActionmax) 			this.ptAction = this.ptActionMax;*/
+			if (this.ptAction > this.ptActionmax) 			this.ptAction = this.ptActionMax;
 		},
 		
 		augmenterFaim : function()
 		{
-			this.ptFaim -= 3;
+			this.ptFaim -= 1;
 			
 			if (this.ptFaim <= 0)
 			{
@@ -802,37 +789,38 @@ var Personnage = (function() {
 		calculerImpactFaim : function()
 		{
 			var malus = this.ptFaim / GameRules.faim_malus();
+			
+			this.initialiserPtsCaract();
+			
 			if (malus < 1)
 			{
 				// on ne veut pas d'un malus trop grand
 				if (malus < GameRules.faim_malus_max()) malus =  GameRules.faim_malus_max();
 				
 				// altération des caractéristiques
-				this.ptActionMax 		= Math.floor(this.ptActionMax		*malus);
-				this.ptDeplacementMax	= Math.floor(this.ptDeplacementMax  *malus);
-				this.ptSanteMax			= Math.floor(this.ptSanteMax		*malus);
-			}
-			else
-			{
-				this.initialiserPtsCaract();
+				this.ptActionMax 		= Math.floor(this.ptActionMax		* malus);
+				this.ptDeplacementMax	= Math.floor(this.ptDeplacementMax  * malus);
+				this.ptSanteMax			= Math.floor(this.ptSanteMax		* malus);
 			}
 		},
 		
 		
 		
 		seRetablir : function(idSalleReveil)
-		{
-			// ajout de points de santé
-			this.ptSante = 20;
-			
+		{			
 			// go a la zone sure
 			this.idSalleEnCours = idSalleReveil;
 
 			// remonter pts faim à 10
 			if (this.ptFaim < 10)
 			{
-				this.manger(10 - this.ptFaim);
+				this.ptFaim = 10;
 			}
+			
+			//Calculer nouveaux points Max
+			this.calculerImpactFaim();
+		
+			this.ptSante = Math.floor(this.ptSanteMax / 4);
 		},
 		/**
 		 * LECTURE

@@ -68,9 +68,10 @@ var Case = (function() {
 		 * 
 		 * FONCTION POUR AJOUTER UN ITEM A UNE CASE
 		 */
-		ajouterItem : function(item) {
+		ajouterItem : function(item)
+		{
 			this.listeItem.push(item);
-			console.log("CASE : suppression de l'item " + item.nom + " a la case " + this.nom);
+			console.log("CASE : Ajout de l'item " + item.nom + " a la case " + this.nom);
 			//this.logAfficherItems();
 		},
 

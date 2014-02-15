@@ -65,6 +65,12 @@ GameRules.jeu_score_perte_tue = function() 					{ return 1; },
 GameRules.faim_malus = function()							{ return 10; },
 // multiplicateur minimal de malus
 GameRules.faim_malus_max = function()						{ return 0.3; },
+//Nombre de points de Sante récupérer par nuit
+GameRules.regain_sante = function()							{ return (Math.floor(Math.random() * 5 + 3 )); },
+//Nombre de points d'action minimum
+GameRules.pt_actionMax_min = function()						{ return 3;},
+//Nombre de points de déplacement minimum
+GameRules.pt_deplacementMax_min = function()				{ return 3;},
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },

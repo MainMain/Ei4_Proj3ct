@@ -617,7 +617,7 @@ Personnage_Manager.stopperFouille = function(idUser)
 
 Personnage_Manager.fouille1Hr = function(idUser)
 {
-	console.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
+	console.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.getPseudo(idUser));
 	
 	// calcul de decouverte d'un item
 	var idCase 			= this.GetIdCase(idUser);

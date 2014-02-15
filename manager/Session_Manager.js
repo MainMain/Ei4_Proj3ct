@@ -117,4 +117,8 @@ Session_Manager.getIdSessionEnCours = function()
 	return this.idSessionEnCours;
 },
 
+Session_Manager.getDateFin = function()
+{
+	return this.dateFin;
+},
 module.exports = Session_Manager;

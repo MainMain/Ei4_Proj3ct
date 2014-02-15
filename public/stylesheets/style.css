@@ -927,28 +927,24 @@ textarea {
 .chatContols
 {
 }
-.chatContols input[type="submit"]
-{
-	width: 25%;
-	margin: auto 15px;
-	padding: 6px 0px;
-	font-size: 20px;
-	background: #bbbbbb;
-	border: 1px solid rgba(0, 0, 0, 0.75);
-}
 .chatContols input
 {
-	width: 65%;
-	margin: auto 15px;
-	padding: 6px 0px;
+	width: 75%;
+	margin: auto auto;
+	padding: 10px 0px;
 	font-size: 20px;
-	background-color: #bbbbbb;
+	background-color: #BBBBBB;
 	color:#000000;
+}
+.chatContols input[type="submit"]
+{
+	width: 24%;
+	background: #BBBBBB;
 }
 .userArea
 {
 	border: 1px solid rgba(0, 0, 0, 0.5);
-	background-color: #bbbbbb;
+	background-color: #BBBBBB;
 	margin: 80px -1px;
 	color:#FFFFFF;
 }
@@ -963,7 +959,7 @@ textarea {
   min-height: 20px;
   padding: 15px;
   background-color: #f5f5f5;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(200, 200, 200, 0.50);
   margin-top: 70px;
   margin-bottom: 25px;
   font-size: 16px;
@@ -983,13 +979,23 @@ textarea {
   padding: 6px 6px;
   font-family: "calibri";
   font-size: 20px;
-  color: #FF0000;
+  color: #FFFFFF;
+  background-color: #100000;
+  background-image: -moz-linear-gradient(top, #900000, #100000 100%);
+  background-image: -ms-linear-gradient(top, #900000, #100000 100%);
+  background-image: -webkit-linear-gradient(top, #900000, #100000 100%);
+  background-image: -o-linear-gradient(top, #900000, #100000 100%);
+  background-image: linear-gradient(top, #900000, #100000 100%);
+  border-color: #100000 #100000 #100000 #100000;
+  border-radius: 5px;
 }
 .loginform input{
   width: 23%;
   margin: auto 15px;
   padding: 6px 0px;
   font-size: 20px;
+  background-color: rgba(15, 15, 15, 0.25);
+  color:#000000;
 }
 /*
  * Formulaire de Logout
@@ -1049,8 +1055,7 @@ textarea {
 .subscribeform {
   min-height: 20px;
   padding: 0px 20px 20px 20px;
-  background-color: #f5f5f5;
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background-color: rgba(200, 200, 200, 0.50);
   margin-top: 60px;
   margin-bottom: 25px;
   font-size: 20px;
@@ -1068,6 +1073,20 @@ textarea {
   margin: 5px auto;
   padding: 6px 6px;
   font-size: 20px;
+  background-color: rgba(15, 15, 15, 0.25);
+  color:#000000;
+}
+.subscribeform input[type="submit"]
+{
+  color: #FFFFFF;
+  background-color: #100000;
+  background-image: -moz-linear-gradient(top, #900000, #100000 100%);
+  background-image: -ms-linear-gradient(top, #900000, #100000 100%);
+  background-image: -webkit-linear-gradient(top, #900000, #100000 100%);
+  background-image: -o-linear-gradient(top, #900000, #100000 100%);
+  background-image: linear-gradient(top, #900000, #100000 100%);
+  border-color: #100000 #100000 #100000 #100000;
+  border-radius: 5px;
 }
 /* =============================================================================
    Content
@@ -1081,6 +1100,7 @@ textarea {
   background-image: linear-gradient(top, rgba(153, 153, 153, 0.25), rgba(153, 153, 153, 0.90) 190px);
   border-radius: 10px;
   padding: 40px;
+  margin-top:-80px;
   box-shadow: 0 2px 3px 0 rgba(204, 204, 204, 0.8);
 }
 .no-cssgradients #main {
@@ -1170,19 +1190,19 @@ textarea {
 #master-header {
   padding: 40px;
   position: relative;
-  z-index: 2;
+  z-index: 0;
 }
 #site-title {
   float: left;
 }
 #site-title a {
-  color: #900000;
+  color: #AAAAAA;
   display: inline-block;
-  font-size: 60px;
+  font-size: 75px;
   font-weight: 900;
   font-family:"Infected";
-  letter-spacing: 7px;
-  text-shadow: 0 1px 0 #00FF00;
+  letter-spacing: 10px;
+  text-shadow: 0 1px 0 #FF0000;
   -webkit-transition: all 200ms ease-in-out;
   -moz-transition: all 200ms ease-in-out;
   -ms-transition: all 200ms ease-in-out;
@@ -1205,8 +1225,9 @@ textarea {
 #site-description {
   font-size: 34px;
   float: right;
-  padding-top: 24px;
-  color: #DDDDDD;
+  padding-top: 135px;
+  color: #AAAAAA;
+  text-shadow: 0 1px 0 #FF0000;
   letter-spacing: 0.5px;
 }
 /* =============================================================================
@@ -1214,13 +1235,13 @@ textarea {
    ========================================================================== */
 .main-navigation {
   margin: 0 0 25px;
-  *z-index: 10;
+  z-index: 10;
 }
 .main-navigation li {
   float: left;
   margin: 0 15px 0 0;
   position: relative;
-  *z-index: 5;
+  z-index: 5;
 }
 .main-navigation a {
   background-color: #100000;

@@ -103,7 +103,8 @@ var optionAccueil = {
 	"errorLogin": null, 
 	"InfoInscription": null,
 	"usernameInscription": null, 
-	"sessionID": null};
+	"sessionID": null,
+	"dateFinSession": null};
 
 function restrict(req, res, next)
 {
@@ -115,15 +116,24 @@ function restrict(req, res, next)
 	}
 	else
 	{
-		if(req.session.username)
+		if(!req.session.username)
+		{
+			optionAccueil.errorLogin = 'Veuillez vous connectez !';
+		}
+		else
 		{
 			optionAccueil.username = req.session.username;
+		}
+		
+		if(idSession < 0)
+		{
 			optionAccueil.errorLogin = 'Aucune session en cours !';
 		}
 		else
 		{
-			optionAccueil.errorLogin = 'Veuillez vous connectez !';
+			optionAccueil.dateFinSession = req.session.username;
 		}
+		
 		res.render('accueil', optionAccueil);
 		
 		optionAccueil.username = null;
@@ -137,7 +147,7 @@ function restrictAdmin(req, res, next)
 		|| req.session.username == "Brendiche" 
 		|| req.session.username == "MainMain" 
 		|| req.session.username == "Flow" 
-		|| req.session.username == "bibibibouch" 
+		|| req.session.username == "BibiBibouch" 
 		|| req.session.username == "papa")
 	{
 		next();
@@ -217,6 +227,9 @@ app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
 			break;
 		case "stop":
 			oSession_Manager.stopper();
+			break;
+		case "remplir":
+			oCase_Manager.RemplirCases();
 			break;
 	}
 	res.render('admin', options);
