@@ -327,7 +327,6 @@ function initialize() {
 		{src:"public/Background_11.jpg", id:"idBackground_11"},  
 		{src:"public/Background_Dead.jpg", id:"idBackground_Dead"},
 		{src:"public/blood.jpg", id:"idBackground_blood"}, 
-		{src:"public/Black.png", id:"idBackground_Black"},
 		{src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
 		{src:"public/Boutons/Attaquer.png", id:"idBtnAttaquer"},
 		{src:"public/Boutons/AttaquerGris.png", id:"idBtnAttaquerGris"},
@@ -378,9 +377,6 @@ function initialize() {
 		{src:"public/spritesheets/persos/Brute64.png", id:"idPersoBrute64"},
 		{src:"public/spritesheets/persos/Chercheur64.png", id:"idPersoChercheur64"},
 		{src:"public/spritesheets/persos/Explorateur64.png", id:"idPersoExplorateur64"},
-		{src:"public/spritesheets/persos/Brute32.png", id:"idPersoBrute32"},
-		{src:"public/spritesheets/persos/Chercheur32.png", id:"idPersoChercheur32"},
-		{src:"public/spritesheets/persos/Explorateur32.png", id:"idPersoExplorateur32"},
 		{src:"public/spritesheets/persos/perso.gif", id:"idPerso"},
 		{src:"public/map/1.png", id:"1"},
 		{src:"public/map/2_a.png", id:"2_a"},
@@ -1484,7 +1480,7 @@ function dead(currentPerso)
 	var ColorDead="#FFFFFF";
 	var ColorHour="#000000";
 
-	var Killer; //="un mec";
+	var Killer;
 
 	/*contDeadLabel = new createjs.Container();
 	contDeadLabel.x = 390;
