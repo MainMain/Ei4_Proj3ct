@@ -1,5 +1,5 @@
 ﻿
-100-Epee rouillee-Une Petite epee completement rouillee-10-1-10-/public/spritesheets/arme/100.png
+100-Epee rouillee-Une petite epee completement rouillee-10-1-10-/public/spritesheets/arme/100.png
 101-Epee de fer-Une epee standard-10-1-4-/public/spritesheets/arme/101.png
 102-Epee en argent-Une grande epee en argent-10-1-10-/public/spritesheets/arme/102.png
 103-Epee en or-Une epee bling bling-10-1-10-/public/spritesheets/arme/103.png
@@ -17,7 +17,7 @@
 115-Epee et pique-Comment utiliser cette epee ?-10-1-10-/public/spritesheets/arme/115.png
 116-Fouet d'Indiana Jones-Parrfait pour l'aventure !-10-1-10-/public/spritesheets/arme/116.png
 117-Sabre du desert-Il etait enfoui sous le sable-10-1-10-/public/spritesheets/arme/117.png
-118-Fleuret de mousquetaire-Coupant et pointu-10-1-10-/public/spritesheets/arme/118.png
+118-Fleuret de Dartagnant-Coupant et pointu-10-1-10-/public/spritesheets/arme/118.png
 119-Epee de corail-Elle a ete trouvee au fond des oceans-10-1-10-/public/spritesheets/arme/119.png
 120-Morgenstern-Decouvert au fond d'un vieux donjon-10-1-10-/public/spritesheets/arme/120.png
 121-Dague de pirate-Arme legere et roublarde-10-1-10-/public/spritesheets/arme/121.png
