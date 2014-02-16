@@ -1,4 +1,5 @@
-﻿1-Zone sure equipe 1-Ouf ici on ne risque rien !-0-0-0
+﻿// Chaine début de fichier. A NE PAS SUPPRIMER !
+1-Zone sure equipe 1-Ouf ici on ne risque rien !-0-0-0
 2-Espace cafe-On va pouvoir se detendre un peu, mais pas trop longtemps non plus...-30-15-3
 3-Aquarium-Cette salle est pleine de choses etranges-45-25-6
 4-Hall d'entree-Que s'est t'il passe ici, et ces marques au sol ?-5-5-8
