@@ -285,7 +285,7 @@ var Personnage = (function() {
 			try
 			{
 				var idSousCase = 0;
-				console.log(">>>>>>>>>>> " + this.idSalleEnCours);
+				//console.log(">>>>>>>>>>> " + this.idSalleEnCours);
 				var idCaseBrut = this.idSalleEnCours;
 				var tab;
 				try

@@ -894,6 +894,7 @@ io.sockets.on('connection', function (socket)
 		var idSousSalle = oPersonnage_Manager.GetIdSousCase(idUser);
 		var maCase		= oCase_Manager.GetCopieCase(idSalle);
 		
+		
 		console.log("SERVER : INFO_CASE() : Renvoi de l'id de case : " + idSalle + " - Sous case : " + idSousSalle);
 		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis, idSousSalle);
 		}

@@ -95,7 +95,7 @@ Carte.Initialiser = function(largeur, hauteur) {
 Carte.GetIdSalleByCoord = function(x, y) {
 	try 
 	{
-		console.log("CARTE : DEBUG GetIdSalleByCoord : x = " + x + " y = " + y + " id = " + this.matrice[x][y]);
+		//console.log("CARTE : DEBUG GetIdSalleByCoord : x = " + x + " y = " + y + " id = " + this.matrice[x][y]);
 		return this.matrice[x][y];
 	} 
 	catch (err) 

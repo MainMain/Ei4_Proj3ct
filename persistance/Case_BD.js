@@ -190,6 +190,9 @@ Case_BD.Initialiser = function(callBack)
 			// récupération des tabLignes dans un tableau
 			var tabLignes = file.split("\n");
 			
+			// on supprime la premiere ligne 
+			tabLignes.splice(0, 1);
+			
 			// pour chaque ligne
 			for(var i in tabLignes)
 			{
