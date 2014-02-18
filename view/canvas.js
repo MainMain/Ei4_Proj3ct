@@ -6,6 +6,8 @@ var mouseTarget; // the display object currently under the mouse, or being dragg
 var dragStarted; // indicates whether we are currently in a drag operation
 var offset;
 
+var chaineAction="";
+
 var SelectedItemCase = -1;
 var SelectedItemPerso = -1;
 var SelectedItemPersoType = -1;
@@ -1219,6 +1221,28 @@ function game() {
 	stage.update();
 }
 
+/*function cutMsg(chaine)
+{
+	var longLigne=25;
+	try 
+	{
+			alert(chaine.length);
+			if(chaine.length>longLigne)
+			{
+				for (var j=0; j<chaine.length ; j+=longLigne)
+				{
+					var message=chaine.substring(j,j+longLigne);
+					chaine+=message;
+					chaine+="\n";
+				}
+			}
+	}
+	catch(e)
+	{
+		//alert("page inexistante");
+	}
+}*/
+
 function message()
 {
 	var nbMsgAffiches=10;
@@ -1794,6 +1818,7 @@ function setBtnAttaquer(x,y)
 			{
 				socket.emit('ACTION_ATTAQUE_CS', SelectedPerso);
 				SelectedPerso = -1;
+				liste();
 			}
 		});
 		BtnAttaquerListe.cursor="pointer";
@@ -2060,32 +2085,55 @@ function setImg(img, X, Y)
 socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 	switch(currentCase)
 	{
-	case 0: labelAction.text = "";
-	labelAction.text = ("WARNING : ERREUR_CASE");
-	break;
-
-	case -1: labelAction.text = "";
-	labelAction.text = ("Impossible \nd'aller par là !");
-	break;
-
-	case -2: labelAction.text = "";
-	labelAction.text = ("Plus de points \nde mouvement !");
-	break;
-
-	case -3: labelAction.text = "";
-	labelAction.text = ("Trop de Zombies ici !");
-	break;
-
-	case -4: labelAction.text = "";
-	labelAction.text = ("Impossible de \npénetrer dans la \nMaison de l'ennemi !");
-	break;
-
-	default: socket.emit('INFO_CASE_CS');
-	labelAction.text="";
-	labelAction.text = "";
-	labelAction.text = ("Déplacement réussi !");
-	socket.emit('INFO_PERSONNAGE_CS');
-	break;
+		case 0: labelAction.text = "";
+		/*chaineAction="";
+		chaineAction="WARNING : ERREUR_CASE";
+		cutMsg(chaineAction);
+		labelAction.text =chaineAction;*/
+		labelAction.text="WARNING : ERREUR_CASE";
+		break;
+	
+		case -1: labelAction.text = "";
+		/*chaineAction="";
+		chaineAction="Impossible d'aller par là !";
+		cutMsg(chaineAction);
+		labelAction.text = chaineAction;*/
+		labelAction.text = ("Impossible \nd'aller par là !");
+		break;
+	
+		case -2: labelAction.text = "";
+		/*chaineAction="";
+		chaineAction="Plus de points de mouvement !";
+		cutMsg(chaineAction);
+		labelAction.text =chaineAction;*/
+		labelAction.text = ("Plus de points \nde mouvement !");
+		break;
+	
+		case -3: labelAction.text = "";
+		/*chaineAction="";
+		chaineAction="Trop de zombies ici !";
+		cutMsg(chaineAction);
+		labelAction.text =chaineAction;*/
+		labelAction.text = ("Trop de Zombies ici !");
+		break;
+	
+		case -4: labelAction.text = "";
+		/*chaineAction="";
+		chaineAction="Impossible de pénetrer dans la Maison de l'ennemi !"
+		cutMsg(chaineAction);
+		labelAction.text =chaineAction;*/
+		labelAction.text = ("Impossible de \npénetrer dans la \nMaison de l'ennemi !");
+		break;
+	
+		default: socket.emit('INFO_CASE_CS');
+		labelAction.text = "";
+		/*chaineAction="";
+		chaineAction="Déplacement réussi !";
+		cutMsg(chaineAction);
+		labelAction.text =chaineAction;*/
+		labelAction.text = ("Déplacement réussi !");
+		socket.emit('INFO_PERSONNAGE_CS');
+		break;
 	}
 	stage.update();
 });
