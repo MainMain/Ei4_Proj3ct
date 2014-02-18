@@ -92,10 +92,11 @@
 				<!-- ***************** PRESENTATION DU JEU ************** -->
 				<h1>Présentation du jeu</h1>
 				<p>
-					Ei4_Projet est un jeu collaboratif par navigateur où deux équipes s’affront sur des sessions de 30 jours dans un
-					 gigantesque complexe abandonné. Le travail d’équipe est maitre si chacun veut espérer s’en sortir vivant et 
-					 prendre le dessus sur l’autre équipe. Partant chacun d’une zone sûre commune à chaque équipe, les joueurs 
-					 devront explorer et se battre pour leur survie… 
+					Zomb’IstiA est un jeu collaboratif par navigateur où trois équipes s’affrontent sur des sessions de quelques jours
+					dans un gigantesque complexe abandonné : l’IstiA. Le travail d’équipe est maître si chacun veut espérer s’en sortir
+					vivant et prendre le dessus sur les autres équipes. Partant chacun de leur zone sûre,les joueurs devront explorer 
+					et se battre pour leur survie…
+
 				</p>
 				<!-- Colonne de gauche -->
 				<div style="width:50%; float:left; padding:10px;">
@@ -104,140 +105,135 @@
 						A la fin de la session, l’équipe qui aura remporté le plus de points gagne la partie. 
 						Il y a deux façons de gagner des points :
 						<br>•	Soit en accumulant des objets de défenses nécessaires à la fortification de la zone sûre.
-						<br>•	Soit en battant en duel les membres de l’équipe adversaire, qui permet de leurs voler 10 points.
+						<br>•	Soit en mettant K-O les membres de l’équipe adversaire, afin de leurs voler des points.
 					</p>
-					<h3>Points de personnage</h3>
+					<h3>Principe de déplacement</h3>
 					<p>
-						Chaque personnage du jeu dispo de différent type de points :
-						<br>•	Les points de vie : chaque attaque portée sur le joueur (ou riposte) diminue les points de vie du joueur.
-						 S’il tombe à zéro, le joueur tombe dans le coma. Il perdra alors son inventaire et sera automatiquement rapatrié
-						  à sa zone sûre.
-						<br>•	Les points de déplacement : chaque déplacement coûte un point de déplacement. Dès que celui-ci est égal à 
-						zéro, il ne peut plus se déplacer.
-						<br>•	Les points d’actions : ils conditions le nombre d’actions que le joueur peut effectuer, certaines étant 
-						plus coûteuses que d’autres. Si le joueur en à plus, il ne pourra effectuer aucune action.
+						Les déplacements se font de case en case, et chacun coûte un point de déplacement. 
+						Chaque case peut accueillir un nombre illimité de joueurs et contiennent également un «inventaire», 
+						qui est l’ensemble des items dans la salle (qui peuvent être ramassées par les joueurs).
+
+					</p>
+					<h3>Inventaire</h3>
+					<p>
+						Chaque joueur possède un inventaire, limité par un poids maximum (chaque objet étant plus ou moins lourd). 
+						De cet inventaire, il peut s’équiper d’une arme et / ou d’une armure, et consommer certains objets, 
+						augmentant un des points de personnage énoncé plus haut.
 					</p>
 				</div>
 
 				<!-- Colonne de droite -->
 				<div style="width:50%; float:left; padding:10px;">
-					<h3>Principe de déplacement</h3>
+					<h3>Points de personnage</h3>
 					<p>
-						Les déplacements se font de salles en salles, et chaque déplacement coûtant donc un point de déplacement. 
-						Chaque salle pouvant accueillir un nombre illimité de joueur. Ces salles contiennent également un « inventaire », 
-						qui est l’ensemble des items dans la salle (qui peuvent être ramassées par un joueur).
-					</p>
-					<h3>Inventaire</h3>
-					<p>
-						Chaque joueur possède un inventaire, limité par un poids max (chaque objet étant plus ou moins lourd).
-						 De cet inventaire, il peut s’équiper d’une arme et / ou d’une armure, et utiliser certains objets, 
-						 augmentant un de ses points de personnage énoncé plus haut.
+						Chaque personnage du jeu dispose d’un quota de points par jour. Ils sont non cumulables de jour en jour.
+						<br>•	Les points de vie : chaque attaque portée sur le joueur (ou riposte) diminue les points de vie du joueur.
+						 S’ils descendent à zéro, le joueur tombe dans le coma. Il perdra alors une partie de son inventaire et sera automatiquement rapatrié
+						  à sa zone sûre.
+						<br>•	Les points de déplacement : chaque déplacement coûte un point de déplacement. Dès que ceux-ci sont égaux à 
+						zéro, le joueur ne peut plus se déplacer.
+						<br>•	Les points d’actions : ils conditions le nombre d’actions que le joueur peut effectuer, certaines sont 
+						plus coûteuses que d’autres. Si le joueur n'en a plus, il ne pourra effectuer aucune action.
+						<br>•	Les points de faim : en dessous de 10, les différents points énoncés ci-desss en seront affectés : le joueur sera plus faible, 
+						et ses limites de points diminueront proportionnellement. Si cette barre tombe à zéro, le joueur tombe dans le coma.
+						<br> <br> Les points d’action et de déplacement ont la particularité de se remplir chaque jour, à minuit.
 					</p>
 				</div>
 				<!--  ********** ACTION DE JEU ************-->
 				<hr>
-				<h1>Actions de jeu</h1>
-								<p> les actions permettent bla blabla blabla blabla blabla blabla blabla blabla bla
-					bla blabla blabla blabla blabla blabla blabla blabla bla </p>
+				<h1>Actions actives</h1>
+					<p> Les actions se font instantanément, en l’échange de quelques points d’actions.</p>
 				<!-- Colonne de gauche -->
-				<div style="width:50%; float:left;background-color:#E6AB81; padding:10px;">
-					<h3>Déplacement</h3>
+				<div style="width:50%; float:left;background-color:#708090; padding:10px;">
+					<h3>Ramasser / Déposer</h3>
 					<p>
-						test test test test test test test test test test test test test test test test test test test test test test
+						Il est possible de ramasser les objets au sol, à condition que le personnage puisse le porter dans son sac ! 
+						Le poids total du sac ne dois pas excéder le poids maximum que le personnage peut porter, 
+						donc si son sac est trop lourd, il peut passer dans sa zone sûre afin de se décharger. 
+						Notez que le fait d’être équipé ou non d’une arme / armure ne modifie pas le poids total de tous les objets du sac. 
+						Le joueur peut aussi déposer des objets dans une salle, quand il veut. Il n’y a pas de limite de place dans une salle.
 					</p>
 					<h3>Fouille rapide</h3>
 					<p>
-						test test test test test test test test test test test test test test test test test test test test test test
+						Afin de trouver de nouveaux consommables et diversifier ses armes, le joueur pourra à tout moment effectuer une fouille rapide de la case, 
+						qui consommera des points d’actions. Ainsi, il aura une probabilité de découvrir un nouvel objet, qui ira directement se stocker dans son sac 
+						s’il y reste de la place ou dans la case sinon.
+					</p>
+					<h3>Tuer des zombies</h3>
+					<p>
+						Les salles seront souvent remplies de zombies errants, qui pourront empêcher les joueurs de progresser ou de faire certaines actions (cf. partie sur les zombies). 
+						Dans ce cas, le joueur sera obliger de tuer un certain nombre de zombies ! Même à mains nues, le joueur tuera forcément un zombie, et si il est chanceux, 
+						il peut en tuer deux en un seul coup.
 					</p>
 				</div>
-
+				
 				<!-- Colonne de droite -->
-				<div style="width:50%; float:left; background-color:#7ca8de; padding:10px;">
-					<h3>Ramasser - deposer</h3>
+				<div style="width:50%; float:left; background-color:#C0C0C0; padding:10px;">
+					<h3>S’équiper / Se déséquiper</h3>
 					<p>
-						test test test test test test test test test test test test test test test test test test test test test test
+						Pour se défendre contre les ennemis et les zombies présents sur la carte, le joueur peut s’équiper d’une arme, 
+						qui augmentera ses points d’attaque et d’une armure, qui augmentera ses points de défenses. 
+						Il faut faire attention car les meilleurs armures sont souvent les plus lourdes, 
+						et il peut arriver qu’une fois une arme et une armure équipée, le joueur ne puisse plus porter d’autres objets. 
 					</p>
-					<h3>Gestion de l'équipement</h3>
+					<h3>Consommer</h3>
 					<p>
-						test test test test test test test test test test test test test test test test test test test test test test
+						Pour aider le joueur dans son aventure, il pourra trouver tout au long du jeu des potions, destinées à restaurer ses points de santé,
+						d’action, de mouvement ou encore de la nourriture pour remonter sa jauge de faim. Il ne peut consommer ces objets qu’une seule fois, 
+						mais il n’y a pas de limites de consommation, mais il ne faut pas oublier de jouer collectif ! 
+						De plus, si la jauge de faim du personnage descend à zéro, celui-ci tombe dans le coma, et est rapatrié automatiquement dans sa zone sûre.
 					</p>
 					<h3>Attaquer</h3>
 					<p>
-						test test test test test test test test test test test test test test test test test test test test test test
+						Il est possible, pour chaque joueur, d’attaquer à tout moment un autre joueur présent dans la même case. 
+						Mais le joueur doit être vigilant : l’adversaire peut riposter, et il se peut également que l’adversaire soit préparé au combat (cf. partie sur le mode défense).
+						<br><br>
 					</p>
 				</div>
 				<!-- ********** ACTIONS PASSIVES *************** -->
-				<br>
-				<br>
-				<h1>Actions passives (modes)</h1>
-				<p> les modes permettent bla blabla blabla blabla blabla blabla blabla blabla bla
-					bla blabla blabla blabla blabla blabla blabla blabla bla </p>
-				<!-- Colonne de gauche -->
-				<div style="width:50%; float:left;background-color:#E6AB81; padding:10px;">
-					<h3>Fouiller</h3>
-					<p>
-						test test test test test test test test test test test test test test test test test test test test test test
-					</p>
-					<h3>Se cacher</h3>
-					<p>
-						test test test test test test test test test test test test test test test test test test test test test test
-					</p>
-				</div>
-
-				<!-- Colonne de droite -->
-				<div style="width:50%; float:left; background-color:#7ca8de; padding:10px;">
-					<h3>En défense</h3>
-					<p>
-						test test test test test test test test test test test test test test test test test test test test test test
-					</p>
+				<hr>
+				<h1>Actions passives</h1>
+				<p> A tout moment, le joueur peut choisir de passer dans un mode passif. Le mode fouille permet de trouver un objet toutes les heures, 
+					selon la probabilité de fouille de la case. Le mode cache permet au joueur de se cacher quelque part dans la case où il se trouve 
+					et a une chance de ne pas se faire découvrir par les ennemis selon la probabilité de cache de la salle. Le mode défense permet au 
+					joueur de se préparer au combat et d’augmenter ses points d’attaque et de défense.
+				</p>
+				<hr>
+				<h1>Les zombies</h1>
+				<p> Les zombies sont des morts-vivants, ils errent dans le bâtiment de l’IstiA, mais également en dehors. 
+					Ils débarquent de plus en plus nombreux chaque jour. Leurs rôles dans le jeu sont multiples :
+					<br>•	Interception :
+					<br>Ces êtres sans âmes ni cerveaux opérationnels peuvent intercepter les actions du joueur c’est à dire que ce dernier a une chance 
+					de se faire blesser par un ou plusieurs zombies avant d’effectuer son action, et a une petite chance de la rater. En toute logique, 
+					plus le nombre de goules dans une case est important, plus le joueur à de chances de subir des dégats et de rater son action. 
+					Cependant, il y a une exception : l’attaque de zombie ne peut rater !
 					
-				</div>
+					<br>•	Bloquage :
+					<br>Tout mouvement sera impossible si, dans la case, le nombre de zombies est trop important pour le joueur (ce nombre dépend de sa compétence). 
+					Il a quand même une chance de s’échapper vivant, car le seul mouvement qu’il pourra faire est celui du demi-tour. 
+					Cependant, lorsqu’il y a des membres de son équipe dans la même case que lui, moins de zombies l'empêcheront d’effectuer son mouvement. 
+					<br>Par exemple: supposons que le nombre de zombie maximum qu’il peut gérer soit 3 :
+					<br> - cas n°1: le joueur est seul (sans alliés) dans une case, il peut effectuer un mouvement seulement s’il y a moins de 3 zombies dans la case. 
+					<br> - cas n°2: le joueur n’est pas seul (présence de 2 alliés) dans une case, il peut effectuer une action seulement s’il y a moins de 5 (3+2) zombies dans la salle.
+				</p>
+				<hr>
+				<h1>L’attaque de la nuit </h1>
+				<p> Chaque nuit, les zombies deviennent enragés, incontrôlables et destructeurs. C’est-à-dire qu’ils attaquent tous les joueurs hors de la zone sûre qui ne sont pas cachés !
+				</p>
 
+				<hr>
+				<h1>Le classement</h1>
 				<p>
-					- Le personnage dispose d'un quota de points d'actions par jour (non cumulable).
-					<br>
-					- Certaines actions coûtent des points d'actions au joueur.
-					<br>
-					- Certaines actions coûtent des points d'actions au joueur.
-					<br>
-					- Le personnage se déplace de cases en cases sans utiliser de points d'actions, mais points de déplacement.
-					<br>
-					- Chaque case est différente. Une description sera affichée afin que le joueur s'imagine la salle
-					<br>
-					(nombre de meubles, description visuelle, probabilité d'être découvert quand il est caché, probabilité de découvrir un objet).
-					<br>
-					- Le personnage dispose d'une barre de vie. Si elle tombe à zéro...
-					<br>
-					- Le personnage peut avoir plusieurs objets sur lui (mais en nombre limité par leurs poids).
-					<br>
-					- Le personnage peut attaquer d'autres joueurs de l'équipe adverse.
-					<br>
-					- Le personnage peut se mettre en "fouille". Dès lors, il à une probabilité de trouver un objet toutes les heures.
-					<br>
-					La probabilité varie en fonction de la salle. Le joueur peut se déconnecter tout en restant en "fouille".
-					<br>
-					- Chaque équipe dispose d'une salle "de repos", où le joueur est intouchable.
-					<br>
-					- Les personnages  ne peuvent aller dans les salles de repos adverses.
-					<br>
-					- Chaque jour, des goules apparaissent aléatoirement dans les salles (sauf salles de repos).
-					<br>
-					- Plus le temps passe, plus les goules seront nombreux.
-					<br>
-					- Un joueur peut se cacher dans une salle. La probabilité qu'il soit découvert lors d'une fouille dépend des objets de la salle.
-					<br>
-					- Les statistiques du joueur ne seront pas affichées, ainsi que son pseudo (mais visibilité dans l'équipe).
-					<br>
-					- Le joueur peut s'équiper d'une arme d'attaque pour augmenter ses points de dégâts.
-					<br>
-					- Le joueur peut s'équiper d'une armure pour augmenter ses points de défense.
-					<br>
-					- Si un joueur se cache dans une salle occupé par des goules, il a une probabilité de se faire attaquer avant de se cacher et une autre probabilité (plus faible) que sa cache rate.
-					<br>
-					- Les déplacements dans une case peuvent être limités à cause du nombre important de goules.
-					<br>
-				<p>
+					Les points sont marqué selon différents événements:
+						<br>•	Lorsque le joueur dépose un objet de défense dans sa zone sûre, les points marqués dépendent de la valeur le cet objet.
+						<br>•	Plus 5 points lorsque le joueur met K-O un ennemi.
+						<br>•	Moins 3 points lorsque le joueur est mit K-O par un ennemi.
+						<br>•	Moins 2 points si le joueur est mit K-O par un zombie.
+						<br>•	Moins 1 point si le joueur meurt de faim.
+					<br><br>
+					Il est également possible de voir, sur la page classement,  le nombre de zombies tué par chaque joueur.
 
+				</p>
 					<!-- #Règles -->
 			</div>
 			<!-- #content -->
