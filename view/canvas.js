@@ -136,7 +136,7 @@ var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 //------------------ Zone 9 : Infos Case -------------------------------------------------------
 
 //Placement label Description Item
-var _labelDescribeItemX = _ContItemCaseX;
+var _labelDescribeItemX = _ContItemCaseX-5;
 var _labelDescribeItemY = _ContItemCaseY + 40;
 
 //Placement label Nombre d'Aliés
@@ -370,9 +370,6 @@ function initialize() {
 		{src:"public/Boutons/MessagesVide.png", id:"idBtnMessagesVide"},
 		{src:"public/Boutons/MessagesGris.png", id:"idBtnMessagesGris"},
 		{src:"public/Boutons/Ok.png", id:"idBtnOk"},
-		{src:"public/spritesheets/persos/Brute.gif", id:"idPersoBrute"},
-		{src:"public/spritesheets/persos/Chercheur.gif", id:"idPersoChercheur"},
-		{src:"public/spritesheets/persos/Explorateur.gif", id:"idPersoExplorateur"},
 		{src:"public/spritesheets/persos/Brute96.png", id:"idPersoBrute96"},
 		{src:"public/spritesheets/persos/Chercheur96.png", id:"idPersoChercheur96"},
 		{src:"public/spritesheets/persos/Explorateur96.png", id:"idPersoExplorateur96"},
@@ -1146,13 +1143,13 @@ function game() {
 	// ************ Boutons d'action ************
 	// ******************************************
 
-	var BtnSaveBD = stage.addChild(new Button("SAVE BD", ColorBtn));
+	/*var BtnSaveBD = stage.addChild(new Button("SAVE BD", ColorBtn));
 	BtnSaveBD.x = 970;
 	BtnSaveBD.y = 590;
 	BtnSaveBD.cursor="pointer";
 	BtnSaveBD.addEventListener('click', function(event) {
 		socket.emit('SAVE_BD_DEBUG_CS');
-	});
+	});*/
 
 	/*var BtnEvents = new createjs.Bitmap("public/Boutons/Historique.png");
 	BtnEvents.image.onload = setImg(BtnEvents, AbsBtn, OrdBtn);
@@ -1332,7 +1329,7 @@ function message()
 
 function afficherMessage(TabListeMessage)
 {
-	var longLigneMax=85;
+	var longLigneMax=88;
 	try 
 	{
 		// instructions à essayer
@@ -1343,14 +1340,59 @@ function afficherMessage(TabListeMessage)
 			for (var j=0; j<TabListeMessage[PageMessage][i].length ; j+=longLigneMax)
 			{
 				var message=TabListeMessage[PageMessage][i].substring(j,j+longLigneMax);
-				labelMessage.text+=message;
-				labelMessage.text+="\n";
+				//alert("j : "+j);
+				if(j==longLigneMax || TabListeMessage[PageMessage][i].length<longLigneMax)
+				{
+					labelMessage.text+=message;
+				}
+				else
+				{
+					labelMessage.text+=message;
+					labelMessage.text+="\n";
+				}
 			}
 		}
 	}
 	catch(e)
 	{
 		//alert("page inexistante");
+	}
+	stage.update();
+}
+
+function afficherDescCase(desc)
+{
+	var longLigneMax=69;
+	try 
+	{
+		// instructions à essayer
+		labelDescribeCase.text="";
+		for (var i = 0; i < desc.length ; i+=longLigneMax) 
+		{
+				var message=desc.substring(i,i+longLigneMax);
+				labelDescribeCase.text+=message+"\n";
+		}
+	}
+	catch(e)
+	{
+	}
+	stage.update();
+}
+
+function afficherDescItem(desc)
+{
+	var longLigneMax=41	;
+	try 
+	{
+		// instructions à essayer
+		for (var i = 0; i < desc.length ; i+=longLigneMax) 
+		{
+				var message=desc.substring(i,i+longLigneMax);
+				labelDescribeItem.text+=message+"\n";
+		}
+	}
+	catch(e)
+	{
 	}
 	stage.update();
 }
@@ -1371,8 +1413,6 @@ function liste()
 	shape6.graphics.setStrokeStyle(4).beginStroke("#999900").drawRect(
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
 
-	// application du background liste au dessus de la map
-	// var background_liste = new createjs.Bitmap("public/Background_liste.jpg");
 	var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=1;
 	contListe.addChild(background_liste);
@@ -1552,25 +1592,25 @@ function dead(currentPerso)
 	labelDeadHour.x = 450 ;
 	labelDeadHour.y = 175;
 	labelDeadHour.text="";
-	
+	//alert(ListeMessages[0]);
 	var date = ListeMessages[0].split(" :");
-	labelDeadHour.text=date[0];
+	//labelDeadHour.text=date[1];	
 	
-	if (date[1]!=null && date[1] == "Z")
+	if (date[0]!=null && date[0] == "Z")
 	{
 		Killer="Un zombie rôdant dans la salle vous a dévoré !";
 	}
-	else if(date[1]!=null && date[1] == "N")
+	else if(date[0]!=null && date[0] == "N")
 	{
 		Killer="Un zombie vous a dévoré durant l'attaque de nuit !";
 	}
-	else if(date[1]!=null && date[1] == "F")
+	else if(date[0]!=null && date[0] == "F")
 	{
-		Killer="Vous êtes mort à cause de la faim !";
+		Killer="Vous êtes mort de faim!";
 	}
-	else if(date[1]!=null && date[1]!="Z" && date[1]!="N" && date[1]!="F")
+	else if(date[0]!=null && date[0]!="Z" && date[0]!="N" && date[0]!="F")
 	{
-		Killer=(date[1]+" vous a tué !");
+		Killer=(date[0]+" vous a mis K-O !");
 	}
 	else
 	{
@@ -1697,7 +1737,7 @@ function dead(currentPerso)
 				stage.update();
 			},false);*/
 
-			imgItem.x = 7+(iPositionItemInConteneur * SpaceItem);
+			imgItem.x = (iPositionItemInConteneur * SpaceItem);
 			imgItem.y = 4;
 			contItemPersoDead.addChild(imgItem);
 
@@ -1812,7 +1852,7 @@ function setBtnAttaquer(x,y)
 		contListe.addChild(BtnAttaquerListe);
 		BtnAttaquerListe.addEventListener('click', function(event) {
 			if (SelectedPerso == -1) {
-				alert("Selectionner Ennemi avant d'attaquer !");
+				//alert("Selectionner Ennemi avant d'attaquer !");
 			}
 			else
 			{
@@ -2149,7 +2189,7 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 	if (codeRetour == 0) {
 		labelAction.text = "";
-		labelAction.text = ("L'objet " + currentItem.id + " plus dans le sac ");
+		labelAction.text = ("L'objet \n" + currentItem.id + "\nn'est plus dans le sac ");
 		SelectedItemEquip=-1;
 		// quitte la fonction
 		return;
@@ -2158,7 +2198,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 		switch (codeRetour) {
 		case 0:
 			labelAction.text = "";
-			labelAction.text = ("Objet pas dans le sac !");
+			labelAction.text = ("Objet pas dans \nle sac !");
 			SelectedItemPerso=-1;
 			break;
 
@@ -2200,7 +2240,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour) {
 		if (codeRetour == -4)
 		{
 			labelAction.text = "";
-			labelAction.tetx = ("Déséquipement impossible car pas équipé");
+			labelAction.tetx = ("Déséquipement \nimpossible \ncar pas équipé");
 			SelectedItemEquip=-1;
 		} else if (codeRetour == 1) {
 			// Si déquipe arme
@@ -2261,18 +2301,18 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			// poids insufisant
 		case -1:
 			labelAction.text = "";
-			labelAction.text = ("Objet trop lourd !");
+			labelAction.text = ("L'item est \ntrop lourd !");
 			SelectedItemCase=-1;
 			break;
 			// objet pas dans case
 		case -2:
 			labelAction.text = "";
-			labelAction.text = ("Objet plus dans la salle !");
+			labelAction.text = ("L'item n'est plus \ndans la salle !");
 			SelectedItemCase=-1;
 			break;
 		case -5:
 			labelAction.text = "";
-			labelAction.text = ("Ramassage impossible à cause des Zombies !");
+			labelAction.text = ("Ramassage impossible \nà cause des \nzombies !");
 			if(DegatsG!=0)
 			{
 				labelAction.text +=("\n- " + DegatsG + " points de vie !");
@@ -2282,7 +2322,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			break;
 		case -6:
 			labelAction.text = "";
-			labelAction.text = ("Ramassage d'ODD impossible ici !");
+			labelAction.text = ("Ramassage d'ODD \nimpossible ici !");
 			SelectedItemCase=-1;
 			// ramassage ok
 		default:
@@ -2290,7 +2330,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		labelAction.text = ("Objet ramassé");
 		if(DegatsG!=0)
 		{
-			labelAction.text +=("\n- "+ DegatsG + " points de vie !");//\n"+ RestG + " Zombies restants");
+			labelAction.text +=("\n- "+ DegatsG + " points \nde vie !");//\n"+ RestG + " Zombies restants");
 		}
 		SelectedItemCase=-1;
 		socket.emit('INFO_PERSONNAGE_CS');
@@ -2306,7 +2346,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		// erreur
 		case -3:
 			labelAction.text = "";
-			labelAction.text = ("Déséquipez avant de déposer !");
+			labelAction.text = ("Déséquipez avant \nde déposer !");
 			SelectedItemPerso=-1;
 			break;
 		case -4:
@@ -2316,7 +2356,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 			break;
 		case -2:
 			labelAction.text = "";
-			labelAction.text = ("Objet plus dans le sac !");
+			labelAction.text = ("L'item n'est plus\n dans le sac !");
 			SelectedItemPerso=-1;
 			break;
 			// dépôt ok
@@ -2325,7 +2365,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 		labelAction.text = ("Objet déposé");//\nSac : " + codeRetour + " kg");
 		if(DegatsG!=0)
 		{
-			labelAction.text +=("\n- "+ DegatsG + " points de vie !");//\n"+ RestG + " Zombies restants");
+			labelAction.text +=("\n- "+ DegatsG + " points \nde vie !");//\n"+ RestG + " Zombies restants");
 		}
 		SelectedItemPerso=-1;
 		socket.emit('INFO_CASE_CS');
@@ -2367,7 +2407,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 	{
 		//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
 		labelAction.text="";
-		labelAction.text=("CLIENT :: nom case = " + "ERREUR_CASE");
+		labelAction.text=("Erreur de case !");
 	}
 	else {
 
@@ -2375,14 +2415,15 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		ProbCache=(currentCase.probaCache * PersoProbaCache);
 		ProbFouille=(currentCase.probaObjet * PersoProbaFouille);
 
-		labelIdSalle.text=("Salle en cours : " + currentCase.nom + "");
+		labelIdSalle.text=("Case en cours : " + currentCase.nom + "");
 		labelNbAllies.text=("Alliés dans la salle : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %");
 		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %");
 		
-		labelDescribeCase.text=currentCase.description;
+		var descriptionCase=currentCase.description;
+		afficherDescCase(descriptionCase);
 
 		if(ProbCache>100)
 		{
@@ -2505,7 +2546,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 				// ajout d'un texte quand l'user passera la souris dessus
 				imgItem.addEventListener('mouseover', function(event) {
 					var currentItem = TabListe[PageItemCase][event.target.name];
-					labelDescribeItem.text=(currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
+					var descriptionItem=currentItem.description;
+					labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+					afficherDescItem(descriptionItem);
 					stage.update();
 				},false);
 
@@ -2523,7 +2566,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 					var currentItem = TabListe[PageItemCase][event.target.name];
 					SelectedItemCase=currentItem.id;
 					Select = contInvCase.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-					Select.x=(num-7);
+					Select.x=(num);
 					Select.y=0;
 
 					setContCase();
@@ -2531,7 +2574,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 					stage.update();
 				});
 
-				imgItem.x = 7+(iPositionItemInConteneur * SpaceItem);
+				imgItem.x = (iPositionItemInConteneur * SpaceItem);
 				imgItem.y = 4;
 
 				contInvCase.addChild(imgItem);
@@ -2827,8 +2870,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		BtnDefendre.cursor="not-allowed";
 		BtnFouiller.cursor=BtnCacher.cursor="pointer";
 
-		labelBonusArme.text=("( + " + PointsAttaque*0.25+" )");
-		labelBonusArmure.text=("( + " + PointsDefense*0.25+" )");
+		/*labelBonusArme.text=("( + " + PointsAttaque*0.25+" )");
+		labelBonusArmure.text=("( + " + PointsDefense*0.25+" )");*/
+		
+		labelBonusArme.text=("(x 1.75)");
+		labelBonusArmure.text=("(x 1.75)");
 
 		break;
 	}
@@ -2939,8 +2985,9 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 				// ajout d'un texte quand l'user passera la souris dessus
 				imgItem.addEventListener('mouseover', function(event) {
 					var currentItem = TabListe[PageItemPerso][event.target.name];
-					labelDescribeItem.text=(currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
-					stage.update();
+					var descriptionItem=currentItem.description;
+					labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+					afficherDescItem(descriptionItem);
 				},false);
 
 				imgItem.addEventListener('mouseout', function(event){
@@ -2958,14 +3005,14 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 					SelectedItemPerso=currentItem.id;
 					SelectedItemPersoType=currentItem.type;
 					Select = contInvPerso.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-					Select.x=(num-7);
+					Select.x=(num);
 					Select.y=0;
 					// Appel de fonction pour créer les boutons liés au Perso
 					setContPerso();
 					stage.update();
 				});
 
-				imgItem.x = 7+(iPositionItemInConteneur * SpaceItem);
+				imgItem.x = (iPositionItemInConteneur * SpaceItem);
 				imgItem.y = 4;
 				contInvPerso.addChild(imgItem);
 
@@ -3015,7 +3062,9 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		});
 
 		contArme.addEventListener('mouseover', function(event) {
-			labelDescribeItem.text=(currentPerso.armeEquipee.nom + " (valeur : " + currentPerso.armeEquipee.valeur + ") " + "\nPoids : " + currentPerso.armeEquipee.poids + "\nDescription : " + currentPerso.armeEquipee.description);
+			var descriptionItem=currentPerso.armeEquipee.description;
+			labelDescribeItem.text=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
+			afficherDescItem(descriptionItem);
 			stage.update();
 		},false);
 
@@ -3057,7 +3106,9 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		});
 
 		contArmure.addEventListener('mouseover', function(event) {
-			labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (valeur : " + currentPerso.armureEquipee.valeur + ") " + "\nPoids : " + currentPerso.armureEquipee.poids + "\nDescription : " + currentPerso.armureEquipee.description);
+			var descriptionItem=currentPerso.armureEquipee.description;
+			labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
+			afficherDescItem(descriptionItem);
 			stage.update();
 		},false);
 
@@ -3181,16 +3232,16 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
 	{
 	case 1: 
 		labelAction.text="";
-		labelAction.text=("Objet utilisé !");
+		labelAction.text=("Item consommé !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -1:
 		labelAction.text="";
-		labelAction.text=("Objet plus dans le sac !");
+		labelAction.text=("L'item n'est plus \ndans le sac !");
 		break;
 	case -2:
 		labelAction.text="";
-		labelAction.text=("Objet inutilisable !");
+		labelAction.text=("L'item n'est pas \nconsommable !");
 		break;
 	}
 	stage.update();
@@ -3218,20 +3269,20 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoul
 	{
 		case 1: 
 			labelAction.text = "";
-			labelAction.text = ("Changement de mode ok !");
+			labelAction.text = ("Changement de \nmode ok !");
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 		case 0 : 
 			labelAction.text = "";
-			labelAction.text = ("Changement de mode raté !\nErreur interne");
+			labelAction.text = ("Changement de \nmode raté !\nErreur interne");
 			break;
 		case -4 : 
 			labelAction.text = "";
-			labelAction.text = ("Changement de mode mode raté !\nDéja dans ce mode !");
+			labelAction.text = ("Changement de \nmode mode raté !\nDéjà dans ce mode !");
 			break;
 		case -5: 
 			labelAction.text = "";
-			labelAction.text = ("Changement de mode raté !");
+			labelAction.text = ("Changement de \nmode raté !");
 			if(degatsInfliges!=0)
 			{
 				labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
@@ -3239,16 +3290,16 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoul
 			
 			if(nbrGoulesA==1)
 			{
-				labelAction.text +=("\npar " + nbrGoulesA + " Zombie !");
+				labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
 			}
 			else if(nbrGoulesA>1)
 			{
-				labelAction.text +=("\npar " + nbrGoulesA + " Zombies !");
+				labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
 			}
 			break;
 		case -10:
 			labelAction.text = "";
-			labelAction.text = ("Changement de mode raté !\nPoints d'action insuffisants !");
+			labelAction.text = ("Changement de \nmode raté !\nPoints d'action \ninsuffisants !");
 			break;
 	}
 });
@@ -3284,7 +3335,7 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 	switch(reponse)
 	{
 	case  1 : 
-		labelAction.text =("Fouille rapide réussie !\n Objet découvert :\n" + item.nom);
+		labelAction.text =("Fouille rapide \nréussie !\n Objet découvert :\n" + item.nom);
 		
 		if (ajouteAuSac == 0)
 		{
@@ -3297,11 +3348,11 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		
 		if(nbrEnnemisDecouverts==1)
 		{
-			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemi découvert !");
+			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemi \ndécouvert !");
 		}
 		else if(nbrEnnemisDecouverts>1)
 		{
-			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemis découverts !");
+			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemis \ndécouverts !");
 		}
 		
 		if(degatsInfliges!=0)
@@ -3311,36 +3362,36 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		
 		if(nbrGoulesA==1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " Zombie !");
+			labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
 		}
 		else if(nbrGoulesA>1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " Zombies !");
+			labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
 		}
 		break;
 	case  0 : 
 		labelAction.text = "Erreur interne";
 		break;
 	case -1 : 
-		labelAction.text = "Fouille rapide ratée !";
+		labelAction.text = "Fouille rapide ratée";
 		break;
 	case -5 : 
-		labelAction.text = "Fouille rapide ratée !";
+		labelAction.text = "Fouille rapide ratée";
 		if(degatsInfliges!=0)
 		{
 			labelAction.text +=("\nEt blessé (" + degatsInfliges + ")"); 
 		}
 		if(nbrGoulesA==1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " Zombie !");
+			labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
 		}
 		else if(nbrGoulesA>1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " Zombies !");
+			labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
 		}
 		break;
 	case -10 :
-		labelAction.text = "Points d'action insuffisants !";
+		labelAction.text = "Points d'action \ninsuffisants !";
 		break;
 	}
 });
@@ -3366,7 +3417,7 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 	switch(codeRetour)
 	{
 	case 0: 
-		labelAction.text=("erreur interne");
+		labelAction.text=("Erreur interne");
 		break;
 	case 1:
 		labelAction.text=("Attaque réussie !");
@@ -3380,7 +3431,7 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 		}
 		break;
 	case -1:
-		labelAction.text=("Ennemi plus ici !");
+		labelAction.text=("L'ennemi n'est \nplus ici !");
 		break;
 	case -5:
 		labelAction.text=("Attaque ratée !");
@@ -3390,15 +3441,15 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 		}
 		if(nbrGoulesA==1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " Zombie !");
+			labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
 		}
 		else if(nbrGoulesA>1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " Zombies !");
+			labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
 		}
 		break;
 	case -10:
-		labelAction.text=("Points d'action insuffisants");
+		labelAction.text=("Points d'action \ninsuffisants");
 		break;
 	}
 	stage.update();
@@ -3423,35 +3474,35 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
 	{
 	case 2: 
 		labelAction.text="";
-		labelAction.text=("2 Zombies tuées ! -" + degatsSubis + " points de vie");
+		labelAction.text=("2 eombies tuées ! \n-" + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 1: 
 		labelAction.text="";
-		labelAction.text=("1 Zombie tuée ! -" + degatsSubis + " points de vie");
+		labelAction.text=("1 zombie tuée ! \n-" + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 0:
 		labelAction.text="";
-		labelAction.text=("Attaque de Zombie(s) : erreur interne");
+		labelAction.text=("Attaque de zombie : \nerreur interne");
 		break;
 
 	case -1:
 		labelAction.text="";
-		labelAction.text=("Attaque de Zombie(s) échouée ! -" + degatsSubis + " points de vie");
+		labelAction.text=("Attaque de zombie \néchouée ! -" + degatsSubis + " points de vie");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case -2:
 		labelAction.text="";
-		labelAction.text=("Pas de Zombie dans la salle !");
+		labelAction.text=("Pas de zombie \ndans la salle !");
 		break;
 		
 	case -10:
 		labelAction.text="";
-		labelAction.text=("Pas assez de points d'actions !");
+		labelAction.text=("Pas assez de \npoints d'actions !");
 		break;
 	}
 	stage.update();

@@ -75,7 +75,7 @@ GameRules.pt_deplacementMax_min = function()				{ return 3;},
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },
-GameRules.init_poidsMax = function()						{ return 50; },
+GameRules.init_poidsMax = function()						{ return 100; },
 
 
 // export

@@ -8,14 +8,14 @@
 106-Double hache-Elle inflige deux fois plus de degats-14-1-12-/public/spritesheets/arme/106.png
 107-Arme ancestrale des samourayes-A longtemps ete consideree comme legendaire-20-1-14-/public/spritesheets/arme/107.png
 108-Epee de feu-Elle a ete forgee dans les flammes de l'enfer-25-1-16-/public/spritesheets/arme/108.png
-109-Faux de la mort-Elle a ete Volee a la faucheuse-30-1-18-/public/spritesheets/arme/109.png
-110-Katana du grand guerrier Wingshung-Il coupe tout, surtout les tetes-10-1-10-/public/spritesheets/arme/110.png
+109-Faux de la mort-Elle a ete volee au dieu de la mort-30-1-18-/public/spritesheets/arme/109.png
+110-Katana d'un grand guerrier-Il coupe tout, surtout les tetes-10-1-10-/public/spritesheets/arme/110.png
 111-Gros gourdin-J'aime pas les gourdins ! J'aime pas les gourdins !-10-1-10-/public/spritesheets/arme/111.png
 112-Grosse masse-Elle facilite les gros massacres-30-1-15-/public/spritesheets/arme/112.png
 113-Nunchaku de Michelangelo-Deux bouts de bois relies par une chaine-5-1-8-/public/spritesheets/arme/113.png
 114-Poing americain-Pour les combats à mains nues-2-1-7-/public/spritesheets/arme/114.png
 115-Epee et pique-Comment utiliser cette epee ?-22-1-12-/public/spritesheets/arme/115.png
-116-Fouet d'Indiana Jones-Parrfait pour l'aventure !-2-1-6-/public/spritesheets/arme/116.png
+116-Fouet d'Indiana Jones-Parfait pour l'aventure !-2-1-6-/public/spritesheets/arme/116.png
 117-Sabre du desert-Il etait enfoui sous le sable-10-1-10-/public/spritesheets/arme/117.png
 118-Fleuret de Dartagnant-Coupant et pointu-8-1-8-/public/spritesheets/arme/118.png
 119-Epee de corail-Elle a ete trouvee au fond des oceans-20-1-10-/public/spritesheets/arme/119.png

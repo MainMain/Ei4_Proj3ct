@@ -1,5 +1,5 @@
 ﻿// Chaine début de fichier. A NE PAS SUPPRIMER !
-1-Zone sure equipe 1-Ouf ici on ne risque rien !-0-0-0
+1-Zone sure des AGI-Ouf ici on ne risque rien !-0-0-0
 2-Espace cafe-On va pouvoir se detendre un peu, mais pas trop longtemps non plus...-30-15-3
 3-Aquarium-Cette salle est pleine de choses etranges-45-25-6
 4-Hall d'entree-Que s'est t'il passe ici, et ces marques au sol ?-5-5-8
@@ -8,11 +8,11 @@
 7-Escalier du hall-Ou peut bien mener cet escalier ? Il va quand meme falloir se mefier...-0-0-0
 8-Entree principale-Et bien, je me demande quand les poussieres ont ete faites pour la derniere fois ?-10-0-3
 9-Couloir rez de chaussee-Tout est delabre et en plus on n'y voit rien !-0-5-10
-10-Salle 13-Ancienne salle d'examen delabree : Vive les partiels !-55-70-2
+10-Zone sure des QSF-Ouf ici on ne risque rien !-0-0-0
 11-Ascenseur-Ce vieil ascenseur fonctionne toujours ?-0-0-0
 12-Toilettes principales-Des choses pas nettes se sont passees ici on dirait...-5-0-2
 13-Salle 12-Ancienne salle de cours delabree : Vive les cours !-35-55-3
-14-Zone sure equipe 2-Ouf ici on ne risque rien !-0-0-0
+14-Zone sure des INNO-Ouf ici on ne risque rien !-0-0-0
 15-Devant l'entree-Entrer ou ne pas entrer ? Tel est le dilemme...-0-5-5
 16-Devant l'IstiA cote Ouest-A gauche ou a droite ?-0-5-3
 17-Allee entre les deux batiments-Cette allee semble deserte, mieux vaut se mefier...-0-0-6
