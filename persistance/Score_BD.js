@@ -76,7 +76,7 @@ Score_BD.GetScoreByIdUser = function(id, callbackGetScore) {
 		if (typeof Score[0] === "undefined")
 		{
 			console.log("Get Score : undefined");
-			callbackGetScore(null);	
+			callbackGetScore(-1);	
 		}
 		else
 		{
