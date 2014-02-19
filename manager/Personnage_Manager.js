@@ -82,7 +82,22 @@ Personnage_Manager.LoadUser = function(idUser)
 			//context.listePersonnages[id].setptActionMax(1000);
 		}
 	});     	
-}, 
+},
+
+Personnage_Manager.deletePerso = function(idUser)
+{
+	var context = this;
+	oPersonnage_BD.deletePerso(idUser, function(reponse)
+	{
+		if(reponse == 1)
+		{
+			delete context.listePersonnages[idUser];
+			
+			oUtilisateur_Manager.deleteUser(idUser);
+			oScore_Manager.deleteUser(idUser);
+		}
+	});
+},
 
 Personnage_Manager.SetCompetence = function(idUser,  competence, numEquipe)
 {			
@@ -602,7 +617,7 @@ Personnage_Manager.stopperFouille = function(idUser)
 
 Personnage_Manager.fouille1Hr = function(idUser)
 {
-	console.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
+	console.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.getPseudo(idUser));
 	
 	// calcul de decouverte d'un item
 	var idCase 			= this.GetIdCase(idUser);

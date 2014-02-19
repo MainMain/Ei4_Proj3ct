@@ -60,7 +60,6 @@ Score_Manager.Load = function (idSession)
 
 Score_Manager.Save = function()
 {
-
 	var context = this;
 	// pour chaque user
 	oUtilisateur_BD.GetUsersId(function(tabId)
@@ -84,7 +83,6 @@ Score_Manager.Save = function()
 					console.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess+" OK !");
 				}
 			});
-			//}
 		}
 	});
 },
@@ -102,13 +100,33 @@ Score_Manager.nouvelleSession = function(idSession)
 		{
 			console.log("------> SC_MANAGER : nvlle session : creation score : idUser = " + tabId[i]);
 			// il crée un score avec l'id de ma nouvelle session
-			oScore_BD.Creation(tabId[i], idSession);
+			oScore_BD.Creation(tabId[i], idSession, function(idScore)
+			{
+				oScore_BD.GetScoreByIdUser(idScore, function(score)
+				{
+					// chargement des scores en mémoire
+					console.log("SC_MANAGER : nouvelleSession() - idSession = " + idSession );
+					if (score == -1)
+					{
+						console.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
+					}
+					else
+					{
+						// enregistrement du score
+						context.listeScores[idUser] = {};
+						context.listeScores[idUser][idSession] = score;
+						console.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser+"<->"+idSession+"<->"+score.id);
+					}
+				});		
+			});
+			
 		}
 	});
 },
 
 Score_Manager.nouveauJoueur = function(idUser, idSession)
 {
+	console.log("SC_MANAGER : nouveauJoueur() - idUser = " + idUser );
 	console.log("SC_MANAGER : nouveauJoueur() - idSession = " + idSession );
 	if (idSession == -1) return;
 	
@@ -123,17 +141,14 @@ Score_Manager.nouveauJoueur = function(idUser, idSession)
 			console.log("SC_MANAGER : getScoreById() - idSession = " + idSession );
 			if (score == -1)
 			{
-				console.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + idScore);
+				console.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
 			}
 			else
 			{
-				var iduser =  score.idUser;
-				var idsession =  score.idSession;
-						
 				// enregistrement du score
-				context.listeScores[iduser] = {};
-				context.listeScores[iduser][idsession] = score;
-				console.log("SC_MANAGER :Chargement en mémoire du nouveau score pour le nouveau joueur : " + iduser+"<->"+idsession+"<->"+score.id);
+				context.listeScores[idUser] = {};
+				context.listeScores[idUser][idSession] = score;
+				console.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser+"<->"+idSession+"<->"+score.id);
 			}
 		});
 	});
@@ -162,6 +177,11 @@ Score_Manager.compabiliserGouleTue = function(idUser, nbr)
 {
 	console.log("------------------------------------- COMPTABILISE GOULE ");
 	this.listeScores[idUser][this.idSessionEnCours].ajoutGouleTue(nbr);
+},
+
+Score_Manager.deleteUser = function(idUser)
+{
+	delete this.listeScores[idUser];
 },
 
 Score_Manager.getScoreCurrentSession = function(param)

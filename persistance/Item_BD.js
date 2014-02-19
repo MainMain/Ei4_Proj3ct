@@ -68,18 +68,18 @@ Item_BD.GetListItem = function()
 	
 	ItemModel = mongoose.model('Item');
 
-	var file = fs.readFileSync('./persistance/itemListe.txt', "utf8");
-
+	var itemFile = fs.readFileSync('./persistance/itemListe.txt', "utf8");
 	
-	var lignes = file.split("\r\n");
+	var lignes = itemFile.split("\n");
 	
 	for(var i in lignes)
 	{
-		if(lignes != "")
+		if(lignes[i] != "")
 		{
-			var infos = lignes[i].split("-");
+			var infos = new Array();
+			infos = lignes[i].split("-");
 			
-			if(infos[0])
+			if(infos[1])
 			{
 				var newItem = new ItemModel();
 				

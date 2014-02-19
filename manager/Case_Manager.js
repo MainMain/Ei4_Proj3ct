@@ -80,10 +80,11 @@ Case_Manager.RemplirCases = function()
 		// génére le nombre d'item pour cette case
 		nbrItems = (Math.floor(Math.random() * (5-0) + 0 ));
 		
+		// récupération et ajout d'items
 		for (var i = 0; i < nbrItems; i++)
 		{
 			var item = oItem_Manager.GetItemAleatoire();
-			curCase.ajouterItem(item);
+			this.listeCases[curCase].ajouterItem(item);
 		}
 	}
 },
@@ -115,6 +116,7 @@ Case_Manager.AttaqueGoule = function(idCase)
 Case_Manager.GetCopieCase = function(idCase)
 {
 	//console.log("CASE_MANAGER : GetCopieCase() : " + this.listeCases[idCase].id + " - " + this.listeCases[idCase].nom);
+	//console.log(this.listeCases);
 	return this.listeCases[idCase];
 },
 
@@ -188,7 +190,7 @@ Case_Manager.Fouille = function(idCase, probaObjetPerso)
 	console.log("CASE_MANAGER : Fouille() : proba = " + proba + " - probaObjetCase  => brut = " + this.listeCases[idCase].probaObjet + " - net = " + probaObjetCase);
 	if (proba < probaObjetCase)
 	{
-	// création d'un item
+		// création d'un item
 		newItem = oItem_Manager.GetItemAleatoire();
 		console.log("CASE_MANAGER : Fouille() : Nouvel objet decouvert ! : "+ newItem.nom);
 	}

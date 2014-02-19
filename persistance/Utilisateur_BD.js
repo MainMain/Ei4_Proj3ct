@@ -97,6 +97,37 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) 
 	
 },
 
+Utilisateur_BD.deleteUser = function(idUser, callbackDelete)
+{
+	var UtilisateurModel = mongoose.model('Utilisateur');
+	
+	UtilisateurModel.find({_id : idUser}, function(err, users)
+	{
+		if(err)
+		{
+			callbackDelete(-1);
+			throw err;
+		}
+		
+		if(user[0])
+		{
+			UtilisateurModel.remove({_id : idUser}, function(err)
+			{
+				if(err)
+				{
+					callbackDelete(-1);
+					throw err;
+				}
+				callbackDelete(1);
+			});
+		}
+		else
+		{
+			callbackDelete(-1);
+		}
+	});
+},
+
 /**
  * AJOUTE UN UTILISATEUR DANS LA BASE DE DONNEES
  * Renvoi le user si inscription ok

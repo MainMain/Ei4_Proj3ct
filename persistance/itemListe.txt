@@ -1,25 +1,71 @@
-100-Epée rouillée-Une petite épée complétement rouillée-10-1-10-/public/spritesheets/arme/100.png
-101-Epée de fer-Une pée standard-10-1-4-/public/spritesheets/arme/101.png
-102-Epée en argent-Une grande épée en argent-10-1-10-/public/spritesheets/arme/102.png
-103-Epée en or-Une épée qui doit couter bien cher-10-1-10-/public/spritesheets/arme/103.png
-200-Armure de cuir-Une armure en cuir-20-2-13-/public/spritesheets/armure/200.png
-201-Armure de fer-Une armure en fer-20-2-13-/public/spritesheets/armure/201.png
-202-Armure en argent-Une armure en argent-20-2-7-/public/spritesheets/armure/202.png
-203-Armure en or-Bien lourd ça !-120-2-13-/public/spritesheets/armure/203.png
-300-Planche de bois-Du bon bois bien solide !-5-3-5-/public/spritesheets/odd/300.png
-301-Planche de fer-Du fer bon marché!-5-3-7-/public/spritesheets/odd/301.png
-302-Planche d'argent-Pour couper le pain-5-3-12-/public/spritesheets/odd/302.png
-303-Planche d'or-Un lingot écrasé quoi...-5-3-54-/public/spritesheets/odd/303.png
-400-Petite potion de soin-Rends 10 points de santé-5-4-10-/public/spritesheets/potionSoin/400.png
-401-Moyenne potion de soin-Rends 25 points de santé-10-4-25-/public/spritesheets/potionSoin/401.png
-402-Grande potion de soin-Rends 50 points de santé-15-4-50-/public/spritesheets/potionSoin/402.png
-403-Géante potion de soin-Rends 100 points de santé-25-4-100-/public/spritesheets/potionSoin/403.png
-500-Petite potion d'action-Rends 2 points d'actions-3-5-2-/public/spritesheets/potionAction/500.png
-501-Moyenne potion d'action-Rends 5 points d'actions-3-5-5-/public/spritesheets/potionAction/501.png
-502-Grande potion d'action-Rends 10 points d'actions-10-5-10-/public/spritesheets/potionAction/502.png
-503-Géante potion d'action-Rends 20 points d'actions-10-5-20-/public/spritesheets/potionAction/503.png
+﻿// Chaine début de fichier. A NE PAS SUPPRIMER !
+100-Epee rouillee-Une petite epee completement rouillee-5-1-5-/public/spritesheets/arme/100.png
+101-Epee de fer-Une epee standard-10-1-8-/public/spritesheets/arme/101.png
+102-Epee en argent-Une grande epee en argent-20-1-15-/public/spritesheets/arme/102.png
+103-Epee en or-Une epee bling bling-50-1-20-/public/spritesheets/arme/103.png
+104-Bout de bois-Une arme primitive et fragile-1-1-1-/public/spritesheets/arme/104.png
+105-Hache de bucheron-Elle est ratique pour couper du bois-8-1-6-/public/spritesheets/arme/105.png
+106-Double hache-Elle inflige deux fois plus de degats-14-1-12-/public/spritesheets/arme/106.png
+107-Arme ancestrale des samourayes-A longtemps ete consideree comme legendaire-20-1-14-/public/spritesheets/arme/107.png
+108-Epee de feu-Elle a ete forgee dans les flammes de l'enfer-25-1-16-/public/spritesheets/arme/108.png
+109-Faux de la mort-Elle a ete Volee a la faucheuse-30-1-18-/public/spritesheets/arme/109.png
+110-Katana du grand guerrier Wingshung-Il coupe tout, surtout les tetes-10-1-10-/public/spritesheets/arme/110.png
+111-Gros gourdin-J'aime pas les gourdins ! J'aime pas les gourdins !-10-1-10-/public/spritesheets/arme/111.png
+112-Grosse masse-Elle facilite les gros massacres-30-1-15-/public/spritesheets/arme/112.png
+113-Nunchaku de Michelangelo-Deux bouts de bois relies par une chaine-5-1-8-/public/spritesheets/arme/113.png
+114-Poing americain-Pour les combats à mains nues-2-1-7-/public/spritesheets/arme/114.png
+115-Epee et pique-Comment utiliser cette epee ?-22-1-12-/public/spritesheets/arme/115.png
+116-Fouet d'Indiana Jones-Parrfait pour l'aventure !-2-1-6-/public/spritesheets/arme/116.png
+117-Sabre du desert-Il etait enfoui sous le sable-10-1-10-/public/spritesheets/arme/117.png
+118-Fleuret de Dartagnant-Coupant et pointu-8-1-8-/public/spritesheets/arme/118.png
+119-Epee de corail-Elle a ete trouvee au fond des oceans-20-1-10-/public/spritesheets/arme/119.png
+120-Morgenstern-Decouvert au fond d'un vieux donjon-30-1-15-/public/spritesheets/arme/120.png
+121-Dague de pirate-Arme legere et roublarde-7-1-8-/public/spritesheets/arme/121.png
+200-Armure de cuir-Concue avec du vrai cuir de bison-5-2-5-/public/spritesheets/armure/200.png
+201-Armure de fer-Cette armure protege plutot bien-10-2-7-/public/spritesheets/armure/201.png
+202-Armure en argent-Elle fut fabriquee pour les preux chevaliers-25-2-10-/public/spritesheets/armure/202.png
+203-Armure en or-Elle fut specialement concue pour la garde royale-50-2-20-/public/spritesheets/armure/203.png
+204-Armure en ecaille de dragon-Elle date d'une epoque magique bien ancienne-40-2-17-/public/spritesheets/armure/204.png
+205-Toge de Link-Elle est ideale pour les petits aventuriers-4-2-2-/public/spritesheets/armure/205.png
+206-Carapace d'amethyste-Elle a le pouvoir de soulager les blessures-30-2-14-/public/spritesheets/armure/206.png
+207-Robe de princesse-Appartenait autrefois a la princesse Zelda-10-2-18-/public/spritesheets/armure/207.png
+208-Linceul tres fin-cet habit est leger et resistant-1-2-8-/public/spritesheets/armure/208.png
+209-Prototype d'armure robotique-Projet abandone par les AGI a cause des zombies-35-2-16-/public/spritesheets/armure/209.png
+210-Vieux pull beni des dieux-Vetement d'anciens membres d'une secte religieuse-8-2-2-/public/spritesheets/armure/210.png
+211-Doudoune hivernale-Protege du froid et des morsures de zombie-10-2-8-/public/spritesheets/armure/211.png
+212-Veste de l'armee imperiale-Elle en a vu des batailles cette veste !-28-2-13-/public/spritesheets/armure/212.png
+300-Grosse brique-Parfait pour reconstruire les murs-20-3-120-/public/spritesheets/odd/300.png
+301-Buche de la foret mysterieuse-Les zombies ont peur du feu !-15-3-100-/public/spritesheets/odd/301.png
+302-Buchette de la foret enchantee-Les petits zombies ont peur du petit feu !-10-3-75-/public/spritesheets/odd/302.png
+303-Branches d'arbre seches-Utile pour faire du feu-5-3-50-/public/spritesheets/odd/303.png
+304-Plaquettes d'argile-Pratique pour boucher les trous dans les murs-30-3-120-/public/spritesheets/odd/304.png
+305-Tas de fer-Ideal pour creer des armes-40-3-160-/public/spritesheets/odd/305.png
+306-Tas d'or-Ideal pour creer des armes solides-45-3-180-/public/spritesheets/odd/306.png
+307-De l'or en masse-Chouette, un tresor !-50-3-200-/public/spritesheets/odd/307.png
+308-Alliage de metal inconnu-Cela doit bien servir a quelque chose...-35-3-140-/public/spritesheets/odd/308.png
+400-Petite potion de soin-Rends 10 points de sante-1-4-10-/public/spritesheets/potionSoin/400.png
+401-Moyenne potion de soin-Rends 25 points de sante-2-4-25-/public/spritesheets/potionSoin/401.png
+402-Grande potion de soin-Rends 50 points de sante-4-4-50-/public/spritesheets/potionSoin/402.png
+403-Géante potion de soin-Rends 100 points de sante-6-4-100-/public/spritesheets/potionSoin/403.png
+500-Petite potion d'action-Rends 2 points d'actions-1-5-2-/public/spritesheets/potionAction/500.png
+501-Moyenne potion d'action-Rends 5 points d'actions-2-5-5-/public/spritesheets/potionAction/501.png
+502-Grande potion d'action-Rends 10 points d'actions-4-5-10-/public/spritesheets/potionAction/502.png
+503-Géante potion d'action-Rends 20 points d'actions-6-5-20-/public/spritesheets/potionAction/503.png
 600-Petite potion de mouvement-Rends 1 points de mouvement-1-6-1-/public/spritesheets/potionMouvement/600.png
-601-Moyenne potion de mouvement-Rends 5 points de mouvement-1-6-5-/public/spritesheets/potionMouvement/601.png
-602-Grande potion de mouvement-Rends 10 points de mouvement-1-6-10-/public/spritesheets/potionMouvement/602.png
-603-Géante potion de mouvement-Rends 15 points de mouvement-2-6-15-/public/spritesheets/potionMouvement/603.png
-700-A MANGERRR-Rends 5 points de faim-2-7-2-/public/spritesheets/potionMouvement/603.png
+601-Moyenne potion de mouvement-Rends 5 points de mouvement-2-6-5-/public/spritesheets/potionMouvement/601.png
+602-Grande potion de mouvement-Rends 10 points de mouvement-4-6-10-/public/spritesheets/potionMouvement/602.png
+603-Géante potion de mouvement-Rends 15 points de mouvement-6-6-15-/public/spritesheets/potionMouvement/603.png
+700-Morceau de gruyere-Fait avec du vrai lait de vache-6-7-6-/public/spritesheets/nourriture/700.png
+701-Tomate rouge du jardin-Une chance qu'elle ne soit pas pourrie-3-7-4-/public/spritesheets/nourriture/701.png
+702-Grappe de raisin-Quelle jolie grappe !-5-7-5-/public/spritesheets/nourriture/702.png
+703-Carotte du jardin-Meme si je ne suis pas un lapin, j'ai faim !-1-7-3-/public/spritesheets/nourriture/703.png
+704-Poisson presque frais-Tampis si cela rend malade, il faut manger !-10-7-10-/public/spritesheets/nourriture/704.png
+705-Miche de pain sec-Peut etre utile au petit dejeuner...-4-7-6-/public/spritesheets/nourriture/705.png
+706-Cookie fait maison-Mmmmmh... miam !-1-7-3-/public/spritesheets/nourriture/706.png
+707-Steak de cheval-Fait avec du vrai faux cheval de Roumanie-12-7-12-/public/spritesheets/nourriture/707.png
+708-PaSteak-Rien de plus rafraichissant-15-7-15-/public/spritesheets/nourriture/708.png
+709-Oeuf de poule sauvage-Elle est ou la poulette ?-1-7-2-/public/spritesheets/nourriture/709.png
+710-Poulet pas roti-J'ai trouve la poulette !-30-7-20-/public/spritesheets/nourriture/710.png
+711-Champignon comestible, veneneux ou hallucinogene ?-Il faudrait gouter pour savoir...-1-7-2-/public/spritesheets/nourriture/711.png
+712-Pomme Fuji-Esperons qu'elle ne soit pas empoisonnee-3-7-4-/public/spritesheets/nourriture/712.png
+713-Bouteille de vin rouge-Redonne force et espoir-10-7-8-/public/spritesheets/nourriture/713.png
