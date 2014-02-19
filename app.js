@@ -282,6 +282,17 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 	res.render('game', options);
 });
 
+app.get('/tutoriel', function fonctionIndex(req, res)
+{
+	var s = req.session;
+	var options = { 
+		"username": s.username, 
+		"sessionID" : s.idUser 
+		};
+	
+	res.render('tutoriel', options);
+});
+
 app.get('/regles', function fonctionIndex(req, res)
 {
 	var s = req.session;

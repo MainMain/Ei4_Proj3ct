@@ -91,7 +91,8 @@ Score_Manager.nouvelleSession = function(idSession)
 {
 	// modifie l'id de session de jeu
 	this.idSessionEnCours = idSession;
-	var context = this;
+	this.listeScores = new Array();
+	var maListe = this.listeScores;
 	
 	// créé les scores en BD pour chaque utilisateur
 	oUtilisateur_BD.GetUsersId(function(tabId)
@@ -114,8 +115,8 @@ Score_Manager.nouvelleSession = function(idSession)
 					else
 					{
 						// enregistrement du score
-						context.listeScores[idUser] = new Array();
-						context.listeScores[idUser][idSession] = score;
+						maListe[idUser] = new Array();
+						maListe[idUser][idSession] = score;
 						console.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser + "<->" + idSession + "<->" + idScore);
 					}
 				});		
@@ -197,12 +198,15 @@ Score_Manager.getScoreCurrentSession = function(param)
 		var sortFunction;
 		for(var i in this.listeScores)
 		{
+			console.log("idUser : " + i);
+			/*
 			if(this.listeScores[i][this.idSessionEnCours])
 			{
 				myArray.push(this.listeScores[i][this.idSessionEnCours]);
 				myArray[j].pseudo = oUtilisateur_Manager.getPseudo(i);
 				j++;
 			}
+			*/
 		}
 		switch(param)
 		{

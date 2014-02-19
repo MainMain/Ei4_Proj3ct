@@ -38,12 +38,7 @@
 		
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-<<<<<<< HEAD
-			//var socket = io.connect('http://192.168.1.12:8080');
-			var socket = io.connect('http://localhost:24535');
-=======
 			var socket = io.connect('http://localhost:443');
->>>>>>> dd0d88fd0d531533ba9ccb1987d467f00d4b09a2
 			
 			$( document ).ready(function()
 			{
@@ -142,7 +137,12 @@
 		<h3 class="assistive-text">Menu principal</h3>
 		<ul>
 			<li class="span2"><a href="/">Accueil</a></li>
-			<li class="span2"><a href="regles">But du jeu</a></li>
+			<li class="current span2">
+				<a href="regles">But du jeu</a>
+				<ul class="sub-menu">
+					<li><a href="tutoriel">Tutoriel</a></li>
+				</ul>
+			</li>
 			<li class="current span2">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">

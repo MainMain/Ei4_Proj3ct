@@ -161,9 +161,41 @@ Score_BD.Creation = function (idUser, idSession, callback) {
             throw err;
         }
         console.log("SCORE_BD : Ajout d'un score -> " + idUser + " <-> " + idSession);
+		console.log("newScore.id = " + newScore.id);
         callback(newScore.id);
 	});
 	
+},
+
+Score_BD.deleteUser = function(id, callback)
+{
+    var ScoreModel = mongoose.model('Score');
+	
+	ScoreModel.find({idUser : id}, function(err, score)
+	{
+		if(err)
+		{
+			callback(-1);
+			throw err;
+		}
+		
+		if(score[0])
+		{
+			ScoreModel.remove({idUser : id}, function(err)
+			{
+				if(err)
+				{
+					callbackDelete(-1);
+					throw err;
+				}
+				callbackDelete(1);
+			});
+		}
+		else
+		{
+			callbackDelete(-1);
+		}
+	})
 },
 
 
