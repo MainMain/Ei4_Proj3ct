@@ -51,29 +51,42 @@
 
 <div id="main" class="row clearfix">
 
-	<!-- Main navigation -->
-	<nav class="main-navigation clearfix span12" role="navigation">
-		<h3 class="assistive-text">Menu principal</h3>
-		<ul>
-			<li class="current span2"><a href="/">Accueil</a></li>
-			<li class="span2">
-				<a href="regles">But du jeu</a>
-				<ul class="sub-menu">
-					<li><a href="tutoriel">Tutoriel</a></li>
-				</ul>
-			</li>
-			<li class="span2">
-				<a href="jeu">Jeu</a>
-				<ul class="sub-menu">
-					<li><a href="chat-equipe">Chat de l'équipe</a></li>
-				</ul>
-			</li>
-			<li class="span2"><a href="classement">Classement</a></li>
-			<li class="span2"><a href="chat-general">Chat</a></li>
-		</ul>
-	</nav> <!-- #main-navigation -->
+<!-- Main navigation -->
+<nav class="main-navigation clearfix span12" role="navigation">
+	<h3 class="assistive-text">Menu principal</h3>
+	<ul>
+		<li class="current span2"><a href="/">Accueil</a></li>
+		<li class="span2">
+			<a href="regles">But du jeu</a>
+			<ul class="sub-menu">
+				<li><a href="tutoriel">Tutoriel</a></li>
+			</ul>
+		</li>
+		<li class="span2">
+			<a href="jeu">Jeu</a>
+			<ul class="sub-menu">
+				<li><a href="chat-equipe">Chat de l'équipe</a></li>
+			</ul>
+		</li>
+		<li class="span2"><a href="classement">Classement</a></li>
+		<li class="span2"><a href="chat-general">Chat</a></li>
+	</ul>
+</nav> <!-- #main-navigation -->
+
+<form id="LogoutForm" class="logoutform" action="/" method=POST>
+	<input type="hidden"name="_method" value="delete"/>
+	<div> Bonjour <%= username %></div>
+	<input type="submit" value="Retourner chez les vivants ?" align=right>
+</form>
 	
 <div id="content" role="main" class="span12">
+	<p>
+	<% if(dateDebut) { %>
+		Session en cours : <%= dateDebut %> - <%= dateFin %>
+	<% } else {%>
+		Pas de session en cours !
+	<% }%>
+	</p>
 	<form action="/admin" method="POST">
 		<table class="classement">
 			<thead class="classementHead" style="color:#FFFFFF;">

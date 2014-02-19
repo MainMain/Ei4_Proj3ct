@@ -118,6 +118,11 @@ Session_Manager.getIdSessionEnCours = function()
 	return this.idSessionEnCours;
 },
 
+Session_Manager.getDateDebut = function()
+{
+	return this.dateDebut;
+}
+
 Session_Manager.getDateFin = function()
 {
 	return this.dateFin;

@@ -107,10 +107,10 @@ app.use(function(req, res, next)
  */
 
 var optionAccueil = {
-	"username": null, 
-	"errorLogin": null, 
+	"username": null,
+	"errorLogin": null,
 	"InfoInscription": null,
-	"usernameInscription": null, 
+	"usernameInscription": null,
 	"sessionID": null,
 	"dateFinSession": null};
 
@@ -187,10 +187,10 @@ app.get('/', function fonctionIndex(req, res)
 app.get('/admin', restrictAdmin, function fonctionAdmin(req, res)
 {
 	var s = req.session;
-	var options = { 
-		"username" : s.username,
-		"sessionID" : s.idUser
-		};
+	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
+	
+	options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
+	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
 	
 	res.render('admin', options);
 });
@@ -199,7 +199,10 @@ app.post('/admin', restrictAdmin, function fonctionAdmin(req, res)
 {
 	var s = req.session;
 	var idUser = req.param("idUser");
-	var options = { "username" : s.username, "sessionID" : s.idUser};
+	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
+	
+	options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
+	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
 	
 	oPersonnage_Manager.deletePerso(idUser);
 	
@@ -221,7 +224,10 @@ app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
 	var year	= parseInt(req.param("year"));
 	var month	= parseInt(req.param("month"));
 	var day		= parseInt(req.param("day"));
-	var options = { "username" : s.username, "sessionID" : s.idUser};
+	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
+	
+	options.dateDebut = oSession_Manager.getDateDebut().toTimeString();
+	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
 	
 	var date = new Date(year, month, day, 0, 0, 0, 0);
 	
