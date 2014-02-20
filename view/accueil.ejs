@@ -44,7 +44,7 @@
 
 		<hgroup>
 			<h1 id="site-title"><a href="/" title="">Zomb Istia</a></h1>
-			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
+			<h2 id="site-description">Seras-tu assez fort pour survivre ?!</h2>
 		</hgroup>
 
 	</header> <!-- #master-header -->
@@ -63,7 +63,7 @@
 				</ul>
 			</li>
 			<li class="span2">
-				<a href="jeu">Jeu</a>
+				<a href="jeu">Jouer</a>
 				<ul class="sub-menu">
 					<li><a href="chat-equipe">Chat de l'équipe</a></li>
 				</ul>
@@ -83,7 +83,7 @@
 		<form id="LogoutForm" class="logoutform" action="/" method=POST>
 			<input type="hidden"name="_method" value="delete"/>
 			<div> Bonjour <%= username %></div>
-			<input type="submit" value="Retourner chez les vivants ?" align=right>
+			<input type="submit" value="Retour chez les vivants ?!" align=right>
 		</form>
 	<% } %>
 	
@@ -99,18 +99,23 @@
 
 		<header class="entry-header">
 			<h1 class="entry-title">
-				Première news
+				Présentation
 			</h1>
 		</header> <!-- .entry-header -->
 
 		<div class="entry-content">
 			<p>
-				Bienvenue sur notre site ! Ici vous trouverez les principales news apportées à notre jeu !
+				Au cas où tu n’aurais pas vu le magnifique arrière-plan, nous sommes dans un univers parallèle apocalyptique, dans lequel nous sommes envahis par des zombies affamés. Du coup, seule ta survie et celle de ton équipe compte !
+				<br><br>A l’IstiA, trois grandes équipes se sont formées, tu devra donc choisir dans quel camp tu te situe : AGI, INNO ou QSF (et si tu as choisi d'arrêter tes études, c’est pareil).
+				
+				<br><br>Une fois la partie lancée, tu as 30 jours pour ramasser un maximum d’objet pour construire ta zone sûre. Tu vas errer au détour des couloirs de l’IstiA mais attention aux zombies qui rodent. Méfies toi aussi des autres équipes qui peuvent t’attaquer et te dépouiller de tes biens.
+				<br><br>Les clés de la victoire seront le travaille d’équipe et la communication, sans ça, dis adieu à la vie !
+
 			</p>
 		</div> <!-- .entry-content -->
 
 		<footer class="entry-meta">
-			Posté le <time class="entry-date" datetime="11-12-2013" pubdate>11 Décembre 2013</time>
+			Posté le <time class="entry-date" datetime="22-02-2013" pubdate>22 Février 2013</time>
 			par <span class="author vcard">Admin</span>
 		</footer>
 
@@ -133,7 +138,7 @@
 			<!-- Subscription form -->
 			<form id="SubscribeForm" name="SubscribeForm" class="subscribeform" method="POST" action="/">
 				<input type="hidden" name="_method" value="PUT">
-				<h2 align=center>Venez creuser votre tombe !</h2>
+				<h2 align=center>Viens creuser ta tombe !</h2>
 				<input type="text" id="PseudoSubscribe" placeholder="Pseudo" name="username"value="" required="">
 				<input type="password" id="PasswordSubscribe" placeholder="Mot de passe" name="password" value="" required="">
 				<input type="email" id="EmailSubscribe" placeholder="E-mail" name="email" value="" required="">
@@ -141,7 +146,7 @@
 			</form>
 		<% } %>
 	<% } else { %>
-		<img src="/view/images/zombie.jpg"/>
+		
 	<% } %>
 </div> <!-- #sidebar -->
 
@@ -160,7 +165,7 @@
 	
 	<form style="display:none;" id="LogoutForm" class="logoutform" action="/" method=POST>
 		<input type="hidden"name="_method" value="delete"/>
-		<input type="submit" value="Retourner chez les vivants ?" align=right>
+		<input type="submit" value="Retour chez les vivants ?!" align=right>
 	</form>
 	
 	<script>

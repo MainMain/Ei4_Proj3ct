@@ -1064,7 +1064,7 @@ function game() {
 	//----------------------- Zone 14 : labels de retour-------------------------
 
 	// Conteneur labels Move
-	labelAction = contLabelsAction.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelAction = contLabelsAction.addChild(new createjs.Text("", PoliceLabel, "#FF0"));
 	labelAction.lineHeight = _LineHeight;
 	labelAction.textBaseline = _TextBaseline;
 	labelAction.x = 0;
