@@ -366,6 +366,7 @@ var Personnage = (function() {
 		
 		subirDegats : function(degats)
 		{
+			
 			degats -= this.getValeurArmure();
 			
 			// si en mode defense
@@ -383,6 +384,7 @@ var Personnage = (function() {
 			
 			if (this.ptSante < 0) this.ptSante = 0;
 			
+			console.log(">>> PERSONNAGE : subirDegats -> degats recus = " + degats +" degats réels = " + degats);
 			return degats;
 		},
 		
@@ -712,6 +714,9 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
+			// si le perso est mort, on n'ajoute pas le message
+			if (this.ptSante <= 0) return;
+			
 			console.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
@@ -726,7 +731,7 @@ var Personnage = (function() {
 			}
 			this.nbrNvMsg++;
 			
-			console.log("PERSONNAGE : Fin : Ajout d'un message : " + msg);
+			console.log("PERSONNAGE : Fin   : Ajout d'un message : '" + msg + "'");
 		},
 		
 		effacerMessages : function(msg)

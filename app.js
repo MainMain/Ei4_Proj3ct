@@ -31,7 +31,6 @@ var oSession_Manager	 = require('./manager/Session_Manager');
  * *************************** 2 - CHARGEMENT EN MEMOIRE DES DONNES ***************************
  */
 
-var pseudoUser;
 var dateLancementSrv = new Date();
 console.log(dateLancementSrv);
 
@@ -365,10 +364,6 @@ callbackConnexion = function(reponseConnexion, req, res)
 		optionAccueil.sessionID = null;
 		optionAccueil.username = null;
 		
-		// charger le pseudo du joueur en mémoire
-		pseudoUser = oUtilisateur_Manager.getPseudo(reponseConnexion);
-		console.log(">>> Pseudo chargé en mémoire ! Utilisateur -> "+pseudoUser);
-		
 	}
 	else if(reponseConnexion == -1)
 	{
@@ -660,7 +655,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 io.sockets.on('connection', function (socket)
 {
 	var idUser = "";
-	
+	var pseudoUser;
     //test sessions
     socket.emit('MESSAGE_TEST', 'Vous êtes bien connecté !');
     socket.broadcast.emit('MESSAGE_TEST', 'Un autre client vient de se connecter !');
@@ -685,6 +680,10 @@ io.sockets.on('connection', function (socket)
 		usersOnline[idUser].username = user;
 		usersOnline[idUser].pages[socket] = page;
 		usersOnline[idUser].sockets.push(socket);
+		
+		// charger le pseudo du joueur en mémoire
+		pseudoUser = username;
+		console.log(">>> Pseudo chargé en mémoire ! Utilisateur -> "+username);
 		
 		if(page == "classement")
 		{
@@ -752,28 +751,40 @@ io.sockets.on('connection', function (socket)
 	{
 		console.log("****************** MOVE_PERSONNAGE_CS - EMETTEUR : " + pseudoUser +" ********************");
 		
-		try
-		{
+		//try
+		//{
 			var idCasePrecedente = oPersonnage_Manager.GetIdCase(idUser);
+			var idCaseApsDepl;
 			var reponseDeplacement = oPersonnage_Manager.Deplacement(idUser, move);
+		
 		// on ne rafraichit que si le deplacement à réussi
 		if (reponseDeplacement || reponseDeplacement >= 0)
 		{
-			ActualiserAllInCase(idCasePrecedente);
-			ActualiserAllInCase(reponseDeplacement);
+			 idCaseApsDepl =  oPersonnage_Manager.GetIdCase(idUser);
+			/* instruction suivante en commentaire car si le perso ne change pas de case...
+			   ... le rafraichissement est inutile */
+			//ActualiserAllInCase(idCasePrecedente);
 			
-			InformerAllInCase(" vient de quitter la salle", idCasePrecedente);
-			InformerAllInCase(" vient d'entrer dans la salle", reponseDeplacement);
+			// si on chaque de case (pas pas que de sous case)
+			if (idCasePrecedente != idCaseApsDepl)
+			{
+				InformerAllInCase(" vient de quitter la salle", idCasePrecedente);
+				InformerAllInCase(" vient d'entrer dans la salle", idCaseApsDepl);
+			}
+			else
+			{
+				//ActualiserAllInCase(reponseDeplacement);
+			}
 		}
 		
 		console.log(pseudoUser + " - APP : Réponse déplacement " + reponseDeplacement);
 		socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
-		}
+		/*}
 		catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
 			return;
-		}
+		}*/
     });
     /*
      * 
@@ -818,7 +829,7 @@ io.sockets.on('connection', function (socket)
 		}
 		catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : INV_PERSONNAGE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : INV_PERSONNAGE_CS : " + err);
 			return;
 		}
 		
@@ -880,7 +891,7 @@ io.sockets.on('connection', function (socket)
 		}
 		catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
 		}
     });
 	
@@ -909,7 +920,7 @@ io.sockets.on('connection', function (socket)
 		}
 		catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : INFO_CASE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : INFO_CASE_CS : " + err);
 		}
     });
     /*
@@ -934,7 +945,7 @@ io.sockets.on('connection', function (socket)
 		}
 		catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
 		}
     });
     /*
@@ -973,7 +984,7 @@ io.sockets.on('connection', function (socket)
     	}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : PERSONNAGE_USE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : PERSONNAGE_USE_CS : " + err);
 		}
     	
     });
@@ -1021,7 +1032,7 @@ io.sockets.on('connection', function (socket)
 		}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : PERSONNAGE_MODE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : PERSONNAGE_MODE_CS : " + err);
 		}
     });
     /*
@@ -1094,7 +1105,7 @@ io.sockets.on('connection', function (socket)
     	}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : ACTION_FOUILLE_RAPIDE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : ACTION_FOUILLE_RAPIDE_CS : " + err);
 		}
     });
     /*
@@ -1147,7 +1158,7 @@ io.sockets.on('connection', function (socket)
 		}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : ACTION_ATTAQUE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : ACTION_ATTAQUE_CS : " + err);
 		}
 	});
     /*
@@ -1198,7 +1209,7 @@ io.sockets.on('connection', function (socket)
 		}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : ACTION_ATTAQUE_GOULE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : ACTION_ATTAQUE_GOULE_CS : " + err);
 		}
     });
     /*
@@ -1235,7 +1246,7 @@ io.sockets.on('connection', function (socket)
 		}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : ACCUSE_LECTURE_MSG_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : ACCUSE_LECTURE_MSG_CS : " + err);
 		}
     });
     /*
@@ -1263,7 +1274,7 @@ io.sockets.on('connection', function (socket)
 		}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : INFO_CASE_ALLIES_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : INFO_CASE_ALLIES_CS : " + err);
 		}
     });
     /*
@@ -1291,7 +1302,7 @@ io.sockets.on('connection', function (socket)
 		}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
 		}
     });
     /*  
@@ -1314,7 +1325,7 @@ io.sockets.on('connection', function (socket)
 		}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : SAVE_BD_DEBUG_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : SAVE_BD_DEBUG_CS : " + err);
 		}
     });
     /*  
@@ -1337,7 +1348,7 @@ io.sockets.on('connection', function (socket)
 		}
     	catch(err)
 		{
-			console.log("/!\ ERREUR : SERVEUR : GET_DATE_CS : " + err);
+			console.log("/!\\ ERREUR : SERVEUR : GET_DATE_CS : " + err);
 		}
    });
     /*
@@ -1354,14 +1365,22 @@ io.sockets.on('connection', function (socket)
      */
     function InformerAllInCase(evenement, idCase)
     {
+    	var liste;
     	// on récupère l'id de la case
     	if (typeof idCase === "undefined")
+    	{
     		var idCase = oPersonnage_Manager.GetIdCase(idUser);
-    	
-    	console.log("******************* [INFORMER-ALL-IN-CASE]("+idCase+") - EMETTEUR : " + pseudoUser +" ***********************");
-    	
+    		console.log("******************* [INFORMER-ALL-IN-CASE]   ("+idCase+"[AUTO]) - EMETTEUR : " + pseudoUser +" ***********************");
+    		liste = oPersonnage_Manager.GetAlliesEnnemisDansSalle(idUser);
+    	}
+    	else
+    	{
+    		console.log("******************* [INFORMER-ALL-IN-CASE]   ("+idCase+"[MANU]) - EMETTEUR : " + pseudoUser +" ***********************");
+    		liste = oPersonnage_Manager.GetAlliesEnnemisDansSalle(idUser, idCase);
+    	}
+    		
     	// on récupère la liste des persos de la case
-		var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalle(idUser);
+		
 		
 		var idCaseCurrentPerso;
 		
@@ -1374,6 +1393,7 @@ io.sockets.on('connection', function (socket)
 			// et son id de case
 			idCaseCurrentPerso = oPersonnage_Manager.GetIdCase(id);
 			
+			console.log(">>> " + idCase + " <-> " + idCaseCurrentPerso);
 			/* si ce n'est pas l'user qui a crée l'event 
 			 * et que le joueur n'est pas mort
 			 * et que le joueur est dans la meme case
@@ -1404,31 +1424,42 @@ io.sockets.on('connection', function (socket)
 		}
     	
     	// pour ceux qui sont en ligne, on les informe instantanément
-    	ActualiserAllInCase();
+    	ActualiserAllInCase(idCase);
     }
 	
     function ActualiserAllInCase(idCase)
     {
     	// on récupère l'id de la case
     	if (typeof idCase === "undefined")
+    	{	
     		var idCase = oPersonnage_Manager.GetIdCase(idUser);
+    		console.log("******************* [ACTUALISER-ALL-IN-CASE] ("+idCase+"[AUTO]) - EMETTEUR : " + pseudoUser +" ***********************");
+    	}
+    	else
+    	{
+    		console.log("******************* [ACTUALISER-ALL-IN-CASE] ("+idCase+"[MANU]) - EMETTEUR : " + pseudoUser +" ***********************");
+    	}
 		
-    	console.log("******************* [ACTUALISER-ALL-IN-CASE] ("+idCase+") - EMETTEUR : " + pseudoUser +" ***********************");
-    	
     	// on récupère la liste des personnages de la case
-		var listePerso = oPersonnage_Manager.GetPersonnagesDansSalle(idCase);
-		
-		// pour chaque perso de la case
-    	for(var i in listePerso) 
+    	var listePerso = oPersonnage_Manager.GetPersonnagesDansSalle(idCase);
+
+    	// pour chaque perso de la case
+    	for(var i in listePerso)
     	{
     		// on récupère son id
 			var id = listePerso[i];
-			var idSousCase = oPersonnage_Manager.GetIdSousCase(id);
-			
-			// si en ligne ET différent de l'user qui a crée l'event
-			if(usersOnline[id] && !oPersonnage_Manager.estMort(id))
+			// on récpère l'id de la case du perso
+			var idCasePerso = oPersonnage_Manager.GetIdCase(id);
+			console.log(">> "+idCase + " - " + idCasePerso);
+			// si meme case ET si en ligne ET différent de l'user qui a crée l'event
+			if(idCase == idCasePerso && usersOnline[id] && !oPersonnage_Manager.estMort(id))
 			{
+				
+				// on récupère son indice de ss-case
+				var idSousCase = oPersonnage_Manager.GetIdSousCase(id);
+				// on récupère les infos sur les peros de la case
 				var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
+				// on envoi sur ttes les sockets
 				for(var j in usersOnline[id].sockets)
 				{
 					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));

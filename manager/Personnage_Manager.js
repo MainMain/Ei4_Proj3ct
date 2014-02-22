@@ -161,6 +161,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	
 	var resultatGoules;
 	
+	// récupère les valeurs d'attaque
 	var attA = this.listePersonnages[idUser].getValeurAttaque();
 	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
 	
@@ -179,6 +180,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	}
 	else
 	{
+		// check si même salle
 		if(!this.MemeSalle(idUser,  idUserEnnemi))
 		{
 			reponseServeur.reponseAttaque = -1;
@@ -836,23 +838,46 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 	return a;
 }, 
 
-Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
+// l'argument idCase permet de me pas tenir compte de l'actuelle pos du perso
+Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser, idCase)
 {
+	// création de la liste
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
-	for(var i in this.listePersonnages)
+	
+	if (typeof idCase === "undefined")
 	{
-		if(this.GetIdCase(idUser) == this.GetIdCase(i))
+		for(var i in this.listePersonnages)
 		{
-			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+			if(this.GetIdCase(idUser) == this.GetIdCase(i))
 			{
-				a.Allies.push(i);
-			}
-			else if(this.listePersonnages[i].GetMode() != 2)
-			{
-				a.Ennemis.push(i);
+				if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+				{
+					a.Allies.push(i);
+				}
+				else if(this.listePersonnages[i].GetMode() != 2)
+				{
+					a.Ennemis.push(i);
+				}
 			}
 		}
 	}
+	else
+	{
+		for(var i in this.listePersonnages)
+		{
+			if(idCase == this.GetIdCase(i))
+			{
+				if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+				{
+					a.Allies.push(i);
+				}
+				else if(this.listePersonnages[i].GetMode() != 2)
+				{
+					a.Ennemis.push(i);
+				}
+			}
+		}
+		}
 	return a;
 }, 
 
