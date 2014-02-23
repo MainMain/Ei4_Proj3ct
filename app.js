@@ -1488,7 +1488,6 @@ io.sockets.on('connection', function (socket)
 			// et son id de case
 			idCaseCurrentPerso = oPersonnage_Manager.GetIdCase(id);
 			
-			EventLog.log(">>> " + idCase + " <-> " + idCaseCurrentPerso);
 			/* si ce n'est pas l'user qui a crée l'event 
 			 * et que le joueur n'est pas mort
 			 * et que le joueur est dans la meme case
@@ -1545,7 +1544,6 @@ io.sockets.on('connection', function (socket)
 			var id = listePerso[i];
 			// on récpère l'id de la case du perso
 			var idCasePerso = oPersonnage_Manager.GetIdCase(id);
-			EventLog.log(">> "+idCase + " - " + idCasePerso);
 			// si meme case ET si en ligne ET différent de l'user qui a crée l'event
 			if(idCase == idCasePerso && usersOnline[id] && !oPersonnage_Manager.estMort(id))
 			{
@@ -1567,7 +1565,7 @@ io.sockets.on('connection', function (socket)
 
 function ActualiserAllGlobal(idCase)
 {
-	EventLog.log("******************* [ACTUALISER-ALL-GLOBAL] ("+idCase+") - EMETTEUR : " + pseudoUser +" ***********************");
+	EventLog.log("******************* [ACTUALISER-ALL-GLOBAL] ("+idCase+") - EMETTEUR : ***********************");
 	var listePerso = oPersonnage_Manager.GetPersonnagesDansSalle(idCase);
 	
 	for(var i in listePerso) 

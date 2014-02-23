@@ -362,7 +362,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			}
 			
 			// si c'est un ODD dans la zone sure -> return 
-			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2()) )
+			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2() || o_____O == GameRules.idZoneSure_3() ) )
 			{
 				reponseServeur.reponseAction = -6;
 				return reponseServeur;
@@ -423,7 +423,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			this.SupprimerDuSac(idUser, item);
 			
 			// si c'est un ODD dans la zone sure -> return 
-			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2()) )
+			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2() ||  o_____O == GameRules.idZoneSure_3()) )
 			{
 				oScore_Manager.compabiliserDepotODD(idUser, item.valeur);
 			}
@@ -556,6 +556,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			if(!this.TestPtActions(idUser,  "chgtMode"))
 			{
 				reponseServeur.reponseChangement = -10;
+				return reponseServeur;
 			}
 
 			// impact des goules
@@ -635,12 +636,12 @@ Personnage_Manager.fouille1Hr = function(idUser)
 		if ((this.listePersonnages[idUser].getPoidsSac() + parseInt(itemDecouvert.poids)) > this.listePersonnages[idUser].getPoidsMax())
 		{
 			oCase_Manager.AjouterItem(idCase,  itemDecouvert);
-			msg += " Faute de place,  l'item à été déposé dans la salle";
+			msg += " - Faute de place,  l'item a été déposé dans la salle";
 		}
 		else
 		{
 			this.AjouterItemAuSac(idUser,  itemDecouvert);
-			msg += "L'item à été ajouté à votre sac.";
+			msg += " - L'item à été ajouté à votre sac.";
 			
 		}
 	}

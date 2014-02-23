@@ -75,13 +75,8 @@ GameRules.pt_deplacementMax_min = function()				{ return 3;},
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },
-<<<<<<< HEAD
-GameRules.init_poidsMax = function()						{ return 50; },
 GameRules.jeu_pourcent_fouilleMax = function()				{ return 90; },
-=======
 GameRules.init_poidsMax = function()						{ return 100; },
-
->>>>>>> 9ac66499fbb8aff8028a16123d2737f052e677b8
 
 // export
 module.exports = GameRules;

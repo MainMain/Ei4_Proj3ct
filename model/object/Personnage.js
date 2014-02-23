@@ -338,23 +338,17 @@ var Personnage = (function() {
 			//console.log("PERSONNAGE : suppression de l'item " + item.nom
 					//+ " du personnage " + this.id);
 			this.logAfficherSacADos();
-			var index;
-			for (var i = 0; i < this.sacADos.length; i++) {
+			for (var i = 0; i < this.sacADos.length; i++) 
+			{
 				if (this.sacADos[i].id == item.id) 
 				{
-					index = i;
-					
 					// si c'est l'arme équipe
 					console.log("---------------> RETRAIT DE L'ITEM " + this.sacADos[i].id);
 					if (this.armeEquipee != null) console.log("---------------> id arme " + this.armeEquipee.id);
 					if (this.armureEquipee != null) console.log("---------------> id armure " + this.armureEquipee.id);
 					
-					if (this.armeEquipee != null && this.sacADos[i].id == this.armeEquipee.id)
-						this.armeEquipee = null;
-					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id)
-						this.armureEquipee = null;
-					
-					
+					if (this.armeEquipee != null   && this.sacADos[i].id == this.armeEquipee.id) 	this.armeEquipee = null;
+					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id) 	this.armureEquipee = null;
 					break;
 				}
 			}
