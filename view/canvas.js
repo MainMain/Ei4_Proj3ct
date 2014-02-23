@@ -349,8 +349,8 @@ function initialize() {
 		{src:"public/Boutons/FouilleRed.png", id:"idBtnFouilleRed"},
 		{src:"public/Boutons/Joueurs.png", id:"idBtnJoueurs"},
 		{src:"public/Boutons/JoueursGris.png", id:"idBtnJoueursGris"},
-		{src:"public/Boutons/Utiliser.png", id:"idBtnUtiliser"},
-		{src:"public/Boutons/UtiliserGris.png", id:"idBtnUtiliserGris"},
+		{src:"public/Boutons/Consommer.png", id:"idBtnConsommer"},
+		{src:"public/Boutons/ConsommerGris.png", id:"idBtnConsommerGris"},
 		{src:"public/Boutons/Annuler.png", id:"idBtnAnnuler"},
 		{src:"public/Boutons/Zombie.png", id:"idBtnZombie"},
 		{src:"public/Boutons/ZombieGris.png", id:"idBtnZombieGris"},
@@ -370,12 +370,12 @@ function initialize() {
 		{src:"public/Boutons/MessagesVide.png", id:"idBtnMessagesVide"},
 		{src:"public/Boutons/MessagesGris.png", id:"idBtnMessagesGris"},
 		{src:"public/Boutons/Ok.png", id:"idBtnOk"},
-		{src:"public/spritesheets/persos/Brute96.png", id:"idPersoBrute96"},
-		{src:"public/spritesheets/persos/Chercheur96.png", id:"idPersoChercheur96"},
-		{src:"public/spritesheets/persos/Explorateur96.png", id:"idPersoExplorateur96"},
 		{src:"public/spritesheets/persos/Brute64.png", id:"idPersoBrute64"},
 		{src:"public/spritesheets/persos/Chercheur64.png", id:"idPersoChercheur64"},
 		{src:"public/spritesheets/persos/Explorateur64.png", id:"idPersoExplorateur64"},
+		{src:"public/spritesheets/persos/Brute64gris.png", id:"idPersoBrute64gris"},
+		{src:"public/spritesheets/persos/Chercheur64gris.png", id:"idPersoChercheur64gris"},
+		{src:"public/spritesheets/persos/Explorateur64gris.png", id:"idPersoExplorateur64gris"},
 		{src:"public/spritesheets/persos/perso.gif", id:"idPerso"},
 		{src:"public/map/1.png", id:"1"},
 		{src:"public/map/2_a.png", id:"2_a"},
@@ -954,14 +954,14 @@ function game() {
 	labelBtnsInvPerso.textBaseline = _TextBaseline;
 	labelBtnsInvPerso.x = _labelBtnsInvPersoX-5;
 	labelBtnsInvPerso.y = _labelBtnsInvPersoY;
-	labelBtnsInvPerso.text="Actions sur le Sac :";
+	labelBtnsInvPerso.text="Actions sur le sac :";
 
 	labelBtnsInvCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelBtnsInvCase.lineHeight = _LineHeight;
 	labelBtnsInvCase.textBaseline = _TextBaseline;
 	labelBtnsInvCase.x = _labelBtnsInvCaseX-8;
 	labelBtnsInvCase.y = _labelBtnsInvCaseY;
-	labelBtnsInvCase.text="Actions sur la Case :";
+	labelBtnsInvCase.text="Actions sur la case :";
 
 	labelArme = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelArme.lineHeight = _LineHeight;
@@ -1218,28 +1218,6 @@ function game() {
 	stage.update();
 }
 
-/*function cutMsg(chaine)
-{
-	var longLigne=25;
-	try 
-	{
-			alert(chaine.length);
-			if(chaine.length>longLigne)
-			{
-				for (var j=0; j<chaine.length ; j+=longLigne)
-				{
-					var message=chaine.substring(j,j+longLigne);
-					chaine+=message;
-					chaine+="\n";
-				}
-			}
-	}
-	catch(e)
-	{
-		//alert("page inexistante");
-	}
-}*/
-
 function message()
 {
 	var nbMsgAffiches=10;
@@ -1381,7 +1359,7 @@ function afficherDescCase(desc)
 
 function afficherDescItem(desc)
 {
-	var longLigneMax=41	;
+	var longLigneMax=42	;
 	try 
 	{
 		// instructions à essayer
@@ -1721,22 +1699,6 @@ function dead(currentPerso)
 			// Ajout de l'image à l'ihm
 			var imgItem = new createjs.Bitmap(Obj.imageName);
 
-			/*imgItem.name = i;
-			imgItem.cursor = "pointer";
-
-			// Ajout de l'évenement a l'image
-			// ajout d'un texte quand l'user passera la souris dessus
-			imgItem.addEventListener('mouseover', function(event) {
-				var currentItem = TabListe[PageItemPersoDead][event.target.name];
-				labelDescribeItemDead.text=(currentItem.nom + " (valeur : " + currentItem.valeur + ") " + "\nPoids : " + currentItem.poids + "\nDescription : " + currentItem.description);
-				stage.update();
-			},false);
-
-			imgItem.addEventListener('mouseout', function(event){
-				labelDescribeItemDead.text="";
-				stage.update();
-			},false);*/
-
 			imgItem.x = (iPositionItemInConteneur * SpaceItem);
 			imgItem.y = 4;
 			contItemPersoDead.addChild(imgItem);
@@ -1880,7 +1842,7 @@ function setContPerso()
 
 	if(SelectedItemPerso!=-1 && SelectedItemPersoType>= 4 && SelectedItemPersoType <=7)
 	{
-		var BtnUtiliser = new createjs.Bitmap("public/Boutons/Utiliser.png");
+		var BtnUtiliser = new createjs.Bitmap("public/Boutons/Consommer.png");
 		BtnUtiliser.y=0;
 		contBtnsInvPerso.addChild(BtnUtiliser);
 		BtnUtiliser.addEventListener('click', function(event) {
@@ -1929,7 +1891,7 @@ function setContPerso()
 
 		BtnEquiper.cursor ="pointer";
 
-		var BtnUtiliser = new createjs.Bitmap("public/Boutons/UtiliserGris.png");
+		var BtnUtiliser = new createjs.Bitmap("public/Boutons/ConsommerGris.png");
 		BtnUtiliser.y=0;
 		contBtnsInvPerso.addChild(BtnUtiliser);
 
@@ -1956,7 +1918,7 @@ function setContPerso()
 
 		BtnEquiper.cursor ="not-allowed";
 
-		var BtnUtiliser = new createjs.Bitmap("public/Boutons/UtiliserGris.png");
+		var BtnUtiliser = new createjs.Bitmap("public/Boutons/ConsommerGris.png");
 		BtnUtiliser.y=0;
 		contBtnsInvPerso.addChild(BtnUtiliser);
 
@@ -1978,7 +1940,7 @@ function setContPerso()
 	else
 	{
 
-		var BtnUtiliser = new createjs.Bitmap("public/Boutons/UtiliserGris.png");
+		var BtnUtiliser = new createjs.Bitmap("public/Boutons/ConsommerGris.png");
 		BtnUtiliser.y=0;
 		contBtnsInvPerso.addChild(BtnUtiliser);
 
@@ -3335,7 +3297,7 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 	switch(reponse)
 	{
 	case  1 : 
-		labelAction.text =("Fouille rapide \nréussie !\n Objet découvert :\n" + item.nom);
+		labelAction.text =("Fouille rapide \nréussie !\nObjet découvert :\n" + item.nom);
 		
 		if (ajouteAuSac == 0)
 		{
@@ -3823,24 +3785,55 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 
 			if(persoE.competence=="brute")
 			{
-				imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
-				imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
-				imgPersoEnnemi.y = 2 ; 
-				imgPersoEnnemi.cursor= "pointer";
+				if(persoE.ptSante<=0)
+				{
+					imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Brute64gris.png");
+					imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					imgPersoEnnemi.y = 2 ; 
+					imgPersoEnnemi.cursor= "not-allowed";
+				}
+				else
+				{
+					imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
+					imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					imgPersoEnnemi.y = 2 ; 
+					imgPersoEnnemi.cursor= "pointer";
+				}
 			}
 			else if(persoE.competence=="chercheur")
 			{
-				imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
-				imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
-				imgPersoEnnemi.y = 2 ; 
-				imgPersoEnnemi.cursor= "pointer";
+				if(persoE.ptSante<=0)
+				{
+					imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Chercheur64gris.png");
+					imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					imgPersoEnnemi.y = 2 ; 
+					imgPersoEnnemi.cursor= "not-allowed";
+				}
+				else
+				{
+					imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
+					imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					imgPersoEnnemi.y = 2 ; 
+					imgPersoEnnemi.cursor= "pointer";
+				}
 			}
 			else if(persoE.competence=="explorateur")
 			{
-				imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
-				imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
-				imgPersoEnnemi.y = 2 ; 
-				imgPersoEnnemi.cursor= "pointer";
+				if(persoE.ptSante<=0)
+				{
+					imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Explorateur64gris.png");
+					imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					imgPersoEnnemi.y = 2 ; 
+					imgPersoEnnemi.cursor= "not-allowed";
+				}
+				else
+				{
+					imgPersoEnnemi = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
+					imgPersoEnnemi.x = iPositionPersoInConteneur * SpacePerso;
+					imgPersoEnnemi.y = 2 ; 
+					imgPersoEnnemi.cursor= "pointer";
+				}
+				
 			}
 
 			imgPersoEnnemi.name = i;
