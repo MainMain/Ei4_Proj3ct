@@ -110,15 +110,7 @@ Utilisateur_Manager.GetNumEquipe = function(idUser)
 
 Utilisateur_Manager.getPseudo = function(idUser)
 {
-	//try
-	//{
-		return this.listeUtilisateurs[idUser].getPseudo();
-	//}
-	//catch(err)
-	//{
-	//	console.log("/!\ ERREUR ! UTILISATEUR_MANAGER : getPseudo : " + err);
-	//}
-	return 0;
+	return this.listeUtilisateurs[idUser].getPseudo();
 },
 
 Utilisateur_Manager.GetIdPersonnage = function(idUser)

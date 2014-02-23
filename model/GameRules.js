@@ -8,6 +8,7 @@ function GameRules() {
 //********** ID DES ZONES SURES **********
 GameRules.idZoneSure_1 = function() 						{ return 1; },
 GameRules.idZoneSure_2 = function() 						{ return 14; },
+GameRules.idZoneSure_3 = function() 						{ return 10; },
 
 
 //********** COUT EN PA **********
@@ -54,13 +55,13 @@ GameRules.goules_proba_TuerDeuxGoules = function() 			{ return (Math.floor(Math.
 
 // ********** AUTRES **********
 // différence max de nombre de joueurs entre les équipes
-GameRules.jeu_diffMaxEntreEquipes = function() 				{ return 4; }, 
+GameRules.jeu_diffMaxEntreEquipes = function() 				{ return 3; }, 
 // temps de fouilles
 GameRules.jeu_duree_fouille = function() 					{ return 1000 * 5/*60 * 60*/ ; }, // 1 heure
 // Gain de score quand meurtre
-GameRules.jeu_score_gain_meurtre = function() 				{ return 3; }, 
+GameRules.jeu_score_gain_meurtre = function() 				{ return 5; }, 
 // Perte score quand tué
-GameRules.jeu_score_perte_tue = function() 					{ return 1; }, 
+GameRules.jeu_score_perte_tue = function() 					{ return 3; }, 
 // en dessous de 10 pt de faim, le malus = ptFaim / ce nombre
 GameRules.faim_malus = function()							{ return 10; },
 // multiplicateur minimal de malus
@@ -74,8 +75,13 @@ GameRules.pt_deplacementMax_min = function()				{ return 3;},
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },
+<<<<<<< HEAD
 GameRules.init_poidsMax = function()						{ return 50; },
 GameRules.jeu_pourcent_fouilleMax = function()				{ return 90; },
+=======
+GameRules.init_poidsMax = function()						{ return 100; },
+
+>>>>>>> 9ac66499fbb8aff8028a16123d2737f052e677b8
 
 // export
 module.exports = GameRules;
