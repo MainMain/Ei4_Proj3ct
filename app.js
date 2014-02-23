@@ -1077,7 +1077,7 @@ io.sockets.on('connection', function (socket)
     		case 1 : 
     			console.log("SERVEUR : Fouille Rapide() : Fouille réussie ! Objet découvert : " + reponse.itemDecouvert.nom);
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', 1, reponse.itemDecouvert,
-    					reponse.degatSubis, 0, reponse.nbrEnnemisDecouverts, reponse.nbrGoulesA);
+    					reponse.degatSubis, reponse.itemDansSac, reponse.nbrEnnemisDecouverts, reponse.nbrGoulesA);
     			// actualiser l'ihm pour les perso de la meme case connectés
     			ActualiserAllInCase();
     			break;
@@ -1371,17 +1371,16 @@ io.sockets.on('connection', function (socket)
     	{
     		var idCase = oPersonnage_Manager.GetIdCase(idUser);
     		console.log("******************* [INFORMER-ALL-IN-CASE]   ("+idCase+"[AUTO]) - EMETTEUR : " + pseudoUser +" ***********************");
+    		// on récupère la liste des persos de la case
     		liste = oPersonnage_Manager.GetAlliesEnnemisDansSalle(idUser);
     	}
     	else
     	{
     		console.log("******************* [INFORMER-ALL-IN-CASE]   ("+idCase+"[MANU]) - EMETTEUR : " + pseudoUser +" ***********************");
+    		// on récupère la liste des persos de la case
     		liste = oPersonnage_Manager.GetAlliesEnnemisDansSalle(idUser, idCase);
     	}
     		
-    	// on récupère la liste des persos de la case
-		
-		
 		var idCaseCurrentPerso;
 		
 		// pour chaque allié....

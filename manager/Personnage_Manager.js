@@ -321,13 +321,13 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 	var nbrGoules = oCase_Manager.GetNombreGoules(this.GetIdCase(idUser));
 	var a = this.GetNbrAlliesEnemisDansSalle(idUser);
 	var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
-	var idZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
+	var idsZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
 	
 	// chaque allié diminue de 1 le nombre de goules
 	nbrGoules -= a.nbrAllies;
 	
 	// deplace le personnage
-	var reponse = this.listePersonnages[idUser].deplacement(move,  nbrGoules,  idZoneSureEnnemi);
+	var reponse = this.listePersonnages[idUser].deplacement(move,  nbrGoules,  idsZoneSureEnnemi);
 	
 	console.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
 	
@@ -640,7 +640,7 @@ Personnage_Manager.fouille1Hr = function(idUser)
 		else
 		{
 			this.AjouterItemAuSac(idUser,  itemDecouvert);
-			msg += " L'item à été ajouté à votre sac.";
+			msg += "L'item à été ajouté à votre sac.";
 			
 		}
 	}
@@ -661,8 +661,12 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	var resultatGoules;
 	var degatSubis;
 	var reponseRamassage;
-	var reponseServeur = {"degatSubis" : 0,  "codeRetour" : 1,  
-		"itemDecouvert" : null,  "nbrGoulesA" : 0,  "itemDansSac" : 0,  
+	var reponseServeur = {
+		"degatSubis" : 0,  
+		"codeRetour" : 1,  
+		"itemDecouvert" : null,  
+		"nbrGoulesA" : 0,  
+		"itemDansSac" : 0,  
 		"nbrEnnemisDecouverts" : 0};
 	var codeRetour = 0;
 	var itemDecouvert;

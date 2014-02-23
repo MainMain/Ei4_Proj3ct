@@ -100,8 +100,8 @@ var Personnage = (function() {
 				this.ptActionMax		= 40;
 				this.multiPtsAttaque	= 1;
 				this.multiPtsDefense	= 0.3;
-				this.multiProbaCache	= 1;
-				this.multiProbaFouille	= 3;
+				this.multiProbaCache	= 3;
+				this.multiProbaFouille	= 1;
 				this.goulesMax			= 5;
 			}
 			else if(this.competence == "chercheur")
@@ -111,8 +111,8 @@ var Personnage = (function() {
 				this.ptActionMax		= 50;
 				this.multiPtsAttaque	= 0.5;
 				this.multiPtsDefense	= 1.5;
-				this.multiProbaCache	= 3;
-				this.multiProbaFouille	= 0.5;
+				this.multiProbaCache	= 1;
+				this.multiProbaFouille	= 2;
 				this.goulesMax			= 3;
 			}
 		},
@@ -190,7 +190,7 @@ var Personnage = (function() {
 		 * 
 		 * @method deplacement
 		 */
-		deplacement : function(direction, nbrGoules, idZoneSureEnnemi)
+		deplacement : function(direction, nbrGoules, idsZoneSureEnnemi)
 		{
 			
 			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
@@ -233,7 +233,7 @@ var Personnage = (function() {
 				return -1;
 			} 
 			
-			if(ansIdSalle == idZoneSureEnnemi)
+			if(ansIdSalle == idsZoneSureEnnemi[0] || ansIdSalle == idsZoneSureEnnemi[1])
 			{
 				console.log("PERSONNAGE : Déplacement impossible ! Zone sure Ennemi");
 				return -4;
