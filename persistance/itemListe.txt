@@ -6,7 +6,7 @@
 104-Bout de bois-Une arme primitive et fragile-1-1-1-/public/spritesheets/arme/104.png
 105-Hache de bucheron-Elle est ratique pour couper du bois-8-1-6-/public/spritesheets/arme/105.png
 106-Double hache-Elle inflige deux fois plus de degats-14-1-12-/public/spritesheets/arme/106.png
-107-Arme ancestrale des samourayes-A longtemps ete consideree comme legendaire-20-1-14-/public/spritesheets/arme/107.png
+107-Arme ancestrale des samourais-A longtemps ete consideree comme legendaire-20-1-14-/public/spritesheets/arme/107.png
 108-Epee de feu-Elle a ete forgee dans les flammes de l'enfer-25-1-16-/public/spritesheets/arme/108.png
 109-Faux de la mort-Elle a ete volee au dieu de la mort-30-1-18-/public/spritesheets/arme/109.png
 110-Katana d'un grand guerrier-Il coupe tout, surtout les tetes-10-1-10-/public/spritesheets/arme/110.png
@@ -43,18 +43,18 @@
 306-Tas d'or-Ideal pour creer des armes solides-45-3-180-/public/spritesheets/odd/306.png
 307-De l'or en masse-Chouette, un tresor !-50-3-200-/public/spritesheets/odd/307.png
 308-Alliage de metal inconnu-Cela doit bien servir a quelque chose...-35-3-140-/public/spritesheets/odd/308.png
-400-Petite potion de soin-Rends 10 points de sante-1-4-10-/public/spritesheets/potionSoin/400.png
-401-Moyenne potion de soin-Rends 25 points de sante-2-4-25-/public/spritesheets/potionSoin/401.png
-402-Grande potion de soin-Rends 50 points de sante-4-4-50-/public/spritesheets/potionSoin/402.png
-403-Géante potion de soin-Rends 100 points de sante-6-4-100-/public/spritesheets/potionSoin/403.png
-500-Petite potion d'action-Rends 2 points d'actions-1-5-2-/public/spritesheets/potionAction/500.png
-501-Moyenne potion d'action-Rends 5 points d'actions-2-5-5-/public/spritesheets/potionAction/501.png
-502-Grande potion d'action-Rends 10 points d'actions-4-5-10-/public/spritesheets/potionAction/502.png
-503-Géante potion d'action-Rends 20 points d'actions-6-5-20-/public/spritesheets/potionAction/503.png
-600-Petite potion de mouvement-Rends 1 points de mouvement-1-6-1-/public/spritesheets/potionMouvement/600.png
-601-Moyenne potion de mouvement-Rends 5 points de mouvement-2-6-5-/public/spritesheets/potionMouvement/601.png
-602-Grande potion de mouvement-Rends 10 points de mouvement-4-6-10-/public/spritesheets/potionMouvement/602.png
-603-Géante potion de mouvement-Rends 15 points de mouvement-6-6-15-/public/spritesheets/potionMouvement/603.png
+400-Petite potion de soin-Redonne 10 points de sante-1-4-10-/public/spritesheets/potionSoin/400.png
+401-Moyenne potion de soin-Redonne 25 points de sante-2-4-25-/public/spritesheets/potionSoin/401.png
+402-Grande potion de soin-Redonne 50 points de sante-4-4-50-/public/spritesheets/potionSoin/402.png
+403-Géante potion de soin-Redonne 100 points de sante-6-4-100-/public/spritesheets/potionSoin/403.png
+500-Petite potion d'action-Redonne 2 points d'actions-1-5-2-/public/spritesheets/potionAction/500.png
+501-Moyenne potion d'action-Redonne 5 points d'actions-2-5-5-/public/spritesheets/potionAction/501.png
+502-Grande potion d'action-Redonne 10 points d'actions-4-5-10-/public/spritesheets/potionAction/502.png
+503-Géante potion d'action-Redonne 20 points d'actions-6-5-20-/public/spritesheets/potionAction/503.png
+600-Petite potion de mouvement-Redonne 1 points de mouvement-1-6-1-/public/spritesheets/potionMouvement/600.png
+601-Moyenne potion de mouvement-Redonne 5 points de mouvement-2-6-5-/public/spritesheets/potionMouvement/601.png
+602-Grande potion de mouvement-Redonne 10 points de mouvement-4-6-10-/public/spritesheets/potionMouvement/602.png
+603-Géante potion de mouvement-Redonne 15 points de mouvement-6-6-15-/public/spritesheets/potionMouvement/603.png
 700-Morceau de gruyere-Fait avec du vrai lait de vache-6-7-6-/public/spritesheets/nourriture/700.png
 701-Tomate rouge du jardin-Une chance qu'elle ne soit pas pourrie-3-7-4-/public/spritesheets/nourriture/701.png
 702-Grappe de raisin-Quelle jolie grappe !-5-7-5-/public/spritesheets/nourriture/702.png
