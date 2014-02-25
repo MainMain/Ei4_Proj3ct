@@ -2926,63 +2926,142 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 
 	var Select;
 	var SelectEquipement;
-
+	var armeDejaEquip=false;
+	var armureDejaEquip=false;
+	
 	try 
 	{
 		// instructions à essayer
 		for (var i = 0; i < TabListe[PageItemPerso].length ; i++) 
 		{
 			var Obj=TabListe[PageItemPerso][i];
-
-			if(!((currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id) || 
+			
+			/*if(!((currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id) || 
 					(currentPerso.armureEquipee != null && Obj.id == currentPerso.armureEquipee.id)) )
-			{    
+			{    */
 				// Ajout de l'image à l'ihm
-				var imgItem = new createjs.Bitmap(Obj.imageName);
+							
+				if (currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id && armeDejaEquip==false) 
+				{
+					// affichage arme équipee
+					var imgItemArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
+					imgItemArme.cursor = "pointer";
 
-				imgItem.name = i;
-				imgItem.cursor = "pointer";
+					// Dessin de l'arme équipée
+					contArme.removeAllChildren();
+					contArme.addChild(imgItemArme);
 
-				// Ajout de l'évenement a l'image
-				// ajout d'un texte quand l'user passera la souris dessus
-				imgItem.addEventListener('mouseover', function(event) {
-					var currentItem = TabListe[PageItemPerso][event.target.name];
-					var descriptionItem=currentItem.description;
-					labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
-					afficherDescItem(descriptionItem);
-				},false);
+					contArme.addEventListener("click", function (event) {
+						if (SelectEquipement!=null)
+						{
+							contArme.removeChild(SelectEquipement);
+							contArmure.removeChild(SelectEquipement);
+						}
+						SelectEquipement = contArme.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+						SelectEquipement.x=-7;
+						SelectEquipement.y=-7;
+						SelectedItemEquip = currentPerso.armeEquipee.id;
+						setContEquipement();
+						stage.update();
+					});
 
-				imgItem.addEventListener('mouseout', function(event){
-					labelDescribeItem.text="";
-					stage.update();
-				},false);
+					contArme.addEventListener('mouseover', function(event) {
+						var descriptionItem=currentPerso.armeEquipee.description;
+						labelDescribeItem.text=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
+						afficherDescItem(descriptionItem);
+						stage.update();
+					},false);
 
-				imgItem.addEventListener("click", function(event){
-					if (Select!=null)
-					{
-						contInvPerso.removeChild(Select);
-					}
-					var num=event.target.x;
-					var currentItem = TabListe[PageItemPerso][event.target.name];
-					SelectedItemPerso=currentItem.id;
-					SelectedItemPersoType=currentItem.type;
-					Select = contInvPerso.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-					Select.x=(num);
-					Select.y=0;
-					// Appel de fonction pour créer les boutons liés au Perso
-					setContPerso();
-					stage.update();
-				});
+					contArme.addEventListener('mouseout', function(event){
+						labelDescribeItem.text="";
+						stage.update();
+					},false);
+					
+					armeDejaEquip=true;
+				}
+				else if (currentPerso.armureEquipee != null && Obj.id == currentPerso.armureEquipee.id && armureDejaEquip==false) 
+				{
+					// affichage arme équipee
+					var imgItemArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
+					imgItemArmure.cursor = "pointer";
 
-				imgItem.x = (iPositionItemInConteneur * SpaceItem);
-				imgItem.y = 4;
-				contInvPerso.addChild(imgItem);
+					// Dessin de l'armure équipée
+					contArmure.removeAllChildren();
+					contArmure.addChild(imgItemArmure);
 
-				// position de l'item dans le conteneur
-				iPositionItemInConteneur++;
+					contArmure.addEventListener("click", function (event) {
+						if (SelectEquipement!=null)
+						{
+							contArme.removeChild(SelectEquipement);
+							contArmure.removeChild(SelectEquipement);
+						}
+						SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+						SelectEquipement.x=-7;
+						SelectEquipement.y=-7;
+						SelectedItemEquip = currentPerso.armureEquipee.id;
+						setContEquipement();
+						stage.update();
+					});
 
-				stage.update();
-			}
+					contArmure.addEventListener('mouseover', function(event) {
+						var descriptionItem=currentPerso.armureEquipee.description;
+						labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
+						afficherDescItem(descriptionItem);
+						stage.update();
+					},false);
+
+					contArmure.addEventListener('mouseout', function(event){
+						labelDescribeItem.text="";
+						stage.update();
+					},false);
+					armureDejaEquip=true;
+				}
+				else
+				{
+					var imgItem = new createjs.Bitmap(Obj.imageName);
+
+					imgItem.name = i;
+					imgItem.cursor = "pointer";
+
+					// Ajout de l'évenement a l'image
+					// ajout d'un texte quand l'user passera la souris dessus
+					imgItem.addEventListener('mouseover', function(event) {
+						var currentItem = TabListe[PageItemPerso][event.target.name];
+						var descriptionItem=currentItem.description;
+						labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+						afficherDescItem(descriptionItem);
+					},false);
+
+					imgItem.addEventListener('mouseout', function(event){
+						labelDescribeItem.text="";
+						stage.update();
+					},false);
+
+					imgItem.addEventListener("click", function(event){
+						if (Select!=null)
+						{
+							contInvPerso.removeChild(Select);
+						}
+						var num=event.target.x;
+						var currentItem = TabListe[PageItemPerso][event.target.name];
+						SelectedItemPerso=currentItem.id;
+						SelectedItemPersoType=currentItem.type;
+						Select = contInvPerso.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+						Select.x=(num);
+						Select.y=0;
+						// Appel de fonction pour créer les boutons liés au Perso
+						setContPerso();
+						stage.update();
+					});
+
+					imgItem.x = (iPositionItemInConteneur * SpaceItem);
+					imgItem.y = 4;
+					contInvPerso.addChild(imgItem);
+
+					// position de l'item dans le conteneur
+					iPositionItemInConteneur++;
+				}
+			//}
 		}
 	}
 	catch(e){
@@ -2990,95 +3069,6 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	}
 
 	setContEquipement();
-
-	if (currentPerso.armeEquipee != null) {
-		// affichage arme équipee
-		var imgItemArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
-		imgItemArme.cursor = "pointer";
-
-		// Dessin de l'arme équipée
-		contArme.removeAllChildren();
-		contArme.addChild(imgItemArme);
-
-		/*if(PointsAttaque>=0 &&)
-		{
-			labelBonusArme.text=("(+" + PointsAttaque*0.25 + " points)	");
-		}
-		else
-		{
-			labelBonusArme.text=("(-" + PointsDefense*0.25 + " points)");
-		}*/
-
-		contArme.addEventListener("click", function (event) {
-			if (SelectEquipement!=null)
-			{
-				contArme.removeChild(SelectEquipement);
-				contArmure.removeChild(SelectEquipement);
-			}
-			SelectEquipement = contArme.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-			SelectEquipement.x=-7;
-			SelectEquipement.y=-7;
-			SelectedItemEquip = currentPerso.armeEquipee.id;
-			setContEquipement();
-			stage.update();
-		});
-
-		contArme.addEventListener('mouseover', function(event) {
-			var descriptionItem=currentPerso.armeEquipee.description;
-			labelDescribeItem.text=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
-			afficherDescItem(descriptionItem);
-			stage.update();
-		},false);
-
-		contArme.addEventListener('mouseout', function(event){
-			labelDescribeItem.text="";
-			stage.update();
-		},false);
-	}
-	if (currentPerso.armureEquipee != null) {
-		// affichage arme équipee
-		var imgItemArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
-		imgItemArmure.cursor = "pointer";
-
-		// Dessin de l'armure équipée
-		contArmure.removeAllChildren();
-		contArmure.addChild(imgItemArmure);
-
-		/*if(currentPerso.armureEquipee.valeur >=0)
-		{
-			labelBonusArmure.text=("(+" + currentPerso.armureEquipee.valeur + " points)");
-		}
-		else
-		{
-			labelBonusArmure.text=("(-" + currentPerso.armureEquipee.valeur + " points)");
-		}*/
-
-		contArmure.addEventListener("click", function (event) {
-			if (SelectEquipement!=null)
-			{
-				contArme.removeChild(SelectEquipement);
-				contArmure.removeChild(SelectEquipement);
-			}
-			SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-			SelectEquipement.x=-7;
-			SelectEquipement.y=-7;
-			SelectedItemEquip = currentPerso.armureEquipee.id;
-			setContEquipement();
-			stage.update();
-		});
-
-		contArmure.addEventListener('mouseover', function(event) {
-			var descriptionItem=currentPerso.armureEquipee.description;
-			labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
-			afficherDescItem(descriptionItem);
-			stage.update();
-		},false);
-
-		contArmure.addEventListener('mouseout', function(event){
-			labelDescribeItem.text="";
-			stage.update();
-		},false);
-	}
 
 	labelInventaire.text="";
 	labelInventaire.text=("Inventaire du perso :      "+ PoidsSac + "/" + currentPerso.poidsMax);
