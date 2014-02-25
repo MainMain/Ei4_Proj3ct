@@ -556,7 +556,7 @@ function handleProgress()
 	loadingBar.scaleX = preload.progress * loadingBarWidth;
 
 	progresPrecentage = Math.round(preload.progress*100);
-	loadProgressLabel.text =("Loading Apocalypse");
+	loadProgressLabel.text =("Loading Apocalypse...\n\n\n " + progresPrecentage + " %");
 
 	stage.update();
 }
@@ -2935,11 +2935,6 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		for (var i = 0; i < TabListe[PageItemPerso].length ; i++) 
 		{
 			var Obj=TabListe[PageItemPerso][i];
-			
-			/*if(!((currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id) || 
-					(currentPerso.armureEquipee != null && Obj.id == currentPerso.armureEquipee.id)) )
-			{    */
-				// Ajout de l'image à l'ihm
 							
 				if (currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id && armeDejaEquip==false) 
 				{
