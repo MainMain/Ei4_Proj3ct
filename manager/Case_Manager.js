@@ -255,9 +255,19 @@ Case_Manager.GetIdZoneSureEnnemi = function(numEquipe)
 {
 	if(numEquipe == 1)
 	{
-		return GameRules.idZoneSure_2();
+		var tab = [GameRules.idZoneSure_2(), GameRules.idZoneSure_3()] ;
+		return tab;
 	}
-	return GameRules.idZoneSure_1();
+	else if ((numEquipe == 1))
+	{
+		var tab = [GameRules.idZoneSure_1(), GameRules.idZoneSure_3()] ;
+		return tab;
+	}
+	else
+	{
+		var tab = [GameRules.idZoneSure_1(), GameRules.idZoneSure_2()] ;
+		return tab;
+	}
 },
 
 Case_Manager.GetTestZoneSure = function(idCase, numEquipe)

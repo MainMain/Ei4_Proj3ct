@@ -161,6 +161,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	
 	var resultatGoules;
 	
+	// récupère les valeurs d'attaque
 	var attA = this.listePersonnages[idUser].getValeurAttaque();
 	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
 	
@@ -179,6 +180,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	}
 	else
 	{
+		// check si même salle
 		if(!this.MemeSalle(idUser,  idUserEnnemi))
 		{
 			reponseServeur.reponseAttaque = -1;
@@ -319,13 +321,13 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 	var nbrGoules = oCase_Manager.GetNombreGoules(this.GetIdCase(idUser));
 	var a = this.GetNbrAlliesEnemisDansSalle(idUser);
 	var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
-	var idZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
+	var idsZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
 	
 	// chaque allié diminue de 1 le nombre de goules
 	nbrGoules -= a.nbrAllies;
 	
 	// deplace le personnage
-	var reponse = this.listePersonnages[idUser].deplacement(move,  nbrGoules,  idZoneSureEnnemi);
+	var reponse = this.listePersonnages[idUser].deplacement(move,  nbrGoules,  idsZoneSureEnnemi);
 	
 	console.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
 	
@@ -360,7 +362,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			}
 			
 			// si c'est un ODD dans la zone sure -> return 
-			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2()) )
+			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2() || o_____O == GameRules.idZoneSure_3() ) )
 			{
 				reponseServeur.reponseAction = -6;
 				return reponseServeur;
@@ -421,7 +423,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			this.SupprimerDuSac(idUser, item);
 			
 			// si c'est un ODD dans la zone sure -> return 
-			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2()) )
+			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2() ||  o_____O == GameRules.idZoneSure_3()) )
 			{
 				oScore_Manager.compabiliserDepotODD(idUser, item.valeur);
 			}
@@ -554,6 +556,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			if(!this.TestPtActions(idUser,  "chgtMode"))
 			{
 				reponseServeur.reponseChangement = -10;
+				return reponseServeur;
 			}
 
 			// impact des goules
@@ -633,12 +636,12 @@ Personnage_Manager.fouille1Hr = function(idUser)
 		if ((this.listePersonnages[idUser].getPoidsSac() + parseInt(itemDecouvert.poids)) > this.listePersonnages[idUser].getPoidsMax())
 		{
 			oCase_Manager.AjouterItem(idCase,  itemDecouvert);
-			msg += " Faute de place,  l'item à été déposé dans la salle";
+			msg += " - Faute de place,  l'item a été déposé dans la salle";
 		}
 		else
 		{
 			this.AjouterItemAuSac(idUser,  itemDecouvert);
-			msg += " L'item à été ajouté à votre sac.";
+			msg += " - L'item à été ajouté à votre sac.";
 			
 		}
 	}
@@ -659,8 +662,12 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	var resultatGoules;
 	var degatSubis;
 	var reponseRamassage;
-	var reponseServeur = {"degatSubis" : 0,  "codeRetour" : 1,  
-		"itemDecouvert" : null,  "nbrGoulesA" : 0,  "itemDansSac" : 0,  
+	var reponseServeur = {
+		"degatSubis" : 0,  
+		"codeRetour" : 1,  
+		"itemDecouvert" : null,  
+		"nbrGoulesA" : 0,  
+		"itemDansSac" : 0,  
 		"nbrEnnemisDecouverts" : 0};
 	var codeRetour = 0;
 	var itemDecouvert;
@@ -836,23 +843,46 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 	return a;
 }, 
 
-Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
+// l'argument idCase permet de me pas tenir compte de l'actuelle pos du perso
+Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser, idCase)
 {
+	// création de la liste
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
-	for(var i in this.listePersonnages)
+	
+	if (typeof idCase === "undefined")
 	{
-		if(this.GetIdCase(idUser) == this.GetIdCase(i))
+		for(var i in this.listePersonnages)
 		{
-			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+			if(this.GetIdCase(idUser) == this.GetIdCase(i))
 			{
-				a.Allies.push(i);
-			}
-			else if(this.listePersonnages[i].GetMode() != 2)
-			{
-				a.Ennemis.push(i);
+				if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+				{
+					a.Allies.push(i);
+				}
+				else if(this.listePersonnages[i].GetMode() != 2)
+				{
+					a.Ennemis.push(i);
+				}
 			}
 		}
 	}
+	else
+	{
+		for(var i in this.listePersonnages)
+		{
+			if(idCase == this.GetIdCase(i))
+			{
+				if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+				{
+					a.Allies.push(i);
+				}
+				else if(this.listePersonnages[i].GetMode() != 2)
+				{
+					a.Ennemis.push(i);
+				}
+			}
+		}
+		}
 	return a;
 }, 
 

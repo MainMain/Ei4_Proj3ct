@@ -2124,7 +2124,7 @@ socket.on('MOVE_PERSONNAGE_SC', function (currentCase) {
 		chaineAction="Impossible de pénetrer dans la Maison de l'ennemi !"
 		cutMsg(chaineAction);
 		labelAction.text =chaineAction;*/
-		labelAction.text = ("Impossible de \npénetrer dans la \nMaison de l'ennemi !");
+		labelAction.text = ("Impossible de \npénetrer dans une \nzone sure adverse !");
 		break;
 	
 		default: socket.emit('INFO_CASE_CS');

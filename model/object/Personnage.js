@@ -100,8 +100,8 @@ var Personnage = (function() {
 				this.ptActionMax		= 40;
 				this.multiPtsAttaque	= 1;
 				this.multiPtsDefense	= 0.3;
-				this.multiProbaCache	= 1;
-				this.multiProbaFouille	= 3;
+				this.multiProbaCache	= 3;
+				this.multiProbaFouille	= 1;
 				this.goulesMax			= 5;
 			}
 			else if(this.competence == "chercheur")
@@ -111,8 +111,8 @@ var Personnage = (function() {
 				this.ptActionMax		= 50;
 				this.multiPtsAttaque	= 0.5;
 				this.multiPtsDefense	= 1.5;
-				this.multiProbaCache	= 3;
-				this.multiProbaFouille	= 0.5;
+				this.multiProbaCache	= 1;
+				this.multiProbaFouille	= 2;
 				this.goulesMax			= 3;
 			}
 		},
@@ -190,7 +190,7 @@ var Personnage = (function() {
 		 * 
 		 * @method deplacement
 		 */
-		deplacement : function(direction, nbrGoules, idZoneSureEnnemi)
+		deplacement : function(direction, nbrGoules, idsZoneSureEnnemi)
 		{
 			
 			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
@@ -233,7 +233,7 @@ var Personnage = (function() {
 				return -1;
 			} 
 			
-			if(ansIdSalle == idZoneSureEnnemi)
+			if(ansIdSalle == idsZoneSureEnnemi[0] || ansIdSalle == idsZoneSureEnnemi[1])
 			{
 				console.log("PERSONNAGE : Déplacement impossible ! Zone sure Ennemi");
 				return -4;
@@ -338,23 +338,17 @@ var Personnage = (function() {
 			//console.log("PERSONNAGE : suppression de l'item " + item.nom
 					//+ " du personnage " + this.id);
 			this.logAfficherSacADos();
-			var index;
-			for (var i = 0; i < this.sacADos.length; i++) {
+			for (var i = 0; i < this.sacADos.length; i++) 
+			{
 				if (this.sacADos[i].id == item.id) 
 				{
-					index = i;
-					
 					// si c'est l'arme équipe
 					console.log("---------------> RETRAIT DE L'ITEM " + this.sacADos[i].id);
 					if (this.armeEquipee != null) console.log("---------------> id arme " + this.armeEquipee.id);
 					if (this.armureEquipee != null) console.log("---------------> id armure " + this.armureEquipee.id);
 					
-					if (this.armeEquipee != null && this.sacADos[i].id == this.armeEquipee.id)
-						this.armeEquipee = null;
-					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id)
-						this.armureEquipee = null;
-					
-					
+					if (this.armeEquipee != null   && this.sacADos[i].id == this.armeEquipee.id) 	this.armeEquipee = null;
+					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id) 	this.armureEquipee = null;
 					break;
 				}
 			}
@@ -366,6 +360,7 @@ var Personnage = (function() {
 		
 		subirDegats : function(degats)
 		{
+			
 			degats -= this.getValeurArmure();
 			
 			// si en mode defense
@@ -383,6 +378,7 @@ var Personnage = (function() {
 			
 			if (this.ptSante < 0) this.ptSante = 0;
 			
+			console.log(">>> PERSONNAGE : subirDegats -> degats recus = " + degats +" degats réels = " + degats);
 			return degats;
 		},
 		
@@ -712,6 +708,9 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
+			// si le perso est mort, on n'ajoute pas le message
+			if (this.ptSante <= 0) return;
+			
 			console.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
@@ -726,7 +725,7 @@ var Personnage = (function() {
 			}
 			this.nbrNvMsg++;
 			
-			console.log("PERSONNAGE : Fin : Ajout d'un message : " + msg);
+			console.log("PERSONNAGE : Fin   : Ajout d'un message : '" + msg + "'");
 		},
 		
 		effacerMessages : function(msg)
