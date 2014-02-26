@@ -30,6 +30,7 @@ Session_Manager.Load = function(callback)
 			context.idSessionEnCours 	= -1;
 			context.dateDebut			= null;
 			context.dateFin 			= null;
+			callback(context.idSessionEnCours);
 		}
 		else
 		{
@@ -43,7 +44,6 @@ Session_Manager.Load = function(callback)
 					context.idSessionEnCours 	= idSession;
 					context.dateDebut			= dateDeb;
 					context.dateFin 			= dateFin;
-					callback(context.idSessionEnCours);
 				}
 				else
 				{
@@ -51,6 +51,7 @@ Session_Manager.Load = function(callback)
 					context.dateDebut			= null;
 					context.dateFin 			= null;
 				}
+				callback(context.idSessionEnCours);
 			});
 		}
 	});
@@ -116,6 +117,11 @@ Session_Manager.getIdSessionEnCours = function()
 {
 	return this.idSessionEnCours;
 },
+
+Session_Manager.getDateDebut = function()
+{
+	return this.dateDebut;
+}
 
 Session_Manager.getDateFin = function()
 {

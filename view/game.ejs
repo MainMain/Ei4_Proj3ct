@@ -14,7 +14,7 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 		<!-- Put your title here! -->
-		<title>Zomb Istia</title>
+		<title>Plateau de jeu - Zomb'IstiA</title>
 
 		<meta name="description" content="">
 
@@ -38,12 +38,7 @@
 		
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-<<<<<<< HEAD
-			//var socket = io.connect('http://192.168.1.12:8080');
-			var socket = io.connect('http://localhost:24535');
-=======
 			var socket = io.connect('http://localhost:443');
->>>>>>> dd0d88fd0d531533ba9ccb1987d467f00d4b09a2
 			
 			$( document ).ready(function()
 			{
@@ -128,8 +123,8 @@
 		<header id="master-header" class="clearfix" role="banner">
 
 			<hgroup>
-				<h1 id="site-title"><a href="/" title="">Zomb Istia</a></h1>
-				<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
+				<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
+				<h2 id="site-description">L'action se déroule ici !</h2>
 			</hgroup>
 
 		</header>
@@ -142,7 +137,12 @@
 		<h3 class="assistive-text">Menu principal</h3>
 		<ul>
 			<li class="span2"><a href="/">Accueil</a></li>
-			<li class="span2"><a href="regles">But du jeu</a></li>
+			<li class="current span2">
+				<a href="regles">But du jeu</a>
+				<ul class="sub-menu">
+					<li><a href="tutoriel">Tutoriel</a></li>
+				</ul>
+			</li>
 			<li class="current span2">
 				<a href="jeu">Jeu</a>
 				<ul class="sub-menu">
