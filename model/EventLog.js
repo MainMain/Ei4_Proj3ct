@@ -20,7 +20,7 @@ EventLog.log = function(event)
 {	
 
 	console.log(event );
-	fs.writeFile(this.file + '.log','code - '+event);
+	fs.appendFile(this.file + '.log','code - '+event);
 },
 
 EventLog.warning = function(event) 						
@@ -31,8 +31,8 @@ EventLog.warning = function(event)
 EventLog.error = function(event) 						
 { 
 	console.log("/!\\" + event);
-	fs.writeFile(this.file + '.log','code - '+event);
-	fs.writeFile(this.file + '.error','code - '+event);
+	fs.appendFile(this.file + '.log','code - '+event);
+	fs.appendFile(this.file + '.error','code - '+event);
 
 },
 
