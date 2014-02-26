@@ -728,6 +728,11 @@ var Personnage = (function() {
 			console.log("PERSONNAGE : Fin   : Ajout d'un message : '" + msg + "'");
 		},
 		
+		ajouterMessageMort : function(pseudoMeurtrier)
+		{
+			this.listeMsgAtt.push(pseudoMeurtrier);
+		},
+		
 		effacerMessages : function(msg)
 		{
 			this.listeMsgAtt = new Array();

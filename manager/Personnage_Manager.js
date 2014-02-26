@@ -128,6 +128,12 @@ Personnage_Manager.AddMessage = function(idUser,  msg)
 	this.listePersonnages[idUser].ajouterMessage(msg);
 }, 
 
+Personnage_Manager.AddMessageMort = function(idUser,  pseudoTueur)
+{
+	//console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
+	this.listePersonnages[idUser].ajouterMessageMort(pseudoTueur);
+}, 
+
 Personnage_Manager.EffacerMessages = function(idUser)
 {
 	console.log("PERSONNAGE_MANAGER : EffacerMessages() : Effacement de la liste des messages");
@@ -765,8 +771,8 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 	oScore_Manager.compabiliserMeurtre(idTueur, idTue);
 	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
-	this.AddMessage(idTue, "");
-	this.AddMessage(idTue,  loginTueur);
+	//this.AddMessage(idTue, "");
+	this.AddMessageMort(idTue,  loginTueur);
 	
 	// mettre son inventaire dans la case
 	for (var i = 0; i < currentPerso.GetSac().length; i++)
