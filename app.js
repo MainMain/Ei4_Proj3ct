@@ -868,7 +868,7 @@ io.sockets.on('connection', function (socket)
 		}
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
-		ActualiserAllInCase();
+		//ActualiserAllInCase();
 
 		
 		EventLog.log("*******************************************************");
@@ -1037,7 +1037,7 @@ io.sockets.on('connection', function (socket)
 		socket.emit('PERSONNAGE_USE_SC', id_item, reponse);
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
-		ActualiserAllInCase();
+		//ActualiserAllInCase();
 		
 
 		EventLog.log("SERVEUR : UTILISER - " + idUser +" - Item " + id_item + " - Code : " + reponse);

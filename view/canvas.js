@@ -1212,7 +1212,7 @@ function game() {
 	// ******************************************
 	socket.emit('GET_DATE_CS');
 	// AFFICHAGE DE L'IVENTAIRE DE CASE ET PERSO
-	alert("Init");
+	//alert("Init");
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
 }
@@ -2314,7 +2314,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase) 
 		{
 	
-	alert("INFO CASE");
+	//alert("INFO CASE");
 	
 	// modification du nom de l'image a afficher
 	if (idSousCase == -1)
