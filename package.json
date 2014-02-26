@@ -1,18 +1,18 @@
 {
-  "name": "Ei4_Project_v0.1",
-  "version": "0.1.0",
-  "description": "Ei4_Project_v0.1",
-  "main": "hello-world-server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified! Configure in package.json\" && exit 1"
+  "name": "node-example",
+  "version": "0.0.1",
+  "dependencies": {
+	"async": "latest",
+    "express": "latest",
+	"dateformat": "latest",
+	"ejs": "latest",
+	"async": "latest",
+	"mongoose": "latest",
+	"session": "latest",
+	"socket.io": "latest"
   },
-  "repository": "",
-  "keywords": [
-    "Node.js",
-    "Eclipse",
-    "Nodeclipse"
-  ],
-  "author": "",
-  "license": "MIT",
-  "readmeFilename": "README.md"
+  "engines": {
+    "node": "0.8.x",
+    "npm": "1.1.x"
+  }
 }
