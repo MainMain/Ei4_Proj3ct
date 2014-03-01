@@ -50,7 +50,6 @@ var Personnage = (function() {
 			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg) 
 	{
 		// --- Attributs d'instance
-				console.log("1");
 		this.id 				= id;
 		this.ptSante			= ptSante;
 		this.ptSanteMax 		= ptSanteMax;
@@ -711,7 +710,7 @@ var Personnage = (function() {
 			// si le perso est mort, on n'ajoute pas le message
 			if (this.ptSante <= 0) return;
 			
-			console.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
+			//console.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
 				this.listeMsgAtt.push(msg);

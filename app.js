@@ -51,10 +51,14 @@ oCarte.Initialiser(28, 17);
 oUtilisateur_Manager.Load();
 
 // Chargement des personnages en mémoire
+// le callback est réservé pour la fin des fouilles...
+// ... et rafraichi l'affichage
 oPersonnage_Manager.Load(function(idUser)
 {
 	// actualiser joueurs, au cas où l'item est arrivé dans la case
 	var idCase = oPersonnage_Manager.GetIdCase(idUser);
+	
+	
 	ActualiserAllGlobal(idCase);
 });
 
@@ -116,7 +120,7 @@ var optionAccueil = {
 function restrict(req, res, next)
 {
 	var idSession = oSession_Manager.getIdSessionEnCours();
-	EventLog.log("SUCE MON GROS : " + idSession + " ! ");
+	EventLog.log("IdSession : " + idSession + " ! ");
 	if (req.session.username && idSession >= 0)
 	{
 		next();

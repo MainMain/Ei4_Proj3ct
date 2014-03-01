@@ -337,7 +337,7 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 	
 	console.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
 	
-	if(reponse > -1)
+	if(reponse != -1)
 	{
 		// initialisation mode
 		this.InitialiserMode(idUser);
@@ -614,14 +614,16 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 
 Personnage_Manager.stopperFouille = function(idUser)
 {
-	//console.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
+	console.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.getPseudo(idUser));
 	//fin du compteur
 	try
 	{
 		//console.log(this.listeIdIntervalleFouille[idUser]);
 		clearTimeout(this.listeIdIntervalleFouille[idUser]);
 	}
-	catch(Err){}
+	catch(Err){
+		console.log("/!\\ PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.getPseudo(idUser) + " : " + Err );
+	}
 },
 
 Personnage_Manager.fouille1Hr = function(idUser)
