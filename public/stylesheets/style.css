@@ -13,9 +13,9 @@
 	All rights reserved.
 */
 /*@font-face { 	font-family: "JackLantern BB"; 	src: url('../font/JackLanternBB.ttf'); }*/
+
+@font-face { 	font-family: "Infected"; 	src: url('../font/Infected.eot'); }
 @font-face { 	font-family: "Infected"; 	src: url('../font/Infected.ttf'); }
-@font-face { 	font-family: "Infected"; 	src: url('../font/Infected.eot'); 
-}
 
 .clearfix {
   *zoom: 1;
