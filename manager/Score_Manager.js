@@ -5,6 +5,8 @@ var oScore= require('../model/object/Score');
 
 var oUtilisateur_Manager = require('../manager/Utilisateur_Manager');
 
+var EventLog    = require('../model/EventLog');
+
 // persistance
 var oScore_BD = require('../persistance/Score_BD');
 var oUtilisateur_BD = require('../persistance/Utilisateur_BD');

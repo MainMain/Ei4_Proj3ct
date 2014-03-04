@@ -6,6 +6,8 @@ var oCase_BD 	= require('../persistance/Case_BD');
 
 var oItem_Manager        = require('./Item_Manager');
 
+var EventLog    = require('../model/EventLog');
+
 //inclusion des règles
 var GameRules	= require('../model/GameRules');
 
