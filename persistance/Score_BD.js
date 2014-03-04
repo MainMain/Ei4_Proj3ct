@@ -1,5 +1,5 @@
 // includes
-var oScore = require('../model/Object/Score');
+var oScore = require('../model/object/Score');
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
 

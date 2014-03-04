@@ -172,7 +172,11 @@
 	
 	<script>
 		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-		var socket = io.connect('http://localhost:443');
+<<<<<<< HEAD
+		var socket = io.connect('http://192.168.0.24:25536');
+=======
+		var socket = io.connect('http://localhost:25536');
+>>>>>>> 98bab9ba550922f348170b829b8769d211e4d17b
 		
 		<% if(sessionID) { %>
 			$( document ).ready(function()

@@ -1,9 +1,11 @@
 // inclusion des règles
 var GameRules	= require('../model/GameRules');
 
-var oScore= require('../model/Object/Score');
+var oScore= require('../model/object/Score');
 
 var oUtilisateur_Manager = require('../manager/Utilisateur_Manager');
+
+var EventLog    = require('../model/EventLog');
 
 // persistance
 var oScore_BD = require('../persistance/Score_BD');
@@ -16,7 +18,7 @@ function Score_Manager(){}
 
 Score_Manager.Load = function (idSession)
 {
-	console.log("SCMANAGER : Chargement avec l'id session =  " + idSession);
+	EventLog.log("SCMANAGER : Chargement avec l'id session =  " + idSession);
     // initialise la liste
 
     // récupère id des scores
@@ -37,7 +39,7 @@ Score_Manager.Load = function (idSession)
 			{
 				if (score == -1)
 				{
-					console.log("/!\ WARNING : SCMANAGER : erreur lecture du score de " + idScore);
+					EventLog.log("/!\ WARNING : SCMANAGER : erreur lecture du score de " + idScore);
 				} 
 				else 
 				{
@@ -45,13 +47,13 @@ Score_Manager.Load = function (idSession)
 					var idsession = score.idSession;
 
 					// enregistrement du score
-					//console.log("-> " + context.listeScores[iduser]);
+					//EventLog.log("-> " + context.listeScores[iduser]);
 					if (typeof context.listeScores[iduser] === "undefined")
 					{
 						context.listeScores[iduser] = new Array();
 					}
 					context.listeScores[iduser][idsession] = score;
-					//console.log("-> " + iduser + "<->" + idsession + "<->" + score.id);
+					//EventLog.log("-> " + iduser + "<->" + idsession + "<->" + score.id);
 				}
 			});
 		}
@@ -66,21 +68,21 @@ Score_Manager.Save = function()
 	{
 		for(var i = 0; i < tabId.length; i++)
 		{
-			//console.log("SCMANAGER :   ---  " + context.idSessionEnCours);
+			//EventLog.log("SCMANAGER :   ---  " + context.idSessionEnCours);
 			// pour chaque session
 			//for(var jSess = 1; jSess <= context.idSessionEnCours; jSess++)
 			//{
-			console.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+context.idSessionEnCours);
+			EventLog.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+context.idSessionEnCours);
 			// ... le sauvegarder en BD
 			oScore_BD.SetScore(context.listeScores[tabId[i]][context.idSessionEnCours],  function(reponse)
 			{
 				if (reponse == -1)
 				{
-					console.log("/!\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
+					EventLog.log("/!\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
 				}
 				else
 				{
-					console.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess+" OK !");
+					EventLog.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess+" OK !");
 				}
 			});
 		}
@@ -100,24 +102,24 @@ Score_Manager.nouvelleSession = function(idSession)
 		for(var i in tabId)
 		{
 			var idUser = tabId[i];
-			console.log("------> SC_MANAGER : nvlle session : creation score : idUser = " + idUser);
+			EventLog.log("------> SC_MANAGER : nvlle session : creation score : idUser = " + idUser);
 			// il crée un score avec l'id de ma nouvelle session
 			oScore_BD.Creation(idUser, idSession, function(idScore)
 			{
 				oScore_BD.GetScoreByIdUser(idUser, function(score)
 				{
 					// chargement des scores en mémoire
-					console.log("SC_MANAGER : nouvelleSession() - idSession = " + idSession );
+					EventLog.log("SC_MANAGER : nouvelleSession() - idSession = " + idSession );
 					if (score == -1)
 					{
-						console.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
+						EventLog.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
 					}
 					else
 					{
 						// enregistrement du score
 						maListe[idUser] = new Array();
 						maListe[idUser][idSession] = score;
-						console.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser + "<->" + idSession + "<->" + idScore);
+						EventLog.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser + "<->" + idSession + "<->" + idScore);
 					}
 				});		
 			});
@@ -128,29 +130,29 @@ Score_Manager.nouvelleSession = function(idSession)
 
 Score_Manager.nouveauJoueur = function(idUser, idSession)
 {
-	console.log("SC_MANAGER : nouveauJoueur() - idUser = " + idUser );
-	console.log("SC_MANAGER : nouveauJoueur() - idSession = " + idSession );
+	EventLog.log("SC_MANAGER : nouveauJoueur() - idUser = " + idUser );
+	EventLog.log("SC_MANAGER : nouveauJoueur() - idSession = " + idSession );
 	if (idSession == -1) return;
 	
 	var context = this;
 	// ajout en BD
 	oScore_BD.Creation(idUser, idSession, function()
 	{
-		console.log("SC_MANAGER : creation() - idSession = " + idSession );
+		EventLog.log("SC_MANAGER : creation() - idSession = " + idSession );
 		// puis on le charge en mémoire
 		oScore_BD.GetScoreByIdUser(idUser, function(score)
 		{
-			console.log("SC_MANAGER : getScoreById() - idSession = " + idSession );
+			EventLog.log("SC_MANAGER : getScoreById() - idSession = " + idSession );
 			if (score == -1)
 			{
-				console.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
+				EventLog.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
 			}
 			else
 			{
 				// enregistrement du score
 				context.listeScores[idUser] = {};
 				context.listeScores[idUser][idSession] = score;
-				console.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser+"<->"+idSession+"<->"+score.id);
+				EventLog.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser+"<->"+idSession+"<->"+score.id);
 			}
 		});
 	});
@@ -158,7 +160,7 @@ Score_Manager.nouveauJoueur = function(idUser, idSession)
 
 Score_Manager.compabiliserMeurtre = function(idBourreau, idVictime)
 {
-	console.log("SCORE_MANAGER : ComptabiliserMeurtre idB =  " + idBourreau+"<-> idV = "+idVictime);
+	EventLog.log("SCORE_MANAGER : ComptabiliserMeurtre idB =  " + idBourreau+"<-> idV = "+idVictime);
 	if (idBourreau == -1)
 	{
 		this.listeScores[idVictime][this.idSessionEnCours].ajoutTueParGoule();
@@ -177,7 +179,7 @@ Score_Manager.compabiliserDepotODD = function(idUser, valeurODD)
 
 Score_Manager.compabiliserGouleTue = function(idUser, nbr)
 {
-	console.log("------------------------------------- COMPTABILISE GOULE ");
+	EventLog.log("------------------------------------- COMPTABILISE GOULE ");
 	this.listeScores[idUser][this.idSessionEnCours].ajoutGouleTue(nbr);
 },
 
@@ -198,7 +200,7 @@ Score_Manager.getScoreCurrentSession = function(param)
 		var sortFunction;
 		for(var i in this.listeScores)
 		{
-			console.log("idUser : " + i);
+			EventLog.log("idUser : " + i);
 			/*
 			if(this.listeScores[i][this.idSessionEnCours])
 			{
