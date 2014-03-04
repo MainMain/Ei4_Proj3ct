@@ -50,7 +50,6 @@ var Personnage = (function() {
 			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg) 
 	{
 		// --- Attributs d'instance
-				console.log("1");
 		this.id 				= id;
 		this.ptSante			= ptSante;
 		this.ptSanteMax 		= ptSanteMax;
@@ -712,6 +711,7 @@ var Personnage = (function() {
 			if (this.ptSante <= 0) return;
 			
 			EventLog.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
+
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
 				this.listeMsgAtt.push(msg);
@@ -726,6 +726,11 @@ var Personnage = (function() {
 			this.nbrNvMsg++;
 			
 			EventLog.log("PERSONNAGE : Fin   : Ajout d'un message : '" + msg + "'");
+		},
+		
+		ajouterMessageMort : function(pseudoMeurtrier)
+		{
+			this.listeMsgAtt.push(pseudoMeurtrier);
 		},
 		
 		effacerMessages : function(msg)

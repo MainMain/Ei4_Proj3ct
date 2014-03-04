@@ -51,10 +51,14 @@ oCarte.Initialiser(28, 17);
 oUtilisateur_Manager.Load();
 
 // Chargement des personnages en mémoire
+// le callback est réservé pour la fin des fouilles...
+// ... et rafraichi l'affichage
 oPersonnage_Manager.Load(function(idUser)
 {
 	// actualiser joueurs, au cas où l'item est arrivé dans la case
 	var idCase = oPersonnage_Manager.GetIdCase(idUser);
+	
+	
 	ActualiserAllGlobal(idCase);
 });
 
@@ -80,7 +84,7 @@ oSession_Manager.Load(function(idSession)
  */
 
 
-app.set('port', process.env.PORT || 443);
+app.set('port', process.env.PORT || 25536);
 
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
@@ -116,7 +120,7 @@ var optionAccueil = {
 function restrict(req, res, next)
 {
 	var idSession = oSession_Manager.getIdSessionEnCours();
-	EventLog.log("SUCE MON GROS : " + idSession + " ! ");
+	EventLog.log("IdSession : " + idSession + " ! ");
 	if (req.session.username && idSession >= 0)
 	{
 		next();
@@ -868,7 +872,7 @@ io.sockets.on('connection', function (socket)
 		}
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
-		ActualiserAllInCase();
+		//ActualiserAllInCase();
 
 		
 		EventLog.log("*******************************************************");
@@ -1037,7 +1041,7 @@ io.sockets.on('connection', function (socket)
 		socket.emit('PERSONNAGE_USE_SC', id_item, reponse);
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
-		ActualiserAllInCase();
+		//ActualiserAllInCase();
 		
 
 		EventLog.log("SERVEUR : UTILISER - " + idUser +" - Item " + id_item + " - Code : " + reponse);

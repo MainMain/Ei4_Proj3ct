@@ -128,6 +128,12 @@ Personnage_Manager.AddMessage = function(idUser,  msg)
 	this.listePersonnages[idUser].ajouterMessage(msg);
 }, 
 
+Personnage_Manager.AddMessageMort = function(idUser,  pseudoTueur)
+{
+	//console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
+	this.listePersonnages[idUser].ajouterMessageMort(pseudoTueur);
+}, 
+
 Personnage_Manager.EffacerMessages = function(idUser)
 {
 	EventLog.log("PERSONNAGE_MANAGER : EffacerMessages() : Effacement de la liste des messages");
@@ -331,7 +337,7 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 	
 	EventLog.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
 	
-	if(reponse > -1)
+	if(reponse != -1)
 	{
 		// initialisation mode
 		this.InitialiserMode(idUser);
@@ -608,14 +614,17 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 
 Personnage_Manager.stopperFouille = function(idUser)
 {
-	//EventLog.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
+	EventLog.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.getPseudo(idUser));
+
 	//fin du compteur
 	try
 	{
 		//EventLog.log(this.listeIdIntervalleFouille[idUser]);
 		clearTimeout(this.listeIdIntervalleFouille[idUser]);
 	}
-	catch(Err){}
+	catch(Err){
+		console.log("/!\\ PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.getPseudo(idUser) + " : " + Err );
+	}
 },
 
 Personnage_Manager.fouille1Hr = function(idUser)
@@ -765,8 +774,8 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 	oScore_Manager.compabiliserMeurtre(idTueur, idTue);
 	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
-	this.AddMessage(idTue, "");
-	this.AddMessage(idTue,  loginTueur);
+	//this.AddMessage(idTue, "");
+	this.AddMessageMort(idTue,  loginTueur);
 	
 	// mettre son inventaire dans la case
 	for (var i = 0; i < currentPerso.GetSac().length; i++)
