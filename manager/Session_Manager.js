@@ -1,6 +1,6 @@
 // inclusion des règles
 var GameRules	= require('../model/GameRules');
-
+var EventLog    = require('../model/EventLog');
 var oScore_Manager = require('./Score_Manager');
 
 var oSession_BD = require('../persistance/Session_BD');

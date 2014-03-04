@@ -18,6 +18,8 @@ this.listePersonnages;
 this.listeIdIntervalleFouille;
 this.callbackFinFouille;
 
+var EventLog    = require('../model/EventLog');
+
 function Personnage_Manager(){}
 
 

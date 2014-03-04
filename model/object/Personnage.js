@@ -1,4 +1,5 @@
 var oCarte = require('../../model/object/Carte');
+var EventLog    = require('../EventLog');
 
 //inclusion des règles
 var GameRules	= require('../../model/GameRules');
