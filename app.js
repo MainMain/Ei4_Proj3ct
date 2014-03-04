@@ -11,7 +11,7 @@ var express     = require('express'),
     path        = require('path');
 var app         = express();
 var server      = http.createServer(app);
-var EventLog    = require('./model/Eventlog');
+var EventLog    = require('./model/EventLog');
 
 // require objets
 var oCarte	= require('./model/object/Carte');

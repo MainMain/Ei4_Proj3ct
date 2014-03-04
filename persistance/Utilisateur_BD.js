@@ -1,7 +1,7 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
-var oPersonnageDB = require('../Persistance/Personnage_BD');
+var oPersonnageDB = require('../persistance/Personnage_BD');
 var oUtilisateur = require('../model/object/Utilisateur');
 
 

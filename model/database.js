@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var oItem = require('../Persistance/Item_BD');
+var oItem = require('../persistance/Item_BD');
 
 /**
  * Modélisation d'une base de donnée
@@ -123,7 +123,7 @@ database.Initialiser = function() {
 	});
 	ScoreModel = mongoose.model('Score',ScoreSchema); 
 	
-	console.log("SERVEUR : Initialisation Database OK !");
+	EventLog.log("SERVEUR : Initialisation Database OK !");
 },
 
 module.exports = database;

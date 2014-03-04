@@ -1,5 +1,5 @@
 // includes
-var oCase 		= require('../model/Object/Case');
+var oCase 		= require('../model/object/Case');
 var oCase_BD 	= require('../persistance/Case_BD');
 var oCarte 		= require('../model/object/Carte');
 var oCase_BD 	= require('../persistance/Case_BD');
@@ -25,7 +25,7 @@ Case_Manager.Load = function()
 		// récupération des clés
 		idCases = oCase_BD.GetCasesId(function(idCases)
 		{
-			console.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
+			EventLog.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
 			// pour chaque case
 			for(var i in idCases)
 			{
@@ -37,12 +37,12 @@ Case_Manager.Load = function()
 					// gestion des erreurs
 					if(reponse == -1 || reponse == -2)
 					{
-						console.log("Erreur Case : " + idCase);
+						EventLog.error("Erreur Case : " + idCase);
 					}
 					// enregistrement effectif
 					else
 					{
-						console.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+						EventLog.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
 						context.listeCases[idCase] = reponse;
 					}
 				});
@@ -57,7 +57,7 @@ Case_Manager.Load = function()
 Case_Manager.AjouterItem = function(idCase, item)
 {
 	// ajoute de l'objet case
-	console.log("CASE_MANAGER : AjouterItem() : Ajout de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
+	EventLog.log("CASE_MANAGER : AjouterItem() : Ajout de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
 	this.listeCases[idCase].ajouterItem(item);
 	
 },
@@ -66,7 +66,7 @@ Case_Manager.SupprimerItem = function(idCase, item)
 {
 	// suprime de l'objet case
 	this.listeCases[idCase].supprimerItem(item);
-	console.log("CASE_MANAGER : SupprimerItem() : Suppression de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
+	EventLog.log("CASE_MANAGER : SupprimerItem() : Suppression de l'item [id="+item.id+";nom="+item.nom+"] a la case [id="+idCase);
 },
 
 Case_Manager.RemplirCases = function()
@@ -94,14 +94,14 @@ Case_Manager.AttaqueGoule = function(idCase)
 	// détermine si on tue une ou deux goules
 	if (GameRules.goules_proba_TuerDeuxGoules()) 
 	{
-		console.log("CASE_MANAGER : AttaquerGoule() : Suppression de deux goules de la case [id="+idCase);
+		EventLog.log("CASE_MANAGER : AttaquerGoule() : Suppression de deux goules de la case [id="+idCase);
 		// suppression de 2 goules de la case
 		this.listeCases[idCase].AttaqueGoule(2);
 		return 2;
 	}
 	else
 	{
-		console.log("CASE_MANAGER : AttaquerGoule() : Suppression de une goules de la case [id="+idCase);
+		EventLog.log("CASE_MANAGER : AttaquerGoule() : Suppression de une goules de la case [id="+idCase);
 		// suppression de 1 goule de la case
 		this.listeCases[idCase].AttaqueGoule(1);
 		return 1;
@@ -115,8 +115,8 @@ Case_Manager.AttaqueGoule = function(idCase)
  */
 Case_Manager.GetCopieCase = function(idCase)
 {
-	//console.log("CASE_MANAGER : GetCopieCase() : " + this.listeCases[idCase].id + " - " + this.listeCases[idCase].nom);
-	//console.log(this.listeCases);
+	//EventLog.log("CASE_MANAGER : GetCopieCase() : " + this.listeCases[idCase].id + " - " + this.listeCases[idCase].nom);
+	//EventLog.log(this.listeCases);
 	return this.listeCases[idCase];
 },
 
@@ -133,7 +133,7 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 		"actionOk" 	: true,
 	};
 	
-	console.log(">> CASE_MANAGER : AttaqueDeGoules() : " + idCase);
+	EventLog.log(">> CASE_MANAGER : AttaqueDeGoules() : " + idCase);
 	// si pas de goules, on quitte 
 	try
 	{
@@ -169,12 +169,12 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 			"nbrGoulesA" : nbrGoulesAttaquantes,
 			"actionOk" 	: actionOk,
 		};
-		console.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
+		EventLog.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
 	
 	}
 	catch(err)
 	{
-		console.log("/!\ >>> ERREUR : CASE_MANAGER : AttaqueDeGoules : " + err);
+		EventLog.error("/!\ >>> ERREUR : CASE_MANAGER : AttaqueDeGoules : " + err);
 	}
 	return a;
 },
@@ -187,25 +187,25 @@ Case_Manager.Fouille = function(idCase, probaObjetPerso)
 	// multiplie la proba de trouver un objet avec le multiplicateur du personnage
 	var probaObjetCase = this.listeCases[idCase].probaObjet * probaObjetPerso;
 
-	console.log("CASE_MANAGER : Fouille() : proba = " + proba + " - probaObjetCase  => brut = " + this.listeCases[idCase].probaObjet + " - net = " + probaObjetCase);
+	EventLog.log("CASE_MANAGER : Fouille() : proba = " + proba + " - probaObjetCase  => brut = " + this.listeCases[idCase].probaObjet + " - net = " + probaObjetCase);
 	if (proba < probaObjetCase)
 	{
 		// création d'un item
 		newItem = oItem_Manager.GetItemAleatoire();
-		console.log("CASE_MANAGER : Fouille() : Nouvel objet decouvert ! : "+ newItem.nom);
+		EventLog.log("CASE_MANAGER : Fouille() : Nouvel objet decouvert ! : "+ newItem.nom);
 	}
 	return newItem;
 },
 
 Case_Manager.DecouverteEnnemi = function(idCase, probaObjetPerso, probaCacheEnn)
 {
-	console.log("CASE_MANAGER : DecouverteEnnemi() : proba " + this.listeCases[idCase].probaObjet + " - multi :" + probaObjetPerso);
+	EventLog.log("CASE_MANAGER : DecouverteEnnemi() : proba " + this.listeCases[idCase].probaObjet + " - multi :" + probaObjetPerso);
 	
 	var proba = Math.floor(Math.random() * 100);
 	var probaDecouverte = this.listeCases[idCase].probaObjet * probaObjetPerso;
 	var probaDecouverte2 = probaDecouverte / probaCacheEnn;
 	
-	console.log("CASE_MANAGER : DecouverteEnnemi() : proba cache = " + proba + " - probaDecouverte  => brut = " + probaDecouverte + " - net = " + probaDecouverte2);
+	EventLog.log("CASE_MANAGER : DecouverteEnnemi() : proba cache = " + proba + " - probaDecouverte  => brut = " + probaDecouverte + " - net = " + probaDecouverte2);
 	if (proba < probaDecouverte) return true;
 	else return false;
 },
@@ -221,7 +221,7 @@ Case_Manager.nouvelleJournee = function()
 			var nbrGoules = GameRules.goules_nbrNouvellesGoules();
 		
 			// log
-			console.log("CASE_MANAGER : case " + idCase + " : ajout de " + nbrGoules + " goules !");
+			EventLog.log("CASE_MANAGER : case " + idCase + " : ajout de " + nbrGoules + " goules !");
 		
 			// ajout
 			this.listeCases[idCase].nbrGoules += nbrGoules;
@@ -230,14 +230,14 @@ Case_Manager.nouvelleJournee = function()
 },
 Case_Manager.GetNombreGoules = function(idCase)
 {
-	console.log(">> CASE_MANAGER : GetNombreGoules - idCase = " + idCase);
+	EventLog.log(">> CASE_MANAGER : GetNombreGoules - idCase = " + idCase);
 	try
 	{
 		return this.listeCases[idCase].getNbrGoules();
 	}
 	catch(err)
 	{
-		console.log("/!\ >>> ERREUR : CASE_MANAGER : GetNombreGoules : " + err);
+		EventLog.error("/!\ >>> ERREUR : CASE_MANAGER : GetNombreGoules : " + err);
 		return -1;
 	}
 },
@@ -272,7 +272,7 @@ Case_Manager.GetIdZoneSureEnnemi = function(numEquipe)
 
 Case_Manager.GetTestZoneSure = function(idCase, numEquipe)
 {
-	console.log("CASE_MANAGER : GetTestZoneSure() : numEquipe = " + numEquipe + " id case destination : " + idCase);
+	EventLog.log("CASE_MANAGER : GetTestZoneSure() : numEquipe = " + numEquipe + " id case destination : " + idCase);
 	if ( 
 			(numEquipe == 1 && idCase == GameRules.idZoneSure_2()) ||
 			(numEquipe == 2 && idCase == GameRules.idZoneSure_1()))
@@ -286,10 +286,10 @@ Case_Manager.Save = function()
 	
 	for(var idCase in this.listeCases)
 	{
-		//console.log("CASE_MANAGER : Save() : Sauvegarde de la case [id="+idCase);
+		//EventLog.log("CASE_MANAGER : Save() : Sauvegarde de la case [id="+idCase);
 		oCase_BD.SetCase(this.listeCases[idCase], function(reponse)
 		{
-			//console.log("Enregistrement de case ok !");
+			//EventLog.log("Enregistrement de case ok !");
 		});
 	}
 },
