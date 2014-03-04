@@ -1,6 +1,7 @@
 // includes
 var oItem = require('../model/object/Item');
 var oItem_BD = require('./../persistance/Item_BD');
+var EventLog    = require('../model/EventLog');
 
 // inclusion des règles
 var GameRules	= require('../model/GameRules');

@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var oItem = require('../persistance/Item_BD');
 
+var EventLog    = require('./EventLog');
 /**
  * Modélisation d'une base de donnée
  * 

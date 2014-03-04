@@ -3,6 +3,8 @@
  * 
  * @class Carte
  */
+ 
+ var EventLog    = require('../EventLog');
 function Carte() {
 	if (false === (this instanceof Carte)) {
 		return new Carte();
