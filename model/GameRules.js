@@ -12,9 +12,9 @@ GameRules.idZoneSure_3 = function() 						{ return 10; },
 
 
 //********** COUT EN PA **********
-GameRules.coutPA_FouilleRapide = function() 				{ return 4; },
-GameRules.coutPA_AttaqueEnnemi = function() 				{ return 5; },
-GameRules.coutPA_AttaqueGoule = function()					{ return 3; },
+GameRules.coutPA_FouilleRapide = function() 				{ return 3; },
+GameRules.coutPA_AttaqueEnnemi = function() 				{ return 4; },
+GameRules.coutPA_AttaqueGoule = function()					{ return 2; },
 // cout en PA à chaque fois qu'une goule fait rater une attaque
 GameRules.coutPA_InterceptionGoule = function() 			{ return 2; },
 GameRules.coutPA_ChgtMode = function() 						{ return 2; },
@@ -43,11 +43,11 @@ GameRules.goules_RespawnMax = function() 					{ return 10;},
 // calcul un nbr aléatoire de nombre de goule
 GameRules.goules_nbrNouvellesGoules = function()			{ return (Math.floor(Math.random() * (10-2) + 2 ));},
 //minimun de pts d'attaque par goules
-GameRules.goules_PtsAttaqueMin = function() 				{ return 3; },
+GameRules.goules_PtsAttaqueMin = function() 				{ return 2; },
 //maximun de pts d'attaque par goules
-GameRules.goules_PtsAttaqueMax = function() 				{ return 8; }, 
+GameRules.goules_PtsAttaqueMax = function() 				{ return 6; }, 
 // donne un nombre de dégat de goules aléatoire
-GameRules.goules_GetPtsAttaque = function() 				{ return (Math.floor(Math.random() * (8-3) + 3 )); },
+GameRules.goules_GetPtsAttaque = function() 				{ return (Math.floor(Math.random() * (6-2) + 2 )); },
 //Proba que une goule fasse rater l'action
 GameRules.goules_proba_Interception = function() 			{ return (Math.floor(Math.random() * 100) <= 35) ? true : false ; }, 
 // Proba de tuer deux goules au lieu d'une seule
