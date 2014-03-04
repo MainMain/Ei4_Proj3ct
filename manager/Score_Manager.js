@@ -1,7 +1,7 @@
 // inclusion des règles
 var GameRules	= require('../model/GameRules');
 
-var oScore= require('../model/Object/Score');
+var oScore= require('../model/object/Score');
 
 var oUtilisateur_Manager = require('../manager/Utilisateur_Manager');
 

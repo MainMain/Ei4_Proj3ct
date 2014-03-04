@@ -1,5 +1,5 @@
 // includes
-var oUtilisateur = require('../model/Object/Utilisateur');
+var oUtilisateur = require('../model/object/Utilisateur');
 var oUtilisateur_BD = require('../persistance/Utilisateur_BD');
 
 

@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var oItem = require('../Persistance/Item_BD');
+var oItem = require('../persistance/Item_BD');
 
 /**
  * Modélisation d'une base de donnée

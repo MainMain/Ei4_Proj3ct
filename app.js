@@ -11,7 +11,7 @@ var express     = require('express'),
     path        = require('path');
 var app         = express();
 var server      = http.createServer(app);
-var EventLog    = require('./model/Eventlog');
+var EventLog    = require('./model/EventLog');
 
 // require objets
 var oCarte	= require('./model/object/Carte');
@@ -84,7 +84,7 @@ oSession_Manager.Load(function(idSession)
  */
 
 
-app.set('port', process.env.PORT || 443);
+app.set('port', process.env.PORT || 25536);
 
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
@@ -191,12 +191,19 @@ app.get('/admin', restrictAdmin, function fonctionAdmin(req, res)
 {
 	var s = req.session;
 	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
-	
+
+try
+{	
 	options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
 	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-	
+}
+catch(Err)
+{
+	EventLog.error("Erreur acces admin : " + Err);
+}	
 	res.render('admin', options);
-});
+}
+);
 
 app.post('/admin', restrictAdmin, function fonctionAdmin(req, res)
 {
@@ -204,9 +211,14 @@ app.post('/admin', restrictAdmin, function fonctionAdmin(req, res)
 	var idUser = req.param("idUser");
 	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
 	
+try
+{
 	options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
 	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-	
+}
+catch(Err) {
+EventLog.error("ERREUR ADMIN");
+}	
 	oPersonnage_Manager.deletePerso(idUser);
 	
 	if(usersOnline[idUser])
@@ -228,10 +240,16 @@ app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
 	var month	= parseInt(req.param("month"));
 	var day		= parseInt(req.param("day"));
 	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
-	
+
+try
+{	
 	options.dateDebut = oSession_Manager.getDateDebut().toTimeString();
 	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-	
+}
+catch(Err)
+{
+	EventLog.error("Erreur zone admin : " + Err);
+}	
 	var date = new Date(year, month, day, 0, 0, 0, 0);
 	
 	switch(action)

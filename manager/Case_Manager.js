@@ -1,5 +1,5 @@
 // includes
-var oCase 		= require('../model/Object/Case');
+var oCase 		= require('../model/object/Case');
 var oCase_BD 	= require('../persistance/Case_BD');
 var oCarte 		= require('../model/object/Carte');
 var oCase_BD 	= require('../persistance/Case_BD');

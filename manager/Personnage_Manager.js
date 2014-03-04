@@ -1,6 +1,6 @@
  // includes
-var oPersonnage		= require('../model/Object/Personnage');
-var oUtilisateur	= require('../model/Object/Utilisateur');
+var oPersonnage		= require('../model/object/Personnage');
+var oUtilisateur	= require('../model/object/Utilisateur');
 var oCarte			= require('../model/object/Carte');
 
 var oPersonnage_BD	= require('../persistance/Personnage_BD');
