@@ -50,7 +50,7 @@ Item_BD.GetNbrItem = function()
  */
 Item_BD.GetListItem = function()
 {
-	console.log("ITEM_BD : Initialisation liste item");
+	EventLog.log("ITEM_BD : Initialisation liste item");
 	
 	var ItemModel = mongoose.model('Item');
 	
@@ -60,7 +60,7 @@ Item_BD.GetListItem = function()
 		{
 			throw err;
 		}
-		console.log('ITEM_BD : Items supprimés !');
+		EventLog.log('ITEM_BD : Items supprimés !');
 	});
 	
 	this.listeItems = new Array();

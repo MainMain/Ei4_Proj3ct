@@ -123,7 +123,7 @@ database.Initialiser = function() {
 	});
 	ScoreModel = mongoose.model('Score',ScoreSchema); 
 	
-	console.log("SERVEUR : Initialisation Database OK !");
+	EventLog.log("SERVEUR : Initialisation Database OK !");
 },
 
 module.exports = database;
