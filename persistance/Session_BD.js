@@ -1,6 +1,7 @@
 // includes
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
+var EventLog    = require('../model/EventLog');
 
 function Session_BD() {
     if (false === (this instanceof Session_BD)) {

@@ -5,7 +5,7 @@ var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
 var oUtilisateur_BD = require('./Utilisateur_BD');
 var oUtilisateur = require('../model/object/Utilisateur');
-
+var EventLog    = require('../model/EventLog');
 
 /**
  * PERSONNAGES : COMMUNICATION SERVEUR <-> BD

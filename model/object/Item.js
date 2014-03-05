@@ -3,6 +3,8 @@
  * 
  * @class item
  */
+var EventLog    = require('../EventLog');
+
 var Item = (function() {
 	'use strict';
 

@@ -2,6 +2,7 @@
 var oScore = require('../model/object/Score');
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
+var EventLog    = require('../model/EventLog');
 
 function Score_BD() {
    /* if (false === (this instanceof Score_BD)) {
