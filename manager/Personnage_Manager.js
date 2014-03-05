@@ -1,6 +1,6 @@
  // includes
-var oPersonnage		= require('../model/Object/Personnage');
-var oUtilisateur	= require('../model/Object/Utilisateur');
+var oPersonnage		= require('../model/object/Personnage');
+var oUtilisateur	= require('../model/object/Utilisateur');
 var oCarte			= require('../model/object/Carte');
 
 var oPersonnage_BD	= require('../persistance/Personnage_BD');
@@ -17,6 +17,8 @@ var GameRules	= require('../model/GameRules');
 this.listePersonnages;
 this.listeIdIntervalleFouille;
 this.callbackFinFouille;
+
+var EventLog    = require('../model/EventLog');
 
 function Personnage_Manager(){}
 
@@ -39,17 +41,17 @@ Personnage_Manager.Load = function(callbackFinFouille)
 			{
 				if (reponse == -1)
 				{
-					console.log(" /!\ PERSONNAGE_MANAGER : Load() : Erreur -1");
+					EventLog.error(" /!\ PERSONNAGE_MANAGER : Load() : Erreur -1");
 					context.listePersonnages[id] = null;
 				}
 				else if (reponse == -2)
 				{
-					console.log("/!\  PERSONNAGE_MANAGER : Load() : Erreur -2");
+					EventLog.error("/!\  PERSONNAGE_MANAGER : Load() : Erreur -2");
 					context.listePersonnages[id] = null;
 				}
 				else
 				{
-					//console.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
+					//EventLog.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
 					context.listePersonnages[id] = reponse;
 					/*** TEST ***/
 					//context.listePersonnages[id].setptSanteMax(30);
@@ -104,18 +106,18 @@ Personnage_Manager.SetCompetence = function(idUser,  competence, numEquipe)
 	// initialise le personnage
 	//var idPerso = this.listePersonnages[idUser].id;
 	//this.listePersonnages[idUser].initialiser();
-	console.log("PERSON_MANAGER : SetCompetence() " + competence);
+	EventLog.log("PERSON_MANAGER : SetCompetence() " + competence);
 	this.listePersonnages[idUser].setCompetence(competence, numEquipe);
 	
 	oPersonnage_BD.SetPersonnage(this.listePersonnages[idUser],  function(reponse)
 	{
 		if (reponse == -1)
 		{
-			console.log("/!\ PERSONNAGE_MANAGER : SetCompetence() : WARNING : erreur ecriture du perso de " + idUser);
+			EventLog.error("/!\ PERSONNAGE_MANAGER : SetCompetence() : WARNING : erreur ecriture du perso de " + idUser);
 		}
 		else
 		{
-			//console.log("PERSONNAGE_MANAGER : SetCompetence() : MAJ du perso de " + idUser + " OK !");
+			//EventLog.log("PERSONNAGE_MANAGER : SetCompetence() : MAJ du perso de " + idUser + " OK !");
 		}
 	});
 	
@@ -124,13 +126,19 @@ Personnage_Manager.SetCompetence = function(idUser,  competence, numEquipe)
 /////////////////////////////////////////// EN RAPPORT AVEC LES MESSAGES DU JOUEUR //////////////////////////////////
 Personnage_Manager.AddMessage = function(idUser,  msg)
 {
-	//console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
+	//EventLog.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
 	this.listePersonnages[idUser].ajouterMessage(msg);
+}, 
+
+Personnage_Manager.AddMessageMort = function(idUser,  pseudoTueur)
+{
+	//console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
+	this.listePersonnages[idUser].ajouterMessageMort(pseudoTueur);
 }, 
 
 Personnage_Manager.EffacerMessages = function(idUser)
 {
-	console.log("PERSONNAGE_MANAGER : EffacerMessages() : Effacement de la liste des messages");
+	EventLog.log("PERSONNAGE_MANAGER : EffacerMessages() : Effacement de la liste des messages");
 	this.listePersonnages[idUser].effacerMessages();
 }, 
 
@@ -161,13 +169,14 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	
 	var resultatGoules;
 	
+	// récupère les valeurs d'attaque
 	var attA = this.listePersonnages[idUser].getValeurAttaque();
 	var attB = this.listePersonnages[idUserEnnemi].getValeurAttaque();
 	
 	// si c'est une tentative d'attaquer un allié (requete http trafiquée)
 	if (oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(idUserEnnemi))
 	{
-		console.log("/!\ -> PIRATAGE D'UNE REQUETE -> ATTAQUE DE " + persoUser + " VERS " + persoEnn + " ALORS QUE MEME EQUIPE !");
+		EventLog.error("/!\ -> PIRATAGE D'UNE REQUETE -> ATTAQUE DE " + persoUser + " VERS " + persoEnn + " ALORS QUE MEME EQUIPE !");
 		reponseServeur.reponseAttaque = 0;
 		return reponseServeur;
 	}
@@ -179,6 +188,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 	}
 	else
 	{
+		// check si même salle
 		if(!this.MemeSalle(idUser,  idUserEnnemi))
 		{
 			reponseServeur.reponseAttaque = -1;
@@ -229,7 +239,7 @@ Personnage_Manager.Attaquer = function(idUser,  idUserEnnemi)
 
 				reponseServeur.reponseAttaque = 1;
 
-				console.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + reponseServeur.degatsInfliges
+				EventLog.log("PERSONNAGE_MANAGER : Attaquer() : degatsInfliges : " + reponseServeur.degatsInfliges
 						+ " <-> degatsRecus : " + reponseServeur.degatsRecus 
 						+ "  +  degatsGoules : " + reponseServeur.degatSubisParGoules );
 				
@@ -288,7 +298,7 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 	reponseServeur["nbrGoulesAttaquantes"] 	= ans["nbrGoulesA"];
 	
 	// log
-	console.log("PERSONNAGE_MANAGER : " +
+	EventLog.log("PERSONNAGE_MANAGER : " +
 			" - attaque goules ->  Goules tués : " + goulesTues + 
 			" - Degats " + degatsSubis +
 			" - nbr ripostes " + ans["nbrGoulesA"]);
@@ -309,7 +319,7 @@ Personnage_Manager.AttaquerGoule = function(idUser)
 
 Personnage_Manager.subirDegats = function (idUser,  degats)
 {
-	console.log("PERSONNAGE_MANAGER : Subir Dégats() : pts de santé restants : " + this.listePersonnages[idUser].getPtSante());
+	EventLog.log("PERSONNAGE_MANAGER : Subir Dégats() : pts de santé restants : " + this.listePersonnages[idUser].getPtSante());
 	return this.listePersonnages[idUser].subirDegats(degats);
 }, 
 
@@ -319,17 +329,17 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 	var nbrGoules = oCase_Manager.GetNombreGoules(this.GetIdCase(idUser));
 	var a = this.GetNbrAlliesEnemisDansSalle(idUser);
 	var numEquipe = oUtilisateur_Manager.GetNumEquipe(idUser);
-	var idZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
+	var idsZoneSureEnnemi = oCase_Manager.GetIdZoneSureEnnemi(numEquipe);
 	
 	// chaque allié diminue de 1 le nombre de goules
 	nbrGoules -= a.nbrAllies;
 	
 	// deplace le personnage
-	var reponse = this.listePersonnages[idUser].deplacement(move,  nbrGoules,  idZoneSureEnnemi);
+	var reponse = this.listePersonnages[idUser].deplacement(move,  nbrGoules,  idsZoneSureEnnemi);
 	
-	console.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
+	EventLog.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
 	
-	if(reponse > -1)
+	if(reponse != -1)
 	{
 		// initialisation mode
 		this.InitialiserMode(idUser);
@@ -360,7 +370,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			}
 			
 			// si c'est un ODD dans la zone sure -> return 
-			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2()) )
+			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2() || o_____O == GameRules.idZoneSure_3() ) )
 			{
 				reponseServeur.reponseAction = -6;
 				return reponseServeur;
@@ -421,7 +431,7 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 			this.SupprimerDuSac(idUser, item);
 			
 			// si c'est un ODD dans la zone sure -> return 
-			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2()) )
+			if (item.type == 3 && ( o_____O == GameRules.idZoneSure_1() ||  o_____O == GameRules.idZoneSure_2() ||  o_____O == GameRules.idZoneSure_3()) )
 			{
 				oScore_Manager.compabiliserDepotODD(idUser, item.valeur);
 			}
@@ -469,7 +479,7 @@ Personnage_Manager.ChercherEnnemi = function(idUser)
 
 Personnage_Manager.Decouvert = function(idUser)
 {
-	console.log("PERSONNAGE_MANAGER : Le perso " + idUser + " a été découvert !" );
+	EventLog.log("PERSONNAGE_MANAGER : Le perso " + idUser + " a été découvert !" );
 	
 	this.listePersonnages[idUser].changerMode(0);
 	this.AddMessage(idUser,  "Vous avez été découvert ! Votre planque est foutue !");
@@ -554,6 +564,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 			if(!this.TestPtActions(idUser,  "chgtMode"))
 			{
 				reponseServeur.reponseChangement = -10;
+				return reponseServeur;
 			}
 
 			// impact des goules
@@ -592,7 +603,7 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 						// appel a la fonction de fouille
 						self.fouille1Hr(idUser);
 					}, GameRules.jeu_duree_fouille());	
-					//console.log(this.listeIdIntervalleFouille[idUser]);
+					//EventLog.log(this.listeIdIntervalleFouille[idUser]);
 				}
 				
 				// réponse
@@ -605,19 +616,22 @@ Personnage_Manager.ChangementMode = function(idUser,  mode)
 
 Personnage_Manager.stopperFouille = function(idUser)
 {
-	//console.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.GetPseudo(idUser));
+	EventLog.log("PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.getPseudo(idUser));
+
 	//fin du compteur
 	try
 	{
-		//console.log(this.listeIdIntervalleFouille[idUser]);
+		//EventLog.log(this.listeIdIntervalleFouille[idUser]);
 		clearTimeout(this.listeIdIntervalleFouille[idUser]);
 	}
-	catch(Err){}
+	catch(Err){
+		console.log("/!\\ PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.getPseudo(idUser) + " : " + Err );
+	}
 },
 
 Personnage_Manager.fouille1Hr = function(idUser)
 {
-	console.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.getPseudo(idUser));
+	EventLog.log("PERSONNAGE_MANAGER : Fin d'une fouille d'une heure pour le perso " + oUtilisateur_Manager.getPseudo(idUser));
 	
 	// calcul de decouverte d'un item
 	var idCase 			= this.GetIdCase(idUser);
@@ -633,12 +647,12 @@ Personnage_Manager.fouille1Hr = function(idUser)
 		if ((this.listePersonnages[idUser].getPoidsSac() + parseInt(itemDecouvert.poids)) > this.listePersonnages[idUser].getPoidsMax())
 		{
 			oCase_Manager.AjouterItem(idCase,  itemDecouvert);
-			msg += " Faute de place,  l'item à été déposé dans la salle";
+			msg += " - Faute de place,  l'item a été déposé dans la salle";
 		}
 		else
 		{
 			this.AjouterItemAuSac(idUser,  itemDecouvert);
-			msg += " L'item à été ajouté à votre sac.";
+			msg += " - L'item à été ajouté à votre sac.";
 			
 		}
 	}
@@ -659,8 +673,12 @@ Personnage_Manager.fouilleRapide = function(idUser)
 	var resultatGoules;
 	var degatSubis;
 	var reponseRamassage;
-	var reponseServeur = {"degatSubis" : 0,  "codeRetour" : 1,  
-		"itemDecouvert" : null,  "nbrGoulesA" : 0,  "itemDansSac" : 0,  
+	var reponseServeur = {
+		"degatSubis" : 0,  
+		"codeRetour" : 1,  
+		"itemDecouvert" : null,  
+		"nbrGoulesA" : 0,  
+		"itemDansSac" : 0,  
 		"nbrEnnemisDecouverts" : 0};
 	var codeRetour = 0;
 	var itemDecouvert;
@@ -716,13 +734,13 @@ Personnage_Manager.fouilleRapide = function(idUser)
 		
 		if ((this.listePersonnages[idUser].getPoidsSac() + parseInt(itemDecouvert.poids)) > this.listePersonnages[idUser].getPoidsMax())
 		{
-			console.log("-----------> add case");
+			EventLog.log("-----------> add case");
 			oCase_Manager.AjouterItem(idCase,  itemDecouvert);
 			reponseServeur.itemDansSac = false;
 		}
 		else
 		{
-			console.log("-----------> add sac");
+			EventLog.log("-----------> add sac");
 			this.AjouterItemAuSac(idUser,  itemDecouvert);
 			reponseServeur.itemDansSac = true;
 			
@@ -746,7 +764,7 @@ Personnage_Manager.MisKo = function(idUser,  meurtrier)
 Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 {
 	// log
-	console.log("PERSONNAGE_MANAGER : Mourir() : mort du personnage " + oUtilisateur_Manager.getPseudo(idTue)+ " par : " + loginTueur);
+	EventLog.log("PERSONNAGE_MANAGER : Mourir() : mort du personnage " + oUtilisateur_Manager.getPseudo(idTue)+ " par : " + loginTueur);
 	
 	// recupère le perso tue
 	var currentPerso = this.listePersonnages[idTue];
@@ -758,8 +776,8 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 	oScore_Manager.compabiliserMeurtre(idTueur, idTue);
 	
 	// ajout du login du tueur afin que l'on puisse informer l'utilisateur de son meurtrier
-	this.AddMessage(idTue, "");
-	this.AddMessage(idTue,  loginTueur);
+	//this.AddMessage(idTue, "");
+	this.AddMessageMort(idTue,  loginTueur);
 	
 	// mettre son inventaire dans la case
 	for (var i = 0; i < currentPerso.GetSac().length; i++)
@@ -767,7 +785,7 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 		if (GameRules.combat_proba_perdreItem())
 		{
 			// transfert de l'item en cours dans la case
-			console.log("PERSO MANAGER : TUER JOUEUR : idCase = " + this.GetIdCase(idTue));
+			EventLog.log("PERSO MANAGER : TUER JOUEUR : idCase = " + this.GetIdCase(idTue));
 			oCase_Manager.AjouterItem(this.GetIdCase(idTue),  currentPerso.GetSac()[i]);
 			
 			// l'enlever de son inventaire
@@ -778,7 +796,7 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 
 Personnage_Manager.SeRetablir = function(idUser)
 {
-	console.log("SERVEUR : SeRetablir() - " + idUser);
+	EventLog.log("SERVEUR : SeRetablir() - " + idUser);
 	
 	var idZoneSure = oCase_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser));
 	this.listePersonnages[idUser].seRetablir(idZoneSure);
@@ -812,7 +830,7 @@ Personnage_Manager.GetCopiePerso = function(idUser)
 Personnage_Manager.GetNbrAllies = function(idUser)
 {
 	var res = this.GetNbrAlliesEnemisDansSalle(idUser);
-	console.log("---------------------> " + res.nbrAllies);
+	EventLog.log("---------------------> " + res.nbrAllies);
 	return res.nbrAllies;
 }, 
 
@@ -836,23 +854,46 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 	return a;
 }, 
 
-Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser)
+// l'argument idCase permet de me pas tenir compte de l'actuelle pos du perso
+Personnage_Manager.GetAlliesEnnemisDansSalle = function(idUser, idCase)
 {
+	// création de la liste
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
-	for(var i in this.listePersonnages)
+	
+	if (typeof idCase === "undefined")
 	{
-		if(this.GetIdCase(idUser) == this.GetIdCase(i))
+		for(var i in this.listePersonnages)
 		{
-			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+			if(this.GetIdCase(idUser) == this.GetIdCase(i))
 			{
-				a.Allies.push(i);
-			}
-			else if(this.listePersonnages[i].GetMode() != 2)
-			{
-				a.Ennemis.push(i);
+				if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+				{
+					a.Allies.push(i);
+				}
+				else if(this.listePersonnages[i].GetMode() != 2)
+				{
+					a.Ennemis.push(i);
+				}
 			}
 		}
 	}
+	else
+	{
+		for(var i in this.listePersonnages)
+		{
+			if(idCase == this.GetIdCase(i))
+			{
+				if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
+				{
+					a.Allies.push(i);
+				}
+				else if(this.listePersonnages[i].GetMode() != 2)
+				{
+					a.Ennemis.push(i);
+				}
+			}
+		}
+		}
 	return a;
 }, 
 
@@ -894,13 +935,13 @@ Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 
 Personnage_Manager.IsItemEquipee = function(idUser,  item)
 {
-	console.log("id item = " + item.id + " nom item = " + item.nom);
+	EventLog.log("id item = " + item.id + " nom item = " + item.nom);
 	return this.listePersonnages[idUser].isItemEquipee(item);
 }, 
 
 Personnage_Manager.TestDeplacementPossible = function(idUser,  nbrGoules,  direction)
 {
-	console.log("PM : TEST DEPLACEMENT POSSIBLE");
+	EventLog.log("PM : TEST DEPLACEMENT POSSIBLE");
 	
 	return this.listePersonnages[idUser].testDeplacement(nbrGoules,  direction);
 }, 
@@ -941,8 +982,8 @@ Personnage_Manager.TestPtActions = function(idUser,  typeAction)
 	
 	var ok = true;
 	
-	console.log("PMANGER : ptAction :  " + ptAction);
-	console.log("PMANGER : typeAction : " + typeAction);
+	EventLog.log("PMANGER : ptAction :  " + ptAction);
+	EventLog.log("PMANGER : typeAction : " + typeAction);
 	
 	if(ptAction == 0)
 	{
@@ -1007,7 +1048,7 @@ Personnage_Manager.GetIdCase = function(idUser)
 	}
 	catch(err)
 	{
-		console.log("/!\ >>> ERREUR : PERSO_MANAGER : GetIdCase : " + err);
+		EventLog.error("/!\ >>> ERREUR : PERSO_MANAGER : GetIdCase : " + err);
 		return -1;
 	}
 	
@@ -1026,11 +1067,11 @@ Personnage_Manager.Save = function()
 		{
 			if (reponse == -1)
 			{
-				console.log("!!!!! WARNING : PMANAGER : erreur ecriture du perso de " + idUser);
+				EventLog.error("!!!!! WARNING : PMANAGER : erreur ecriture du perso de " + idUser);
 			}
 			else
 			{
-				//console.log("UMANAGER : MAJ du perso de " + idUser + " OK !");
+				//EventLog.log("UMANAGER : MAJ du perso de " + idUser + " OK !");
 			}
 		});
 	}

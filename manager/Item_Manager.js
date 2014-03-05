@@ -1,6 +1,7 @@
 // includes
 var oItem = require('../model/object/Item');
 var oItem_BD = require('./../persistance/Item_BD');
+var EventLog    = require('../model/EventLog');
 
 // inclusion des règles
 var GameRules	= require('../model/GameRules');
@@ -25,7 +26,7 @@ Item_Manager.Load = function()
 		this.listeItems[id].valeur 	= parseInt(this.listeItems[id].valeur);
 	}
 	
-	console.log("IMANAGER : Actif !");
+	EventLog.log("IMANAGER : Actif !");
 },
 
 Item_Manager.GetItem = function(idItem)
@@ -58,7 +59,7 @@ Item_Manager.GetItemAleatoire = function()
 		c += 1;
 	}
 	
-	console.log(">>> ITEM_MANAER : GetItemAleatoire : id = " + id);
+	EventLog.log(">>> ITEM_MANAER : GetItemAleatoire : id = " + id);
 	// return l'item
 	return this.listeItems[id];
 },

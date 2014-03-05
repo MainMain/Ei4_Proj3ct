@@ -1,6 +1,6 @@
 // inclusion des règles
 var GameRules	= require('../model/GameRules');
-
+var EventLog    = require('../model/EventLog');
 var oScore_Manager = require('./Score_Manager');
 
 var oSession_BD = require('../persistance/Session_BD');
@@ -71,8 +71,8 @@ Session_Manager.demarrer = function(dateFin)
 			// attribuer l'id du dernier element + 1
 			context.idSessionEnCours = lastId + 1;
 			
-			console.log("lastId : " + lastId);
-			console.log("idSessionEnCours : " + context.idSessionEnCours);
+			EventLog.log("lastId : " + lastId);
+			EventLog.log("idSessionEnCours : " + context.idSessionEnCours);
 			
 			// attribuer les dates
 			context.dateDebut = today;
@@ -89,7 +89,7 @@ Session_Manager.demarrer = function(dateFin)
 
 Session_Manager.stopper = function()
 {
-	console.log("STOP LE TABOUN DE MAMAK ET LALAK!");
+	EventLog.log("STOP LE TABOUN DE MAMAK ET LALAK!");
 	this.idSessionEnCours = -1;
 	this.dateDebut = null;
 	this.dateFin = null;

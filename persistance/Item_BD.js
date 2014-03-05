@@ -3,6 +3,7 @@ var fs = require('fs');
 var oItem = require('../model/object/Item');
 var oDatabase = require('../model/database');
 var mongoose = require('mongoose');
+var EventLog    = require('../model/EventLog');
 
 var async = require('async');
 
@@ -50,7 +51,7 @@ Item_BD.GetNbrItem = function()
  */
 Item_BD.GetListItem = function()
 {
-	console.log("ITEM_BD : Initialisation liste item");
+	EventLog.log("ITEM_BD : Initialisation liste item");
 	
 	var ItemModel = mongoose.model('Item');
 	
@@ -60,7 +61,7 @@ Item_BD.GetListItem = function()
 		{
 			throw err;
 		}
-		console.log('ITEM_BD : Items supprimés !');
+		EventLog.log('ITEM_BD : Items supprimés !');
 	});
 	
 	this.listeItems = new Array();

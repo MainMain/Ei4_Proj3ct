@@ -12,7 +12,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 	<!-- Put your title here! -->
-	<title>Accueil</title>
+	<title>Accueil - Zomb'IstiA</title>
 
 	<meta name="description" content="">
 
@@ -43,8 +43,8 @@
 	<header id="master-header" class="clearfix" role="banner">
 
 		<hgroup>
-			<h1 id="site-title"><a href="/" title="">Zomb Istia</a></h1>
-			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
+			<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
+			<h2 id="site-description">Seras-tu assez fort pour survivre ?!</h2>
 		</hgroup>
 
 	</header> <!-- #master-header -->
@@ -83,7 +83,7 @@
 		<form id="LogoutForm" class="logoutform" action="/" method=POST>
 			<input type="hidden"name="_method" value="delete"/>
 			<div> Bonjour <%= username %></div>
-			<input type="submit" value="Retourner chez les vivants ?" align=right>
+			<input type="submit" value="Retour chez les vivants ?!" align=right>
 		</form>
 	<% } %>
 	
@@ -95,26 +95,33 @@
 	
 <div id="content" role="main" class="span7">
 
-	<article class="post hentry">
+	<!--<article class="post hentry">-->
+
 
 		<header class="entry-header">
 			<h1 class="entry-title">
-				Première news
+				Un pas en enfer...
 			</h1>
 		</header> <!-- .entry-header -->
 
 		<div class="entry-content">
 			<p>
-				Bienvenue sur notre site ! Ici vous trouverez les principales news apportées à notre jeu !
+				Au cas où tu n’aurais pas vu le magnifique arrière-plan, nous sommes dans un univers parallèle apocalyptique, dans lequel nous sommes envahis par des zombies affamés. Du coup, seule ta survie et celle de ton équipe compte !
+				<br><br>A l’IstiA, trois grandes équipes se sont formées, tu devras donc choisir dans quel camp tu te situe : AGI, INNO ou QSF (et si tu as choisi d'arrêter tes études, c’est pareil).
+				
+				<br><br>Une fois la partie lancée, tu as 30 jours pour ramasser un maximum d’objets pour construire ta zone sûre. Tu vas errer au détour des couloirs de l’IstiA mais attention aux zombies qui rodent. Méfies toi aussi des autres équipes qui peuvent t’attaquer et te dépouiller de tes biens.
+				<br><br>Les clés de la victoire seront le travail d’équipe et la communication, sans ça, dis adieu à la vie !
 			</p>
 		</div> <!-- .entry-content -->
 
-		<footer class="entry-meta">
-			Posté le <time class="entry-date" datetime="11-12-2013" pubdate>11 Décembre 2013</time>
+		<!--<footer class="entry-meta">
+			Posté le <time class="entry-date" datetime="22-02-2013" pubdate>22 Février 2013</time>
 			par <span class="author vcard">Admin</span>
-		</footer>
+		</footer>-->
 
-	</article> <!-- .post.hentry -->
+
+	<!--</article> -->
+<!-- .post.hentry -->
 </div> <!-- #content -->
 
 <div id="sidebar" role="complementary" class="span4">
@@ -122,7 +129,7 @@
 	<% if (username == null) { %>
 		<% if (InfoInscription != null) {%>
 			<div id="subscribtionAlert" class="alert-error" style="font-size: 20px;">
-				Erreur : <%=InfoInscription %> déjà utilisé !
+				<%=InfoInscription %> déjà utilisé !
 			</div>
 		<% } %>
 		<% if (usernameInscription != null){ %>
@@ -133,7 +140,7 @@
 			<!-- Subscription form -->
 			<form id="SubscribeForm" name="SubscribeForm" class="subscribeform" method="POST" action="/">
 				<input type="hidden" name="_method" value="PUT">
-				<h2 align=center>Venez creuser votre tombe !</h2>
+				<h2 align=center>Pas encore inscrit ?<br>Viens creuser ta tombe !</h2>
 				<input type="text" id="PseudoSubscribe" placeholder="Pseudo" name="username"value="" required="">
 				<input type="password" id="PasswordSubscribe" placeholder="Mot de passe" name="password" value="" required="">
 				<input type="email" id="EmailSubscribe" placeholder="E-mail" name="email" value="" required="">
@@ -141,7 +148,7 @@
 			</form>
 		<% } %>
 	<% } else { %>
-		<img src="/view/images/zombie.jpg"/>
+		
 	<% } %>
 </div> <!-- #sidebar -->
 
@@ -160,12 +167,13 @@
 	
 	<form style="display:none;" id="LogoutForm" class="logoutform" action="/" method=POST>
 		<input type="hidden"name="_method" value="delete"/>
-		<input type="submit" value="Retourner chez les vivants ?" align=right>
+		<input type="submit" value="Retour chez les vivants ?!" align=right>
 	</form>
 	
 	<script>
 		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-		var socket = io.connect('http://localhost:443');
+		//var socket = io.connect('http://192.168.0.24:25536');
+		var socket = io.connect('http://localhost:25536');
 		
 		<% if(sessionID) { %>
 			$( document ).ready(function()

@@ -1,6 +1,7 @@
 // includes
-var oUtilisateur = require('../model/Object/Utilisateur');
+var oUtilisateur = require('../model/object/Utilisateur');
 var oUtilisateur_BD = require('../persistance/Utilisateur_BD');
+var EventLog    = require('../model/EventLog');
 
 //inclusion des règles
 var GameRules	= require('../model/GameRules');
@@ -27,12 +28,12 @@ Utilisateur_Manager.Load = function()
 			{
 				if(reponse == -1 || reponse == -2)
 				{
-					console.log("/!\ UTILISATEUR_MANAGER : Erreur ecriture pour l'id user " + id);
+					EventLog.error("/!\ UTILISATEUR_MANAGER : Erreur ecriture pour l'id user " + id);
 					context.listeUtilisateurs[id] = null;
 				}
 				else
 				{
-					//console.log("UTILISATEUR_MANAGER : user loaded : " + id);
+					//EventLog.log("UTILISATEUR_MANAGER : user loaded : " + id);
 					context.listeUtilisateurs[id] = reponse;
 				}
 			});
@@ -47,13 +48,13 @@ Utilisateur_Manager.LoadUser = function(idUser)
 	{
 		if(userReponse == -1 || userReponse == -2)
 		{
-			console.log("/!\ UTILISATEUR_MANAGER : Erreur ecriture pour l'id user " + IdReponse);
+			EventLog.error("/!\ UTILISATEUR_MANAGER : Erreur ecriture pour l'id user " + IdReponse);
 			context.listeUtilisateurs[IdReponse] = null;
 		}
 		else
 		{
-			console.log("IdReponse = " + IdReponse);
-			console.log("userReponse = " + userReponse);
+			EventLog.log("IdReponse = " + IdReponse);
+			EventLog.log("userReponse = " + userReponse);
 			context.listeUtilisateurs[IdReponse] = userReponse;
 			
 		}
@@ -102,7 +103,7 @@ Utilisateur_Manager.GetNumEquipe = function(idUser)
 	}
 	catch(err)
 	{
-		console.log("/!\ ERREUR ! UTILISATEUR_MANAGER : GetNumEquipe : " + err);
+		EventLog.error("/!\ ERREUR ! UTILISATEUR_MANAGER : GetNumEquipe : " + err);
 		return -1;
 	}
 },
@@ -126,7 +127,7 @@ Utilisateur_Manager.findIdUser = function(idPersonnage)
 {
 	for(var i in this.listeUtilisateurs)
 	{
-		console.log(this.listeUtilisateurs[i].getIdPersonnage() + " == " + idPersonnage);
+		EventLog.log(this.listeUtilisateurs[i].getIdPersonnage() + " == " + idPersonnage);
 		if(this.listeUtilisateurs[i].getIdPersonnage() == idPersonnage)
 		{
 			return i;
@@ -177,11 +178,11 @@ Utilisateur_Manager.Save = function()
 		{
 			if (reponse == -1)
 			{
-				console.log("/!\ UTILISATEUR_MANAGER : erreur ecriture de l'user " + idUser);
+				EventLog.error("/!\ UTILISATEUR_MANAGER : erreur ecriture de l'user " + idUser);
 			}
 			else
 			{
-				//console.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " OK !");
+				//EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " OK !");
 			}
 		});
 	}

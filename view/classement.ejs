@@ -12,7 +12,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 	<!-- Put your title here! -->
-	<title>Classement</title>
+	<title>Classement - Zomb'IstiA</title>
 
 	<meta name="description" content="">
 
@@ -43,8 +43,8 @@
 	<header id="master-header" class="clearfix" role="banner">
 
 		<hgroup>
-			<h1 id="site-title"><a href="/" title="">Ei4 Proj3ct</a></h1>
-			<h2 id="site-description">Bienvenue dans votre tombeau !</h2>
+			<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
+			<h2 id="site-description">C'est qui les meilleurs ?!</h2>
 		</hgroup>
 
 	</header> <!-- #master-header -->
@@ -126,7 +126,8 @@
 
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:443');
+			//var socket = io.connect('http://192.168.0.24:25536');
+			var socket = io.connect('http://localhost:25536');
 				
 			$( document ).ready(function()
 			{

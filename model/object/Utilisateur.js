@@ -6,6 +6,7 @@
 
 //inclusion des règles
 var GameRules	= require('../GameRules');
+var EventLog    = require('../EventLog');
 
 var Utilisateur = (function() {
 	'use strict';

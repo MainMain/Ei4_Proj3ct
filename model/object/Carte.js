@@ -3,6 +3,8 @@
  * 
  * @class Carte
  */
+ 
+ var EventLog    = require('../EventLog');
 function Carte() {
 	if (false === (this instanceof Carte)) {
 		return new Carte();
@@ -29,7 +31,7 @@ Carte.Initialiser = function(largeur, hauteur) {
 	this.largeur = largeur;
 	this.hauteur = hauteur;
 	
-	console.log("CARTE : Initialisation carte. hauteur = "+hauteur+" - largeur = "+largeur);
+	EventLog.log("CARTE : Initialisation carte. hauteur = "+hauteur+" - largeur = "+largeur);
 	this.matrice = new Array(hauteur);
 	for (i=0; i < hauteur; i++)
 	{
@@ -71,10 +73,10 @@ Carte.Initialiser = function(largeur, hauteur) {
 	this.matrice[16]=([-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]);
 	/**/
 	
-	console.log("CARTE : Construction de la matrice ...ok");
-	//console.log(this.matrice);
+	EventLog.log("CARTE : Construction de la matrice ...ok");
+	//EventLog.log(this.matrice);
 	
-	//console.log("CARTE : " + this.matrice);
+	//EventLog.log("CARTE : " + this.matrice);
 	
 	// récupérer la matrice de la BD
 	/*this.matrice = [];
@@ -95,12 +97,12 @@ Carte.Initialiser = function(largeur, hauteur) {
 Carte.GetIdSalleByCoord = function(x, y) {
 	try 
 	{
-		//console.log("CARTE : DEBUG GetIdSalleByCoord : x = " + x + " y = " + y + " id = " + this.matrice[x][y]);
+		//EventLog.log("CARTE : DEBUG GetIdSalleByCoord : x = " + x + " y = " + y + " id = " + this.matrice[x][y]);
 		return this.matrice[x][y];
 	} 
 	catch (err) 
 	{
-		console.log("/!\ ERREUR : CARTE :  DEBUG GetIdSalleByCoord : x = " + x + " y = " + y + " id = NULL ");
+		EventLog.error("/!\ ERREUR : CARTE :  DEBUG GetIdSalleByCoord : x = " + x + " y = " + y + " id = NULL ");
 		return -1;
 	}
 },
@@ -117,19 +119,19 @@ Carte.GetCoordSalleById = function(idSalle)
 	{
 		for (var j = 0; j < this.largeur; j++) 
 		{
-			//console.log("[i="+i+";j="+j+"]");
+			//EventLog.log("[i="+i+";j="+j+"]");
 			// si on arrive a bon port
 			if (this.matrice[i][j] == idSalle)
 			{
 				// on récupère les coordonnées
 				var tuple = {x : i, y : j };
-				console.log("CARTE : GetCoordSalleById : ");
-				console.log(tuple);
+				EventLog.log("CARTE : GetCoordSalleById : ");
+				EventLog.log(tuple);
 				return tuple;
 			}
 		}
 	}
-	console.log("/!\ CARTE : GetCoordSalleById() : id " + idSalle + " non trouvé !");
+	EventLog.error("/!\ CARTE : GetCoordSalleById() : id " + idSalle + " non trouvé !");
 	return null;
 },
 
@@ -145,7 +147,7 @@ Carte.GetIdSalleSuivante = function(idSalleEnCours, direction) {
 	}
 	// récupère les coordonnées de la position en cours
 	var tuple = this.GetCoordSalleById(idSalleEnCours);
-	console.log("CARTE : DEBUG GetIdSalleSuivante : x = " + tuple.x + " y = " + tuple.y + " direction = " + direction);
+	EventLog.log("CARTE : DEBUG GetIdSalleSuivante : x = " + tuple.x + " y = " + tuple.y + " direction = " + direction);
 	var i = 1;
 	if (direction.toUpperCase() == 'NORD') 
 	{
@@ -179,7 +181,7 @@ Carte.GetIdSalleSuivante = function(idSalleEnCours, direction) {
 		}
 		return this.GetIdSalleByCoord(tuple.x, tuple.y - i);
 	}
-	console.log("## WARNING ## CARTE :: return -1 (Carte.js)");
+	EventLog.log("## WARNING ## CARTE :: return -1 (Carte.js)");
 	return -1;
 };
 

@@ -3,6 +3,8 @@
  * 
  * @class Case
  */
+var EventLog    = require('../EventLog');
+
 var Case = (function() {
 	'use strict';
 
@@ -53,11 +55,11 @@ var Case = (function() {
 					if (this.listeItem[i].id == item.id) itemTrouve = true; 
 				}
 			if (itemTrouve) {
-				console.log("CASE : L'objet (" + item.id + " - " + item.nom
+				EventLog.log("CASE : L'objet (" + item.id + " - " + item.nom
 						+ ") est bien dans la case ! " + this.nom);
 				return true;
 			} else {
-				console.log("CASE : WARNING : L'objet (" + item.id + " - "
+				EventLog.log("CASE : WARNING : L'objet (" + item.id + " - "
 						+ item.nom + ") n'est pas dans la case ! " + this.nom);
 				return false;
 			}
@@ -71,7 +73,7 @@ var Case = (function() {
 		ajouterItem : function(item)
 		{
 			this.listeItem.push(item);
-			console.log("CASE : Ajout de l'item " + item.nom + " a la case " + this.nom);
+			EventLog.log("CASE : Ajout de l'item " + item.nom + " a la case " + this.nom);
 			//this.logAfficherItems();
 		},
 
@@ -83,7 +85,7 @@ var Case = (function() {
 		 * @method supprimerItem
 		 */
 		supprimerItem : function(item) {
-			console.log("CASE : suppression de l'objet " + item.nom
+			EventLog.log("CASE : suppression de l'objet " + item.nom
 					+ " de la case " + this.nom);
 			//this.logAfficherItems();
 			var index;
@@ -119,13 +121,13 @@ var Case = (function() {
 		 * SALLE
 		 */
 		logAfficherItems : function() {
-			console.log("CASE : ****** AFFICHAGE OBJET CASE " + this.nom
+			EventLog.log("CASE : ****** AFFICHAGE OBJET CASE " + this.nom
 					+ " *********");
 			for (var i = 0; i < this.listeItem.length; i++) {
-				console.log("CASE : Objet id = " + this.listeItem[i].id + " - "
+				EventLog.log("CASE : Objet id = " + this.listeItem[i].id + " - "
 						+ this.listeItem[i].nom);
 			}
-			console.log("CASE : *********************************");
+			EventLog.log("CASE : *********************************");
 		},
 	};
 

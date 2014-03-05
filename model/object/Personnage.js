@@ -1,4 +1,5 @@
 var oCarte = require('../../model/object/Carte');
+var EventLog    = require('../EventLog');
 
 //inclusion des règles
 var GameRules	= require('../../model/GameRules');
@@ -50,7 +51,6 @@ var Personnage = (function() {
 			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg) 
 	{
 		// --- Attributs d'instance
-				console.log("1");
 		this.id 				= id;
 		this.ptSante			= ptSante;
 		this.ptSanteMax 		= ptSanteMax;
@@ -100,8 +100,8 @@ var Personnage = (function() {
 				this.ptActionMax		= 40;
 				this.multiPtsAttaque	= 1;
 				this.multiPtsDefense	= 0.3;
-				this.multiProbaCache	= 1;
-				this.multiProbaFouille	= 3;
+				this.multiProbaCache	= 3;
+				this.multiProbaFouille	= 1;
 				this.goulesMax			= 5;
 			}
 			else if(this.competence == "chercheur")
@@ -111,8 +111,8 @@ var Personnage = (function() {
 				this.ptActionMax		= 50;
 				this.multiPtsAttaque	= 0.5;
 				this.multiPtsDefense	= 1.5;
-				this.multiProbaCache	= 3;
-				this.multiProbaFouille	= 0.5;
+				this.multiProbaCache	= 1;
+				this.multiProbaFouille	= 2;
 				this.goulesMax			= 3;
 			}
 		},
@@ -190,15 +190,15 @@ var Personnage = (function() {
 		 * 
 		 * @method deplacement
 		 */
-		deplacement : function(direction, nbrGoules, idZoneSureEnnemi)
+		deplacement : function(direction, nbrGoules, idsZoneSureEnnemi)
 		{
 			
-			console.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
+			EventLog.log("PERSONNAGE : Essai déplacement ! id salle en cours : " + this.idSalleEnCours);
 			
 			// si pu de pts de mouvement, on peut s'arreter là
 			if (this.ptDeplacement <= 0)
 			{
-				//console.log("PERSONNAGE : pu de pts de déplacement !");
+				//EventLog.log("PERSONNAGE : pu de pts de déplacement !");
 				return -2;
 			}
 			
@@ -224,18 +224,18 @@ var Personnage = (function() {
 			
 			// recupere l'id de la salle suivante
 			var ansIdSalle = oCarte.GetIdSalleSuivante(this.idSalleEnCours, direction);
-			console.log(">> PERSONNAGE : DEPLACEMENT : idCaseRecu : " + ansIdSalle);
+			EventLog.log(">> PERSONNAGE : DEPLACEMENT : idCaseRecu : " + ansIdSalle);
 			
 			// si id de la salle -1, pas de salle dans la direction
 			if (ansIdSalle == -1)
 			{
-				//console.log("PERSONNAGE : Déplacement impossible ! ");
+				//EventLog.log("PERSONNAGE : Déplacement impossible ! ");
 				return -1;
 			} 
 			
-			if(ansIdSalle == idZoneSureEnnemi)
+			if(ansIdSalle == idsZoneSureEnnemi[0] || ansIdSalle == idsZoneSureEnnemi[1])
 			{
-				console.log("PERSONNAGE : Déplacement impossible ! Zone sure Ennemi");
+				EventLog.log("PERSONNAGE : Déplacement impossible ! Zone sure Ennemi");
 				return -4;
 			}
 			
@@ -252,7 +252,7 @@ var Personnage = (function() {
 			// on gère son dernier mouvement
 			this.dernierMvt = direction;
 			
-			console.log("PERSONNAGE : Deplacement ok ! id salle en cours : " + this.idSalleEnCours);
+			EventLog.log("PERSONNAGE : Deplacement ok ! id salle en cours : " + this.idSalleEnCours);
 			// return
 			return this.idSalleEnCours;
 		},
@@ -285,7 +285,7 @@ var Personnage = (function() {
 			try
 			{
 				var idSousCase = 0;
-				//console.log(">>>>>>>>>>> " + this.idSalleEnCours);
+				//EventLog.log(">>>>>>>>>>> " + this.idSalleEnCours);
 				var idCaseBrut = this.idSalleEnCours;
 				var tab;
 				try
@@ -335,37 +335,32 @@ var Personnage = (function() {
 		 */
 		supprimerDuSac : function(item)
 		{
-			//console.log("PERSONNAGE : suppression de l'item " + item.nom
+			//EventLog.log("PERSONNAGE : suppression de l'item " + item.nom
 					//+ " du personnage " + this.id);
 			this.logAfficherSacADos();
-			var index;
-			for (var i = 0; i < this.sacADos.length; i++) {
+			for (var i = 0; i < this.sacADos.length; i++) 
+			{
 				if (this.sacADos[i].id == item.id) 
 				{
-					index = i;
-					
 					// si c'est l'arme équipe
-					console.log("---------------> RETRAIT DE L'ITEM " + this.sacADos[i].id);
-					if (this.armeEquipee != null) console.log("---------------> id arme " + this.armeEquipee.id);
-					if (this.armureEquipee != null) console.log("---------------> id armure " + this.armureEquipee.id);
+					EventLog.log("---------------> RETRAIT DE L'ITEM " + this.sacADos[i].id);
+					if (this.armeEquipee != null) EventLog.log("---------------> id arme " + this.armeEquipee.id);
+					if (this.armureEquipee != null) EventLog.log("---------------> id armure " + this.armureEquipee.id);
 					
-					if (this.armeEquipee != null && this.sacADos[i].id == this.armeEquipee.id)
-						this.armeEquipee = null;
-					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id)
-						this.armureEquipee = null;
-					
-					
+					if (this.armeEquipee != null   && this.sacADos[i].id == this.armeEquipee.id) 	this.armeEquipee = null;
+					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id) 	this.armureEquipee = null;
 					break;
 				}
 			}
 			// index = index - 1;
-			//console.log("CASE : DEBUG index : " + index);
+			//EventLog.log("CASE : DEBUG index : " + index);
 			this.sacADos.splice(i, 1);
 			this.logAfficherSacADos();
 		},
 		
 		subirDegats : function(degats)
 		{
+			
 			degats -= this.getValeurArmure();
 			
 			// si en mode defense
@@ -383,6 +378,7 @@ var Personnage = (function() {
 			
 			if (this.ptSante < 0) this.ptSante = 0;
 			
+			EventLog.log(">>> PERSONNAGE : subirDegats -> degats recus = " + degats +" degats réels = " + degats);
 			return degats;
 		},
 		
@@ -397,7 +393,7 @@ var Personnage = (function() {
 		
 		acquitterMsg : function()
 		{
-			console.log("PERSONNAGE : Acquittement des messages ! ");
+			EventLog.log("PERSONNAGE : Acquittement des messages ! ");
 			this.nbrNvMsg = 0;
  		},
 		
@@ -497,12 +493,12 @@ var Personnage = (function() {
 		 * FONCTION POUR AFFICHER DANS LA CONSOLE LA LISTE DES OBJETS DE DU SAC
 		 */
 		logAfficherSacADos : function() {
-			//console.log("PERSONNAGE : ****** AFFICHAGE OBJET PERSONNAGE :  "+ this.sacADos.length + " du perso : " + this.id + " *********");
+			//EventLog.log("PERSONNAGE : ****** AFFICHAGE OBJET PERSONNAGE :  "+ this.sacADos.length + " du perso : " + this.id + " *********");
 			for (var i = 0; i < this.sacADos.length; i++)
 			{
-				//console.log("PERSONNAGE : Objet id = " + this.sacADos[i].id+ " - " + this.sacADos[i].nom);
+				//EventLog.log("PERSONNAGE : Objet id = " + this.sacADos[i].id+ " - " + this.sacADos[i].nom);
 			}
-			//console.log("PERSONNAGE : *********************************");
+			//EventLog.log("PERSONNAGE : *********************************");
 		},
 
 		getValeurAttaque : function()
@@ -539,7 +535,7 @@ var Personnage = (function() {
 		
 		changerMode : function(mode)
 		{
-			console.log("PERSONNAGE : passage en mode " + mode);
+			EventLog.log("PERSONNAGE : passage en mode " + mode);
 			if(mode == 3)
 			{
 				this.ptAction -= GameRules.coutPA_ChgtMode_def();
@@ -571,7 +567,7 @@ var Personnage = (function() {
 				return -2;
 			
 			// force le passage à  1
-			//console.log("P : last mvt : " + this.dernierMvt);
+			//EventLog.log("P : last mvt : " + this.dernierMvt);
 			if (
 					direction == "OUEST" && this.dernierMvt == "EST" ||
 					direction == "EST" && this.dernierMvt == "OUEST" ||
@@ -605,11 +601,11 @@ var Personnage = (function() {
 			{
 				if (this.sacADos[i].id == item.id)
 				{
-					//console.log("PERSONNAGE : L'item (" + item.id + " - " + item.nom + ") est bien dans le sac  du perso " + this.id);
+					//EventLog.log("PERSONNAGE : L'item (" + item.id + " - " + item.nom + ") est bien dans le sac  du perso " + this.id);
 					return true;
 				}
 			}
-			//console.log("PERSONNAGE : WARNING : L'item - id = " + item.id + " - " + item.nom + " - n'est pas dans le sac du perso  "+ this.id);
+			//EventLog.log("PERSONNAGE : WARNING : L'item - id = " + item.id + " - " + item.nom + " - n'est pas dans le sac du perso  "+ this.id);
 			return false;
 		},
 
@@ -674,7 +670,7 @@ var Personnage = (function() {
 		{
 			var type = parseInt(item.type);
 			var valeur = parseInt(item.valeur);
-			console.log("PERSONNAGE : utiliser() : utilisation de l'item" + item.nom + " de type : " + type + " de valeur " + valeur);
+			EventLog.log("PERSONNAGE : utiliser() : utilisation de l'item" + item.nom + " de type : " + type + " de valeur " + valeur);
 			
 			if(!this.existItemInSac(item))
 			{
@@ -712,7 +708,11 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
-			console.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
+			// si le perso est mort, on n'ajoute pas le message
+			if (this.ptSante <= 0) return;
+			
+			EventLog.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
+
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
 				this.listeMsgAtt.push(msg);
@@ -726,7 +726,12 @@ var Personnage = (function() {
 			}
 			this.nbrNvMsg++;
 			
-			console.log("PERSONNAGE : Fin : Ajout d'un message : " + msg);
+			EventLog.log("PERSONNAGE : Fin   : Ajout d'un message : '" + msg + "'");
+		},
+		
+		ajouterMessageMort : function(pseudoMeurtrier)
+		{
+			this.listeMsgAtt.push(pseudoMeurtrier);
 		},
 		
 		effacerMessages : function(msg)
@@ -831,7 +836,7 @@ var Personnage = (function() {
 		 */
 		getPoidsSac : function() {
 			var poids = 0;
-			//console.log("PERSONNAGE : DEBUG : nombre d'objets dans sac "
+			//EventLog.log("PERSONNAGE : DEBUG : nombre d'objets dans sac "
 					//+ this.sacADos.length);
 			// calcule le poids du sac + poids item
 			var i = 0;
@@ -840,7 +845,7 @@ var Personnage = (function() {
 			}
 			// if (armeEquipee != null) poids += armeEquipee.poids;
 			// if (armureEquipee != null) poids += armeEquipee.poids;
-			//console.log("PERSONNAGE : Calcul du poids total du sac : " + poids);
+			//EventLog.log("PERSONNAGE : Calcul du poids total du sac : " + poids);
 			return parseInt(poids);
 		},
 
