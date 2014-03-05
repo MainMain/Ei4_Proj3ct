@@ -38,11 +38,8 @@
 		
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-<<<<<<< HEAD
-			var socket = io.connect('http://192.168.0.24:25536');
-=======
+			//var socket = io.connect('http://192.168.0.24:25536');
 			var socket = io.connect('http://localhost:25536');
->>>>>>> 98bab9ba550922f348170b829b8769d211e4d17b
 			
 			$( document ).ready(function()
 			{
@@ -167,7 +164,7 @@
 			<div id="content" role="main" class="span12">
 				<% if(idEquipe == 0 || !isUpToDate) { %>
 					<h1>Bienvenue !</h1>
-					<% if(!isUpToDate) { %>
+					<% if(!isUpToDate && idEquipe != 0) { %>
 					<div class="alert-error" style="font-size: 20px;">
 						Erreur : Une nouvelle session a commencé depuis votre dernière connexion !
 					</div>

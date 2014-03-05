@@ -6,6 +6,7 @@
 
 //inclusion des règles
 var GameRules	= require('../../model/GameRules');
+var EventLog    = require('../EventLog');
 
 var Score = (function() {
 	'use strict';

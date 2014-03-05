@@ -5,6 +5,8 @@ var oItem_BD = require('../persistance/Item_BD'); // devra disparaitre a
 // terme...
 var mongoose = require('mongoose');
 var oDatabase = require('../model/database');
+var EventLog    = require('../model/EventLog');
+
 /**
  * CASE : COMMUNICATION SERVEUR <-> BD
  * 

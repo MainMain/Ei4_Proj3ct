@@ -82,7 +82,7 @@
 <div id="content" role="main" class="span12">
 	<p>
 	<% if(dateDebut) { %>
-		Session en cours : <%= dateDebut %> - <%= dateFin %>
+		Session <%= idSession %> : <%= dateDebut %> - <%= dateFin %>
 	<% } else {%>
 		Pas de session en cours !
 	<% }%>
@@ -158,15 +158,12 @@
 	
 	<script>
 		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-<<<<<<< HEAD
-		var socket = io.connect('http://192.168.0.24:25536');
-=======
+		//var socket = io.connect('http://192.168.0.24:25536');
 		var socket = io.connect('http://localhost:25536');
->>>>>>> 98bab9ba550922f348170b829b8769d211e4d17b
 		
 		$( document ).ready(function()
 		{
-			socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "admin");
+			socket.emit('INFO_USER_CS', '<%= idUser %>', '<%= username %>', "admin");
 		});
 		
 		socket.on('USERS_ADMIN_SC', function(listUsers)

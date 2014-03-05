@@ -3,6 +3,8 @@
  * 
  * @class Case
  */
+var EventLog    = require('../EventLog');
+
 var Case = (function() {
 	'use strict';
 
