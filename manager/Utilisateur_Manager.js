@@ -2,7 +2,6 @@
 var oUtilisateur = require('../model/Object/Utilisateur');
 var oUtilisateur_BD = require('../persistance/Utilisateur_BD');
 
-
 //inclusion des règles
 var GameRules	= require('../model/GameRules');
 
