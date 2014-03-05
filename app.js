@@ -1278,8 +1278,8 @@ io.sockets.on('connection', function (socket)
     socket.on('ACTION_ATTAQUE_GOULE_CS', function ()
 	{
 		oEventLog.log("******************* ACTION_ATTAQUE_GOULE_CS - EMETTEUR : " + pseudoUser +" ***********************");
-		try
-		{
+		//try
+		//{
 
     	oEventLog.log("******************** ATTAQUE DE GOULES *****************");
     	// délègue au manager
@@ -1318,11 +1318,11 @@ io.sockets.on('connection', function (socket)
 			ActualiserAllInCase();
 			
 */
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : ACTION_ATTAQUE_GOULE_CS : " + err);
-		}
+		//}
+    	//catch(err)
+		//{
+		//	oEventLog.error("/!\\ ERREUR : SERVEUR : ACTION_ATTAQUE_GOULE_CS : " + err);
+		//}
     });
     /*
      * 
@@ -1563,7 +1563,6 @@ io.sockets.on('connection', function (socket)
 			// si meme case ET si en ligne ET différent de l'user qui a crée l'event
 			if(idCase == idCasePerso && usersOnline[id] && !oPersonnage_Manager.estMort(id))
 			{
-				
 				// on récupère son indice de ss-case
 				var idSousCase = oPersonnage_Manager.GetIdSousCase(id);
 				// on récupère les infos sur les peros de la case
