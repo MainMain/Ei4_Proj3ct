@@ -190,17 +190,14 @@ app.get('/', function fonctionIndex(req, res)
 app.get('/admin', restrictAdmin, function fonctionAdmin(req, res)
 {
 	var s = req.session;
-	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
-
-try
-{	
-	options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
-	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-}
-catch(Err)
-{
-	oEventLog.error("Erreur acces admin : " + Err);
-}	
+	var options = { "username" : s.username, "idUser" : s.idUser, "dateDebut" : null, "dateFin" : null, "idSession" : null};
+	
+	if(oSession_Manager.getDateDebut() && oSession_Manager.getDateFin() && oSession_Manager.getIdSessionEnCours())
+	{
+		options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
+		options.dateFin = oSession_Manager.getDateFin().toLocaleString();
+		options.idSession = oSession_Manager.getIdSessionEnCours();
+	}
 	res.render('admin', options);
 }
 );
@@ -209,16 +206,15 @@ app.post('/admin', restrictAdmin, function fonctionAdmin(req, res)
 {
 	var s = req.session;
 	var idUser = req.param("idUser");
-	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
+	var options = { "username" : s.username, "idUser" : s.idUser, "dateDebut" : null, "dateFin" : null, "idSession" : null};
 	
-try
-{
-	options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
-	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-}
-catch(Err) {
-oEventLog.error("ERREUR ADMIN");
-}	
+	if(oSession_Manager.getDateDebut() && oSession_Manager.getDateFin() && oSession_Manager.getIdSessionEnCours())
+	{
+		options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
+		options.dateFin = oSession_Manager.getDateFin().toLocaleString();
+		options.idSession = oSession_Manager.getIdSessionEnCours();
+	}
+	
 	oPersonnage_Manager.deletePerso(idUser);
 	
 	if(usersOnline[idUser])
@@ -239,17 +235,15 @@ app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
 	var year	= parseInt(req.param("year"));
 	var month	= parseInt(req.param("month"));
 	var day		= parseInt(req.param("day"));
-	var options = { "username" : s.username, "sessionID" : s.idUser, "dateDebut" : null, "dateFin" : null};
-
-try
-{	
-	options.dateDebut = oSession_Manager.getDateDebut().toTimeString();
-	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-}
-catch(Err)
-{
-	oEventLog.error("Erreur zone admin : " + Err);
-}	
+	var options = { "username" : s.username, "idUser" : s.idUser, "dateDebut" : null, "dateFin" : null, "idSession" : null};
+	
+	if(oSession_Manager.getDateDebut() && oSession_Manager.getDateFin() && oSession_Manager.getIdSessionEnCours())
+	{
+		options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
+		options.dateFin = oSession_Manager.getDateFin().toLocaleString();
+		options.idSession = oSession_Manager.getIdSessionEnCours();
+	}
+	
 	var date = new Date(year, month, day, 0, 0, 0, 0);
 	
 	switch(action)

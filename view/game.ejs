@@ -164,7 +164,7 @@
 			<div id="content" role="main" class="span12">
 				<% if(idEquipe == 0 || !isUpToDate) { %>
 					<h1>Bienvenue !</h1>
-					<% if(!isUpToDate) { %>
+					<% if(!isUpToDate && idEquipe != 0) { %>
 					<div class="alert-error" style="font-size: 20px;">
 						Erreur : Une nouvelle session a commencé depuis votre dernière connexion !
 					</div>
