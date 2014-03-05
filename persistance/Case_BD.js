@@ -217,7 +217,7 @@ Case_BD.Initialiser = function(callBack)
 						var listeItems = new Array();
 						for (var i = 6; i < infosCase.length; i++)
 						{
-							listeItems.push(oItem_BD.GetItemById(infosCase[7]));
+							listeItems.push(oItem_BD.GetItemById(infosCase[i]));
 						}
 						newCase.listeItem	= listeItems;
 						
