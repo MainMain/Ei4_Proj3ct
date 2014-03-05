@@ -74,6 +74,7 @@ Case_Manager.SupprimerItem = function(idCase, item)
 Case_Manager.RemplirCases = function()
 {
 	// =>rempli aléatoirement les cases d'items
+	EventLog.log("CASE_MANAGER : RemplirCases()");
 	
 	var nbrItems;
 	// pour chaque case

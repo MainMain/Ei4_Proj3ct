@@ -1639,6 +1639,8 @@ function SauvegardeGlobale()
 			var idSousSalle = oPersonnage_Manager.GetIdSousCase(id);
 			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
 			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdCase(id)), res.nbrAllies, res.nbrEnnemis, idSousSalle);
+			// prévenir les joueurs de l'attaque de la nuit
+			usersOnline[id].sockets[j].emit('ATTAQUE_NUIT_SC');
 		}
 	}
 }

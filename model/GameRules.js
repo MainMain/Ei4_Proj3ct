@@ -37,11 +37,11 @@ GameRules.combat_proba_perdreItem = function() 				{ return (Math.floor(Math.ran
 
 // ********** CONFIGURATION DES GOULES **********
 //minimun de goules qui spawn dans chaque case par jour
-GameRules.goules_RespawnMin = function() 					{ return 2; }, 
+GameRules.goules_RespawnMin = function() 					{ return 0; }, 
 //maximun de goules qui spawn dans chaque case par jour
-GameRules.goules_RespawnMax = function() 					{ return 10;}, 
+GameRules.goules_RespawnMax = function() 					{ return 3; }, 
 // calcul un nbr aléatoire de nombre de goule
-GameRules.goules_nbrNouvellesGoules = function()			{ return (Math.floor(Math.random() * (10-2) + 2 ));},
+GameRules.goules_nbrNouvellesGoules = function()			{ return (Math.floor(Math.random() * (3-0) + 0 ));},
 //minimun de pts d'attaque par goules
 GameRules.goules_PtsAttaqueMin = function() 				{ return 3; },
 //maximun de pts d'attaque par goules
