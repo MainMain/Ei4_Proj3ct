@@ -37,4 +37,4 @@
 36-Amphi A-Ce tres grand endroit donne la chair de poule, il a du se passer des choses terribles ici !-30-60-20-304-304-305-308-302
 37-Toilettes Amphi A-Que dire de cet endroit ? Ce n'est pas les egouts ?-0-0-1
 38-?-Tiens, il y a une salle ici ? O_o-20-20-2
-39-Salle cachee de l'Amphi A-Cette salle est certes petite, mais precieuse !-5-0-1-306-306-307-307
+39-Salle cachee de l'Amphi A-Cette salle est certes petite, mais precieuse !-5-0-1-307-307-307-307-
