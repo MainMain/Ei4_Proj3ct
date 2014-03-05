@@ -64,7 +64,7 @@ var ColorLabel = "#fff";
 var ColorLabelBonus = "#008000";
 
 // Police du label de la page de mort
-var _policeLabelMort="30px monospace";
+var _policeLabelMort="30px Consolas";
 var _colorLabelMort="#FFFFFF";
 var _colorLabelHeureMort="#000000";
 
@@ -289,7 +289,7 @@ var _contInfoCaseH = _hauteurCanvas-530;
 var labelAction, labelObjetCase, labelInventaire, labelDescribeItem,
 labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
 labelBonusArme, labelBonusArmure, labelIdSalle, labelNbAllies, labelNbEnnemis,
-labelNbGoules, labelProbaCache, labelProbaFouille,
+labelNbGoules, labelProbaCache, labelProbaFouille, labelPourcentLoad,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim, 
 labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, 
 labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescribeCase,
@@ -298,9 +298,8 @@ labelLancementServeur, labelAction;
 //-------------- Déclaration des conteneurs----------------------------------------------
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
-contBtnsListes, contDead, contInfoCase,
-contBtnsInvPerso, contBtnsInvCase, contListe, contListeAllies, contListeEnnemis,
-contLabelsAction, contMessage;
+contBtnsListes, contDead, contInfoCase, contBtnsInvPerso, contBtnsInvCase, contListe,
+contListeAllies, contListeEnnemis, contLabelsAction, contMessage;
 
 //-------------- Déclaration des contours----------------------------------------------
 
@@ -541,14 +540,17 @@ function initialize() {
 	backgroundPreload.image.onload = setImg(backgroundPreload, 0, 0);
 	backgroundPreload.cursor="wait";
 
-	loadProgressLabel = new createjs.Text("","70px Infected","#850000");
+	loadProgressLabel = stage.addChild(new createjs.Text("","70px Infected","#850000"));
 	loadProgressLabel.lineWidth = 800;
 	loadProgressLabel.textAlign = "center";
 	//Centrer le label en x
 	//loadProgressLabel.x = canvas.width/2;
 	loadProgressLabel.x = canvas.width/2;
 	loadProgressLabel.y = canvas.height/2 - 80;
-	stage.addChild(loadProgressLabel);
+	
+	labelPourcentLoad= stage.addChild(new createjs.Text("","70px Consolas","#850000"));
+	labelPourcentLoad.x=loadProgressLabel.x +20;
+	labelPourcentLoad.y=loadProgressLabel.y+190;
 
 	loadingBarContainer = new createjs.Container();
 	loadingBarContainer.cursor="wait";
@@ -585,14 +587,15 @@ function handleProgress()
 	loadingBar.scaleX = preload.progress * loadingBarWidth;
 
 	progresPrecentage = Math.round(preload.progress*100);
-	loadProgressLabel.text =("Loading Apocalypse...\n\n\n " + progresPrecentage + " %");
+	loadProgressLabel.text =("Loading Apocalypse...\n\n\n\n" + progresPrecentage);
+	labelPourcentLoad.text=" %";
 
 	stage.update();
 }
 
 function handleComplete() 
 {
-
+	stage.removeChild(labelPourcentLoad);
 	backgroundPreload.cursor="pointer";
 	loadingBarContainer.cursor="pointer";
 
@@ -1564,14 +1567,19 @@ function dead(currentPerso)
 	});
 
 	var labelDeadByWho = contDead.addChild(new createjs.Text("", _policeLabelMort, _colorLabelMort));
+	
 	var labelDeadHour = contDead.addChild(new createjs.Text("", _policeLabelMort, _colorLabelHeureMort));
 	labelDeadHour.x = 450 ;
 	labelDeadHour.y = 175;
 	labelDeadHour.text="";
-	//alert(_listeMessages[0]);
+	
+	var labelItemsRestants = contDead.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelItemsRestants.x=60;
+	labelItemsRestants.y=contItemPersoDead.y+5;
+	labelItemsRestants.text="Items restants dans le sac :";
+	
 	var date = _listeMessages[0].split(" :");
 	//labelDeadHour.text=date[1];	
-
 	if (date[0]!=null && date[0] == "Z")
 	{
 		causeDeLaMort="Un zombie rôdant dans la salle vous a dévoré !";
@@ -1582,7 +1590,7 @@ function dead(currentPerso)
 	}
 	else if(date[0]!=null && date[0] == "F")
 	{
-		causeDeLaMort="Vous êtes mort de faim!";
+		causeDeLaMort="Vous êtes mort de faim !";
 	}
 	else if(date[0]!=null && date[0]!="Z" && date[0]!="N" && date[0]!="F")
 	{
@@ -1595,9 +1603,6 @@ function dead(currentPerso)
 
 	//labelDeadByWho.lineHeight = _LineHeight;
 	//labelDeadByWho.textBaseline = _TextBaseline;
-	labelDeadByWho.x = 20 ;
-	labelDeadByWho.y = 20;
-	labelDeadByWho.text=causeDeLaMort;
 
 	// Bouton ANNULER
 	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Revivre.png");
@@ -1611,7 +1616,7 @@ function dead(currentPerso)
 	});
 
 	BtnCancelDead.cursor="pointer";
-
+	
 	// tableau qui contient toutes les listes d'objets
 	var TabListe=new Array();
 

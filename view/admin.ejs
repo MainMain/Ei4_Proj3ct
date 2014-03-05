@@ -82,7 +82,7 @@
 <div id="content" role="main" class="span12">
 	<p>
 	<% if(dateDebut) { %>
-		Session en cours : <%= dateDebut %> - <%= dateFin %>
+		Session <%= idSession %> : <%= dateDebut %> - <%= dateFin %>
 	<% } else {%>
 		Pas de session en cours !
 	<% }%>
@@ -163,7 +163,7 @@
 		
 		$( document ).ready(function()
 		{
-			socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "admin");
+			socket.emit('INFO_USER_CS', '<%= idUser %>', '<%= username %>', "admin");
 		});
 		
 		socket.on('USERS_ADMIN_SC', function(listUsers)
