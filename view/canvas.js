@@ -356,6 +356,7 @@ function initialize() {
 	                {src:"public/Background_1.jpg", id:"idBackground_1"}, 
 	                {src:"public/Background_11.jpg", id:"idBackground_11"},  
 	                {src:"public/Background_Dead.jpg", id:"idBackground_Dead"},
+	                {src:"public/Background_Nuit.jpg", id:"idBackground_Nuit"},
 	                {src:"public/blood.jpg", id:"idBackground_blood"}, 
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
 	                {src:"public/Boutons/Attaquer.png", id:"idBtnAttaquer"},
@@ -398,6 +399,7 @@ function initialize() {
 	                {src:"public/Boutons/MessagesVide.png", id:"idBtnMessagesVide"},
 	                {src:"public/Boutons/MessagesGris.png", id:"idBtnMessagesGris"},
 	                {src:"public/Boutons/Ok.png", id:"idBtnOk"},
+	                {src:"public/Boutons/Vivant.png", id:"idBtnVivant"},
 	                {src:"public/spritesheets/persos/Brute64.png", id:"idPersoBrute64"},
 	                {src:"public/spritesheets/persos/Chercheur64.png", id:"idPersoChercheur64"},
 	                {src:"public/spritesheets/persos/Explorateur64.png", id:"idPersoExplorateur64"},
@@ -1514,6 +1516,37 @@ function liste()
 	stage.update();
 }
 
+function attaqueNuit()
+{
+	stage.removeAllChildren();
+	
+	contNuit = new createjs.Container();
+	contNuit.x = 0;
+	contNuit.y = 0;
+	contNuit.height = canvas.height;
+	contNuit.width = canvas.width;
+	stage.addChild(contNuit);
+	shapeNuit = new createjs.Shape();
+	stage.addChild(shapeNuit);
+	shapeNuit.graphics.setStrokeStyle(10).beginStroke("#009900").drawRect(
+			contNuit.x, contNuit.y, contNuit.width, contNuit.height);
+	
+	// Application du background qui va recouvrir le canvas
+	var background_nuit = new createjs.Bitmap("public/Background_Nuit.jpg");
+	contNuit.addChild(background_nuit);
+	
+	var BtnVivant = new createjs.Bitmap("public/Boutons/Vivant.png");
+	BtnVivant.x=40;
+	BtnVivant.y=560;
+	contNuit.addChild(BtnVivant);
+	BtnVivant.addEventListener('click', function (event) {
+		stage.removeChild(contNuit);
+		setPlateau();
+	});
+	
+	BtnVivant.cursor="pointer";
+}
+
 function dead(currentPerso) 
 {
 	stage.removeAllChildren();
@@ -1567,6 +1600,8 @@ function dead(currentPerso)
 	});
 
 	var labelDeadByWho = contDead.addChild(new createjs.Text("", _policeLabelMort, _colorLabelMort));
+	labelDeadByWho.x=20;
+	labelDeadByWho.y=20;
 	
 	var labelDeadHour = contDead.addChild(new createjs.Text("", _policeLabelMort, _colorLabelHeureMort));
 	labelDeadHour.x = 450 ;
@@ -1576,7 +1611,6 @@ function dead(currentPerso)
 	var labelItemsRestants = contDead.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelItemsRestants.x=60;
 	labelItemsRestants.y=contItemPersoDead.y+5;
-	labelItemsRestants.text="Items restants dans le sac :";
 	
 	var date = _listeMessages[0].split(" :");
 	//labelDeadHour.text=date[1];	
@@ -1600,14 +1634,16 @@ function dead(currentPerso)
 	{
 		causeDeLaMort="";
 	}
+	
+	labelDeadByWho.text=causeDeLaMort;
 
 	//labelDeadByWho.lineHeight = _LineHeight;
 	//labelDeadByWho.textBaseline = _TextBaseline;
 
 	// Bouton ANNULER
 	var BtnCancelDead = new createjs.Bitmap("public/Boutons/Revivre.png");
-	BtnCancelDead.x=960;
-	BtnCancelDead.y=570;
+	BtnCancelDead.x=940;
+	BtnCancelDead.y=560;
 	contDead.addChild(BtnCancelDead);
 	BtnCancelDead.addEventListener('click', function (event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
@@ -1617,48 +1653,8 @@ function dead(currentPerso)
 
 	BtnCancelDead.cursor="pointer";
 	
-	// tableau qui contient toutes les listes d'objets
-	var TabListe=new Array();
-
-	var Taille = Math.ceil(currentPerso.sacADos.length / 10);
-	var TailleFinListe =(currentPerso.sacADos.length % 10);
-
-	var iPositionItemInConteneur=0;
-
-	for (var j=0; j<Taille; j++)
-	{
-		var NewListe=new Array();
-
-		if(j==Taille-1 && TailleFinListe!=0)
-		{
-			//Boucle des items liste incomplète
-			for (var i=j*10; i<j*10+TailleFinListe; i++)
-			{
-				// mise de l'item dans une variable
-				var item = currentPerso.sacADos[i];
-
-				// ajout de l'item à la nouvelle liste
-				NewListe.push(item);
-			}
-			// ajout de la nouvelle liste au tableau de listes
-			TabListe.push(NewListe);  
-		}
-		else
-		{
-			//Boucle normale : creation nouvelle liste de 10 items max
-			for (var i=j*10; i<(j*10+10); i++)
-			{
-
-				// mise de l'item dans une variable
-				var item = currentPerso.sacADos[i];
-
-				// mise de l'item dans une variable
-				NewListe.push(item);
-			}
-			TabListe.push(NewListe);
-		}
-	}
-
+	var Taille=Math.ceil(currentPerso.sacADos.length / 10);
+	
 	if(PageItemPersoDead>Taille-1)
 	{
 		PageItemPersoDead=Taille-1;
@@ -1691,28 +1687,76 @@ function dead(currentPerso)
 		BtnPageItemPersoDeadLeft.visible=false;
 		BtnPageItemPersoDeadRight.visible=false;
 	}
-
-	try 
+	
+	if(currentPerso.sacADos[0]!=null)
 	{
-		// instructions à essayer
-		for (var i = 0; i < TabListe[PageItemPersoDead].length ; i++) 
+		labelItemsRestants.text="Items restants dans le sac :";
+		// tableau qui contient toutes les listes d'objets
+		var TabListe=new Array();
+		var TailleFinListe =(currentPerso.sacADos.length % 10);
+
+		var iPositionItemInConteneur=0;
+
+		for (var j=0; j<Taille; j++)
 		{
-			var Obj=TabListe[PageItemPersoDead][i];
+			var NewListe=new Array();
 
-			// Ajout de l'image à l'ihm
-			var imgItem = new createjs.Bitmap(Obj.imageName);
+			if(j==Taille-1 && TailleFinListe!=0)
+			{
+				//Boucle des items liste incomplète
+				for (var i=j*10; i<j*10+TailleFinListe; i++)
+				{
+					// mise de l'item dans une variable
+					var item = currentPerso.sacADos[i];
 
-			imgItem.x = (iPositionItemInConteneur * _spaceItem);
-			imgItem.y = 4;
-			contItemPersoDead.addChild(imgItem);
+					// ajout de l'item à la nouvelle liste
+					NewListe.push(item);
+				}
+				// ajout de la nouvelle liste au tableau de listes
+				TabListe.push(NewListe);  
+			}
+			else
+			{
+				//Boucle normale : creation nouvelle liste de 10 items max
+				for (var i=j*10; i<(j*10+10); i++)
+				{
 
-			// position de l'item dans le conteneur
-			iPositionItemInConteneur++;
+					// mise de l'item dans une variable
+					var item = currentPerso.sacADos[i];
+
+					// mise de l'item dans une variable
+					NewListe.push(item);
+				}
+				TabListe.push(NewListe);
+			}
 		}
-		stage.update();
+
+		try 
+		{
+			// instructions à essayer
+			for (var i = 0; i < TabListe[PageItemPersoDead].length ; i++) 
+			{
+				var Obj=TabListe[PageItemPersoDead][i];
+
+				// Ajout de l'image à l'ihm
+				var imgItem = new createjs.Bitmap(Obj.imageName);
+
+				imgItem.x = (iPositionItemInConteneur * _spaceItem);
+				imgItem.y = 4;
+				contItemPersoDead.addChild(imgItem);
+
+				// position de l'item dans le conteneur
+				iPositionItemInConteneur++;
+			}
+			stage.update();
+		}
+		catch(e){
+			//alert("Page inexistante");
+		}
 	}
-	catch(e){
-		//alert("Page inexistante");
+	else
+	{
+		labelItemsRestants.text="Votre sac est vide !";
 	}
 }
 
@@ -1837,7 +1881,6 @@ function setBtnAttaquer(x,y)
 
 function setContPerso()
 {
-
 	if(_selectedItemPerso!=-1 && _selectedItemPersoType>= 4 && _selectedItemPersoType <=7)
 	{
 		var BtnUtiliser = new createjs.Bitmap("public/Boutons/Consommer.png");
@@ -1937,7 +1980,6 @@ function setContPerso()
 	}
 	else
 	{
-
 		var BtnUtiliser = new createjs.Bitmap("public/Boutons/ConsommerGris.png");
 		BtnUtiliser.y=0;
 		contBtnsInvPerso.addChild(BtnUtiliser);
@@ -3222,8 +3264,6 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoul
 socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, ajouteAuSac, nbrEnnemisDecouverts, nbrGoulesA) 
 		{
 	setColorMsgRetour();
-	alert("ok");
-	//alert("reponse : " + reponse + "degats : " + degatsInfliges);
 	switch(reponse)
 	{
 	case  1 : 
@@ -3243,28 +3283,31 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		if(nbrEnnemisDecouverts==1)
 		{
 			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemi \ndécouvert !");
+			socket.emit('INFO_CASE_CS');
 		}
 		else if(nbrEnnemisDecouverts>1)
 		{
 			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemis \ndécouverts !");
+			socket.emit('INFO_CASE_CS');
 		}
 
 		if(degatsInfliges!=0)
 		{
 			labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
-		}
-
-		if(nbrGoulesA==1)
-		{
-			labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
-		}
-		else if(nbrGoulesA>1)
-		{
-			labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
+			if(nbrGoulesA==1)
+			{
+				labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
+			}
+			else if(nbrGoulesA>1)
+			{
+				labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
+			}
+			socket.emit('INFO_PERSONNAGE_CS');
 		}
 		break;
 	case  0 : 
 		labelAction.text = "Erreur interne";
+		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -1 : 
 		labelAction.text = "Fouille rapide ratée";
@@ -3283,6 +3326,7 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		{
 			labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
 		}
+		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -10 :
 		labelAction.text = "Points d'action \ninsuffisants !";
@@ -3905,6 +3949,11 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 	socket.emit('INFO_PERSONNAGE_CS');
 		});
 
+socket.on('ATTAQUE_NUIT_SC', function ()
+		{
+			attaqueNuit();
+		});
+
 socket.on('GET_DATE_SC', function (dateLancementSrv)
 		{
 	labelLancementServeur.text="";
@@ -3914,8 +3963,6 @@ socket.on('GET_DATE_SC', function (dateLancementSrv)
 	var heure = dateLancementSrv.substring(11,19);
 	labelLancementServeur.text="Le "+jour+"/"+mois+" à "+heure;
 		});
-
-
 
 //Creer bouton tout simple :
 //var BtnSaveBD = stage.addChild(new Button("SAVE BD", ColorBtn));
