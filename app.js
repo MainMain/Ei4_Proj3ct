@@ -192,9 +192,12 @@ app.get('/admin', restrictAdmin, function fonctionAdmin(req, res)
 	var s = req.session;
 	var options = { "username" : s.username, "idUser" : s.idUser, "dateDebut" : null, "dateFin" : null, "idSession" : null};
 	
-	options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
-	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-	options.idSession = oSession_Manager.getIdSessionEnCours();
+	if(oSession_Manager.getDateDebut() && oSession_Manager.getDateFin() && oSession_Manager.getIdSessionEnCours())
+	{
+		options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
+		options.dateFin = oSession_Manager.getDateFin().toLocaleString();
+		options.idSession = oSession_Manager.getIdSessionEnCours();
+	}
 	res.render('admin', options);
 }
 );
@@ -205,9 +208,12 @@ app.post('/admin', restrictAdmin, function fonctionAdmin(req, res)
 	var idUser = req.param("idUser");
 	var options = { "username" : s.username, "idUser" : s.idUser, "dateDebut" : null, "dateFin" : null, "idSession" : null};
 	
-	options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
-	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-	options.idSession = oSession_Manager.getIdSessionEnCours();
+	if(oSession_Manager.getDateDebut() && oSession_Manager.getDateFin() && oSession_Manager.getIdSessionEnCours())
+	{
+		options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
+		options.dateFin = oSession_Manager.getDateFin().toLocaleString();
+		options.idSession = oSession_Manager.getIdSessionEnCours();
+	}
 	
 	oPersonnage_Manager.deletePerso(idUser);
 	
@@ -231,9 +237,12 @@ app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
 	var day		= parseInt(req.param("day"));
 	var options = { "username" : s.username, "idUser" : s.idUser, "dateDebut" : null, "dateFin" : null, "idSession" : null};
 	
-	options.dateDebut = oSession_Manager.getDateDebut().toTimeString();
-	options.dateFin = oSession_Manager.getDateFin().toLocaleString();
-	options.idSession = oSession_Manager.getIdSessionEnCours();
+	if(oSession_Manager.getDateDebut() && oSession_Manager.getDateFin() && oSession_Manager.getIdSessionEnCours())
+	{
+		options.dateDebut = oSession_Manager.getDateDebut().toLocaleString();
+		options.dateFin = oSession_Manager.getDateFin().toLocaleString();
+		options.idSession = oSession_Manager.getIdSessionEnCours();
+	}
 	
 	var date = new Date(year, month, day, 0, 0, 0, 0);
 	
