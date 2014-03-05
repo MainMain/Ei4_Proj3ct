@@ -1565,6 +1565,7 @@ function dead(currentPerso)
 
 	var labelDeadByWho = contDead.addChild(new createjs.Text("", _policeLabelMort, _colorLabelMort));
 	var labelDeadHour = contDead.addChild(new createjs.Text("", _policeLabelMort, _colorLabelHeureMort));
+	var labelItemsRestants = contDead.addChild(new createjs.Text("", _policeLabel, _colorLabel));
 	labelDeadHour.x = 450 ;
 	labelDeadHour.y = 175;
 	labelDeadHour.text="";
@@ -1582,7 +1583,7 @@ function dead(currentPerso)
 	}
 	else if(date[0]!=null && date[0] == "F")
 	{
-		causeDeLaMort="Vous êtes mort de faim!";
+		causeDeLaMort="Vous êtes mort de faim !";
 	}
 	else if(date[0]!=null && date[0]!="Z" && date[0]!="N" && date[0]!="F")
 	{
@@ -1611,6 +1612,10 @@ function dead(currentPerso)
 	});
 
 	BtnCancelDead.cursor="pointer";
+	
+	labelItemsRestants.x=contItemPersoDead.x;
+	labelItemsRestants.y=contItemPersoDead.y-20;
+	labelItemsRestants.text="Items restants dans le sac :";
 
 	// tableau qui contient toutes les listes d'objets
 	var TabListe=new Array();
