@@ -57,7 +57,7 @@ GameRules.goules_proba_TuerDeuxGoules = function() 			{ return (Math.floor(Math.
 // différence max de nombre de joueurs entre les équipes
 GameRules.jeu_diffMaxEntreEquipes = function() 				{ return 3; }, 
 // temps de fouilles
-GameRules.jeu_duree_fouille = function() 					{ return 1000 * 5/*60 * 60*/ ; }, // 1 heure
+GameRules.jeu_duree_fouille = function() 					{ return 1000 *60 * 60 ; }, // 1 heure
 // Gain de score quand meurtre
 GameRules.jeu_score_gain_meurtre = function() 				{ return 5; }, 
 // Perte score quand tué

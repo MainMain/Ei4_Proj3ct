@@ -2400,7 +2400,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		ProbFouille=(currentCase.probaObjet * _persoProbaFouille);
 
 		labelIdSalle.text=("Case en cours : " + currentCase.nom + "");
-		labelNbAllies.text=("Alliés dans la salle : " + nbrAllies + "");
+		labelNbAllies.text=("Alliés dans la salle  : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %");

@@ -339,11 +339,11 @@ Personnage_Manager.Deplacement = function (idUser,  move)
 	
 	EventLog.log("PERSONNAGE_MANAGER : Réponse déplacement pour id " + idUser + " : " + reponse);
 	
-	if(reponse != -1)
+	// si deplacement ok
+	if (!( reponse <= -1))
 	{
-		// initialisation mode
+		// initialisation mode (arret fouille)
 		this.InitialiserMode(idUser);
-		return oCase_Manager.GetCopieCase(reponse);
 	}
 	
 	return reponse;
