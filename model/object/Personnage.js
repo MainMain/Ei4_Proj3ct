@@ -583,14 +583,23 @@ var Personnage = (function() {
 			}
 			else
 			{
-				var date = new Date();
-				var mois = parseInt(date.getMonth()) + 1;
-				var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
-				this.listeMsgAtt.push(str + " : " + msg + "\n");
+				//var date = new Date();
+				//var mois = parseInt(date.getMonth()) + 1;
+				//var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
+				this.listeMsgAtt.push(this.getDate() + " : " + msg + "\n");
 			}
 			this.nbrNvMsg++;
 			
 			EventLog.log("PERSONNAGE : Fin   : Ajout d'un message : '" + msg + "'");
+		},
+		
+		getDate : function()
+		{
+			var myDate = new Date();
+			var time = myDate.toLocaleTimeString();
+			var date = myDate.toDateString(); 
+			
+			return date +" - " + time;
 		},
 		
 		ajouterMessageMort : function(pseudoMeurtrier)

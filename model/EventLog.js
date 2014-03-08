@@ -19,8 +19,8 @@ function EventLog() {
 EventLog.log = function(event) 						
 {	
 
-	console.log(event );
-	fs.appendFile(this.file + '.log','code - '+event+'\n');
+	console.log(this.getDate() +" : "+event );
+	fs.appendFile(this.file + '.log',this.getDate() + ' - code - '+event+'\n');
 },
 
 EventLog.warning = function(event) 						
@@ -30,9 +30,9 @@ EventLog.warning = function(event)
 
 EventLog.error = function(event) 						
 { 
-	console.log("/!\\" + event);
-	fs.appendFile(this.file + '.log','code - '+event+'\n');
-	fs.appendFile(this.file + '.error','code - '+event+'\n');
+	console.log("/!\\ : "+ this.getDate() +" : " + event);
+	fs.appendFile(this.file + '.log', this.getDate() + ' - code - '+event+'\n');
+	fs.appendFile(this.file + '.error',this.getDate() + ' - code - '+event+'\n');
 
 },
 
@@ -44,14 +44,20 @@ EventLog.init = function()
 		fs.mkdir('./log');
 	}
 	
-	fs.open(this.file + '.log', 'w+', function(err, fd)
-	{
-	});
-	fs.open(this.file + '.error', 'w+', function(err, fd)
-	{
-	});
+	fs.open(this.file + '.log', 'w+', function(err, fd) { });
+	fs.open(this.file + '.error', 'w+', function(err, fd) { });
 	
-}
+},
+
+EventLog.getDate = function()
+{
+	var myDate = new Date();
+	var time = myDate.toLocaleTimeString();
+	var date = myDate.toDateString(); 
+	
+	return date +" - " + time;
+},
+
 
 // export
 module.exports = EventLog;
