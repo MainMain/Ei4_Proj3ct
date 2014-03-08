@@ -136,7 +136,7 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 		"actionOk" 	: true,
 	};
 	
-	EventLog.log(">> CASE_MANAGER : AttaqueDeGoules() : " + idCase);
+	EventLog.log(">> CASE_MANAGER : AttaqueDeGoules() : id Case : " + idCase);
 	// si pas de goules, on quitte 
 	try
 	{
@@ -172,7 +172,7 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 			"nbrGoulesA" : nbrGoulesAttaquantes,
 			"actionOk" 	: actionOk,
 		};
-		EventLog.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
+	EventLog.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
 	
 	}
 	catch(err)

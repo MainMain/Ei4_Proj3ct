@@ -933,12 +933,8 @@ io.sockets.on('connection', function (socket)
 		var currentItem = oItem_Manager.GetItem(id_item);
 		var reponse;
 		
-
-		oEventLog.log("*******************************************************");
-		
 		oEventLog.log("SERVEUR : INV_CASE_CS : Demande pour " + type + " l'item : " + id_item);
 
-		
 		// délègue au manager
 		reponse = oPersonnage_Manager.ramasserDeposer(idUser, type, currentItem);
 		
@@ -954,10 +950,6 @@ io.sockets.on('connection', function (socket)
 				if (type == "RAMASSER") InformerAllInCase("vient de ramasser cet item : " + currentItem.nom);
 				if (type == "DEPOSER")  InformerAllInCase("vient de déposer cet item : " + currentItem.nom);
 			}
-
-		
-		
-		oEventLog.log("*******************************************************");
 
 		//}
 		//catch(err)
@@ -1041,11 +1033,9 @@ io.sockets.on('connection', function (socket)
     socket.on('PERSONNAGE_USE_CS', function (id_item)
     {
     	oEventLog.log("******************* PERSONNAGE_USE_CS - EMETTEUR : " + pseudoUser +" ***********************");
+    	
     	//try
     	//{
-
-    	oEventLog.log("******************* UTILISER ***********************");
-
     	// délègue au manager et récupère le code retour
 		var reponse = oPersonnage_Manager.Utiliser(idUser, id_item);
 		
@@ -1054,10 +1044,8 @@ io.sockets.on('connection', function (socket)
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
 		//ActualiserAllInCase();
-		
 
 		oEventLog.log("SERVEUR : UTILISER - " + idUser +" - Item " + id_item + " - Code : " + reponse);
-		oEventLog.log("*******************************************************");
 
 		//}
 		//catch(err)
@@ -1095,9 +1083,6 @@ io.sockets.on('connection', function (socket)
 		//try
 		//{
 
-        oEventLog.log("*******************************************************");
-
-		
         // délègue au manager
         var reponse = oPersonnage_Manager.ChangementMode(idUser, mode);
 		
@@ -1154,10 +1139,6 @@ io.sockets.on('connection', function (socket)
     	//try
     	//{
 
-    		
-    	oEventLog.log("***************** FOUILLE RAPIDE ******************************");
-
-       
     	var reponse = oPersonnage_Manager.fouilleRapide(idUser);
     	
     	switch(reponse.codeRetour)
@@ -1191,7 +1172,6 @@ io.sockets.on('connection', function (socket)
     	}
 
     	oEventLog.log("SERVEUR : FOUILLE_RAPIDE - " + idUser +" - item découvert : " + reponse.itemDecouvert);
-    	oEventLog.log("***************************************************************");
 
     	//}
     	//catch(err)
@@ -1280,8 +1260,6 @@ io.sockets.on('connection', function (socket)
 		oEventLog.log("******************* ACTION_ATTAQUE_GOULE_CS - EMETTEUR : " + pseudoUser +" ***********************");
 		//try
 		//{
-
-    	oEventLog.log("******************** ATTAQUE DE GOULES *****************");
     	// délègue au manager
     	var reponseManager 			= oPersonnage_Manager.AttaquerGoule(idUser);
 		

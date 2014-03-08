@@ -2606,7 +2606,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	else
 	{
 		imgPerso = new createjs.Bitmap("public/spritesheets/persos/perso.gif");
-		classe="Pas de compétence"
+		classe="Pas de compétence";
 	}
 	contPerso.addChild(imgPerso);
 
