@@ -71,8 +71,8 @@ Session_Manager.demarrer = function(dateFin)
 			// attribuer l'id du dernier element + 1
 			context.idSessionEnCours = lastId + 1;
 			
-			EventLog.log("lastId : " + lastId);
-			EventLog.log("idSessionEnCours : " + context.idSessionEnCours);
+			EventLog.log("SESSION_MANAGER() : lastId : " + lastId);
+			EventLog.log("SESSION_MANAGER() : idSessionEnCours : " + context.idSessionEnCours);
 			
 			// attribuer les dates
 			context.dateDebut = today;
@@ -89,7 +89,7 @@ Session_Manager.demarrer = function(dateFin)
 
 Session_Manager.stopper = function()
 {
-	EventLog.log("STOP LE TABOUN DE MAMAK ET LALAK!");
+	EventLog.log("SESSION_MANAGER() : Stop session !");
 	this.idSessionEnCours = -1;
 	this.dateDebut = null;
 	this.dateFin = null;
@@ -121,10 +121,25 @@ Session_Manager.getIdSessionEnCours = function()
 Session_Manager.getDateDebut = function()
 {
 	return this.dateDebut;
-}
+},
 
 Session_Manager.getDateFin = function()
 {
 	return this.dateFin;
 },
+
+Session_Manager.getDatesSession = function(idSession)
+{
+	oSession_BD.GetSession(idSession, function(idSession, dateDebut, dateFin)
+	{
+		var struct = 
+		{
+			"dateDebut"	: dateDebut,
+			"dateFin" 	: dateFin,
+		};
+		
+		return struct;
+	});
+},
+
 module.exports = Session_Manager;

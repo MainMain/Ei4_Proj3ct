@@ -8,6 +8,9 @@ var hour = date.getHours();
 var minutes = date.getMinutes();
 
 var file = "";
+
+var myDate = new Date;
+
 //  Singleton
 function EventLog() {
 	if (false === (this instanceof EventLog)) {
@@ -25,12 +28,12 @@ EventLog.log = function(event)
 
 EventLog.warning = function(event) 						
 { 
-	console.log("/!\\" + event);
+	EventLog.error("/!\\" + event);
 },
 
 EventLog.error = function(event) 						
 { 
-	console.log("/!\\ : "+ this.getDate() +" : " + event);
+	console.error("/!\\ : "+ this.getDate() +" : " + event);
 	fs.appendFile(this.file + '.log', this.getDate() + ' - code - '+event+'\n');
 	fs.appendFile(this.file + '.error',this.getDate() + ' - code - '+event+'\n');
 
@@ -51,11 +54,18 @@ EventLog.init = function()
 
 EventLog.getDate = function()
 {
-	var myDate = new Date();
-	var time = myDate.toLocaleTimeString();
-	var date = myDate.toDateString(); 
+	//myDate = new Date();
+	//var time = myDate.toLocaleTimeString();
+	//var date = myDate.toDateString(); 
 	
-	return date +" - " + time;
+	try
+	{
+		return myDate.toLocaleTimeString() + " - " +  myDate.toDateString();
+	}
+	catch(e)
+	{
+		return "date : ";
+	}
 },
 
 

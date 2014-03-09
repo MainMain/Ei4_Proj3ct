@@ -12,7 +12,7 @@ function Session_BD() {
 Session_BD.GetLastSessionId = function(callback)
 {
 	var Sessionmodel = mongoose.model('Session'); 				
-	var tabId = new Array();
+	var id = 0;
 	
 	Sessionmodel.find({}, function(err, session)
 	{
@@ -22,9 +22,9 @@ Session_BD.GetLastSessionId = function(callback)
 		}
 		for(var i in session)
 		{
-			tabId = session[i].id;
+			if (id <  session[i].id) id = session[i].id;
 		}
-		callback(tabId);
+		callback(id);
 	});
 },
 
@@ -41,12 +41,12 @@ Session_BD.GetSession = function(idSession, callbackGetSession) {
 		
 		if (typeof Session[0] === "undefined")
 		{
-			console.log("Get Session : undefined");
+			EventLog.log("Get Session : undefined");
 			callbackGetSession(idSession, -1);	
 		}
 		else
 		{
-			console.log("SESSION_BD : Chargement de la derniere session : " + " -> " + Session[0].id + " -> " + Session[0].dateDebut +" -> " + Session[0].dateFin);
+			EventLog.log("SESSION_BD : Chargement de la derniere session : " + " -> " + Session[0].id + " -> " + Session[0].dateDebut +" -> " + Session[0].dateFin);
 			callbackGetSession(Session[0].id, Session[0].dateDebut, Session[0].dateFin);
 		}
 	});
@@ -62,13 +62,13 @@ Session_BD.SetSession = function (idSessionSet, dateDebutSet, dateFinSet)
     {
         if (err) 
         {
-            console.log("SESSION_BD : SetSession() : erreur ! ");
+            EventLog.log("SESSION_BD : SetSession() : erreur ! ");
             throw err;
         }
 
         if (typeof newSession[0] === "undefined")
 		{
-            console.log("SESSION_BD : SetSession() : undefined ! ");
+            EventLog.log("SESSION_BD : SetSession() : undefined ! ");
         } 
         else 
         {
@@ -84,7 +84,7 @@ Session_BD.SetSession = function (idSessionSet, dateDebutSet, dateFinSet)
                 {
                 	throw err;
                 }
-                console.log("SESSION_BD : Mis à jour de la session : " + newSession[0].dateDebut +" -> " + newSession[0].dateFin);
+                EventLog.log("SESSION_BD : Mis à jour de la session : " + newSession[0].dateDebut +" -> " + newSession[0].dateFin);
             });
         }
     });
@@ -92,7 +92,7 @@ Session_BD.SetSession = function (idSessionSet, dateDebutSet, dateFinSet)
 
 Session_BD.Creation = function (idSession, dateDebut, dateFin) {
 
-	console.log("SESSION_BD_CREATION");
+	EventLog.log("SESSION_BD_CREATION");
     var SessionModel = mongoose.model('Session');
     var newSession = new SessionModel();
 
@@ -105,30 +105,13 @@ Session_BD.Creation = function (idSession, dateDebut, dateFin) {
             throw err;
         }
         
-        console.log('BASE DE DONNEES : Creation d une Session !');
+        EventLog.log('BASE DE DONNEES : Creation d une Session !');
 
     });
     return newSession;
 },
 
-Session_BD.GetLastSessionId = function(callback)
-{
-	var SessionModel = mongoose.model('Session');				
-	var lastId;
-	
-	SessionModel.find({}, function(err, sessions)
-	{
-		if(err)
-		{
-			throw err;
-		}
-		for(var i in sessions)
-		{
-			lastId = sessions[i].id;
-		}
-		callback(lastId);
-	});
-},
+
 
 
 module.exports = Session_BD;

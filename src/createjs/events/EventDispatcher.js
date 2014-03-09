@@ -64,7 +64,7 @@ this.createjs = this.createjs||{};
  *
  *      instance.addEventListener("eventName", handlerMethod);
  *      function handlerMethod(event) {
- *          console.log(event.target + " Was Clicked");
+ *          EventLog.log(event.target + " Was Clicked");
  *      }
  *
  * <b>Maintaining proper scope</b><br />
@@ -72,11 +72,11 @@ this.createjs = this.createjs||{};
  * method to subscribe to events simplifies this.
  *
  *      instance.addEventListener("click", function(event) {
- *          console.log(instance == this); // false, scope is ambiguous.
+ *          EventLog.log(instance == this); // false, scope is ambiguous.
  *      });
  *      
  *      instance.on("click", function(event) {
- *          console.log(instance == this); // true, "on" uses dispatcher scope by default.
+ *          EventLog.log(instance == this); // true, "on" uses dispatcher scope by default.
  *      });
  * 
  * If you want to use addEventListener instead, you may want to use function.bind() or a similar proxy to manage scope.
@@ -183,7 +183,7 @@ var p = EventDispatcher.prototype;
 	 * 		var listener = myBtn.on("click", handleClick, null, false, {count:3});
 	 * 		function handleClick(evt, data) {
 	 * 			data.count -= 1;
-	 * 			console.log(this == myBtn); // true - scope defaults to the dispatcher
+	 * 			EventLog.log(this == myBtn); // true - scope defaults to the dispatcher
 	 * 			if (data.count == 0) {
 	 * 				alert("clicked 3 times!");
 	 * 				myBtn.off("click", listener);

@@ -51,15 +51,11 @@ Personnage_Manager.Load = function(callbackFinFouille)
 				}
 				else
 				{
-					//EventLog.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
+					EventLog.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
 					context.listePersonnages[id] = reponse;
-					/*** TEST ***/
-					//context.listePersonnages[id].setptSanteMax(30);
-					//context.listePersonnages[id].setptDeplacementMax(1000);
-					//context.listePersonnages[id].setptActionMax(1000);
 					
 					// si le perso était en fouille, on le remet en oisif (car on n'a pas la durée du compteur de fouille)
-					if (context.listePersonnages[id].mode == 1)context.listePersonnages[id].mode = 0;
+					if (context.listePersonnages[id].mode == 1) context.listePersonnages[id].mode = 0;
 				}
 			});
 		}
@@ -78,10 +74,6 @@ Personnage_Manager.LoadUser = function(idUser)
 		else
 		{
 			context.listePersonnages[id] = reponse;
-			/*** TEST ***/
-			//context.listePersonnages[id].setptSanteMax(30);
-			//context.listePersonnages[id].setptDeplacementMax(1000);
-			//context.listePersonnages[id].setptActionMax(1000);
 		}
 	});     	
 },
@@ -132,7 +124,7 @@ Personnage_Manager.AddMessage = function(idUser,  msg)
 
 Personnage_Manager.AddMessageMort = function(idUser,  pseudoTueur)
 {
-	//console.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
+	//EventLog.log("PERSONNAGE_MANAGER : AddMessage() : Ajout du message " + msg);
 	this.listePersonnages[idUser].ajouterMessageMort(pseudoTueur);
 }, 
 
@@ -413,8 +405,10 @@ Personnage_Manager.ramasserDeposer = function(idUser,  type,  item)
 		}
 		else if (type == "DEPOSER")
 		{			
-			if(this.IsItemEquipee(idUser,  item))
+			// si il est équipé de cet item et qu'il ne l'a qu'une fois dans le sac
+			if(this.IsItemEquipee(idUser,  item) && this.listePersonnages[idUser].getNbrMemeItemDansSac(item) == 1)
 			{
+				// on check si y'a l'objet
 				reponseServeur.reponseAction = -3;
 				return reponseServeur;
 				
@@ -625,7 +619,7 @@ Personnage_Manager.stopperFouille = function(idUser)
 		clearTimeout(this.listeIdIntervalleFouille[idUser]);
 	}
 	catch(Err){
-		console.log("/!\\ PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.getPseudo(idUser) + " : " + Err );
+		EventLog.error("/!\\\ PERSONNAGE_MANAGER : Arret du mode fouille pour le perso " + oUtilisateur_Manager.getPseudo(idUser) + " : " + Err );
 	}
 },
 

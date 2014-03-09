@@ -62,7 +62,7 @@ this.createjs = this.createjs||{};
  *
  *      var domElement = new createjs.DOMElement(htmlElement);
  *      domElement.htmlElement.onclick = function() {
- *          console.log("clicked");
+ *          EventLog.log("clicked");
  *      }
  *
  * @class DOMElement

@@ -49,7 +49,7 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 						{
 							throw err;
 						}
-						console.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
+						EventLog.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 						
 						callbackSetUtilisateur(new oUtilisateur(
 							NewUser._id,			NewUser.pseudo,				NewUser.email,				NewUser.pass,
@@ -81,16 +81,16 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) 
 		
 		if (typeof NewUser[0] === "undefined")
 		{
-			console.log("Get Utilisateur : undefined");
+			EventLog.log("Get Utilisateur : undefined");
 			callbackGetUtilisateur(idUtilisateur, -1);	
 		}
 		else
 		{
-			//console.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
+			//EventLog.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
 			var user = new oUtilisateur(
 					NewUser[0]._id,				NewUser[0].pseudo,				NewUser[0].email,				//NewUser[0].pass,
 					NewUser[0].numEquipe,		NewUser[0].personnage,			NewUser[0].idSession);
-			console.log("UTILISATEUR_BD : Chargement de l'utilisateur : ["+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
+			EventLog.log("UTILISATEUR_BD : Chargement de l'utilisateur : ["+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 			callbackGetUtilisateur(idUtilisateur, user);
 		}
 	});
@@ -190,7 +190,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 				newPerso = oPersonnageDB.Creation();
 				
 				// log
-				console.log('BASE DE DONNEES : ID du perso cree ' + newPerso._id);
+				EventLog.log('BASE DE DONNEES : ID du perso cree ' + newPerso._id);
 				
 				// on attribut l'id de personnage crée à l'attribut "personnage" du nouvel user
 				newUser.personnage = newPerso._id;
@@ -202,7 +202,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 					{
 						throw err;
 					}
-					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
+					EventLog.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
 					
 					// renvoi réponse
 					callbackInscription(newUser._id, req, res);
@@ -243,7 +243,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		}
 		else
 		{
-			console.log("USER_BD : connexion de l'user = " + user[0].pseudo);
+			EventLog.log("USER_BD : connexion de l'user = " + user[0].pseudo);
 			callbackConnexion(user[0].id, req, res);
 		}
 	});

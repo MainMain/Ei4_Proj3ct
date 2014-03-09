@@ -123,7 +123,7 @@ var Ticker = function() {
 	 * <h4>Example</h4>
 	 *      createjs.Ticker.addEventListener("tick", handleTick);
 	 *      function handleTick(event) {
-	 *          console.log("Paused:", event.paused, event.delta);
+	 *          EventLog.log("Paused:", event.paused, event.delta);
 	 *      }
 	 *
 	 * @event tick
@@ -416,7 +416,7 @@ var Ticker = function() {
 	 *      createjs.Ticker.addEventListener("tick", handleTick);
 	 *      createjs.Ticker.setPaused(true);
 	 *      function handleTick(event) {
-	 *          console.log("Paused:", event.paused, createjs.Ticker.getPaused());
+	 *          EventLog.log("Paused:", event.paused, createjs.Ticker.getPaused());
 	 *      }
 	 *
 	 * @method setPaused
@@ -438,7 +438,7 @@ var Ticker = function() {
 	 *      createjs.Ticker.addEventListener("tick", handleTick);
 	 *      createjs.Ticker.setPaused(true);
 	 *      function handleTick(event) {
-	 *          console.log("Paused:", createjs.Ticker.getPaused());
+	 *          EventLog.log("Paused:", createjs.Ticker.getPaused());
 	 *      }
 	 *
 	 * @method getPaused

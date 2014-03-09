@@ -113,6 +113,7 @@ database.Initialiser = function() {
 	var ScoreSchema = new mongoose.Schema({
 		idUser 			: String,
 		idSession		: Number,
+		numEquipe		: Number,
 		scoreODD		: Number,
 		scoreByODD 		: Number,
 		scoreByMeutre 	: Number,

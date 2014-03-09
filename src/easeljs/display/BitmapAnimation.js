@@ -45,7 +45,7 @@ this.createjs = this.createjs||{};
 var e = "BitmapAnimation is deprecated in favour of Sprite. See VERSIONS file for info on changes.";
 if (!createjs.Sprite) { throw(e); }
 (createjs.BitmapAnimation = function(spriteSheet) {
-  console.log(e);
+  EventLog.log(e);
   this.initialize(spriteSheet);
 }).prototype = new createjs.Sprite();
 })();

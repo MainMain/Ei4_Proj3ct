@@ -342,12 +342,16 @@ var Personnage = (function() {
 				if (this.sacADos[i].id == item.id) 
 				{
 					// si c'est l'arme équipe
-					EventLog.log("---------------> RETRAIT DE L'ITEM " + this.sacADos[i].id);
-					if (this.armeEquipee != null) EventLog.log("---------------> id arme " + this.armeEquipee.id);
-					if (this.armureEquipee != null) EventLog.log("---------------> id armure " + this.armureEquipee.id);
+					EventLog.log("PERSONNAGE : retrait de l'item " + this.sacADos[i].id);
+					//if (this.armeEquipee != null)	EventLog.log("---------------> id arme " + this.armeEquipee.id);
+					//if (this.armureEquipee != null) EventLog.log("---------------> id armure " + this.armureEquipee.id);
 					
-					if (this.armeEquipee != null   && this.sacADos[i].id == this.armeEquipee.id) 	this.armeEquipee = null;
-					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id) 	this.armureEquipee = null;
+					if (this.getNbrMemeItemDansSac(item) == 1)
+					{
+						if (this.armeEquipee != null   && this.sacADos[i].id == this.armeEquipee.id) 	this.armeEquipee = null;
+						if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id) 	this.armureEquipee = null;
+					}
+					
 					break;
 				}
 			}
@@ -356,6 +360,15 @@ var Personnage = (function() {
 			this.logAfficherSacADos();
 		},
 		
+		getNbrMemeItemDansSac : function(item)
+		{
+			var nbrFoisItem = 0;
+			for (var i = 0; i < this.sacADos.length; i++) 
+			{
+				if (this.sacADos[i].id == item.id) nbrFoisItem++;
+			}
+			return nbrFoisItem;
+		},
 		subirDegats : function(degats)
 		{
 			

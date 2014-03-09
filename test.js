@@ -14,8 +14,8 @@ oDatabase.Initialiser();
 
 callbackInscription = function(reponse)
 	{
-		console.log(reponse  + "\n\n");
-		console.log(reponse.pass  );
+		EventLog.log(reponse  + "\n\n");
+		EventLog.log(reponse.pass  );
 	}
 	
 	oUtilisateurDB.Inscription("aze","aze","aze",callbackInscription);
@@ -24,8 +24,8 @@ callbackInscription = function(reponse)
 	
 /*callbackGetUtilisateur = function(reponse)
 {
-			console.log(reponse.pass);
-			console.log("DIS MOI UN TRUC !!!!");
+			EventLog.log(reponse.pass);
+			EventLog.log("DIS MOI UN TRUC !!!!");
 
 }
 

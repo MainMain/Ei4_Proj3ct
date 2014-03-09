@@ -294,8 +294,11 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")
 	{
 		var idSession = oSession_Manager.getIdSessionEnCours();
+		
 		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe, idSession);
 		oPersonnage_Manager.SetCompetence(s.idUser, b.competence, b.equipe);
+		oScore_Manager.createScore(s.idUser, b.equipe);
+		
 		options.idEquipe = b.equipe;
 		options.isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
 	}
@@ -455,7 +458,7 @@ callbackInscription = function(reponseInscription, req, res)
 		oUtilisateur_Manager.LoadUser(reponseInscription);
 		oPersonnage_Manager.LoadUser(reponseInscription);
 		// ajout de l'objet score pour la session de jeu en cours
-		oScore_Manager.nouveauJoueur(reponseInscription, oSession_Manager.getIdSessionEnCours());
+		//oScore_Manager.nouveauJoueur(reponseInscription, oSession_Manager.getIdSessionEnCours());
 		
 		res.render("accueil", optionAccueil);
 		
@@ -826,7 +829,7 @@ io.sockets.on('connection', function (socket)
 		catch(err)
 		{
 
-			oEventLog.log("/!\\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
+			oEventLog.error("/!\\\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
 
 			oEventLog.error("/!\\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
 

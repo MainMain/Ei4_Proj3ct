@@ -26,7 +26,7 @@ function Personnage_BD() {
  */
 Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
 {
-	console.log("------------------------------_-_-> " + personnageToSave.ptFaim);
+	EventLog.log("------------------------------_-_-> " + personnageToSave.ptFaim);
     var PersonnageModel = mongoose.model('Personnage');
     var nouveauPerso = PersonnageModel();
 
@@ -34,12 +34,12 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
         _id: personnageToSave.id
     }, function (err, perso) {
         if (err) {
-            console.log("PERSONNAGE_BD : SetPersonnage() : erreur ! ");
+            EventLog.log("PERSONNAGE_BD : SetPersonnage() : erreur ! ");
             throw err;
         }
 
         if (typeof perso[0] === "undefined") {
-            console.log("PERSONNAGE_BD : SetPersonnage() : undefined ! ");
+            EventLog.log("PERSONNAGE_BD : SetPersonnage() : undefined ! ");
             callbackSetPersonnage(-1);
         } 
         else 
@@ -90,7 +90,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                         throw err;
                     }
 					
-                    console.log("PERSONNAGE_BD : Mis à jour du personnage : ["+personnageToSave.id+"]");
+                    EventLog.log("PERSONNAGE_BD : Mis à jour du personnage : ["+personnageToSave.id+"]");
 					callbackSetPersonnage(1);
                 }
             );
@@ -116,31 +116,31 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
         _id: idUtilisateur
     }, function (err, user) {
         if (err) {
-            console.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
+            EventLog.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
             throw err;
         }
         if (typeof user[0] === "undefined") {
-            console.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé l'user ! ");
+            EventLog.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé l'user ! ");
             callbackGetPersonnageByIdUser(idUtilisateur, -1);
         } else {
             PersonnageModel.find({_id: user[0].personnage}, function (err, perso) 
             {
                 
                 if (err) {
-                    console.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
+                    EventLog.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
                     throw err;
                 }
 
                 if (typeof perso[0] === "undefined") {
-                    console.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé le perso ! ");
+                    EventLog.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé le perso ! ");
                     callbackGetPersonnageByIdUser(idUtilisateur, -2);
 
                 } else {
-                    console.log("PERSONNAGE_BD : Chargement du personnage : ["+perso[0].id+"]");
-                    //console.log('PERSONNAGE_BD : id salle perso récupéré : ' + perso[0].idSalleEnCours);
+                    EventLog.log("PERSONNAGE_BD : Chargement du personnage : ["+perso[0].id+"]");
+                    //EventLog.log('PERSONNAGE_BD : id salle perso récupéré : ' + perso[0].idSalleEnCours);
                     // conversion des id "ArmeEquipee" et "ArmureEquipee" en objet
                     var arme = null, armure = null;
-					//console.log("idArmeEquipee = " + perso[0].idArmeEquipee);
+					//EventLog.log("idArmeEquipee = " + perso[0].idArmeEquipee);
                     if (perso[0].idArmeEquipee != null)
                     	 arme = oItem_BD.GetItemById(perso[0].idArmeEquipee);
                     if (perso[0].idArmureEquipee != null)
@@ -243,14 +243,14 @@ Personnage_BD.Creation = function (id)
     Perso.listeMsgAtt 		= nvPerso.listeMsgAtt;
     Perso.nbrNvMsg			= nvPerso.nbrNvMsg;
     
-    console.log("----------------> sdsdfsf : " +   nvPerso.mode);
+    EventLog.log("----------------> sdsdfsf : " +   nvPerso.mode);
 
     Perso.save(function (err) {
         if (err) {
             throw err;
         }
         
-        console.log('BASE DE DONNEES : Creation de personnage réussie !');
+        EventLog.log('BASE DE DONNEES : Creation de personnage réussie !');
 
     });
     return Perso;

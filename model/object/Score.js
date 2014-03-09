@@ -15,6 +15,7 @@ var Score = (function() {
 	Score.id;
 	Score.idUser;
 	Score.idSession;
+	Score.numEquipe;
 	Score.nbrMeurtres;
 	Score.nbrFoisTue;
 	Score.scoreByMeutre;
@@ -27,12 +28,13 @@ var Score = (function() {
 	Score.build = function() {return new Score();};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	function Score(id, idUser, idSession, nbrMeurtres, nbrFoisTue, scoreByMeutre, scoreByODD, nbrGoulesTues,
+	function Score(id, idUser, idSession, numEquipe, nbrMeurtres, nbrFoisTue, scoreByMeutre, scoreByODD, nbrGoulesTues,
 			listeVictimes, listeBourreaux) {
 		// --- Attributs d'instance
 		this.id				= id;
 		this.idUser			= idUser;
 		this.idSession		= idSession;
+		this.numEquipe		= numEquipe;
 		this.nbrMeurtres	= nbrMeurtres;
 		this.nbrFoisTue		= nbrFoisTue;
 		this.scoreByMeutre	= scoreByMeutre;
