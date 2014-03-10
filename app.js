@@ -270,16 +270,18 @@ app.get('/jeu', restrict, function fonctionIndex(req, res)
 	var options;
 	
 	var isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
-	options = { 
+	options = 
+	{ 
 		"username": s.username, 
 		"idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), 
 		"sessionID" : s.idUser, 
 		"isUpToDate" : isUpToDate,
-		"bilanScores" : oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser))
+		"bilanScores" : oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser)),
+		"sessionInfo" : oSession_Manager.getDatesSessionEnCours()
 		};
 	
-	oEventLog.log("APP - Id Session En Cours : " + oSession_Manager.getIdSessionEnCours());
-	oEventLog.log("APP - Id Session Du Joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
+	oEventLog.log("APP - Id session en cours  : " + oSession_Manager.getIdSessionEnCours());
+	oEventLog.log("APP - Id session du joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
 	
 	res.render('game', options);
 });
@@ -295,7 +297,8 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 		"idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), 
 		"sessionID" : s.idUser,
 		"isUpToDate" : isUpToDate,
-		"bilanScores" : oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser))
+		"bilanScores" : oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser)),
+		"sessionInfo" : oSession_Manager.getDatesSessionEnCours()
 		};
 	
 	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")

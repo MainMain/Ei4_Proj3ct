@@ -136,7 +136,7 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                     callbackGetPersonnageByIdUser(idUtilisateur, -2);
 
                 } else {
-                    EventLog.log("PERSONNAGE_BD : Chargement du personnage : ["+perso[0].id+"]");
+                    //EventLog.log("PERSONNAGE_BD : Chargement du personnage : ["+perso[0].id+"]");
                     //EventLog.log('PERSONNAGE_BD : id salle perso récupéré : ' + perso[0].idSalleEnCours);
                     // conversion des id "ArmeEquipee" et "ArmureEquipee" en objet
                     var arme = null, armure = null;

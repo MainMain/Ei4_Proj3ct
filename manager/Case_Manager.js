@@ -18,7 +18,7 @@ function Case_Manager(){}
 Case_Manager.Load = function()
 {
 	var context = this;
-	oCase_BD.Initialiser(function()
+	oCase_BD.Initialiser(function(creation)
 	{
 		// creation des listes
 		var idCases = new Array();
@@ -49,6 +49,8 @@ Case_Manager.Load = function()
 					}
 				});
 			}
+			// si les cases viennent d'être créées, on les remplits
+			if (creation) context.RemplirCases();
 		});
 	});
 },

@@ -152,21 +152,6 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
 	});
 },
 
-// ***************************************** TO TRASH SOON
-// *****************************
-// --- ATTRIBUTS DE CLASSE ---
-//Case_BD.listeCases;
-
-/*
- * RENVOI LA CASE SUIVANT L'ID PASSE EN PARAMATRE return : case erreur : null
- */
-/*Case_BD.GetCaseById = function(idCase) {
-	if (idCase < 12)
-		return this.listeCases[idCase];
-	else
-		return null;
-},*/
-
 /**
  * CREE UNE LISTE DE CASE
  * 
@@ -174,12 +159,15 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase) {
  */
 Case_BD.Initialiser = function(callBack) 
 {	
+	var creation = false;
 	// test si la table case est vide
 	this.GetCasesId(function(tabId)
 	{
 		// si table vide
 		if(tabId.length == 0)
 		{
+			creation = true;
+			
 			// lecture dans le fichier
 			EventLog.log("CASE_BD : Chargement des cases fichier -> base de données");
 			
@@ -231,93 +219,7 @@ Case_BD.Initialiser = function(callBack)
 			} // fin for(var i in tabLignes)
 		} // fin if(tabId.length == 0)
 		EventLog.log("CALLBACK ! ");
-		callBack();
+		callBack(creation);
 	});
-	
-	// vide la BD
-	
-	
-	//
-	/*
-	EventLog.log("CASE_BD : ajout des cases dans la BD");
-	var array1 = [ oItem_BD.GetItemById(100), oItem_BD.GetItemById(200),
-			oItem_BD.GetItemById(300), oItem_BD.GetItemById(401),
-			oItem_BD.GetItemById(502), oItem_BD.GetItemById(503) ];
-	var array2 = [ oItem_BD.GetItemById(102), oItem_BD.GetItemById(201),
-			oItem_BD.GetItemById(303), oItem_BD.GetItemById(601) ];
-	var array3 = [ oItem_BD.GetItemById(101), oItem_BD.GetItemById(203),
-			oItem_BD.GetItemById(402), oItem_BD.GetItemById(603) ];
-	var array4 = [ oItem_BD.GetItemById(103), oItem_BD.GetItemById(202),
-			oItem_BD.GetItemById(403), oItem_BD.GetItemById(601) ];
-	
-	var case1 = new oCase(0, 0, "E11", "Une mini salle", 20, 50, 1, array1,
-			"public/map/0-0.png");
-	var case2 = new oCase(0, 1, "E12", "Une petite salle", 24, 54, 2, array2,
-			"public/map/2-0.png");
-	var case3 = new oCase(0, 2, "E13", "Une moyenne salle", 47, 50, 3, array3,
-			"public/map/0-1.png");
-	var case4 = new oCase(0, 3, "E14", "Une grande salle", 47, 45, 4, array2,
-			"public/map/1-1.png");
-	var case5 = new oCase(0, 4, "E15", "Une géante salle", 0, 21, 5, array2,
-			"public/map/2-1.png");
-	var case6 = new oCase(0, 5, "E16", "Une salle sale", 75, 12, 2, array1,
-			"public/map/0-2.png");
-	var case7 = new oCase(0, 6, "E17", "Une salle sale", 75, 12, 3, array1,
-			"public/map/1-2.png");
-	var case8 = new oCase(0, 7, "E18", "Une salle sale", 75, 12, 6, array1,
-			"public/map/2-2.png");
-	var case9 = new oCase(0, 8, "E19", "Une salle sale", 75, 12, 1, array1,
-			"public/map/0-4.png");
-
-	var caseModel = mongoose.model('Case');
-	caseModel.remove(true, function(err) {
-		if (err) {
-			throw err;
-		}
-		EventLog.log('Cases supprimés !');
-	});
-	this.Creation(case1);
-	this.Creation(case2);
-	this.Creation(case3);
-	this.Creation(case4);
-	this.Creation(case5);
-	this.Creation(case6);
-	this.Creation(case7);
-	this.Creation(case8);
-	this.Creation(case9);
-	
-
-	this.listeCases = new Array(case1, case2, case3, case4, case5, case6, case7, case8, case9);//, case10, case11);
-	*/
-
-	// this.listeCases = new Array(case1, case2, case3, case4, case5, case6,
-	// case7, case8, case9);// case10, case11);
-
 },
-
-/*******************************************************************************
- * *** TRASH
- * 
- * 
- * AJOUTER UN ITEM A UNE CASE
- * 
- * Case_BD.AjouterItem = function(id_case, item) {
- * this.listeCases[id_case].ajouterItem(id_item); UpdateSalle(id_case); }, /*
- * SUPPRIME UN ITEM D'UNE CASE
- * 
- * Case_BD.SupprObjet = function(id_case, item) {
- * this.listeCases[id_case].supprimerItem(item); UpdateSalle(id_case); },
- * 
- */
-
-
-// ///// traitement de la liste des items
-// récupèration de la liste des id d'items
-/*
- * var listeIdItems = caseRecup.listeItems; caseRecup.listeItems =
- * new Array(); for (var i = 0; i < listeIdItems.length; i++) {
- * caseRecup.listeItems.push(oItem_BD.GetItemById(listeIdItems[i]));
- * EventLog.log("CASE_BD : GetCaseById : item chargé : " +
- * caseRecup.listeItems[i].nom); }
- */
 module.exports = Case_BD;

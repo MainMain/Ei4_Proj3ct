@@ -1,296 +1,367 @@
 <!DOCTYPE html>
 <!-- Consider specifying the language of your content by adding the `lang` attribute to <html> -->
-<!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js">
-	<!--<![endif]-->
-	<head>
-
-		<meta charset="utf-8">
-
-		<!-- Always force latest IE rendering engine & Chrome Frame -->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-		<!-- Put your title here! -->
-		<title>Plateau de jeu - Zomb'IstiA</title>
-
-		<meta name="description" content="">
-
-		<!-- Mobile viewport optimized: h5bp.com/viewport -->
-		<meta name="viewport" content="width=device-width">
-
-		<link href="/public/stylesheets/style.css" rel="stylesheet">
-
-		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-		
-		<!-- Script nécessaires pour le serveur -->
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-
-
-		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<script>
-			window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')
-		</script>
-		
-		<script>
-			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			//var socket = io.connect('http://192.168.0.24:25536');
-			var socket = io.connect('http://localhost:25536');
-			
-			$( document ).ready(function()
-			{
-				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "jeu");
-			});
-			
-			socket.on("DECONEXION_SC", function(msg)
-			{
-				alert(msg);
-				$.post("/", { _method: "delete" }, function()
-				{
-					document.location = "/";
-				});
-			});
-		
-		</script>
-		
-		<script>
-			var createjs = window;
-		</script>
-
-		<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
-		<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
-		<script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
-		<script type="text/javascript" src="../src/easeljs/utils/UID.js"></script>
-		<script type="text/javascript" src="../src/easeljs/utils/Ticker.js"></script>
-		<script type="text/javascript" src="../src/easeljs/geom/Matrix2D.js"></script>
-		<script type="text/javascript" src="../src/easeljs/geom/Point.js"></script>
-		<script type="text/javascript" src="../src/easeljs/geom/Rectangle.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/Shadow.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/SpriteSheet.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/Graphics.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/DisplayObject.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/Container.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/Stage.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/Bitmap.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/Sprite.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/BitmapAnimation.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/BitmapText.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/Shape.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/Text.js"></script>
-		<script type="text/javascript" src="../src/easeljs/display/DOMElement.js"></script>
-		<script type="text/javascript" src="../src/easeljs/events/MouseEvent.js"></script>
-		<script type="text/javascript" src="../src/easeljs/filters/Filter.js"></script>
-		<script type="text/javascript" src="../src/easeljs/ui/ButtonHelper.js"></script>
-		<script type="text/javascript" src="../src/easeljs/ui/Touch.js"></script>
-		<script type="text/javascript" src="../src/easeljs/utils/SpriteSheetUtils.js"></script>
-		<script type="text/javascript" src="../src/easeljs/utils/SpriteSheetBuilder.js"></script>
-		<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
-		
-		<!-- Note: All PreloadJS classes are listed here: -->
-		<script type="text/javascript" src="../src/createjs/utils/Proxy.js"></script>
-	    <script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
-	    <script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
-	    <script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
-	    <script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
-
-		<script type="text/javascript" src="/view/Button.js"></script>
-		<script type="text/javascript" src="/view/ButtonMove.js"></script>
-		<script type="text/javascript" src="/view/ButtonPad.js"></script>
-		<script type="text/javascript" src="/view/canvas.js"></script>
-
-		<!-- Load Open Sans and Merriweather from Google Fonts
-		For optimal performance, customize it to load the styles you need:
-		http://goo.gl/QufgJ
-		-->
-		<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
-
-		<!-- All JavaScript at the bottom, except for Modernizr
-		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
-		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-		<script src="/view/js/modernizr-2.6.1.min.js"></script>
-	</head>
-
-	<body>
-
-		<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
-		<!--[if lt IE 8]>
-		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
+<!--[if lt IE 7]> 
+<html class="no-js ie6">
+	<![endif]-->
+	<!--[if IE 7]>    
+	<html class="no-js ie7">
 		<![endif]-->
-
-		<header id="master-header" class="clearfix" role="banner">
-
-			<hgroup>
-				<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
-				<h2 id="site-description">L'action se déroule ici !</h2>
-			</hgroup>
-
-		</header>
-		<!-- #master-header -->
-
-		<div id="main" class="row clearfix">
-
-	<!-- Main navigation -->
-	<nav class="main-navigation clearfix span12" role="navigation">
-		<h3 class="assistive-text">Menu principal</h3>
-		<ul>
-			<li class="span2"><a href="/">Accueil</a></li>
-			<li class="current span2">
-				<a href="regles">But du jeu</a>
-				<ul class="sub-menu">
-					<li><a href="tutoriel">Tutoriel</a></li>
-				</ul>
-			</li>
-			<li class="current span2">
-				<a href="jeu">Jeu</a>
-				<ul class="sub-menu">
-					<li><a href="chat-equipe">Chat de l'équipe</a></li>
-				</ul>
-			</li>
-			<li class="span2"><a href="classement">Classement</a></li>
-			<li class="span2"><a href="chat-general">Chat</a></li>
-		</ul>
-	</nav> <!-- #main-navigation -->
-	
-			<form id="LogoutForm" class="logoutform" action="/" method=POST>
-				<input type=hidden name="_method" value="delete"/>
-				<div> Bonjour <%= username %></div>
-				<input type="submit" value="Retourner chez les vivants ?" align=right>
-			</form>
-
-			<div id="content" role="main" class="span12">
-				<% if(idEquipe == 0 || !isUpToDate) { %>
-					<h1>Aux portes de l'enfer...</h1>
-					<% if(!isUpToDate && idEquipe != 0) { %>
-						<!-- -->
-					<div class="alert-error" style="font-size: 20px;">
-						<b>Une nouvelle session a commencé depuis votre dernière connexion !</b><br>
-					</div>
-					<h2> Résumé de des scores de votre dernière session : </h2>
-					<table>
-						<td width=50%>
-						<b>Scores globaux : </b> <br>
-						<br>
-						<table>
-							<tr>
-								<td><b>Equipe</b></td>
-								<td><b>Participants</b></td>
-								<td><b>Score par meurtres</b></td>
-								<td><b>Score par objets</b></td>
-								<td><b>Total</b></td>
-
-							</tr>
-							<tr>
-								<td>AGI</td>
-								<td> <%= bilanScores["nbrAGI"]%> </td>
-								<td> <%= bilanScores["scoreAGI_meurtre"]%> point(s)</td>
-								<td> <%= bilanScores["scoreAGI_odd"]%> point(s)</td>
-								<td><b><%= bilanScores["scoreAGI"]%> point(s)</b></td>
-							</tr>
-							<tr>
-								<td>INNO</td>
-								<td><%= bilanScores["nbrINNO"]%> </td>
-								<td><%= bilanScores["scoreINNO_meurtre"]%> point(s)</td>
-								<td><%= bilanScores["scoreINNO_odd"]%> point(s)</td>
-								<td><b><%= bilanScores["scoreINNO"]%> point(s)</b></td>
-							</tr>
-							<tr>
-								<td>QSF</td>
-								<td><%= bilanScores["nbrQSF"]%> </td>
-								<td><%= bilanScores["scoreQSF_meurtre"]%> point(s)</td>
-								<td><%= bilanScores["scoreQSF_odd"]%> point(s)</td>
-								<td><b><%= bilanScores["scoreQSF"]%> point(s)</b></td>
-							</tr>
-							
-						</table>
-							<br>
-							</td>
-							<td width=50%>
-						<b>Vos scores :</b>
-						<br>
-						<br>
-						<table>
-							<tr>
-								<td><b>Type</b></td>
-								<td><b>Nombre</b></td>
-								<td><b>Gain en points</b></td>
-							</tr>
-							<tr>
-								<td>Objets de défenses ramenés</td>
-								<td>Aucune info</td>
-								<td><%= bilanScores["scoreODD"]%> point(s)</td>
-							</tr>
-							<tr>
-								<td>Nombre par meurtres</td>
-								<td><%= bilanScores["nbrMeurtres"]%></td>
-								<td><%= bilanScores["scoreMeurtre"]%> point(s)</td>
-							</tr>
-							<tr>
-								<td>Nombre de fois tués</td>
-								<td><%= bilanScores["nbrFoisTue"]%></td>
-								<td>0 point</td>
-							</tr>
-							<tr>
-								<td>Nombre de zombies tués</td>
-								<td><%= bilanScores["nbrGoulesTues"]%></td>
-								<td>Pas de point</td>
-							</tr>
-							<tr>
-								<td>TOTAL</td>
-								<td> X</td>
-								<td><%= bilanScores["total"]%> point(s)</td>
-							</tr>
-						</table>
-							<br>
+		<!--[if IE 8]>    
+		<html class="no-js ie8">
+			<![endif]-->
+			<!--[if gt IE 8]><!-->
+			<html class="no-js">
+				<!--<![endif]-->
+				<head>
+					<meta charset="utf-8">
+					<!-- Always force latest IE rendering engine & Chrome Frame -->
+					<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+					<!-- Put your title here! -->
+					<title>Plateau de jeu - Zomb'IstiA</title>
+					<meta name="description" content="">
+					<!-- Mobile viewport optimized: h5bp.com/viewport -->
+					<meta name="viewport" content="width=device-width">
+					<link href="/public/stylesheets/style.css" rel="stylesheet">
+					<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+					<!-- Script nécessaires pour le serveur -->
+					<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+					<script src="/socket.io/socket.io.js"></script>
+					<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+					<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+					<script>
+						window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')
+					</script>
+					<script>
+						/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+						//var socket = io.connect('http://192.168.0.24:25536');
+						var socket = io.connect('http://localhost:25536');
 						
-						</td>
-					</table>
-					Etes vous prêt à retenter l'aventure ? ...
-					<% } %>
-					
-					<h2> Entrée en enfer </h2>
-					<p>Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spéciale de votre personnage.<br>
-					Vous avez le choix entre trois compétences :
-					<ul>
-					<li>Vous pouvez être <b>UNE BRUTE</b>: Cela signifie alors que votre personnage a des <b>dégats d'attaque</b> et une <b>défense augmentée</b>. En revanche il aura moins de chance de pouvoir se cacher.<br></li>
-					<li>Vous pouvez être <b>UN EXPLORATEUR</b>: Dans ce cas là c'est au contraire la <b>probabilité de se cacher</b> ainsi que vos <b>points de mouvements maximum</b> qui sont augmentés. Par contre faites attention à ne pas vous faire attaquer car vos points de défense sont relativement faibles.<br></li>
-					<li>Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu cela a un coût, vos dégats sont réduits ainsi que votre probabilité de cache.<br></li>
-					</ul>
-					</p>
-					<form name="formInitPerso" method="POST" action="/jeu">
-						<input type="hidden" name="_method" value="PUT">
-						<select name="equipe">
-							<option value="1">AGI</option>
-							<option value="2">INNO</option>
-							<option value="3">QSF</option>
-						</select>
-						<select name="competence">
-							<option value="brute">Brute (Dégats et Défense augmentés)</option>
-							<option value="explorateur">Explorateur (Probabilité de se cacher et Points de mouvement augmentée)</option>
-							<option value="chercheur">Chercheur (Probabilité de fouille augmentée)</option>
-						</select>
-						<input type="submit" value="Se lancer !" name="submitChoixDepart" />
-					</form>
-				<% } else { %>
-					<h1 class="entry-title" align=center> Plateau de jeu </h1>
-					<!-- Canvas -->
-					<canvas id="myCanvas" style="display:block; margin:-25px; border:1px solid #FFFFFF;" width="1100" height="620">
-					
-					</canvas>
-				<% } %>
-			</div>
-			<!-- #content -->
-
-		</div>
-		<!-- #main -->
-
-		<footer id="footer">
-
-		</footer>
-		<!-- #footer -->
-		
-	</body>
-</html>
+						$( document ).ready(function()
+						{
+							socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "jeu");
+						});
+						
+						socket.on("DECONEXION_SC", function(msg)
+						{
+							alert(msg);
+							$.post("/", { _method: "delete" }, function()
+							{
+								document.location = "/";
+							});
+						});
+						
+					</script>
+					<script>
+						var createjs = window;
+					</script>
+					<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
+					<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
+					<script type="text/javascript" src="../src/createjs/utils/IndexOf.js"></script>
+					<script type="text/javascript" src="../src/easeljs/utils/UID.js"></script>
+					<script type="text/javascript" src="../src/easeljs/utils/Ticker.js"></script>
+					<script type="text/javascript" src="../src/easeljs/geom/Matrix2D.js"></script>
+					<script type="text/javascript" src="../src/easeljs/geom/Point.js"></script>
+					<script type="text/javascript" src="../src/easeljs/geom/Rectangle.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/Shadow.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/SpriteSheet.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/Graphics.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/DisplayObject.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/Container.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/Stage.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/Bitmap.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/Sprite.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/BitmapAnimation.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/BitmapText.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/Shape.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/Text.js"></script>
+					<script type="text/javascript" src="../src/easeljs/display/DOMElement.js"></script>
+					<script type="text/javascript" src="../src/easeljs/events/MouseEvent.js"></script>
+					<script type="text/javascript" src="../src/easeljs/filters/Filter.js"></script>
+					<script type="text/javascript" src="../src/easeljs/ui/ButtonHelper.js"></script>
+					<script type="text/javascript" src="../src/easeljs/ui/Touch.js"></script>
+					<script type="text/javascript" src="../src/easeljs/utils/SpriteSheetUtils.js"></script>
+					<script type="text/javascript" src="../src/easeljs/utils/SpriteSheetBuilder.js"></script>
+					<script type="text/javascript" src="/view/easeljs-0.7.0.min.js"></script>
+					<!-- Note: All PreloadJS classes are listed here: -->
+					<script type="text/javascript" src="../src/createjs/utils/Proxy.js"></script>
+					<script type="text/javascript" src="../src/preloadjs/AbstractLoader.js"></script>
+					<script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
+					<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
+					<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
+					<script type="text/javascript" src="/view/Button.js"></script>
+					<script type="text/javascript" src="/view/ButtonMove.js"></script>
+					<script type="text/javascript" src="/view/ButtonPad.js"></script>
+					<script type="text/javascript" src="/view/canvas.js"></script>
+					<!-- Load Open Sans and Merriweather from Google Fonts
+						For optimal performance, customize it to load the styles you need:
+						http://goo.gl/QufgJ
+						-->
+					<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
+					<!-- All JavaScript at the bottom, except for Modernizr
+						Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
+						For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
+					<script src="/view/js/modernizr-2.6.1.min.js"></script>
+				</head>
+				<body>
+					<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
+					<!--[if lt IE 8]>
+					<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
+					<![endif]-->
+					<header id="master-header" class="clearfix" role="banner">
+						<hgroup>
+							<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
+							<h2 id="site-description">L'action se déroule ici !</h2>
+						</hgroup>
+					</header>
+					<!-- #master-header -->
+					<div id="main" class="row clearfix">
+						<!-- Main navigation -->
+						<nav class="main-navigation clearfix span12" role="navigation">
+							<h3 class="assistive-text">Menu principal</h3>
+							<ul>
+								<li class="span2"><a href="/">Accueil</a></li>
+								<li class="current span2">
+									<a href="regles">But du jeu</a>
+									<ul class="sub-menu">
+										<li><a href="tutoriel">Tutoriel</a></li>
+									</ul>
+								</li>
+								<li class="current span2">
+									<a href="jeu">Jeu</a>
+									<ul class="sub-menu">
+										<li><a href="chat-equipe">Chat de l'équipe</a></li>
+									</ul>
+								</li>
+								<li class="span2"><a href="classement">Classement</a></li>
+								<li class="span2"><a href="chat-general">Chat</a></li>
+							</ul>
+						</nav>
+						<!-- #main-navigation -->
+						<form id="LogoutForm" class="logoutform" action="/" method=POST>
+							<input type=hidden name="_method" value="delete"/>
+							<div> Bonjour <%= username %></div>
+							<input type="submit" value="Retourner chez les vivants ?" align=right>
+						</form>
+						<div id="content" role="main" class="span12">
+							<% if(idEquipe == 0 || !isUpToDate) { %>
+							<h1>Aux portes de l'enfer...</h1>
+							<% if(!isUpToDate && idEquipe != 0) { %>
+							<!-- -->
+							<div class="alert-error" style="font-size: 20px;">
+								<b>Une nouvelle session a commencé depuis votre dernière connexion !</b><br>
+							</div>
+							<h2> Résumé de des scores de votre dernière session : </h2>
+							<table>
+								<td width=50%>
+									<b>Scores globaux : </b> <br>
+									<br>
+									<table>
+										<tr>
+											<td><b>Equipe</b></td>
+											<td><b>Participants</b></td>
+											<td><b>Score par meurtres</b></td>
+											<td><b>Score par objets</b></td>
+											<td><b>Total</b></td>
+										</tr>
+										<tr>
+											<td>AGI</td>
+											<td> <%= bilanScores["nbrAGI"]%> </td>
+											<td> <%= bilanScores["scoreAGI_meurtre"]%> point(s)</td>
+											<td> <%= bilanScores["scoreAGI_odd"]%> point(s)</td>
+											<td><b><%= bilanScores["scoreAGI"]%> point(s)</b></td>
+										</tr>
+										<tr>
+											<td>INNO</td>
+											<td><%= bilanScores["nbrINNO"]%> </td>
+											<td><%= bilanScores["scoreINNO_meurtre"]%> point(s)</td>
+											<td><%= bilanScores["scoreINNO_odd"]%> point(s)</td>
+											<td><b><%= bilanScores["scoreINNO"]%> point(s)</b></td>
+										</tr>
+										<tr>
+											<td>QSF</td>
+											<td><%= bilanScores["nbrQSF"]%> </td>
+											<td><%= bilanScores["scoreQSF_meurtre"]%> point(s)</td>
+											<td><%= bilanScores["scoreQSF_odd"]%> point(s)</td>
+											<td><b><%= bilanScores["scoreQSF"]%> point(s)</b></td>
+										</tr>
+									</table>
+									<br>
+								</td>
+								<td width=50%>
+									<b>Vos scores :</b>
+									<br>
+									<br>
+									<table>
+										<tr>
+											<td><b>Type</b></td>
+											<td><b>Nombre</b></td>
+											<td><b>Gain en points</b></td>
+										</tr>
+										<tr>
+											<td>Objets de défenses ramenés</td>
+											<td>Aucune info</td>
+											<td><%= bilanScores["scoreODD"]%> point(s)</td>
+										</tr>
+										<tr>
+											<td>Nombre par meurtres</td>
+											<td><%= bilanScores["nbrMeurtres"]%></td>
+											<td><%= bilanScores["scoreMeurtre"]%> point(s)</td>
+										</tr>
+										<tr>
+											<td>Nombre de fois tués</td>
+											<td><%= bilanScores["nbrFoisTue"]%></td>
+											<td>0 point</td>
+										</tr>
+										<tr>
+											<td>Nombre de zombies tués</td>
+											<td><%= bilanScores["nbrGoulesTues"]%></td>
+											<td>Pas de point</td>
+										</tr>
+										<tr>
+											<td>TOTAL</td>
+											<td> X</td>
+											<td><%= bilanScores["total"]%> point(s)</td>
+										</tr>
+									</table>
+									<br>
+								</td>
+							</table>
+							Etes vous prêt à retenter l'aventure ? ...
+							<% } %>
+							<h2> Entrée en enfer </h2>
+							<p>Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spéciale de votre personnage.<br>
+								Vous avez le choix entre trois compétences :
+							<ul>
+								<li>Vous pouvez être <b>UNE BRUTE</b>: Cela signifie alors que votre personnage a des <b>dégats d'attaque</b> et une <b>défense augmentée</b>. En revanche il aura moins de chance de pouvoir se cacher.<br></li>
+								<li>Vous pouvez être <b>UN EXPLORATEUR</b>: Dans ce cas là c'est au contraire la <b>probabilité de se cacher</b> ainsi que vos <b>points de mouvements maximum</b> qui sont augmentés. Par contre faites attention à ne pas vous faire attaquer car vos points de défense sont relativement faibles.<br></li>
+								<li>Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu cela a un coût, vos dégats sont réduits ainsi que votre probabilité de cache.<br></li>
+							</ul>
+							</p>
+							<form name="formInitPerso" method="POST" action="/jeu">
+								<input type="hidden" name="_method" value="PUT">
+								<select name="equipe">
+									<option value="1">AGI</option>
+									<option value="2">INNO</option>
+									<option value="3">QSF</option>
+								</select>
+								<select name="competence">
+									<option value="brute">Brute (Dégats et Défense augmentés)</option>
+									<option value="explorateur">Explorateur (Probabilité de se cacher et Points de mouvement augmentée)</option>
+									<option value="chercheur">Chercheur (Probabilité de fouille augmentée)</option>
+								</select>
+								<input type="submit" value="Se lancer !" name="submitChoixDepart" />
+							</form>
+							<% } else { %>
+							<h1 class="entry-title" align=center> Plateau de jeu </h1>
+							<h2>Information sur la session en cours</h2>
+							<table border="0">
+								<td width=50%>
+									<b>Répartition des équipes</b>
+									<br>
+									<table>
+										<tr> <br> </tr>
+										<tr>
+											<td><b>AGI</b></td>
+											<td><b>INNO</b></td>
+											<td><b>QSF</b></td>
+											<td><b>TOTAL</b></td>
+										</tr>
+										<tr>
+											<td><%= bilanScores["nbrAGI"]%></td>
+											<td><%= bilanScores["nbrINNO"]%></td>
+											<td><%= bilanScores["nbrQSF"]%></td>
+											<td><%= bilanScores["nbrTotal"]%></td>
+										</tr>
+									</table>
+								</td>
+								<td width=50%>
+									<b>Dates de la session</b>
+									<br>
+									<table>
+										<tr> <br> </tr>
+										<tr>
+											<td width=10%><b>Numéro </b></td>
+											<td width=45%><b>Date de début</b></td>
+											<td width=45%><b>Date de fin</b></td>
+										</tr>
+										<tr>
+											<td width=10%><%= sessionInfo["id"]%></td>
+											<td width=45%><%= sessionInfo["dateDebut"].toLocaleDateString() %></td>
+											<td width=45%><%= sessionInfo["dateFin"].toLocaleDateString() %></td>
+										</tr>
+									</table>
+								</td>
+							</table>
+							<h2>Scores provisoires</h2>
+							<table>
+								<tr>
+									<td width="20%"><b>Type</b></td>
+									<td width="20%"><b>AGI</b></td>
+									<td width="20%"><b>INNO</b></td>
+									<td width="20%"><b>QSF</b></td>
+									<td width="20%"><b>Vous</b></td>
+								</tr>
+								<tr>
+									<td width="20%"><b>Défenses ramenées</b></td>
+									<td width="20%"><%= bilanScores["scoreAGI_odd"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["scoreINNO_odd"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["scoreQSF_odd"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["scoreODD"]%> point(s)</td>
+								</tr>
+								<tr>
+									<td width="20%"><b>Assassinats</b></td>
+									<td width="20%">
+										<%= bilanScores["scoreAGI_meurtre"]%> point(s)
+										<i>(<%= bilanScores["AGI_meurtres"]%> meurtres)</i>
+									</td>
+									<td width="20%">
+										<%= bilanScores["scoreINNO_meurtre"]%> point(s)
+										<i>(<%= bilanScores["INNO_meurtres"]%> meurtres)</i>
+									</td>
+									<td width="20%">
+										<%= bilanScores["scoreQSF_meurtre"]%> point(s)
+										<i>(<%= bilanScores["QSF_meurtres"]%> meurtres)</i>
+									</td>
+									<td width="20%">
+										<%= bilanScores["scoreMeurtre"]%> point(s)
+										<i>(<%= bilanScores["nbrMeurtres"]%> meurtres)</i>
+									</td>
+								</tr>
+								<tr>
+									<td width="20%"><b>Pertes</b></td>
+									<td width="20%"><i><%= bilanScores["AGI_tués"]%> tués</i></td>
+									<td width="20%"><i><%= bilanScores["INNO_tués"]%> tués</i></td>
+									<td width="20%"><i><%= bilanScores["QSF_tués"]%> tués</i></td>
+									<td width="20%"><i><%= bilanScores["nbrFoisTue"]%> fois</i></td>
+								</tr>
+								<tr>
+									<td width="20%"><b>Zombies tués</b></td>
+									<td width="20%"><%= bilanScores["AGI_zombies"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["INNO_zombies"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["QSF_zombies"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["nbrGoulesTues"]%> point(s)</td>
+								</tr>
+								<tr>
+									<td width="20%"><b>TOTAL</b></td>
+									<td width="20%"><%= bilanScores["scoreAGI"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["scoreINNO"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["scoreQSF"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["total"]%> point(s)</td>
+								</tr>
+							</table>
+							
+							<h2>Plateau de jeu</h2>
+							<br>
+							<!-- Canvas -->
+							<canvas id="myCanvas" style="display:block; margin:-25px; border:1px solid #FFFFFF;" width="1100" height="620">
+							</canvas>
+							<% } %>
+						</div>
+						<!-- #content -->
+					</div>
+					<!-- #main -->
+					<footer id="footer">
+					</footer>
+					<!-- #footer -->
+				</body>
+			</html>

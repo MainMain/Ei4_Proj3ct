@@ -114,6 +114,7 @@ Session_Manager.definirDateFin = function(date)
 	return false;
 },
 
+
 Session_Manager.existeSessionEnCours = function()
 {
 	return (this.idSessionEnCours >= 0) ? true : false;
@@ -140,12 +141,26 @@ Session_Manager.getDatesSession = function(idSession)
 	{
 		var struct = 
 		{
-			"dateDebut"	: dateDebut,
-			"dateFin" 	: dateFin,
+			"dateDebut"	:  dateDebut.toDateString() + " - " +  dateDebut.toLocaleTimeString(),
+			"dateFin" 	: dateFin.toDateString() + " - " +  dateFin.toLocaleTimeString()
 		};
 		
+		console.log(struct);
 		return struct;
 	});
+},
+
+Session_Manager.getDatesSessionEnCours = function()
+{
+	var struct = 
+	{
+		"id"		: this.idSessionEnCours,
+		"dateDebut"	: this.dateDebut,
+		"dateFin" 	: this.dateFin
+	};
+	
+	console.log(struct);
+	return struct;
 },
 
 module.exports = Session_Manager;
