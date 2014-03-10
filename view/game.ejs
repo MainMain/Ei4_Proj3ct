@@ -293,7 +293,7 @@
 								</td>
 							</table>
 							<h2>Scores provisoires</h2>
-							<table>
+							<table text-align:center>
 								<tr>
 									<td width="20%"><b>Type</b></td>
 									<td width="20%"><b>AGI</b></td>
@@ -351,6 +351,58 @@
 							</table>
 							
 							<h2>Plateau de jeu</h2>
+							<table>
+								<tr>
+									<td width=80%>
+									<div class="msgTextAreaRapide" id="msgs">
+									</div>
+								
+									<td width=20%>
+										<div>
+										<input type="text" placeholder="Votre message" id="msgTextBox"/>
+										<br>
+										<input type="submit" value="Envoyer !" id="msgSubmit"/>
+										</div>
+									</td>
+								</tr>
+							</table>
+							
+							
+							<script>
+							$( document ).ready(function()
+							{
+								socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
+							});
+							
+							
+							$("#msgSubmit").click(function()
+							{
+								alert('envoi msg');
+								sendMessage();
+							});
+							
+							
+							// envoi d'un message
+							sendMessage = function()
+							{
+								var message = $("#msgTextBox").val();
+								if(message != "")
+								{
+									chat.emit("USER_MESSAGE_CS", '<%= username %>', message);
+								}
+								$("#msgTextBox").val("");
+							},
+			
+							// réception d'un message
+							chat.on('USER_MESSAGE_SC', function(user, message)
+							{
+								alert('reception msg');
+								$("#msgs").append("<div>" + user + " : " + message + "</div>");
+							});
+			
+							</script>
+							
+							
 							<br>
 							<!-- Canvas -->
 							<canvas id="myCanvas" style="display:block; margin:-25px; border:1px solid #FFFFFF;" width="1100" height="620">

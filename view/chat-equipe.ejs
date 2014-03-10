@@ -151,7 +151,6 @@
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 
-
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			//var chat = io.connect('http://192.168.0.24:25536/chat-equipe');
@@ -195,7 +194,7 @@
 					chat.emit("USER_MESSAGE_CS", '<%= username %>', message);
 				}
 				$("#msgTextBox").val("");
-			}
+			},
 			
 			socket.on("DECONEXION_SC", function(msg)
 			{

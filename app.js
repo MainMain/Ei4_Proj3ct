@@ -562,6 +562,7 @@ var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 	
 	socket.on('USER_MESSAGE_CS', function(user, message)
 	{
+		console.log("APP : RECEPTION MSG");
 		var numEquipe;
 		if(oUtilisateur_Manager.exist(id))
 		{

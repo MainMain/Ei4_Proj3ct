@@ -920,6 +920,11 @@ textarea {
 	background-color: #bbbbbb;
 	color:#000000;
 }
+.msgTextAreaRapide
+{
+	min-height:75px;
+	color:#000000;
+}
 .chat
 {
 	color:#FFFFFF;
