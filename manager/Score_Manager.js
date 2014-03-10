@@ -63,7 +63,8 @@ Score_Manager.Load = function (idSession)
 Score_Manager.Save = function()
 {
 	var context = this;
-	// pour chaque user
+	var currentScore;
+	// pour chaque user...
 	oUtilisateur_BD.GetUsersId(function(tabId)
 	{
 		for(var i = 0; i < tabId.length; i++)
@@ -72,19 +73,23 @@ Score_Manager.Save = function()
 			// pour chaque session
 			//for(var jSess = 1; jSess <= context.idSessionEnCours; jSess++)
 			//{
-			EventLog.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+context.idSessionEnCours);
-			// ... le sauvegarder en BD
-			oScore_BD.SetScore(context.listeScores[tabId[i]][context.idSessionEnCours],  function(reponse)
+			
+			// ... sauvegarder son score de la session en cours en BD
+			currentScore = context.listeScores[tabId[i]][context.idSessionEnCours];
+			if (! (typeof currentScore === "undefined"))
 			{
-				if (reponse == -1)
+				oScore_BD.SetScore(currentScore,  function(reponse)
 				{
-					EventLog.error("/!\\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
-				}
-				else
-				{
-					EventLog.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess+" OK !");
-				}
-			});
+					if (reponse == -1)
+					{
+						EventLog.error("/!\\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
+					}
+					else
+					{
+						EventLog.log("SCORE_MANAGER : MAJ du score de " + oUtilisateur_Manager.getPseudo(tabId[i]) + " de SESS "+context.idSessionEnCours+" OK !");
+					}
+				});
+			}
 		}
 	});
 },
@@ -129,17 +134,17 @@ Score_Manager.nouvelleSession = function(idSession)
 	});*/
 },
 
-Score_Manager.createScore = function(idUser, equipe)
+Score_Manager.createScore = function(idUser, equipe, callback)
 {
 	var context = this;
 	// il crée un score avec l'id de ma nouvelle session
 	oScore_BD.Creation(idUser, this.idSessionEnCours, equipe, function(idScore)
 	{
 		// on le récupère
-		oScore_BD.GetScoreByIdUser(idUser, function(score)
+		oScore_BD.GetScoreById(idScore, function(idScore, score)
 		{
 			// chargement des scores en mémoire
-			EventLog.log("SC_MANAGER : createScore() - idUser = " + idUser + " idSession = " + this.idSessionEnCours);
+			EventLog.log("SC_MANAGER : createScore() - idUser = " + idUser + " idSession = " + context.idSessionEnCours);
 			if (score == -1)
 			{
 				EventLog.error("/!\\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
@@ -149,7 +154,10 @@ Score_Manager.createScore = function(idUser, equipe)
 				// enregistrement du score
 				context.listeScores[idUser] = new Array();
 				context.listeScores[idUser][context.idSessionEnCours] = score;
+				
 				EventLog.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser + "<->" + context.idSessionEnCours);
+				EventLog.log(score);
+				callback();
 			}
 		});		
 	});
@@ -345,6 +353,11 @@ Score_Manager.getBilanScoreSession = function(idUser, idSession)
 		"QSF_meurtres"		: 0,
 		"QSF_tués"			: 0,
 		"QSF_zombies"		: 0,
+		"lastSession"		: 0,
+		"nbrAGI_sessionEnCours"		: 0,
+		"nbrINNO_sessionEnCours"	: 0,
+		"nbrQSF_sessionEnCours"		: 0,
+		"lastIdSession"		: idSession
 	};
 	
 	for(var currentIdUser in this.listeScores)
@@ -406,10 +419,25 @@ Score_Manager.getBilanScoreSession = function(idUser, idSession)
 						struct["QSF_zombies"]		+= currentScore.nbrGoulesTues;
 					}
 				} // fin if idSession = sessionEnCours
+				else if (currentScore.idSession == this.idSessionEnCours)
+				{
+					if (currentScore.numEquipe == 1)
+					{
+						struct["nbrAGI_sessionEnCours"]		+= 1;
+					}
+					else if (currentScore.numEquipe == 2)
+					{
+						struct["nbrINNO_sessionEnCours"]	+= 1;
+					}
+					else if (currentScore.numEquipe == 3)
+					{
+						struct["nbrQSF_sessionEnCours"]		+= 1;
+					}
+				}
 			} // fin if pas undef
 		} // fin for
 	} // fin for
-	console.log(struct);
+	//console.log(struct);
 	
 	return struct;
 },

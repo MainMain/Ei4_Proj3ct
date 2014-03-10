@@ -54,7 +54,7 @@ EventLog.init = function()
 
 EventLog.getDate = function()
 {
-	//myDate = new Date();
+	myDate = new Date();
 	//var time = myDate.toLocaleTimeString();
 	//var date = myDate.toDateString(); 
 	

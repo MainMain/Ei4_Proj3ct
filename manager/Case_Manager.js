@@ -226,7 +226,7 @@ Case_Manager.nouvelleJournee = function()
 			var nbrGoules = GameRules.goules_nbrNouvellesGoules();
 		
 			// log
-			EventLog.log("CASE_MANAGER : case " + idCase + " : ajout de " + nbrGoules + " goules !");
+			EventLog.log("CASE_MANAGER : ADD " + nbrGoules + " goule(s) : " + this.listeCases[idCase].getNom());
 		
 			// ajout
 			this.listeCases[idCase].nbrGoules += nbrGoules;

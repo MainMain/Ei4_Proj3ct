@@ -1061,11 +1061,11 @@ Personnage_Manager.Save = function()
 		{
 			if (reponse == -1)
 			{
-				EventLog.error("!!!!! WARNING : PMANAGER : erreur ecriture du perso de " + idUser);
+				EventLog.error("!!!!! WARNING : PMANAGER : erreur ecriture du perso de " + oUtilisateur_Manager.getPseudo(idUser));
 			}
 			else
 			{
-				//EventLog.log("UMANAGER : MAJ du perso de " + idUser + " OK !");
+				EventLog.log("PERSONNAGE_MANAGER : MAJ du perso de [" + oUtilisateur_Manager.getPseudo(idUser) + ";" + idUser+"] OK !");
 			}
 		});
 	}
@@ -1104,6 +1104,11 @@ Personnage_Manager.nouvelleJournee = function()
 			if (this.estMort(idUser))
 			{
 				this.TuerJoueur(idUser, -1, "N");
+				this.AddMessageMort(idUser, "N");
+			}
+			else
+			{
+				this.AddMessage(idUser, "Vous avez été attaqué durant la nuit ! Vous avez subis : " + degatSubisParGoules + " par " + nbrGoules + " zombies !" );
 			}
 		}
 	}

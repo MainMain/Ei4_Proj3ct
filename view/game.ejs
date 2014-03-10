@@ -91,7 +91,9 @@
 					<script type="text/javascript" src="/view/Button.js"></script>
 					<script type="text/javascript" src="/view/ButtonMove.js"></script>
 					<script type="text/javascript" src="/view/ButtonPad.js"></script>
+					<script type="text/javascript" src="/view/js/HeureLocale.js"></script>
 					<script type="text/javascript" src="/view/canvas.js"></script>
+				
 					<!-- Load Open Sans and Merriweather from Google Fonts
 						For optimal performance, customize it to load the styles you need:
 						http://goo.gl/QufgJ
@@ -150,7 +152,7 @@
 							<div class="alert-error" style="font-size: 20px;">
 								<b>Une nouvelle session a commencé depuis votre dernière connexion !</b><br>
 							</div>
-							<h2> Résumé de des scores de votre dernière session : </h2>
+							<h2> Résumé de des scores de votre dernière session : (session n°<%= bilanScores["lastIdSession"]%>)</h2>
 							<table>
 								<td width=50%>
 									<b>Scores globaux : </b> <br>
@@ -237,16 +239,19 @@
 								<li>Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu cela a un coût, vos dégats sont réduits ainsi que votre probabilité de cache.<br></li>
 							</ul>
 							</p>
+							<b>Répartition des équipes</b>
+									<br>
+									
 							<form name="formInitPerso" method="POST" action="/jeu">
 								<input type="hidden" name="_method" value="PUT">
 								<select name="equipe">
-									<option value="1">AGI</option>
-									<option value="2">INNO</option>
-									<option value="3">QSF</option>
+									<option value="1">AGI <%= bilanScores["nbrAGI_sessionEnCours"]%> joueur(s)</option>
+									<option value="2">INNO <%= bilanScores["nbrINNO_sessionEnCours"]%> joueur(s)</option>
+									<option value="3">QSF <%= bilanScores["nbrQSF_sessionEnCours"]%> joueur(s)</option>
 								</select>
 								<select name="competence">
 									<option value="brute">Brute (Dégats et Défense augmentés)</option>
-									<option value="explorateur">Explorateur (Probabilité de se cacher et Points de mouvement augmentée)</option>
+									<option value="explorateur">Explorateur (Probabilité de se cacher et Points de mouvement augmentés)</option>
 									<option value="chercheur">Chercheur (Probabilité de fouille augmentée)</option>
 								</select>
 								<input type="submit" value="Se lancer !" name="submitChoixDepart" />
@@ -275,30 +280,51 @@
 									</table>
 								</td>
 								<td width=50%>
-									<b>Dates de la session</b>
+									<b>Paramètres de la session</b>
 									<br>
+									
 									<table>
-										<tr> <br> </tr>
+										<tr><br></tr>
 										<tr>
-											<td width=10%><b>Numéro </b></td>
-											<td width=45%><b>Date de début</b></td>
-											<td width=45%><b>Date de fin</b></td>
+											<td width=50%><b>Numéro de session : </b> </td>
+											<td><%= sessionInfo["id"]%></td>
 										</tr>
 										<tr>
-											<td width=10%><%= sessionInfo["id"]%></td>
-											<td width=45%><%= sessionInfo["dateDebut"].toLocaleDateString() %></td>
-											<td width=45%><%= sessionInfo["dateFin"].toLocaleDateString() %></td>
+											<td><b>Date de début : </b> </td>
+											<td><%= sessionInfo["dateDebut"].toLocaleDateString()  %></td>
+										</tr>
+										<tr>
+											<td><b>Date de fin : </b> </td>
+											<td><%= sessionInfo["dateFin"].toLocaleDateString() %></td>
+										</tr>
+										</table>
+										<table>
+										<tr>
+											<td><b>Heure de la prochaine attaque : </b> </td>
+											<td><%= heureAttaque %></td>
+										</tr>
+										<tr>
+											<td><b>Heure locale : </b></td>
+											<td>
+												<span id="HeureLocale"></span>
+												<script type="text/javascript">HeureLocale('HeureLocale');</script>
+											</td>
+										</tr>
+										<tr>
+											<td><b>Fréquence des attaques : </b></td>
+											<td><%= dureeCycle %> heures</td>
 										</tr>
 									</table>
 								</td>
+								
 							</table>
 							<h2>Scores provisoires</h2>
 							<table text-align:center>
 								<tr>
 									<td width="20%"><b>Type</b></td>
-									<td width="20%"><b>AGI</b></td>
-									<td width="20%"><b>INNO</b></td>
-									<td width="20%"><b>QSF</b></td>
+									<td width="20%"><b>AGI <i>(<%= bilanScores["nbrAGI"]%> joueur(s))</i></b></td>
+									<td width="20%"><b>INNO <i>(<%= bilanScores["nbrINNO"]%> joueur(s))</i></b></b></td>
+									<td width="20%"><b>QSF <i>(<%= bilanScores["nbrQSF"]%> joueur(s))</i></b></b></td>
 									<td width="20%"><b>Vous</b></td>
 								</tr>
 								<tr>
@@ -309,26 +335,29 @@
 									<td width="20%"><%= bilanScores["scoreODD"]%> point(s)</td>
 								</tr>
 								<tr>
-									<td width="20%"><b>Assassinats</b></td>
+									<td width="20%"><b>Combats à morts</b></td>
+									<td width="20%"><%= bilanScores["scoreAGI_meurtre"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["scoreINNO_meurtre"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["scoreQSF_meurtre"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["scoreMeurtre"]%> point(s)</td>
+								</tr>
+								<tr>
+									<td width="20%"><b><i> -> Assassinats</i></b></td>
 									<td width="20%">
-										<%= bilanScores["scoreAGI_meurtre"]%> point(s)
 										<i>(<%= bilanScores["AGI_meurtres"]%> meurtres)</i>
 									</td>
 									<td width="20%">
-										<%= bilanScores["scoreINNO_meurtre"]%> point(s)
 										<i>(<%= bilanScores["INNO_meurtres"]%> meurtres)</i>
 									</td>
 									<td width="20%">
-										<%= bilanScores["scoreQSF_meurtre"]%> point(s)
 										<i>(<%= bilanScores["QSF_meurtres"]%> meurtres)</i>
 									</td>
 									<td width="20%">
-										<%= bilanScores["scoreMeurtre"]%> point(s)
 										<i>(<%= bilanScores["nbrMeurtres"]%> meurtres)</i>
 									</td>
 								</tr>
 								<tr>
-									<td width="20%"><b>Pertes</b></td>
+									<td width="20%"><b><i> -> Pertes</i></b></td>
 									<td width="20%"><i><%= bilanScores["AGI_tués"]%> tués</i></td>
 									<td width="20%"><i><%= bilanScores["INNO_tués"]%> tués</i></td>
 									<td width="20%"><i><%= bilanScores["QSF_tués"]%> tués</i></td>
@@ -336,10 +365,10 @@
 								</tr>
 								<tr>
 									<td width="20%"><b>Zombies tués</b></td>
-									<td width="20%"><%= bilanScores["AGI_zombies"]%> point(s)</td>
-									<td width="20%"><%= bilanScores["INNO_zombies"]%> point(s)</td>
-									<td width="20%"><%= bilanScores["QSF_zombies"]%> point(s)</td>
-									<td width="20%"><%= bilanScores["nbrGoulesTues"]%> point(s)</td>
+									<td width="20%"><%= bilanScores["AGI_zombies"]%> zombie(s)</td>
+									<td width="20%"><%= bilanScores["INNO_zombies"]%> zombie(s)</td>
+									<td width="20%"><%= bilanScores["QSF_zombies"]%> zombie(s)</td>
+									<td width="20%"><%= bilanScores["nbrGoulesTues"]%> zombie(s)</td>
 								</tr>
 								<tr>
 									<td width="20%"><b>TOTAL</b></td>

@@ -30,6 +30,7 @@ Session_BD.GetLastSessionId = function(callback)
 
 Session_BD.GetSession = function(idSession, callbackGetSession) {
 	
+	EventLog.log("SESSION_BD : GetSession : " + idSession);
 	var Sessionmodel = mongoose.model('Session');
 		
 	Sessionmodel.find({id : idSession},function (err, Session)
@@ -41,7 +42,7 @@ Session_BD.GetSession = function(idSession, callbackGetSession) {
 		
 		if (typeof Session[0] === "undefined")
 		{
-			EventLog.log("Get Session : undefined");
+			EventLog.log("Get Session : undefined - id session = " + idSession);
 			callbackGetSession(idSession, -1);	
 		}
 		else

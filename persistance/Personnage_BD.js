@@ -26,7 +26,6 @@ function Personnage_BD() {
  */
 Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
 {
-	EventLog.log("------------------------------_-_-> " + personnageToSave.ptFaim);
     var PersonnageModel = mongoose.model('Personnage');
     var nouveauPerso = PersonnageModel();
 
@@ -90,7 +89,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                         throw err;
                     }
 					
-                    EventLog.log("PERSONNAGE_BD : Mis à jour du personnage : ["+personnageToSave.id+"]");
+                   // EventLog.log("PERSONNAGE_BD : Mis à jour du personnage : ["+personnageToSave.id+"]");
 					callbackSetPersonnage(1);
                 }
             );

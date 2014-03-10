@@ -87,7 +87,7 @@ Score_BD.GetScoreByIdUser = function(id, callbackGetScore) {
 				Score[0].scoreByODD,		Score[0].nbrGoulesTues,		Score[0].listeVictimes,
 				Score[0].listeBourreaux
 				);
-			//EventLog.log("SCORE_BD : Chargement du score : ["+Score[0].idUser+"-"+Score[0].idSession+"]");
+			EventLog.log("SCORE_BD : Chargement du score : ["+Score[0].idUser+"-"+Score[0].idSession+"-"+Score[0].numEquipe+"]");
 			callbackGetScore(score);
 		}
 	});
@@ -98,11 +98,10 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
     var ScoreModel = mongoose.model('Score');
     var newScore = ScoreModel();
 
+    //console.log(scoreToSave);
     EventLog.log("SCORE_BD : TENTATIVE Mise à jour du score : ["+scoreToSave.id+"]");
     ScoreModel.find({_id: scoreToSave.id}, function (err, newScore) 
     {
-    	EventLog.log("---> BD : id score to save " + scoreToSave.id);
-    	
         if (err) 
         {
             EventLog.log("SCORE_BD : SetScore() : erreur ! ");
@@ -135,7 +134,7 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
                 	throw err;
                 }
 					
-                EventLog.log("SCORE_BD : Mis à jour du score : ["+scoreToSave.id+"]");
+                //EventLog.log("SCORE_BD : Mis à jour du score : ["+scoreToSave.id+"]");
 				callbackSetPersonnage(1);
             });
         }

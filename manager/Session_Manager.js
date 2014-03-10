@@ -137,12 +137,13 @@ Session_Manager.getDateFin = function()
 
 Session_Manager.getDatesSession = function(idSession)
 {
+	if (idSession == -1) return null;
 	oSession_BD.GetSession(idSession, function(idSession, dateDebut, dateFin)
 	{
 		var struct = 
 		{
-			"dateDebut"	:  dateDebut.toDateString() + " - " +  dateDebut.toLocaleTimeString(),
-			"dateFin" 	: dateFin.toDateString() + " - " +  dateFin.toLocaleTimeString()
+			"dateDebut"	: dateDebut.toDateString() + " à " +  dateDebut.toLocaleTimeString(),
+			"dateFin" 	: dateFin.toDateString() + " à " +  dateFin.toLocaleTimeString()
 		};
 		
 		console.log(struct);
