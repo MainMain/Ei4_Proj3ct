@@ -226,11 +226,10 @@ Case_BD.Initialiser = function(callBack)
 						newCase.save();
 						
 						EventLog.log("CASE_BD : Creation de la case [" + newCase.nom + "] en BD");
-					}
-				}
-
-			}
-		}
+					} // fin if(infosCase[0])
+				} // fin if(tabLignes != "")
+			} // fin for(var i in tabLignes)
+		} // fin if(tabId.length == 0)
 		EventLog.log("CALLBACK ! ");
 		callBack();
 	});

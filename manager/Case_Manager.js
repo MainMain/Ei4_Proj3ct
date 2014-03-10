@@ -27,7 +27,7 @@ Case_Manager.Load = function()
 		// récupération des clés
 		idCases = oCase_BD.GetCasesId(function(idCases)
 		{
-			//EventLog.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
+			EventLog.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
 			// pour chaque case
 			for(var i in idCases)
 			{
@@ -39,7 +39,7 @@ Case_Manager.Load = function()
 					// gestion des erreurs
 					if(reponse == -1 || reponse == -2)
 					{
-						EventLog.error("Erreur Case : " + idCase);
+						EventLog.error("CASE_MANAGER : Load() : Erreur Case : " + idCase);
 					}
 					// enregistrement effectif
 					else

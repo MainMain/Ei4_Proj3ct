@@ -64,6 +64,7 @@ Session_Manager.demarrer = function(dateFin)
 	
 	if(dateFin > today)
 	{
+		// 1: Enregistrer en BD
 		// récupérer le dernier élément de la table session
 		oSession_BD.GetLastSessionId(function(lastId)
 		{
@@ -84,6 +85,11 @@ Session_Manager.demarrer = function(dateFin)
 			// créer en BD
 			oSession_BD.Creation(context.idSessionEnCours, context.dateDebut, context.dateFin);
 		});
+		
+		// 2: Réinitialiser les cases
+		// supprimer ttes les cases
+		// lecture du fichier
+		// chargement en mémoire
 	}
 },
 

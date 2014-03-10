@@ -311,23 +311,90 @@ sortByScoreODD = function(a, b)
 },
 
 
-Score_Manager.getBilanScoreSession = function(idSession)
+Score_Manager.getBilanScoreSession = function(idUser, idSession)
 {
+	var currentScore, scoreTotal;
 	var struct = 
 	{
-		"scoreAGI"			: 0,
-		"scoreINNO" 		: 0,
-		"scoreQSF"  		: 0,
+		"scoreAGI_odd"			: 0,
+		"scoreINNO_odd" 		: 0,
+		"scoreQSF_odd"  		: 0,
+		"scoreAGI_meurtre"		: 0,
+		"scoreINNO_meurtre" 	: 0,
+		"scoreQSF_meurtre"  	: 0,
+		"scoreAGI"				: 0,
+		"scoreINNO" 			: 0,
+		"scoreQSF"  			: 0,
+		"nbrAGI"			: 0,
+		"nbrINNO"			: 0,
+		"nbrQSF"			: 0,
 		"scoreODD"  		: 0,
+		"nbrMeurtres"		: 0,
+		"nbrFoisTue"		: 0,
 		"scoreMeurtre"  	: 0,
-		"sortByNbrGoules"  	: 0,
+		"nbrGoulesTues"  	: 0,
 		"sortByNbrMorts"  	: 0,
+		"total"				: 0,
 	};
 	
-	for(var i in this.listeScores)
+	for(var currentIdUser in this.listeScores)
 	{
-		
+		//console.log(">>>> currentIduser = " + currentIdUser);
+		for(var currentIdSession in this.listeScores[currentIdUser])
+		{
+			currentScore = this.listeScores[currentIdUser][currentIdSession];
+			console.log(currentIdUser + " - " + currentIdSession +" :");
+			console.log(currentScore);
+			//console.log(">>>> currentIdSession = " + currentIdSession);
+			//console.log(">>>> id score = " + this.listeScores[currentIdUser][currentIdSession].id);
+			if (!(typeof currentScore === "undefined"))
+			{
+				console.log(">>>>>>>>> id session = " + idSession);
+				if (currentScore.idSession == idSession)
+				{
+					if (currentScore.idUser == idUser)
+					{
+						console.log("SCORE_MANAGER : getBilanScoreSession()  user trouvé !");
+						struct["scoreODD"]		= currentScore.scoreByODD ;
+						struct["nbrMeurtres"]	= currentScore.nbrMeurtres ;
+						struct["nbrFoisTue"]	= currentScore.nbrFoisTue ;
+						struct["scoreMeurtre"]	= currentScore.scoreByMeutre ;
+						struct["nbrGoulesTues"]	= currentScore.nbrGoulesTues ;
+						struct["total"] = 
+							currentScore.scoreByODD + 
+							currentScore.scoreByMeutre +
+							 
+					}
+					scoreTotal = currentScore.scoreByMeutre + currentScore.scoreByODD;
+					
+					if (currentScore.numEquipe == 1)
+						{
+							struct["scoreAGI"] 			+= scoreTotal;
+							struct["scoreAGI_odd"] 		+= currentScore.scoreByODD;
+							struct["scoreAGI_meurtre"] 	+= currentScore.scoreByMeutre;
+							struct["nbrAGI"]			+= 1;
+						}
+					else if (currentScore.numEquipe == 2)
+						{
+							struct["scoreINNO"] 		+= scoreTotal;
+							struct["scoreINNO_odd"] 	+= currentScore.scoreByODD;
+							struct["scoreINNO_meurtre"] += currentScore.scoreByMeutre;
+							struct["nbrINNO"]			+= 1;
+						}
+					else if (currentScore.numEquipe == 3)
+						{
+							struct["scoreQSF"] 			+= scoreTotal;
+							struct["scoreQSF_odd"] 		+= currentScore.scoreByODD;
+							struct["scoreQSF_meurtre"] 	+= currentScore.scoreByMeutre;
+							struct["nbrQSF"]			+= 1;
+						}
+				}
+			}
+		}
 	}
+	console.log(struct);
+	
+	return struct;
 },
 
 
