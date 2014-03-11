@@ -146,19 +146,20 @@ Session_Manager.getDateFin = function()
 	return this.dateFin;
 },
 
-Session_Manager.getDatesSession = function(idSession)
+Session_Manager.getDatesSession = function(idSession, callback)
 {
 	if (idSession == -1) return null;
 	oSession_BD.GetSession(idSession, function(idSession, dateDebut, dateFin)
 	{
 		var struct = 
 		{
-			"dateDebut"	: dateDebut.toDateString() + " à " +  dateDebut.toLocaleTimeString(),
-			"dateFin" 	: dateFin.toDateString() + " à " +  dateFin.toLocaleTimeString()
+			"dateDebut"	: dateDebut, //.toDateString() + " à " +  dateDebut.toLocaleTimeString(),
+			"dateFin" 	: dateFin //.toDateString() + " à " +  dateFin.toLocaleTimeString()
 		};
 		
+		console.log("getDatesSession");
 		console.log(struct);
-		return struct;
+		callback(struct);
 	});
 },
 

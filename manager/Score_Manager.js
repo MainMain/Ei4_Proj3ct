@@ -328,8 +328,6 @@ Score_Manager.getBilanScoreSession = function(idUser, idSession)
 {
 	console.log("SCORE_MANAGER : GetBilanScoreSession pour session = " + idSession);
 	
-	console.log(this.listeScores);
-	
 	var currentScore, scoreTotal;
 	var struct = 
 	{

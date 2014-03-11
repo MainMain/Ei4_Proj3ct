@@ -49,7 +49,7 @@ Case_Manager.Load = function()
 					}
 				});
 			}
-			// si les cases viennent d'être créées, on les remplits
+			// si les cases viennent d'être créées, on les remplies
 			if (creation) context.RemplirCases();
 		});
 	});
