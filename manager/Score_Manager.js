@@ -75,21 +75,26 @@ Score_Manager.Save = function()
 			//{
 			
 			// ... sauvegarder son score de la session en cours en BD
-			currentScore = context.listeScores[tabId[i]][context.idSessionEnCours];
-			if (! (typeof currentScore === "undefined"))
-			{
-				oScore_BD.SetScore(currentScore,  function(reponse)
+			try 
+			{ 
+				currentScore = context.listeScores[tabId[i]][context.idSessionEnCours]; 
+		
+				if (! (typeof currentScore === "undefined"))
 				{
-					if (reponse == -1)
+					oScore_BD.SetScore(currentScore,  function(reponse)
 					{
-						EventLog.error("/!\\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
-					}
-					else
-					{
-						EventLog.log("SCORE_MANAGER : MAJ du score de " + oUtilisateur_Manager.getPseudo(tabId[i]) + " de SESS "+context.idSessionEnCours+" OK !");
-					}
-				});
+						if (reponse == -1)
+						{
+							EventLog.error("/!\\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
+						}
+						else
+						{
+							EventLog.log("SCORE_MANAGER : MAJ du score de " + oUtilisateur_Manager.getPseudo(tabId[i]) + " de SESS "+context.idSessionEnCours+" OK !");
+						}
+					});
+				}
 			}
+			catch(err) { console.log("SCORE_MANAGER : Save() : " + err + " (utilisateur sans score)"); }
 		}
 	});
 },

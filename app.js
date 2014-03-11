@@ -282,6 +282,7 @@ app.get('/jeu', restrict, function fonctionIndex(req, res)
 		"dateLastSession" 	: oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser)),
 		"isUpToDate" 		: isUpToDate,
 		"bilanScores" 		: oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser)),
+		"bilanScores_last" 	: oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser)),
 		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
 		"heureAttaque" 		: dateNextAttack.toLocaleTimeString(),
 		"dureeCycle" 		: dureeCycle / (1000*3600)
@@ -308,6 +309,7 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 		"dateLastSession" 	: oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser)),
 		"isUpToDate" 		: isUpToDate,
 		"bilanScores" 		: oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser)),
+		"bilanScores_last" 	: oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser)),
 		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
 		"heureAttaque" 		: dateNextAttack.toLocaleTimeString(),
 		"dureeCycle" 		: dureeCycle / (1000*3600)

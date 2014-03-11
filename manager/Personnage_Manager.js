@@ -10,6 +10,7 @@ var oItem_Manager        = require('./Item_Manager');
 var oCase_Manager        = require('./Case_Manager');
 var oUtilisateur_Manager = require('./Utilisateur_Manager');
 var oScore_Manager		 = require('./Score_Manager');
+var oSession_Manager 	 = require('./Session_Manager');
 
 //inclusion des règles
 var GameRules	= require('../model/GameRules');
@@ -1080,6 +1081,10 @@ Personnage_Manager.nouvelleJournee = function()
 	
 	for(var idUser in this.listePersonnages)
 	{
+		// si le perso appartient a la session en cours
+		if (oUtilisateur_Manager.getIdSession() == oSession_Manager.getIdSessionEnCours())
+		{
+			console.log("PERSONNAGE_MANAGER : Nouvelle journée pour le perso de " +oUtilisateur_Manager.getPseudo(idUser) );
 		// regain de pts de vie
 		this.listePersonnages[idUser].nvlleJournee();
 		
@@ -1108,8 +1113,9 @@ Personnage_Manager.nouvelleJournee = function()
 			}
 			else
 			{
-				this.AddMessage(idUser, "Vous avez été attaqué durant la nuit ! Vous avez subis : " + degatSubisParGoules + " par " + nbrGoules + " zombies !" );
+				this.AddMessage(idUser, "Vous avez été attaqué durant la nuit ! Vous avez subi : " + degatSubisParGoules + " par " + nbrGoules + " zombies !" );
 			}
+		}
 		}
 	}
 },
