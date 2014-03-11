@@ -172,6 +172,7 @@ Utilisateur_Manager.deleteUser = function(idUser)
 
 Utilisateur_Manager.Save = function()
 {
+	var context = this;
 	for(var idUser in this.listeUtilisateurs)
 	{
 		oUtilisateur_BD.SetUtilisateur(this.listeUtilisateurs[idUser], function(reponse)
@@ -182,10 +183,29 @@ Utilisateur_Manager.Save = function()
 			}
 			else
 			{
-				//EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " OK !");
+				EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user ["+idUser +";"+context.listeUtilisateurs[idUser].pseudo+"] OK !");
 			}
 		});
 	}
+},
+
+Utilisateur_Manager.confirmerCompte = function(idUser)
+{
+	// modifie l'état de l'objet en mémoire
+	this.listeUtilisateurs[idUser].confirmerCompte();
+	
+	// enregistre en BD -> Evite de reconfirmer si le serveur crash avant la prochaine save globale
+	oUtilisateur_BD.SetUtilisateur(this.listeUtilisateurs[idUser], function(reponse)
+	{
+		if (reponse == -1)
+		{
+			EventLog.error("/!\ UTILISATEUR_MANAGER : erreur ecriture de l'user pour la confirmation du compte !" + idUser);
+		}
+		else
+		{
+			EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " en BD OK : Compte confirmé !");
+		}
+	});
 },
 
 module.exports = Utilisateur_Manager;

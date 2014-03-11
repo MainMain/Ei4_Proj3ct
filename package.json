@@ -2,14 +2,15 @@
   "name": "Ei4_Project",
   "version": "1.0.0",
   "dependencies": {
-	"async": "latest",
-    	"express": "3.4.8",
-	"dateformat": "latest",
-	"ejs": "latest",
-	"async": "latest",
-	"mongoose": ">=3.6.0",
-	"session": "latest",
-	"socket.io": "latest"
+    "async": "latest",
+    "express": "3.4.8",
+    "dateformat": "latest",
+    "ejs": "latest",
+    "mongoose": ">=3.6.0",
+    "session": "latest",
+    "socket.io": "latest",
+    "postmark ": "latest",
+    "postmark": "~0.2.0"
   },
   "engines": {
     "node": "0.8.x",

@@ -220,7 +220,7 @@ Case_Manager.nouvelleJournee = function()
 	// ajout de goules
 	for(var idCase in this.listeCases)
 	{
-		if (!((idCase == GameRules.idZoneSure_1()) || (idCase == GameRules.idZoneSure_2())))
+		if (!((idCase == GameRules.idZoneSure_1()) || (idCase == GameRules.idZoneSure_2() || (idCase == GameRules.idZoneSure_3()))))
 		{
 			// calcul du nombre de goules a ajouter
 			var nbrGoules = GameRules.goules_nbrNouvellesGoules();

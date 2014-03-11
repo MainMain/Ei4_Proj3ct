@@ -18,12 +18,14 @@ var Utilisateur = (function() {
 	Utilisateur.numEquipe;
 	Utilisateur.idPersonnage;
 	Utilisateur.idSession;
+	Utilisateur.compteConfirme;
 	
 	// --- METHODES DE CLASSE ---
 	Utilisateur.build = function() {return new Utilisateur();};
 
 	// --- Constructeur + attributs d'instance (définis dans le constructeur)
-	function Utilisateur(id, pseudo, email, numEquipe, idPersonnage, idSession) {
+	// Utilisé a l'inscription
+	/*function Utilisateur(id, pseudo, email, numEquipe, idPersonnage, idSession) {
 		// --- Attributs d'instance
 		this.id 					= id;
 		this.pseudo 				= pseudo;
@@ -31,55 +33,46 @@ var Utilisateur = (function() {
 		this.numEquipe			 	= numEquipe;
 		this.idPersonnage 			= idPersonnage;
 		this.idSession				= idSession;
+		this.compteConfirme			= false;
+	}*/
+	
+	// Utilisé par la base de données
+	function Utilisateur(id, pseudo, email, numEquipe, idPersonnage, idSession, compteConfirme) {
+		// --- Attributs d'instance
+		this.id 					= id;
+		this.pseudo 				= pseudo;
+		this.email 					= email;
+		this.numEquipe			 	= numEquipe;
+		this.idPersonnage 			= idPersonnage;
+		this.idSession				= idSession;
+		this.compteConfirme			= compteConfirme;
 	}
+	
 
 	// --- METHODES D'INSTANCE
 	Utilisateur.prototype =
 	{
-		setScore : function(newScore)
-		{
-			this.scoreByMeutreCumule = newScore;
-		},
+		getIdSession 		: function() { return this.idSession; },
 		
-		setNumEquipe : function(newNumEquipe)
-		{
-			this.numEquipe = newNumEquipe;
-		},
+		getNumEquipe 		: function() { return this.numEquipe; },
 		
-		setIdSession : function(newIdSession)
-		{
-			this.idSession = newIdSession;
-		},
+		getPseudo 			: function() { return this.pseudo; },
 		
-		getIdSession : function()
-		{
-			return this.idSession;
-		},
+		getIdPersonnage 	: function() { return this.idPersonnage; },
 		
-		getNumEquipe : function()
-		{
-			return this.numEquipe;
-		},
+		getScore 			: function() { return this.scoreByMeutreCumule; },
 		
-		getPseudo : function()
-		{
-			return this.pseudo;
-		},
+		getUser 			: function() { return this; },
 		
-		getIdPersonnage : function()
-		{
-			return this.idPersonnage;
-		},
+		getCompteConfirme 	: function() { return this.compteConfirme; },
 		
-		getScore : function()
-		{
-			return this.scoreByMeutreCumule;
-		},
+		setScore 			: function(newScore) { this.scoreByMeutreCumule = newScore; },
 		
-		getUser : function()
-		{
-			return this;
-		},
+		setNumEquipe 		: function(newNumEquipe) { this.numEquipe = newNumEquipe; },
+		
+		setIdSession 		: function(newIdSession) {	this.idSession = newIdSession; },
+		
+		confirmerCompte		: function() { this.compteConfirme = true; },
 
 	};
 	// On pense à retourner le constructeur (afin de pouvoir construire des

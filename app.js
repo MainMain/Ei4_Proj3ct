@@ -13,6 +13,30 @@ var app         = express();
 var server      = http.createServer(app);
 var oEventLog    = require('./model/EventLog');
 
+// pour envoyer les mails
+var key = "11332178-c46b-41e6-9099-a8ac60d7f4b3";
+var postmark = require("postmark")(key);
+var ejs = require("ejs");
+
+//TEST MAIL
+postmark.send(
+{
+    "From": "psyko469@hotmail.fr",
+    "To": "psyko469@hotmail.fr",
+    "Subject": "Confirm your email address",
+    "TextBody": "Test pour dév", //" +pseudo ,
+    "HtmlBody": "http://testDev.com"
+}, function (err, to)
+{
+    if (err)
+    {
+        oEventLog.error("APP : Erreur envoi de mail : " + err);
+        return;
+    }
+    console.log("Email sent to: %s", to);
+});
+// FIN TEST MAIL
+
 // require objets
 var oCarte	= require('./model/object/Carte');
 
@@ -103,7 +127,7 @@ app.use(function(req, res, next)
 {
 	res.status(404);
 	
-	res.send('Not found');
+	res.send('Page not found');
 });
 
 
@@ -445,6 +469,7 @@ app.get('/chat-general', restrict, function fonctionIndex(req, res)
 app.post("/", function (req, res)
 {
 	var b = req.body;
+	
 	oUtilisateur_BD.Connexion(b.username, b.password, req, res, callbackConnexion);
 });
 
@@ -471,12 +496,22 @@ callbackConnexion = function(reponseConnexion, req, res)
 	}
 	else if(reponseConnexion == -1)
 	{
-		optionAccueil.errorLogin = "Couple Login/Mot de passe incorrect";
+		optionAccueil.errorLogin = "Couple login/mot de passe incorrect.";
 		
 		res.render("accueil", optionAccueil);
 		
 		optionAccueil.errorLogin = null;
 	}
+	else if(reponseConnexion == -2)
+	{
+		optionAccueil.errorLogin = "Compte non validé. Veuillez confirmer votre compte en cliquant sur le lien envoyé par mail " +
+				"lors de votre inscription !";
+		
+		res.render("accueil", optionAccueil);
+		
+		optionAccueil.errorLogin = null;
+	}
+	
 	else
 	{
 		optionAccueil.errorLogin = "Erreur Interne";
@@ -490,7 +525,25 @@ callbackConnexion = function(reponseConnexion, req, res)
 app.put('/', function (req, res)
 {
 	var b = req.body;
-	oUtilisateur_BD.Inscription(b.username, b.password, b.email, req, res, callbackInscription);
+	var testsOk = false;
+	// regex test email
+	var regTestMailAngers = /.@univ-angers.fr/;
+	var reg = /^([\w-\.]+@(?!gmail.com)(?!yahoo.com)(?!hotmail.com)([\w-]+\.)+[\w-]{2,4})?$/;
+	
+	// test si c'est en bonne forme
+	//if
+	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regTestMailAngers.test(b.email) );
+	if		(b.username.length < 4) 			optionAccueil.InfoInscription = "Login_nonConforme";
+	else if (b.password.length < 6) 			optionAccueil.InfoInscription = "Pass_nonConforme";
+	else if (!regTestMailAngers.test(b.email)) 	optionAccueil.InfoInscription = "Mail_nonConforme";
+	else
+	{
+		// si ok
+		oUtilisateur_BD.Inscription(b.username, b.password, b.email, req, res, callbackInscription);
+		testsOk = true;
+	}
+	// si test nok, on renvoi la page d'accueil
+	if (!testsOk) res.render("accueil", optionAccueil);
 	
 });
 	

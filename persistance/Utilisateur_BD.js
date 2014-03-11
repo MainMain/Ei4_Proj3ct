@@ -43,17 +43,18 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 			NewUser[0].personnage 			= utilisateurToSave.idPersonnage;
 			NewUser[0].numEquipe 			= utilisateurToSave.numEquipe;
 			NewUser[0].idSession			= utilisateurToSave.idSession;
+			NewUser[0].compteConfirme		= utilisateurToSave.compteConfirme;
 			NewUser[0].save(function (err)
 					{
 						if (err)
 						{
 							throw err;
 						}
-						EventLog.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
+						//EventLog.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 						
 						callbackSetUtilisateur(new oUtilisateur(
 							NewUser._id,			NewUser.pseudo,				NewUser.email,				NewUser.pass,
-							NewUser.numEquipe,		NewUser.personnage, 		NewUser.idSession));
+							NewUser.numEquipe,		NewUser.personnage, 		NewUser.idSession, 			NewUser.compteConfirme));
 					});
 			
 		}
@@ -89,7 +90,8 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) 
 			//EventLog.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
 			var user = new oUtilisateur(
 					NewUser[0]._id,				NewUser[0].pseudo,				NewUser[0].email,				//NewUser[0].pass,
-					NewUser[0].numEquipe,		NewUser[0].personnage,			NewUser[0].idSession);
+					NewUser[0].numEquipe,		NewUser[0].personnage,			NewUser[0].idSession,
+					NewUser[0].compteConfirme);
 			EventLog.log("UTILISATEUR_BD : Chargement de l'utilisateur : ["+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 			callbackGetUtilisateur(idUtilisateur, user);
 		}
@@ -136,7 +138,6 @@ Utilisateur_BD.deleteUser = function(idUser, callbackDelete)
  * Renvoi -2 si email deja pris
  * @method Inscription
  */
- 
 Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callbackInscription)
 {
  	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
@@ -151,8 +152,9 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	newUser.email 				= emailU;
 	newUser.numEquipe 			= 0;
 	newUser.idSession			= -1;
+	newUser.compteConfirme		= false;
 	
-	// on cherche si ce pseudo existee déja
+	// on cherche si ce pseudo existe déja
 	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)
 	{
 		// si erreur 
@@ -240,6 +242,11 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		else if(user[0].pass != passU)
 		{
 			callbackConnexion(-1, req, res);
+		}
+		else if(user[0].compteConfirme == false)
+		{
+			callbackConnexion(-2, req, res);
+			EventLog.log("USER_BD : refus de connexion de l'user = " + user[0].pseudo + " cause : compte non-confirmé");
 		}
 		else
 		{
