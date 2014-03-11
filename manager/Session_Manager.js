@@ -2,6 +2,7 @@
 var GameRules	= require('../model/GameRules');
 var EventLog    = require('../model/EventLog');
 var oScore_Manager = require('./Score_Manager');
+var oCase_Manager = require('./Case_Manager');
 
 var oSession_BD = require('../persistance/Session_BD');
 
@@ -59,6 +60,9 @@ Session_Manager.Load = function(callback)
 
 Session_Manager.demarrer = function(dateFin)
 {
+	// fin de la session en cours
+	this.stopper();
+	
 	var today = new Date();
 	var context = this;
 	
@@ -86,19 +90,26 @@ Session_Manager.demarrer = function(dateFin)
 			oSession_BD.Creation(context.idSessionEnCours, context.dateDebut, context.dateFin);
 		});
 		
-		// 2: Réinitialiser les cases
-		// supprimer ttes les cases
-		// lecture du fichier
-		// chargement en mémoire
+		// lecture du fichier et chargement en mémoire
+		//oCase_Manager.Load();
 	}
 },
 
 Session_Manager.stopper = function()
 {
 	EventLog.log("SESSION_MANAGER() : Stop session !");
+	
+	// mettre a jour dans la BD la fin de la session qui vient d'être arrêtée
+	oSession_BD.SetSession(this.idSessionEnCours, this.dateDebut, new Date());
+	
+	// initialiser les attributs
 	this.idSessionEnCours = -1;
 	this.dateDebut = null;
 	this.dateFin = null;
+	
+	// 2: Réinitialiser les cases
+	// supprimer ttes les cases
+	// oCase_Manager.supprimerCases();
 },
 
 Session_Manager.definirDateFin = function(date)

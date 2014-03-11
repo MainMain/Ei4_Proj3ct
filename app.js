@@ -269,6 +269,10 @@ app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
 app.get('/jeu', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
+	
+	oEventLog.log("APP GET /jeu - Id session en cours  : " + oSession_Manager.getIdSessionEnCours());
+	oEventLog.log("APP GET /jeu - Id session du joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
+	
 	var options;
 	//date next attack
 	var dateNextAttack = new Date(Date.parse(heureDerniereAttaque)+dureeCycle);
@@ -288,9 +292,7 @@ app.get('/jeu', restrict, function fonctionIndex(req, res)
 		"dureeCycle" 		: dureeCycle / (1000*3600)
 		};
 	
-	oEventLog.log("APP - Id session en cours  : " + oSession_Manager.getIdSessionEnCours());
-	oEventLog.log("APP - Id session du joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
-	
+
 	res.render('game', options);
 });
 
@@ -298,6 +300,10 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 {
 	var b = req.body;
 	var s = req.session;
+	
+	oEventLog.log("APP PUT /jeu - Id session en cours  : " + oSession_Manager.getIdSessionEnCours());
+	oEventLog.log("APP PUT /jeu - Id session du joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
+	
 	var idSession = oSession_Manager.getIdSessionEnCours(oUtilisateur_Manager.getIdSession(s.idUser));
 	var isUpToDate = (idSession == oUtilisateur_Manager.getIdSession(s.idUser));
 	//date next attack

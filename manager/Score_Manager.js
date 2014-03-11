@@ -103,7 +103,7 @@ Score_Manager.nouvelleSession = function(idSession)
 {
 	// modifie l'id de session de jeu
 	this.idSessionEnCours = idSession;
-	this.listeScores = new Array();
+	//this.listeScores = new Array();
 	//var maListe = this.listeScores;
 	
 	/*
@@ -326,6 +326,10 @@ sortByScoreODD = function(a, b)
 
 Score_Manager.getBilanScoreSession = function(idUser, idSession)
 {
+	console.log("SCORE_MANAGER : GetBilanScoreSession pour session = " + idSession);
+	
+	console.log(this.listeScores);
+	
 	var currentScore, scoreTotal;
 	var struct = 
 	{
@@ -371,6 +375,8 @@ Score_Manager.getBilanScoreSession = function(idUser, idSession)
 		for(var currentIdSession in this.listeScores[currentIdUser])
 		{
 			currentScore = this.listeScores[currentIdUser][currentIdSession];
+			
+			
 			//console.log(currentIdUser + " - " + currentIdSession +" :");
 			//console.log(currentScore);
 			//console.log(">>>> currentIdSession = " + currentIdSession);
