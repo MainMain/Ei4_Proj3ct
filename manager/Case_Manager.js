@@ -249,11 +249,13 @@ Case_Manager.GetNombreGoules = function(idCase)
 
 Case_Manager.getZoneSure = function(numEquipe)
 {
-	if(numEquipe == 1)
+	switch(numEquipe)
 	{
-		return GameRules.idZoneSure_1();
+		case 1 : return GameRules.idZoneSure_1();
+		case 2 : return GameRules.idZoneSure_2();
+		case 3 : return GameRules.idZoneSure_3();
+		default : -1;
 	}
-	return GameRules.idZoneSure_2();
 },
 
 Case_Manager.GetIdZoneSureEnnemi = function(numEquipe)

@@ -297,38 +297,25 @@ app.get('/jeu', restrict, function fonctionIndex(req, res)
 	oEventLog.log("APP GET /jeu - Id session en cours  : " + oSession_Manager.getIdSessionEnCours());
 	oEventLog.log("APP GET /jeu - Id session du joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
 	
-	var options;
-	//date next attack
-	var dateNextAttack = new Date(Date.parse(heureDerniereAttaque)+dureeCycle);
+	var options = getDonnesPageJeu(s.idUser, s.username);
 	
-	var isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
-	options = 
-	{ 
-		"username"			: s.username, 
-		"idEquipe"			: oUtilisateur_Manager.GetNumEquipe(s.idUser), 
-		"sessionID" 		: s.idUser, 
-		"dateLastSession" 	: -1,
-		"isUpToDate" 		: isUpToDate,
-		"bilanScores" 		: oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser)),
-		"bilanScores_last" 	: -1,
-		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
-		"heureAttaque" 		: dateNextAttack.toLocaleTimeString(),
-		"dureeCycle" 		: dureeCycle / (1000*3600)
-		};
-	
-		//res.render('game', options);
-		// si l'utilisateur n'est pas dans la bonne session
-	if (!isUpToDate)
+	// si l'utilisateur n'est pas dans la bonne session
+	if (!options["isUpToDate"])
 	{
+		// on récupère le bilan des score de la derniere session
 		options["bilanScores_last"] = oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
+		// on récupère les dates de la derniere session
 		oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser), function(dates)
 		{
+			// attribution des dates
 			options["dateLastSession"] = dates;
+			// renvoi de la page
 			res.render('game', options);
 		});
 	}
 	else
 	{
+		// renvoi de la page
 		res.render('game', options);
 	}
 });
@@ -341,55 +328,47 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 	oEventLog.log("APP PUT /jeu - Id session en cours  : " + oSession_Manager.getIdSessionEnCours());
 	oEventLog.log("APP PUT /jeu - Id session du joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
 	
-	var idSession = oSession_Manager.getIdSessionEnCours(oUtilisateur_Manager.getIdSession(s.idUser));
-	var isUpToDate = (idSession == oUtilisateur_Manager.getIdSession(s.idUser));
-	//date next attack
-	var dateNextAttack = new Date(Date.parse(heureDerniereAttaque)+dureeCycle);
 	
-	var isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
-	options = 
-	{ 
-		"username"			: s.username, 
-		"idEquipe"			: oUtilisateur_Manager.GetNumEquipe(s.idUser), 
-		"sessionID" 		: s.idUser, 
-		"dateLastSession" 	: -1,
-		"isUpToDate" 		: isUpToDate,
-		"bilanScores" 		: oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser)),
-		"bilanScores_last" 	: -1,
-		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
-		"heureAttaque" 		: dateNextAttack.toLocaleTimeString(),
-		"dureeCycle" 		: dureeCycle / (1000*3600)
-		};
 	
 	// l'équipe vient d'être choisie
 	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")
 	{
 		var idSession = oSession_Manager.getIdSessionEnCours();
 		
+		// on attribut le num d'équipe à l'utilisateur
 		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe, idSession);
+		
+		// on attribut la compétence au personnage de l'utilisateur
 		oPersonnage_Manager.SetCompetence(s.idUser, b.competence, b.equipe);
+		
+		// on crée le score en mémoire et en BD
 		oScore_Manager.createScore(s.idUser, b.equipe, function()
 		{
-			options.idEquipe = b.equipe;
-			options.isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
-		
 			// on remet à jour la structure
+			/*options["idEquipe"] 		= b.equipe;
+			options["isUpToDate"] 		= (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
 			options["idEquipe"]			= oUtilisateur_Manager.GetNumEquipe(s.idUser); 
 			options["sessionID"]		= s.idUser;
 			options["bilanScores"]		= oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
 			options["sessionInfo"] 		= oSession_Manager.getDatesSessionEnCours();
 			options["bilanScores_last"] = oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
+			*/
 			
+			/*
 			oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser), function(dates)
 			{
 				options["dateLastSession"] = dates;
 				res.render('game', options);
-			});
-			
+			});*/
+			options = getDonnesPageJeu(s.idUser, s.username);
+			res.render('game', options);
 		});
 	}
-	
-	
+	else
+	{
+		var options	= getDonnesPageJeu(s.idUser, s.username);
+		res.render('game', options);
+	}
 });
 
 app.get('/tutoriel', function fonctionIndex(req, res)
@@ -419,14 +398,27 @@ app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 	var s = req.session;
 	var idSession = oSession_Manager.getIdSessionEnCours();
 	var isUpToDate = (idSession == oUtilisateur_Manager.getIdSession(s.idUser));
-	var options = { 
-		"username": s.username, 
-		"sessionID" : s.idUser, 
-		"idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser),
-		"isUpToDate" : isUpToDate
-		};
+	var options = getDonnesPageJeu(s.idUser, s.username);
 	
-	res.render('chat-equipe', options);
+		// si l'utilisateur n'est pas dans la bonne session
+		if (!options["isUpToDate"])
+		{
+			// on récupère le bilan des score de la derniere session
+			options["bilanScores_last"] = oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
+			// on récupère les dates de la derniere session
+			oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser), function(dates)
+			{
+				// attribution des dates
+				options["dateLastSession"] = dates;
+				// renvoi de la page
+				res.render('game', options);
+			});
+		}
+		else
+		{
+			// renvoi de la page
+			res.render('chat-equipe', options);
+		}
 });
 
 app.get('/classement', restrict, function fonctionIndex(req, res)
@@ -473,6 +465,24 @@ app.post("/", function (req, res)
 	oUtilisateur_BD.Connexion(b.username, b.password, req, res, callbackConnexion);
 });
 
+getDonnesPageJeu = function(idUser, userName)
+{
+	var options = 
+	{ 
+		"username"			: userName, 
+		"idEquipe"			: oUtilisateur_Manager.GetNumEquipe(idUser), 
+		"sessionID" 		: idUser, 
+		"dateLastSession" 	: -1,
+		"isUpToDate" 		: (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(idUser)),
+		"bilanScores" 		: oScore_Manager.getBilanScoreSession(idUser, oUtilisateur_Manager.getIdSession(idUser)),
+		"bilanScores_last" 	: -1,
+		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
+		"heureAttaque" 		: new Date(Date.parse(heureDerniereAttaque)+dureeCycle).toLocaleTimeString(),
+		"dureeCycle" 		: dureeCycle / (1000*3600)
+	};
+		
+	return options;
+},
 callbackConnexion = function(reponseConnexion, req, res)
 {
 	var b = req.body;
