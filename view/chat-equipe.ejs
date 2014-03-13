@@ -161,20 +161,6 @@
 				chat.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
 			});
 			
-			chat.on('USER_CONNECTED_SC', function(users)
-			{
-				$("#listUsers").html("");
-				for(var i in users)
-				{
-					$("#listUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
-				}
-			});
-			
-			chat.on('USER_MESSAGE_SC', function(user, message)
-			{
-				$("#msgs").append("<div>" + user + " : " + message + "</div>");
-			});
-			
 			$("#msgSubmit").click(function()
 			{
 				sendMessage();
@@ -186,6 +172,23 @@
 			}
 			});
 			
+			// nv user vient de se connecter
+			chat.on('USER_CONNECTED_SC', function(users)
+			{
+				$("#listUsers").html("");
+				for(var i in users)
+				{
+					$("#listUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
+				}
+			});
+			
+			// réception d'un message
+			chat.on('USER_MESSAGE_SC', function(user, message)
+			{
+				$("#msgs").append("<div>" + user + " : " + message + "</div>");
+			});
+			
+			// envoi d'un message
 			sendMessage = function()
 			{
 				var message = $("#msgTextBox").val();

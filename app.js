@@ -38,11 +38,12 @@ postmark.send(
 // FIN TEST MAIL
 
 // require objets
-var oCarte	= require('./model/object/Carte');
+var oCarte		= require('./model/object/Carte');
+var GameRules	= require('./model/GameRules');
 
 //require persistance
-var oCase_BD       = require('./persistance/Case_BD');
-var oUtilisateur_BD  = require('./persistance/Utilisateur_BD');
+var oCase_BD       	= require('./persistance/Case_BD');
+var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 
 // require manager
 var oPersonnage_Manager  = require('./manager/Personnage_Manager');
@@ -61,7 +62,6 @@ oEventLog.init();
 var dateLancement = new Date();
 var dateLancementSrv = dateLancement;
 var heureDerniereAttaque = dateLancement;
-var dureeCycle = 1000 * 60;
 
 oEventLog.log(dateLancementSrv);
 
@@ -74,19 +74,19 @@ oDatabase.Initialiser();
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(28, 17);
 
+//Chargement des sessions de jeu en mémoire
+oSession_Manager.Load(function(idSession)
+{
+	oScore_Manager.Load(idSession);
+	
+	//Chargement des personnages en mémoire
+	//le callback est réservé pour la fin des fouilles...
+	//... et rafraichi l'affichage
+	oPersonnage_Manager.Load(callbackFinFouille);
+});
+
 // Chargement des utilisateurs en mémoire
 oUtilisateur_Manager.Load();
-
-// Chargement des personnages en mémoire
-// le callback est réservé pour la fin des fouilles...
-// ... et rafraichi l'affichage
-oPersonnage_Manager.Load(function(idUser)
-{
-	// actualiser joueurs, au cas où l'item est arrivé dans la case
-	var idCase = oPersonnage_Manager.GetIdCase(idUser);
-	
-	ActualiserAllGlobal(idCase);
-});
 
 // Chargement de la liste des items en mémoire
 oItem_Manager.Load();
@@ -94,15 +94,20 @@ oItem_Manager.Load();
 // Chargement des cases en mémoire
 oCase_Manager.Load();
 
+
+function callbackFinFouille(idUser)
+{
+	EventLog.log("Fin de la fouille du personnage " + oUtilisateur_Manager.getPseudo(idUser));
+	// actualiser joueurs, au cas où l'item est arrivé dans la case
+	var idCase = oPersonnage_Manager.GetIdCase(idUser);
+	
+	ActualiserAllGlobal(idCase);
+}
+
 //////////////TEST SESSIONJEU
 var date = new Date(2016, 12, 1, 1, 1, 1, 1);
 //oSession_Manager.demarrer(date);
 
-// Chargement des sessions de jeu en mémoire
-oSession_Manager.Load(function(idSession)
-{
-	oScore_Manager.Load(idSession);
-});
 
 
 /*
@@ -339,7 +344,7 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe, idSession);
 		
 		// on attribut la compétence au personnage de l'utilisateur
-		oPersonnage_Manager.SetCompetence(s.idUser, b.competence, b.equipe);
+		oPersonnage_Manager.nvPersonnageEnJeu(s.idUser, b.competence, b.equipe);
 		
 		// on crée le score en mémoire et en BD
 		oScore_Manager.createScore(s.idUser, b.equipe, function()
@@ -477,8 +482,8 @@ getDonnesPageJeu = function(idUser, userName)
 		"bilanScores" 		: oScore_Manager.getBilanScoreSession(idUser, oUtilisateur_Manager.getIdSession(idUser)),
 		"bilanScores_last" 	: -1,
 		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
-		"heureAttaque" 		: new Date(Date.parse(heureDerniereAttaque)+dureeCycle).toLocaleTimeString(),
-		"dureeCycle" 		: dureeCycle / (1000*3600)
+		"heureAttaque" 		: new Date(Date.parse(heureDerniereAttaque)+GameRules.dureeCycle()).toLocaleTimeString(),
+		"dureeCycle" 		: GameRules.dureeCycle() / (1000*3600)
 	};
 		
 	return options;
@@ -537,8 +542,7 @@ app.put('/', function (req, res)
 	var b = req.body;
 	var testsOk = false;
 	// regex test email
-	var regTestMailAngers = /.@univ-angers.fr/;
-	var reg = /^([\w-\.]+@(?!gmail.com)(?!yahoo.com)(?!hotmail.com)([\w-]+\.)+[\w-]{2,4})?$/;
+	var regTestMailAngers = /.@.univ-angers.fr/;
 	
 	// test si c'est en bonne forme
 	//if
@@ -616,39 +620,169 @@ var io = require('socket.io').listen(server, { log: false });
  * *************************** 6 - CONFIGURATION DES TCHATS ***************************
  */
  
- var usersInTeamChat = new Array();
- var usersInGeneralChat = new Array();
+var usersInTeamChat = new Array();
+var usersInGeneralChat = new Array();
  
  
- //Client Connecté au chat d'équipe
+//Client Connecté au chat d'équipe
 var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 {
 	var id = "";
+	console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _CHAT_EQUIPE_PAGE");
 	
 	socket.on('INFO_USER_CS', function(userID, user)
 	{
-		var users = new Array();
-		var j = 0;
-		var newUser = false;
-		var numEquipe;
+		onChatEquipe_INFO_USER(userID, user, socket);
+	});
+	
+	// Reception d'un message
+	socket.on('USER_MESSAGE_CS', function(user, message)
+	{
+		onChatEquipe_USER_MESSAGE(user, message, socket);
+	});
+	
+	socket.on('disconnect', function()
+	{
+		onChatEquipe_DISCONNECT(socket);
+	});
+});
+
+var chatEquipeOnGame = io.of('/jeu').on('connection', function (socket)
+{
+	
+});
+ 
+onChatEquipe_INFO_USER = function(id, user, socket)
+{
+	console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> INFO_USER_CS_CHAT_EQUIPE");
+	var alliesConnected = new Array();
+	var j = 0;
+	var newUser = false;
+	var numEquipe;
+	
+	// si l'id de l'user existe
+	if(oUtilisateur_Manager.exist(id))
+	{
+		// get le num d'équipe
+		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
 		
-		id = userID;
-		
-		if(oUtilisateur_Manager.exist(id))
+		// si l'utilisateur n'est pas dans la liste des user connectés au tchat
+		if(!usersInTeamChat[id])
 		{
-			numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
-			
-			if(!usersInTeamChat[id])
+			// on crée l'espace pour accueil l'user
+			usersInTeamChat[id] = new Object();
+			usersInTeamChat[id].sockets = new Array();
+			newUser = true;
+		}
+		
+		// on défini les propriétés de l'userTchat
+		usersInTeamChat[id].username = user;
+		usersInTeamChat[id].sockets.push(socket);
+		usersInTeamChat[id].numEquipe = numEquipe;
+	
+		console.log(usersInTeamChat[id]);
+		console.log(user);
+		// Remplissage de la liste contenant les alliés connectés
+		// pour chaque utilisateur connecté au tchat d'équipe
+		for(var i in usersInTeamChat)
+		{
+			// s'il appartient à la meme équipe
+			if(usersInTeamChat[i].numEquipe == numEquipe)
 			{
-				usersInTeamChat[id] = new Object();
-				usersInTeamChat[id].sockets = new Array();
-				newUser = true;
+				alliesConnected[j] = usersInTeamChat[i].username;
+				j++;			
+			}
+		}
+		console.log(usersInTeamChat);
+		// si l'utilisateur vient d'arriver
+		if(newUser)
+		{
+			// log
+			oEventLog.log("L'utilisateur " + user + " s'est connecté au chat d'equipe.");
+			// pour chaque utilisateur connecté au tchat d'équipe
+			for(var i in usersInTeamChat)
+			{
+				// s'il appartient à la meme équipe 
+				if(usersInTeamChat[i].numEquipe == numEquipe)
+				{
+					// on l'informe sur sa socket
+					for(var k in usersInTeamChat[i].sockets)
+					{
+						console.log("ENVOI MESSAGE NV USER");
+						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+						usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', alliesConnected);
+					}
+				}
+			}
+		}
+	}
+},
+
+onChatEquipe_USER_MESSAGE = function(id, user, message, socket)
+{
+	console.log("APP : RECEPTION MSG. user : " + user + " message : "+message);
+	var numEquipe;
+	// si l'utilisateur qui envoi existe bien
+	if(oUtilisateur_Manager.exist(id))
+	{
+		console.log("> UTILISATEUR EXISTE ! ");
+		// get le num d'équipe
+		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
+		// pour chaque utilisateur connecté au tchat d'équipe
+		console.log(usersInTeamChat);
+		for(var i in usersInTeamChat)
+		{
+			console.log("> PARCOURS DE BOUCLE DES USER TEAM. CURRENT USER : " + usersInTeamChat[i]);
+			// s'il appartient à la meme équipe 
+			if(usersInTeamChat[i].numEquipe == numEquipe)
+			{
+				console.log("> PARCOURS DE BOUCLE DES USER TEAM. USER MEME EQUIPE : " + usersInTeamChat[i]);
+				// on l'informe sur ses sockets
+				for(var k in usersInTeamChat[i].sockets)
+				{
+					console.log("ENVOI MESSAGE SUR SOCKET DE USER " + usersInTeamChat[i]);
+					try
+					{
+						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", user, message);
+					}catch(err)
+					{
+						oEventLog.error("APP - onChatEquipe_USER_MESSAGE() " + err);
+					}
+				}
+			}
+		}
+	}
+	else { console.log("> UTILISATEUR N'EXISTE PAS ! ");}
+},
+
+onChatEquipe_DISCONNECT = function(id, socket)
+{
+	var users = new Array();
+	var j = 0;
+	var numEquipe;
+	
+	if(oUtilisateur_Manager.exist(id))
+	{
+		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
+		if(usersInTeamChat[id])
+		{
+			usersInTeamChat[id].sockets.splice(usersInTeamChat[id].sockets.indexOf(socket), 1);
+			if(usersInTeamChat[id].sockets.length == 0)
+			{				
+				for(var i in usersInTeamChat)
+				{
+					if(usersInTeamChat[i].numEquipe == numEquipe)
+					{
+						for(var k in usersInTeamChat[i].sockets)
+						{
+							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInTeamChat[id].username);
+						}
+					}
+				}
+				oEventLog.log("Déconnexion de " + usersInTeamChat[id].username + " du chat");
+				delete usersInTeamChat[id];
 			}
 			
-			usersInTeamChat[id].username = user;
-			usersInTeamChat[id].sockets.push(socket);
-			usersInTeamChat[id].numEquipe = numEquipe;
-		
 			for(var i in usersInTeamChat)
 			{
 				if(usersInTeamChat[i].numEquipe == numEquipe)
@@ -657,98 +791,24 @@ var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 					j++;			
 				}
 			}
-			if(newUser)
-			{
-				oEventLog.log("L'utilisateur " + user + " s'est connecté au chat d'equipe.");
-				for(var i in usersInTeamChat)
-				{
-					if(usersInTeamChat[i].numEquipe == numEquipe)
-					{
-						for(var k in usersInTeamChat[i].sockets)
-						{
-							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
-							usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
-						}
-					}
-				}
-			}
-		}
-	});
-	
-	socket.on('USER_MESSAGE_CS', function(user, message)
-	{
-		console.log("APP : RECEPTION MSG");
-		var numEquipe;
-		if(oUtilisateur_Manager.exist(id))
-		{
-			numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
+			
 			for(var i in usersInTeamChat)
 			{
 				if(usersInTeamChat[i].numEquipe == numEquipe)
 				{
 					for(var k in usersInTeamChat[i].sockets)
 					{
-						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", user, message);
+						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+						usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
 					}
 				}
 			}
 		}
-	});
-	
-	socket.on('disconnect', function()
-	{
-		var users = new Array();
-		var j = 0;
-		var numEquipe;
-		
-		if(oUtilisateur_Manager.exist(id))
-		{
-			numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
-			if(usersInTeamChat[id])
-			{
-				usersInTeamChat[id].sockets.splice(usersInTeamChat[id].sockets.indexOf(socket), 1);
-				if(usersInTeamChat[id].sockets.length == 0)
-				{				
-					for(var i in usersInTeamChat)
-					{
-						if(usersInTeamChat[i].numEquipe == numEquipe)
-						{
-							for(var k in usersInTeamChat[i].sockets)
-							{
-								usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInTeamChat[id].username);
-							}
-						}
-					}
-					oEventLog.log("Déconnexion de " + usersInTeamChat[id].username + " du chat");
-					delete usersInTeamChat[id];
-				}
-				
-				for(var i in usersInTeamChat)
-				{
-					if(usersInTeamChat[i].numEquipe == numEquipe)
-					{
-						users[j] = usersInTeamChat[i].username;
-						j++;			
-					}
-				}
-				
-				for(var i in usersInTeamChat)
-				{
-					if(usersInTeamChat[i].numEquipe == numEquipe)
-					{
-						for(var k in usersInTeamChat[i].sockets)
-						{
-							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
-							usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
-						}
-					}
-				}
-			}
-		}
-	});
-});
+	}
+};
  
- 
+
+
  //Client Connecté au chat général
 var chat = io.of('/chat-general').on('connection', function (socket)
 {
@@ -831,6 +891,26 @@ io.sockets.on('connection', function (socket)
     oEventLog.log('SERVER : Un client est connecté !');
     //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.GetIdCase());
 
+    console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _CHAT_EQUIPE_JEU");
+	
+	socket.on('INFO_USER_CS', function(userID, user)
+	{
+		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _CHAT_EQUIPE_JEU_INFO_USER_CS");
+		onChatEquipe_INFO_USER(userID, user, socket);
+	});
+	
+	// Reception d'un message
+	socket.on('USER_MESSAGE_CS', function(user, message)
+	{
+		console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _CHAT_EQUIPE_JEU_USER_MESSAGE_CS");
+		onChatEquipe_USER_MESSAGE(user, message, socket);
+	});
+	
+	socket.on('disconnect', function()
+	{
+		onChatEquipe_DISCONNECT(socket);
+	});
+	
 	socket.on('INFO_USER_CS', function(sessionID, username, page, param)
 	{
 		idUser = sessionID;
@@ -1749,7 +1829,7 @@ setInterval(function()
 	SauvegardeGlobale();
 	heureDerniereAttaque = new Date();
 	
-}, dureeCycle); // (1000) millisec * 60 sec * 60 min
+}, GameRules.dureeCycle()); // (1000) millisec * 60 sec * 60 min
 
 
 

@@ -24,10 +24,10 @@
 		<link href="/public/stylesheets/style.css" rel="stylesheet">
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<!-- Script nécessaires pour le serveur -->
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+		<!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<!--><script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
 
 		<script>
 			var createjs = window;
@@ -288,6 +288,11 @@
 					</tr>
 					</table>-->
 					<table>
+						<b>Dates clés</b>
+						<tr>
+							<br>
+						</tr>
+						<br>
 						<tr>
 							<td width=50%><b>Numéro de session : </b></td>
 							<td><%= sessionInfo["id"]%></td>
@@ -303,8 +308,13 @@
 					</table></td>
 					<td width=50%>
 					<table>
+						<b>Paramètres des attaques</b>
+						<br>
 						<tr>
-							<td><b>Heure de la prochaine attaque : </b></td>
+							<br>
+						</tr>
+						<tr>
+							<td width=50%><b>Heure de la prochaine attaque : </b></td>
 							<td><%= heureAttaque %></td>
 						</tr>
 						<tr>
@@ -316,7 +326,7 @@
 						</tr>
 						<tr>
 							<td><b>Fréquence des attaques : </b></td>
-							<td><%= dureeCycle %> heures</td>
+							<td><%= dureeCycle %> heure(s)</td>
 						</tr>
 					</table></td>
 
@@ -401,21 +411,12 @@
 					/*********** EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 					var socket = io.connect('http://localhost:25536');
 
-					$(document).ready(function() {
-						socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "jeu");
-					});
-
-					socket.on("DECONEXION_SC", function(msg) {
-						alert(msg);
-						$.post("/", {
-							_method : "delete"
-						}, function() {
-							document.location = "/";
-						});
-					});
-
-					$(document).ready(function() {
+					$(document).ready(function() 
+					{
+						alert("envoi socket");
+						// pour le tchat
 						socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
+						socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "jeu");
 					});
 
 					$("#msgSubmit").click(function() {
@@ -427,15 +428,25 @@
 					sendMessage = function() {
 						var message = $("#msgTextBox").val();
 						if (message != "") {
-							chat.emit("USER_MESSAGE_CS", '<%= username %>', message);
+							socket.emit("USER_MESSAGE_CS", '<%= sessionID %>','<%= username %>', message);
 						}
 						$("#msgTextBox").val("");
 					},
 
 					// réception d'un message
-					chat.on('USER_MESSAGE_SC', function(user, message) {
+					socket.on('USER_MESSAGE_SC', function(user, message) {
 						alert('reception msg');
 						$("#msgs").append("<div>" + user + " : " + message + "</div>");
+					});
+					
+					// deconnexion
+					socket.on("DECONEXION_SC", function(msg) {
+						alert(msg);
+						$.post("/", {
+							_method : "delete"
+						}, function() {
+							document.location = "/";
+						});
 					});
 
 				</script>

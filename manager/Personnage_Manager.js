@@ -38,28 +38,40 @@ Personnage_Manager.Load = function(callbackFinFouille)
 		for(var i in tabId)
 		{
 			idUser = tabId[i];
-			oPersonnage_BD.GetPersonnageByIdUser(idUser,  function(id,  reponse)
+			
+			EventLog.log("PERSONNAGE_MANAGER : Load() : Test session user : " + idUser
+					+ " - sa session = " + oUtilisateur_Manager.getIdSession(idUser)
+					+ " - session cur= " + oSession_Manager.getIdSessionEnCours());
+			// si l'utilisateur appartient à la session en cours
+			if (oUtilisateur_Manager.getIdSession(idUser) == oSession_Manager.getIdSessionEnCours())
 			{
-				if (reponse == -1)
+				oPersonnage_BD.GetPersonnageByIdUser(idUser,  function(id,  reponse)
 				{
-					EventLog.error(" /!\ PERSONNAGE_MANAGER : Load() : Erreur -1");
-					context.listePersonnages[id] = null;
-				}
-				else if (reponse == -2)
-				{
-					EventLog.error("/!\  PERSONNAGE_MANAGER : Load() : Erreur -2");
-					context.listePersonnages[id] = null;
-				}
-				else
-				{
-					EventLog.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
-					context.listePersonnages[id] = reponse;
+					if (reponse == -1)
+					{
+						EventLog.error(" /!\ PERSONNAGE_MANAGER : Load() : Erreur -1");
+						context.listePersonnages[id] = null;
+					}
+					else if (reponse == -2)
+					{
+						EventLog.error("/!\  PERSONNAGE_MANAGER : Load() : Erreur -2");
+						context.listePersonnages[id] = null;
+					}
+					else
+					{
+						EventLog.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
+						context.listePersonnages[id] = reponse;
 					
-					// si le perso était en fouille, on le remet en oisif (car on n'a pas la durée du compteur de fouille)
-					if (context.listePersonnages[id].mode == 1) context.listePersonnages[id].mode = 0;
-				}
-			});
+						// si le perso était en fouille, on le remet en oisif (car on n'a pas la durée du compteur de fouille)
+						if (context.listePersonnages[id].mode == 1) context.listePersonnages[id].mode = 0;
+						
+						EventLog.log(">>> PERSONNAGE_MANAGER : Load() : NOMBRE DE PERSONNAGES EN MEMOIRE : " +context.listePersonnages.length);
+					}
+				});
+				
+			}
 		}
+		
 	});            	
 }, 
 
@@ -94,23 +106,37 @@ Personnage_Manager.deletePerso = function(idUser)
 	});
 },
 
-Personnage_Manager.SetCompetence = function(idUser,  competence, numEquipe)
+Personnage_Manager.nvPersonnageEnJeu = function(idUser,  competence, numEquipe)
 {			
 	// initialise le personnage
 	//var idPerso = this.listePersonnages[idUser].id;
 	//this.listePersonnages[idUser].initialiser();
-	EventLog.log("PERSON_MANAGER : SetCompetence() " + competence);
-	this.listePersonnages[idUser].setCompetence(competence, numEquipe);
+	EventLog.log("PERSONNAGE_MANAGER : nvPersonnageEnJeu() : user : " + oUtilisateur_Manager.getPseudo(idUser) + " - competence : " + competence + " -  numEquipe :" + numEquipe);
 	
+	//this.listePersonnages[idUser].setCompetence(competence, numEquipe);
+	
+	// création d'un nouveau personnage
+	var nvPerso = new oPersonnage(idUser);
+	
+	// attribution de la compétence et num Equipe
+	nvPerso.setCompetence(competence, numEquipe);
+	
+	// maintenant que le perso fait parti du jeu, on le charge dans le structure de données
+	this.listePersonnages[idUser] = nvPerso;
+	
+	// log
+	console.log(this.listePersonnages[idUser]);
+	
+	// enregistrement en BD
 	oPersonnage_BD.SetPersonnage(this.listePersonnages[idUser],  function(reponse)
 	{
 		if (reponse == -1)
 		{
-			EventLog.error("/!\ PERSONNAGE_MANAGER : SetCompetence() : WARNING : erreur ecriture du perso de " + idUser);
+			EventLog.error("/!\ PERSONNAGE_MANAGER : nvPersonnageEnJeu() : WARNING : erreur ecriture du perso de " + idUser);
 		}
 		else
 		{
-			//EventLog.log("PERSONNAGE_MANAGER : SetCompetence() : MAJ du perso de " + idUser + " OK !");
+			EventLog.log("PERSONNAGE_MANAGER : nvPersonnageEnJeu() : MAJ du perso de " + oUtilisateur_Manager.getPseudo(idUser) + " OK !");
 		}
 	});
 	

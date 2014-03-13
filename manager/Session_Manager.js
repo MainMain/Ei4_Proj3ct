@@ -52,6 +52,7 @@ Session_Manager.Load = function(callback)
 					context.dateDebut			= null;
 					context.dateFin 			= null;
 				}
+				EventLog.log("SESSION_MANAGER : Load() - id Session en cours = " +context.idSessionEnCours);
 				callback(context.idSessionEnCours);
 			});
 		}

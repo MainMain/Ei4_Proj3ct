@@ -33,12 +33,12 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
         _id: personnageToSave.id
     }, function (err, perso) {
         if (err) {
-            EventLog.log("PERSONNAGE_BD : SetPersonnage() : erreur ! ");
+            EventLog.error("PERSONNAGE_BD : SetPersonnage() : erreur ! ");
             throw err;
         }
 
         if (typeof perso[0] === "undefined") {
-            EventLog.log("PERSONNAGE_BD : SetPersonnage() : undefined ! ");
+            EventLog.error("PERSONNAGE_BD : SetPersonnage() : undefined ! ");
             callbackSetPersonnage(-1);
         } 
         else 
@@ -115,23 +115,23 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
         _id: idUtilisateur
     }, function (err, user) {
         if (err) {
-            EventLog.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
+            EventLog.error("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
             throw err;
         }
         if (typeof user[0] === "undefined") {
-            EventLog.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé l'user ! ");
+            EventLog.error("PERSONNAGE_BD : GetPersonnage() : pas trouvé l'user ! ");
             callbackGetPersonnageByIdUser(idUtilisateur, -1);
         } else {
             PersonnageModel.find({_id: user[0].personnage}, function (err, perso) 
             {
                 
                 if (err) {
-                    EventLog.log("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
+                    EventLog.error("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
                     throw err;
                 }
 
                 if (typeof perso[0] === "undefined") {
-                    EventLog.log("PERSONNAGE_BD : GetPersonnage() : pas trouvé le perso ! ");
+                    EventLog.error("PERSONNAGE_BD : GetPersonnage() : pas trouvé le perso ! ");
                     callbackGetPersonnageByIdUser(idUtilisateur, -2);
 
                 } else {

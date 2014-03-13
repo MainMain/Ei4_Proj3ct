@@ -131,7 +131,7 @@ var Personnage = (function() {
 		    this.ptFaim		 		= GameRules.init_faimMax();
 		    this.ptFaimMax		 	= GameRules.init_faimMax();
 		    this.poidsMax 			= -1;
-		    this.gouleLimite 		= -1;
+		    this.goulesMax 			= -1;
 		    this.competence 		= -1;
 		    this.sacADos 			= new Array();
 		    this.idSalleEnCours 	= -1;
@@ -588,7 +588,7 @@ var Personnage = (function() {
 			// si le perso est mort, on n'ajoute pas le message
 			if (this.ptSante <= 0) return;
 			
-			EventLog.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
+			//EventLog.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
 
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
