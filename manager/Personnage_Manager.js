@@ -64,8 +64,6 @@ Personnage_Manager.Load = function(callbackFinFouille)
 					
 						// si le perso était en fouille, on le remet en oisif (car on n'a pas la durée du compteur de fouille)
 						if (context.listePersonnages[id].mode == 1) context.listePersonnages[id].mode = 0;
-						
-						EventLog.log(">>> PERSONNAGE_MANAGER : Load() : NOMBRE DE PERSONNAGES EN MEMOIRE : " +context.listePersonnages.length);
 					}
 				});
 				

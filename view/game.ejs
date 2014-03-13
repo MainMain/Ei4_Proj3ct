@@ -267,6 +267,7 @@
 				<% } else { %>
 				<h1 class="entry-title" align=center> Plateau de jeu </h1>
 
+				<A href="#plateauDeJeu"><i>Cliquer ici pour centrer directement sur le jeu</i></a>
 				<!-- *************** INFOS SUR LA SESSION EN COURS ******************** -->
 				<h2>Information sur la session en cours</h2>
 				<table border="0">
@@ -388,14 +389,26 @@
 
 				<!-- *************** TCHAT RAPIDE ******************** -->
 				<h2>Plateau de jeu</h2>
+					<a name="plateauDeJeu"><i>Tchat rapide</i>	</a>
+				<!-- ancre-->
+		
+				
+				<table border="0">
+					<tr>
+						<!-- messages recus -->
+						<td>
+							<textarea readonly id="msgs" rows="4" name="msgTextAreaRapide"></textarea>
+						</td>
+					</tr>
+				</table>
 				<table>
 					<tr>
-						<td width=80%><div class="msgTextAreaRapide" id="msgs"></div><td width=20%>
-						<div>
+						<td width="80%">
 							<input type="text" placeholder="Votre message" id="msgTextBox"/>
-							<br>
+						</td>
+						<td width="20%">
 							<input type="submit" value="Envoyer !" id="msgSubmit"/>
-						</div></td>
+						</td>
 					</tr>
 				</table>
 
@@ -413,38 +426,43 @@
 
 					$(document).ready(function() 
 					{
-						alert("envoi socket");
 						// pour le tchat
 						socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
-						socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "jeu");
+						socket.emit('INFO_USER_CHAT_CS', '<%= sessionID %>', '<%= username %>', "jeu");
 					});
 
-					$("#msgSubmit").click(function() {
-						alert('envoi msg');
+					// clic sur le bouton d'envoi du message
+					$("#msgSubmit").click(function() 
+					{
 						sendMessage();
 					});
 
 					// envoi d'un message
-					sendMessage = function() {
+					sendMessage = function() 
+					{
 						var message = $("#msgTextBox").val();
-						if (message != "") {
+						if (message != "") 
+						{
 							socket.emit("USER_MESSAGE_CS", '<%= sessionID %>','<%= username %>', message);
 						}
 						$("#msgTextBox").val("");
 					},
 
 					// réception d'un message
-					socket.on('USER_MESSAGE_SC', function(user, message) {
-						alert('reception msg');
-						$("#msgs").append("<div>" + user + " : " + message + "</div>");
+					socket.on('USER_MESSAGE_SC', function(user, message)
+					{
+						$("#msgs").append(user + " : " + message +"\n");
 					});
 					
 					// deconnexion
-					socket.on("DECONEXION_SC", function(msg) {
+					socket.on("DECONEXION_SC", function(msg) 
+					{
 						alert(msg);
-						$.post("/", {
+						$.post("/", 
+						{
 							_method : "delete"
-						}, function() {
+						}, function() 
+						{
 							document.location = "/";
 						});
 					});
