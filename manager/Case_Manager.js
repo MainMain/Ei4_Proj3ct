@@ -27,7 +27,7 @@ Case_Manager.Load = function()
 		// récupération des clés
 		idCases = oCase_BD.GetCasesId(function(idCases)
 		{
-			EventLog.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
+			EventLog.log("CASE_MANAGER  : Load : nbr d'id de case : " + idCases.length);
 			// pour chaque case
 			for(var i in idCases)
 			{
@@ -39,12 +39,12 @@ Case_Manager.Load = function()
 					// gestion des erreurs
 					if(reponse == -1 || reponse == -2)
 					{
-						EventLog.error("CASE_MANAGER : Load() : Erreur Case : " + idCase);
+						EventLog.error("CASE_MANAGER  : Load() : Erreur Case : " + idCase);
 					}
 					// enregistrement effectif
 					else
 					{
-						EventLog.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+						EventLog.log("CASE_MANAGER  : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
 						context.listeCases[idCase] = reponse;
 					}
 				});
@@ -249,12 +249,13 @@ Case_Manager.GetNombreGoules = function(idCase)
 
 Case_Manager.getZoneSure = function(numEquipe)
 {
+	console.log(">>>>>> GET ZONE SURE " + numEquipe);
 	switch(numEquipe)
 	{
 		case 1 : return GameRules.idZoneSure_1();
 		case 2 : return GameRules.idZoneSure_2();
 		case 3 : return GameRules.idZoneSure_3();
-		default : -1;
+		default : return -1;
 	}
 },
 

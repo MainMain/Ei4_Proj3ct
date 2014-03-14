@@ -39,9 +39,10 @@ Personnage_Manager.Load = function(callbackFinFouille)
 		{
 			idUser = tabId[i];
 			
-			EventLog.log("PERSONNAGE_MANAGER : Load() : Test session user : " + idUser
+			/*EventLog.log("PERSONNAGE_MANAGER : Load() : Test session user : " + idUser
 					+ " - sa session = " + oUtilisateur_Manager.getIdSession(idUser)
 					+ " - session cur= " + oSession_Manager.getIdSessionEnCours());
+					*/
 			// si l'utilisateur appartient à la session en cours
 			if (oUtilisateur_Manager.getIdSession(idUser) == oSession_Manager.getIdSessionEnCours())
 			{
@@ -59,7 +60,7 @@ Personnage_Manager.Load = function(callbackFinFouille)
 					}
 					else
 					{
-						EventLog.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id);
+						EventLog.log("PERSONNAGE_MANAGER : Load() : Chargement en mémoire du personnage [id="+reponse.id+"-"+oUtilisateur_Manager.getPseudo(idUser)+"]");
 						context.listePersonnages[id] = reponse;
 					
 						// si le perso était en fouille, on le remet en oisif (car on n'a pas la durée du compteur de fouille)
@@ -114,7 +115,7 @@ Personnage_Manager.nvPersonnageEnJeu = function(idUser,  competence, numEquipe)
 	//this.listePersonnages[idUser].setCompetence(competence, numEquipe);
 	
 	// création d'un nouveau personnage
-	var nvPerso = new oPersonnage(idUser);
+	var nvPerso = new oPersonnage(oUtilisateur_Manager.getIdPersonnage(idUser));
 	
 	// attribution de la compétence et num Equipe
 	nvPerso.setCompetence(competence, numEquipe);
@@ -123,7 +124,7 @@ Personnage_Manager.nvPersonnageEnJeu = function(idUser,  competence, numEquipe)
 	this.listePersonnages[idUser] = nvPerso;
 	
 	// log
-	console.log(this.listePersonnages[idUser]);
+	EventLog.log(this.listePersonnages[idUser]);
 	
 	// enregistrement en BD
 	oPersonnage_BD.SetPersonnage(this.listePersonnages[idUser],  function(reponse)
@@ -815,9 +816,10 @@ Personnage_Manager.TuerJoueur = function(idTue,  idTueur, loginTueur)
 
 Personnage_Manager.SeRetablir = function(idUser)
 {
-	EventLog.log("SERVEUR : SeRetablir() - " + idUser);
+	EventLog.log("SERVEUR : SeRetablir() - idUser : " + idUser);
 	
 	var idZoneSure = oCase_Manager.getZoneSure(oUtilisateur_Manager.GetNumEquipe(idUser));
+	console.log("SERVEUR : SeRetablir() - idZoneSure : " + idZoneSure);
 	this.listePersonnages[idUser].seRetablir(idZoneSure);
 }, 
 
@@ -1086,11 +1088,11 @@ Personnage_Manager.Save = function()
 		{
 			if (reponse == -1)
 			{
-				EventLog.error("!!!!! WARNING : PMANAGER : erreur ecriture du perso de " + oUtilisateur_Manager.getPseudo(idUser));
+				EventLog.error("PERSONNAGE_MANAGER : erreur ecriture du perso de " + oUtilisateur_Manager.getPseudo(idUser));
 			}
 			else
 			{
-				EventLog.log("PERSONNAGE_MANAGER : MAJ du perso de [" + oUtilisateur_Manager.getPseudo(idUser) + ";" + idUser+"] OK !");
+				EventLog.log("PERSONNAGE_MANAGER : MAJ du perso [" + reponse + "] OK !");
 			}
 		});
 	}
@@ -1106,40 +1108,40 @@ Personnage_Manager.nouvelleJournee = function()
 	for(var idUser in this.listePersonnages)
 	{
 		// si le perso appartient a la session en cours
-		if (oUtilisateur_Manager.getIdSession() == oSession_Manager.getIdSessionEnCours())
+		if (oUtilisateur_Manager.getIdSession(idUser) == oSession_Manager.getIdSessionEnCours())
 		{
-			console.log("PERSONNAGE_MANAGER : Nouvelle journée pour le perso de " +oUtilisateur_Manager.getPseudo(idUser) );
-		// regain de pts de vie
-		this.listePersonnages[idUser].nvlleJournee();
+			EventLog.log("PERSONNAGE_MANAGER : Nouvelle journée pour le perso de " +oUtilisateur_Manager.getPseudo(idUser) );
+			// regain de pts de vie
+			this.listePersonnages[idUser].nvlleJournee();
+			
+			idCase = this.GetIdCase(idUser);
 		
-		idCase = this.GetIdCase(idUser);
-		
-		// SI le perso n'est pas mort
-		// ...ET si le perso n'est pas caché 
-		// .. ET si il n'est pas en zone sûre 
-		// ALORS -> attaque de la nuit
-		if (!this.listePersonnages[idUser].estMort() && this.listePersonnages[idUser].mode != 2 && !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2()))
-		{
-			// infliger les dégats de goules 
-			resultatGoules 			= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
-			nbrGoules				= resultatGoules.nbrGoulesA;
-			degatSubisParGoules 	= this.subirDegats(idUser,  resultatGoules.degats);
-		
-			//this.listePersonnages[idUser].ajouterMessage("Vous avez été attaqué durant l'attaque de la nuit ! "
-			//	+"Vous avez subi un total de " + degatSubisParGoules + " pts de dégâts infligés par " 
-			//	+ nbrGoules + " zombies ! ");
-		
-			// si le joueur a été tué...
-			if (this.estMort(idUser))
+			// SI le perso n'est pas mort
+			// ...ET si le perso n'est pas caché 
+			// .. ET si il n'est pas en zone sûre 
+			// ALORS -> attaque de la nuit
+			if (!this.listePersonnages[idUser].estMort() && this.listePersonnages[idUser].mode != 2 && !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2()))
 			{
-				this.TuerJoueur(idUser, -1, "N");
-				this.AddMessageMort(idUser, "N");
+				// infliger les dégats de goules 
+				resultatGoules 			= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
+				nbrGoules				= resultatGoules.nbrGoulesA;
+				degatSubisParGoules 	= this.subirDegats(idUser,  resultatGoules.degats);
+		
+				//this.listePersonnages[idUser].ajouterMessage("Vous avez été attaqué durant l'attaque de la nuit ! "
+				//	+"Vous avez subi un total de " + degatSubisParGoules + " pts de dégâts infligés par " 
+				//	+ nbrGoules + " zombies ! ");
+		
+				// si le joueur a été tué...
+				if (this.estMort(idUser))
+				{
+					this.TuerJoueur(idUser, -1, "N");
+					this.AddMessageMort(idUser, "N");
+				}
+				else
+				{
+					this.AddMessage(idUser, "Vous avez été attaqué durant la nuit ! Vous avez subi : " + degatSubisParGoules + " par " + nbrGoules + " zombies !" );
+				}
 			}
-			else
-			{
-				this.AddMessage(idUser, "Vous avez été attaqué durant la nuit ! Vous avez subi : " + degatSubisParGoules + " par " + nbrGoules + " zombies !" );
-			}
-		}
 		}
 	}
 },

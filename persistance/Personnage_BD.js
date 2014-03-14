@@ -33,12 +33,12 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
         _id: personnageToSave.id
     }, function (err, perso) {
         if (err) {
-            EventLog.error("PERSONNAGE_BD : SetPersonnage() : erreur ! ");
+            EventLog.error("PERSONNAGE_BD : SetPersonnage() : erreur ! idUser : " + personnageToSave.id);
             throw err;
         }
 
         if (typeof perso[0] === "undefined") {
-            EventLog.error("PERSONNAGE_BD : SetPersonnage() : undefined ! ");
+            EventLog.error("PERSONNAGE_BD : SetPersonnage() : undefined ! idUser : " + personnageToSave.id);
             callbackSetPersonnage(-1);
         } 
         else 
@@ -90,7 +90,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                     }
 					
                    // EventLog.log("PERSONNAGE_BD : Mis à jour du personnage : ["+personnageToSave.id+"]");
-					callbackSetPersonnage(1);
+					callbackSetPersonnage(personnageToSave.id);
                 }
             );
         }
@@ -242,7 +242,7 @@ Personnage_BD.Creation = function (id)
     Perso.listeMsgAtt 		= nvPerso.listeMsgAtt;
     Perso.nbrNvMsg			= nvPerso.nbrNvMsg;
     
-    EventLog.log("----------------> sdsdfsf : " +   nvPerso.mode);
+   // EventLog.log("----------------> sdsdfsf : " +   nvPerso.mode);
 
     Perso.save(function (err) {
         if (err) {

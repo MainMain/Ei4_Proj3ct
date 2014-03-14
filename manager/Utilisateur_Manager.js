@@ -183,7 +183,7 @@ Utilisateur_Manager.Save = function()
 			}
 			else
 			{
-				EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user ["+idUser +";"+context.listeUtilisateurs[idUser].pseudo+"] OK !");
+				EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user ["+reponse.id +";"+context.listeUtilisateurs[reponse.id].pseudo+"] OK !");
 			}
 		});
 	}
@@ -206,6 +206,18 @@ Utilisateur_Manager.confirmerCompte = function(idUser)
 			EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " en BD OK : Compte confirmé !");
 		}
 	});
+},
+
+Utilisateur_Manager.getIdPersonnage = function(idUser)
+{
+	if(this.listeUtilisateurs[idUser])
+	{
+		return this.listeUtilisateurs[idUser].getIdPersonnage();
+	}
+	else
+	{
+		return -1;
+	}
 },
 
 module.exports = Utilisateur_Manager;

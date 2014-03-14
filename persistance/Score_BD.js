@@ -134,9 +134,10 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
                 	throw err;
                 }
 					
-                //EventLog.log("SCORE_BD : Mis à jour du score : ["+scoreToSave.id+"]");
-				callbackSetPersonnage(1);
+                
             });
+        	//EventLog.log("SCORE_BD : Mis à jour du score : ["+scoreToSave.id+"]");
+			callbackSetPersonnage(1);
         }
 
     });

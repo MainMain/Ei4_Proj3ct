@@ -18,7 +18,7 @@ function Score_Manager(){}
 
 Score_Manager.Load = function (idSession)
 {
-	EventLog.log("SCMANAGER : Chargement avec l'id session =  " + idSession);
+	EventLog.log("SCORE_MANAGER : Initialisation avec l'id session =  " + idSession);
     // initialise la liste
 
     // récupère id des scores
@@ -53,7 +53,7 @@ Score_Manager.Load = function (idSession)
 						context.listeScores[iduser] = new Array();
 					}
 					context.listeScores[iduser][idsession] = score;
-					//EventLog.log("-> " + iduser + "<->" + idsession + "<->" + score.id);
+					EventLog.log("SCORE_MANAGER : Load() : Chargement en mémoire du score de " + oUtilisateur_Manager.getPseudo(iduser) + " pour la session : " + idsession );
 				}
 			});
 		}
@@ -89,12 +89,12 @@ Score_Manager.Save = function()
 						}
 						else
 						{
-							EventLog.log("SCORE_MANAGER : MAJ du score de " + oUtilisateur_Manager.getPseudo(tabId[i]) + " de SESS "+context.idSessionEnCours+" OK !");
+							EventLog.log("SCORE_MANAGER : MAJ du score de " + oUtilisateur_Manager.getPseudo(tabId[i]) + " pour la session "+context.idSessionEnCours+" OK !");
 						}
 					});
 				}
 			}
-			catch(err) { console.log("SCORE_MANAGER : Save() : " + err + " (utilisateur sans score)"); }
+			catch(err) { EventLog.error("SCORE_MANAGER : Save() : " + err + " (utilisateur sans score)"); }
 		}
 	});
 },

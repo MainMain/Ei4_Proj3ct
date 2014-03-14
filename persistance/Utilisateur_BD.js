@@ -44,22 +44,20 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 			NewUser[0].numEquipe 			= utilisateurToSave.numEquipe;
 			NewUser[0].idSession			= utilisateurToSave.idSession;
 			NewUser[0].compteConfirme		= utilisateurToSave.compteConfirme;
-			NewUser[0].save(function (err)
-					{
-						if (err)
-						{
-							throw err;
-						}
-						//EventLog.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
-						
-						callbackSetUtilisateur(new oUtilisateur(
-							NewUser._id,			NewUser.pseudo,				NewUser.email,				NewUser.pass,
-							NewUser.numEquipe,		NewUser.personnage, 		NewUser.idSession, 			NewUser.compteConfirme));
-					});
 			
+			NewUser[0].save(function (err)
+			{
+			if (err)
+			{
+				throw err;
+			}
+			//EventLog.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
+			
+			callbackSetUtilisateur(new oUtilisateur(
+				NewUser[0]._id,			NewUser[0].pseudo,				NewUser[0].email,				NewUser[0].pass,
+				NewUser[0].numEquipe,		NewUser[0].personnage, 		NewUser[0].idSession, 			NewUser[0].compteConfirme));
+			});
 		}
-		
-		
 	});
 },
 
