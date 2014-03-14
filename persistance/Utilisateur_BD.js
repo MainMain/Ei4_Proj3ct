@@ -152,7 +152,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	newUser.email 				= emailU;
 	newUser.numEquipe 			= 0;
 	newUser.idSession			= -1;
-	newUser.compteConfirme		= false;
+	newUser.compteConfirme		= true;
 	
 	// on cherche si ce pseudo existe déja
 	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)

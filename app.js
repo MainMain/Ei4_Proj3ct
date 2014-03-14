@@ -309,6 +309,7 @@ app.get('/jeu', restrict, function fonctionIndex(req, res)
 	{
 		// on récupère le bilan des score de la derniere session
 		options["bilanScores_last"] = oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
+		
 		// on récupère les dates de la derniere session
 		oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser), function(dates)
 		{
@@ -542,7 +543,7 @@ app.put('/', function (req, res)
 	var b = req.body;
 	var testsOk = false;
 	// regex test email
-	var regTestMailAngers = /.@.univ-angers.fr/;
+	var regTestMailAngers = /.@univ-angers.fr/;
 	
 	// test si c'est en bonne forme
 	//if

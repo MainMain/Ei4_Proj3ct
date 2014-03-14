@@ -149,7 +149,7 @@ Session_Manager.getDateFin = function()
 
 Session_Manager.getDatesSession = function(idSession, callback)
 {
-	if (idSession == -1) return null;
+	if (idSession == -1) callback(null);
 	oSession_BD.GetSession(idSession, function(idSession, dateDebut, dateFin)
 	{
 		var struct = 

@@ -146,8 +146,10 @@
 				</div>
 
 				<!-- *************** RESUME DES SCORES DE LA DERNIERE SESSION ******************** -->
+				<% if (bilanScores["lastIdSession"] != -1 ) { %>
 				<h2> Résumé de des scores de votre dernière session : (session n°<%= bilanScores["lastIdSession"]%>)</h2>
 				<b>Session commencée le <%= dateLastSession["dateDebut"].toLocaleString() %> et achevée le <%= dateLastSession["dateFin"].toLocaleString() %></b>
+				<% } //fin if %>
 				<table>
 					<td width=50%><b>Scores globaux : </b>
 					<br>
@@ -234,35 +236,42 @@
 					Vous avez le choix entre trois compétences :
 					<ul>
 						<li>
-							Vous pouvez être <b>UNE BRUTE</b>: Cela signifie alors que votre personnage a des <b>dégats d'attaque</b> et une <b>défense augmentée</b>. En revanche il aura moins de chance de pouvoir se cacher.
+							Vous pouvez être <b>UNE BRUTE</b>: Vous êtes là pour <b>protéger vos alliés</b> et <b>mener des assaults sur vos ennemis</b>, car vos attaques sont plus
+							destructrices et vous suportez mieux les coups. En revanche, vous trouverez assez difficilement des objets pendant les fouilles et 
+							vous aurez de fortes chances d'être découvert pendant une fouille ennemi.
 							<br>
 						</li>
 						<li>
-							Vous pouvez être <b>UN EXPLORATEUR</b>: Dans ce cas là c'est au contraire la <b>probabilité de se cacher</b> ainsi que vos <b>points de mouvements maximum</b> qui sont augmentés. Par contre faites attention à ne pas vous faire attaquer car vos points de défense sont relativement faibles.
+							Vous pouvez être <b>UN EXPLORATEUR</b>: Vous êtes un éclaireur, spécialement dédié à <b>l'exploration de l'immense complexe</b>. Vous avez peu de chance d'être découvert
+							durant une fouille ennemi et vous pourrez effectuer bien plus de mouvements que vos alliés. Cependant, faites attention à ne pas vous faire attaquer car vos points 
+							de défense sont relativement faibles.
 							<br>
 						</li>
 						<li>
-							Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu cela a un coût, vos dégats sont réduits ainsi que votre probabilité de cache.
+							Vous pouvez être <b>UN CHERCHEUR</b>: Vous êtes fait pour <b>fouiller les alentours</b> afin de trouver les objets nécessaires à votre victoire, car 
+							vos fouilles seront bien plus souvent fructueuses. Bien entendu cela a un coût, car vos attaques sont faibles et vos caches rarement fiables.
 							<br>
 						</li>
 					</ul>
 				</p>
-				<b>Répartition des équipes</b>
+				<b>Préparation...</b>
 				<br>
 
-				<form name="formInitPerso" method="POST" action="/jeu">
+				<form class="choixEquipeform" name="formInitPerso" method="POST" action="/jeu">
 					<input type="hidden" name="_method" value="PUT">
-					<select name="equipe">
-						<option value="1">AGI <%= bilanScores["nbrAGI_sessionEnCours"]%> joueur(s)</option>
-						<option value="2">INNO <%= bilanScores["nbrINNO_sessionEnCours"]%> joueur(s)</option>
-						<option value="3">QSF <%= bilanScores["nbrQSF_sessionEnCours"]%> joueur(s)</option>
+					Choisissez votre équipe :
+					<select width: 10% name="equipe">
+							<option value="1">AGI <%= bilanScores["nbrAGI_sessionEnCours"]%> joueur(s)</option>
+							<option value="2">INNO <%= bilanScores["nbrINNO_sessionEnCours"]%> joueur(s)</option>
+							<option value="3">QSF <%= bilanScores["nbrQSF_sessionEnCours"]%> joueur(s)</option>
 					</select>
+					Choisissez votre compétence :
 					<select name="competence">
-						<option value="brute">Brute (Dégats et Défense augmentés)</option>
-						<option value="explorateur">Explorateur (Probabilité de se cacher et Points de mouvement augmentés)</option>
-						<option value="chercheur">Chercheur (Probabilité de fouille augmentée)</option>
+							<option value="brute">Brute</option>
+							<option value="explorateur">Explorateur</option>
+							<option value="chercheur">Chercheur</option>
 					</select>
-					<input type="submit" value="Se lancer !" name="submitChoixDepart" />
+							<input type="submit" value="Tuer du zombie !" name="submitChoixDepart" />
 				</form>
 				<% } else { %>
 				<h1 class="entry-title" align=center> Plateau de jeu </h1>

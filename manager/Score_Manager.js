@@ -448,6 +448,7 @@ Score_Manager.getBilanScoreSession = function(idUser, idSession)
 	} // fin for
 	//console.log(struct);
 	
+	console.log("FIN SCORE");
 	return struct;
 },
 
