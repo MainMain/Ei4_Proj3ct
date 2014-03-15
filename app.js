@@ -1025,7 +1025,9 @@ io.sockets.on('connection', function (socket)
 		}
 		
 		EventLog.log(pseudoUser + " - APP : Réponse déplacement " + reponseDeplacement);
-		socket.emit('MOVE_PERSONNAGE_SC', oCase_Manager.GetCopieCase(reponseDeplacement));
+		if (reponseDeplacement < 0)socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
+		else 						socket.emit('MOVE_PERSONNAGE_SC', oCase_Manager.GetCopieCase(reponseDeplacement));
+		
 		/*}
 		catch(err)
 		{
@@ -1061,17 +1063,12 @@ io.sockets.on('connection', function (socket)
 		//{
 		var currentItem = oItem_Manager.GetItem(id_item);
 		var reponse;
-		
-
-		EventLog.log("*******************************************************");
-		
 
 		if (type == "EQUIPER")
 		{
 			reponse = oPersonnage_Manager.equiper(idUser, id_item);
-			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, reponse);
-
-			EventLog.log("SERVEUR : INV_PERSONNAGE_CS : Equipement" + reponse);
+			
+			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, reponse, oPersonnage_Manager.GetCopiePerso(idUser));
 
 			EventLog.log(pseudoUser + " - APP : Réponse équipement " + reponse);
 
@@ -1079,9 +1076,8 @@ io.sockets.on('connection', function (socket)
 		else if (type == "DESEQUIPER") 
 		{
 			reponse = oPersonnage_Manager.desequiper(idUser, id_item);
-			socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem, reponse);
-
-			EventLog.log("SERVEUR : INV_PERSONNAGE_CS : Desequipement" + reponse);
+			
+			socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem, reponse, oPersonnage_Manager.GetCopiePerso(idUser));
 
 			EventLog.log(pseudoUser + " - APP : Réponse déquipement " + reponse);
 

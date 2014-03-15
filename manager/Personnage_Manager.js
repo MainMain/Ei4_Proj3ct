@@ -1120,7 +1120,7 @@ Personnage_Manager.nouvelleJournee = function()
 			// ...ET si le perso n'est pas caché 
 			// .. ET si il n'est pas en zone sûre 
 			// ALORS -> attaque de la nuit
-			if (!this.listePersonnages[idUser].estMort() && this.listePersonnages[idUser].mode != 2 && !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2()))
+			if (!this.listePersonnages[idUser].estMort() && this.listePersonnages[idUser].mode != 2 && !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2() || idCase == GameRules.idZoneSure_3()))
 			{
 				// infliger les dégats de goules 
 				resultatGoules 			= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
@@ -1141,6 +1141,10 @@ Personnage_Manager.nouvelleJournee = function()
 				{
 					this.AddMessage(idUser, "Vous avez été attaqué durant la nuit ! Vous avez subi : " + degatSubisParGoules + " par " + nbrGoules + " zombies !" );
 				}
+			}
+			else
+			{
+				this.AddMessage(idUser, "Grâce à votre cachette, vous aez survécu à l'attaque de la nuit ! " );
 			}
 		}
 	}

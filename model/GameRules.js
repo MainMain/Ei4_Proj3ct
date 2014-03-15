@@ -73,7 +73,7 @@ GameRules.pt_actionMax_min = function()						{ return 3;},
 //Nombre de points de déplacement minimum
 GameRules.pt_deplacementMax_min = function()				{ return 3;},
 // duree entre chaque attaque / save
-GameRules.dureeCycle = function()							{ return 1000 * 1 * 10; },
+GameRules.dureeCycle = function()							{ return 1000 * 60 * 10; },
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },
