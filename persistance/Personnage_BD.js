@@ -26,6 +26,10 @@ function Personnage_BD() {
  */
 Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
 {
+	try
+	{
+		
+	
     var PersonnageModel = mongoose.model('Personnage');
     var nouveauPerso = PersonnageModel();
 
@@ -96,6 +100,11 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
         }
 
     });
+	}
+	catch(e)
+	{
+		EventLog.err("PERSONANGE_BD : SetPersonnage() : " + e);
+	}
 },
 
 /**
