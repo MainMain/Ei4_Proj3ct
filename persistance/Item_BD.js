@@ -59,7 +59,7 @@ Item_BD.GetListItem = function()
 	{
 		if (err)
 		{
-			throw err;
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		EventLog.log('ITEM_BD : Items supprimés !');
 	});

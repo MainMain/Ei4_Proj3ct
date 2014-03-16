@@ -20,7 +20,8 @@ Score_BD.GetIds = function(callback)
 	{
 		if(err)
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		for(var i in score)
 		{
@@ -39,7 +40,8 @@ Score_BD.GetScoreById = function(idScore, callbackGetScore) {
 	{
 		if (err)  
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if (typeof Score[0] === "undefined")
@@ -71,7 +73,8 @@ Score_BD.GetScoreByIdUser = function(id, callbackGetScore) {
 	{
 		if (err)  
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if (typeof Score[0] === "undefined")
@@ -95,6 +98,7 @@ Score_BD.GetScoreByIdUser = function(id, callbackGetScore) {
 },
 Score_BD.SetScore = function (scoreToSave, callbackSetScore)
 {
+	
     var ScoreModel = mongoose.model('Score');
     var newScore = ScoreModel();
 
@@ -105,7 +109,8 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
         if (err) 
         {
             EventLog.log("SCORE_BD : SetScore() : erreur ! ");
-            throw err;
+            EventLog.error(err);
+            // enlève l'exception pour empecher que le serveur plante //throw err;
         }
 
         if (typeof newScore[0] === "undefined") {
@@ -131,7 +136,8 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
             {
             	if (err)
                 {
-                	throw err;
+                	EventLog.error(err);
+                	// enlève l'exception pour empecher que le serveur plante //throw err;
                 }
 					
                 
@@ -161,7 +167,8 @@ Score_BD.Creation = function (idUser, idSession, equipe, callback) {
 
 	newScore.save(function (err) {
         if (err) {
-            throw err;
+        	EventLog.error(err);
+        	// enlève l'exception pour empecher que le serveur plante //throw err;
         }
         EventLog.log("SCORE_BD : Ajout d'un score -> " + idUser + " <-> " + idSession);
 		EventLog.log("newScore.id = " + newScore.id);
@@ -179,7 +186,8 @@ Score_BD.deleteUser = function(id, callback)
 		if(err)
 		{
 			callback(-1);
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if(score[0])
@@ -189,7 +197,8 @@ Score_BD.deleteUser = function(id, callback)
 				if(err)
 				{
 					callbackDelete(-1);
-					throw err;
+					EventLog.error(err);
+					// enlève l'exception pour empecher que le serveur plante //throw err;
 				}
 				callbackDelete(1);
 			});
@@ -198,7 +207,7 @@ Score_BD.deleteUser = function(id, callback)
 		{
 			callbackDelete(-1);
 		}
-	})
+	});
 },
 
 

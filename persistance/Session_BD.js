@@ -18,7 +18,8 @@ Session_BD.GetLastSessionId = function(callback)
 	{
 		if(err)
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		for(var i in session)
 		{
@@ -37,7 +38,8 @@ Session_BD.GetSession = function(idSession, callbackGetSession) {
 	{
 		if (err)  
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if (typeof Session[0] === "undefined")
@@ -64,7 +66,8 @@ Session_BD.SetSession = function (idSessionSet, dateDebutSet, dateFinSet)
         if (err) 
         {
             EventLog.log("SESSION_BD : SetSession() : erreur ! ");
-            throw err;
+            EventLog.error(err);
+            // enlève l'exception pour empecher que le serveur plante //throw err;
         }
 
         if (typeof newSession[0] === "undefined")
@@ -83,7 +86,8 @@ Session_BD.SetSession = function (idSessionSet, dateDebutSet, dateFinSet)
             {
             	if (err)
                 {
-                	throw err;
+                	EventLog.error(err);
+                	// enlève l'exception pour empecher que le serveur plante //throw err;
                 }
                 EventLog.log("SESSION_BD : Mis à jour de la session : " + newSession[0].dateDebut +" -> " + newSession[0].dateFin);
             });
@@ -103,7 +107,8 @@ Session_BD.Creation = function (idSession, dateDebut, dateFin) {
 
     newSession.save(function (err) {
         if (err) {
-            throw err;
+        	EventLog.error(err);
+            // enlève l'exception pour empecher que le serveur plante //throw err;
         }
         
         EventLog.log('BASE DE DONNEES : Creation d une Session !');

@@ -27,7 +27,8 @@ Case_BD.GetCasesId = function(callback)
 	{
 		if(err)
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		for(var i in users)
 		{
@@ -53,7 +54,8 @@ Case_BD.SetCase = function(caseToSave, callSetCase)
 		if (err) 
 		{
 			EventLog.log("CASE_BD : SetCase() : erreur ! ");
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		if (typeof cCase[0] === "undefined") 
 		{
@@ -77,7 +79,8 @@ Case_BD.SetCase = function(caseToSave, callSetCase)
 			{
 				if (err) 
 				{
-					throw err;
+					EventLog.error(err);
+					// enlève l'exception pour empecher que le serveur plante //throw err;
 				}
 				EventLog.log("CASE_BD : Mis à jour de la case : [" + caseToSave.id +"-"+caseToSave.nom+"]");
 				callbackSetPersonnage(1);
@@ -107,7 +110,8 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
 
 	newCase.save(function(err) {
 		if (err) {
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 			EventLog.log("CASE_BD : Creation() : ERREUR ");
 		}
 		EventLog.log("CASE_BD : Creation de case réussie ! " + newCase.nom);
@@ -120,14 +124,16 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
  * 
  * @method GetCaseById
  */
-Case_BD.GetCaseById = function(idCase, callbackGetCase) {
+Case_BD.GetCaseById = function(idCase, callbackGetCase) 
+{
 	var caseModel = mongoose.model('Case');
 	
 	var query = caseModel.find(null);
 	query.where('id', idCase);
-	query.exec(function (err, currentCase) {
+	query.exec(function (err, currentCase) 
+	{
 		
-		if (err) {throw err;}
+		if (err) {EventLog.error(err)}; // enlève l'exception pour empecher que le serveur plante //throw err;}
 		
 		if (typeof currentCase[0] === "undefined")
 		{

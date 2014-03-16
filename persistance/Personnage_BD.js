@@ -26,10 +26,6 @@ function Personnage_BD() {
  */
 Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
 {
-	try
-	{
-		
-	
     var PersonnageModel = mongoose.model('Personnage');
     var nouveauPerso = PersonnageModel();
 
@@ -38,7 +34,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
     }, function (err, perso) {
         if (err) {
             EventLog.error("PERSONNAGE_BD : SetPersonnage() : erreur ! idUser : " + personnageToSave.id);
-            throw err;
+            // enlève l'exception pour empecher que le serveur plante //throw err;
         }
 
         if (typeof perso[0] === "undefined") {
@@ -90,7 +86,8 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                 {
                     if (err)
                     {
-                        throw err;
+                    	EventLog.error(err);
+                        // enlève l'exception pour empecher que le serveur plante //throw err;
                     }
 					
                    // EventLog.log("PERSONNAGE_BD : Mis à jour du personnage : ["+personnageToSave.id+"]");
@@ -100,11 +97,6 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
         }
 
     });
-	}
-	catch(e)
-	{
-		EventLog.err("PERSONANGE_BD : SetPersonnage() : " + e);
-	}
 },
 
 /**
@@ -125,7 +117,8 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
     }, function (err, user) {
         if (err) {
             EventLog.error("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
-            throw err;
+            EventLog.error(err);
+            // enlève l'exception pour empecher que le serveur plante //throw err;
         }
         if (typeof user[0] === "undefined") {
             EventLog.error("PERSONNAGE_BD : GetPersonnage() : pas trouvé l'user ! ");
@@ -136,7 +129,8 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                 
                 if (err) {
                     EventLog.error("PERSONNAGE_BD : GetPersonnage() : erreur ! ");
-                    throw err;
+                    EventLog.error(err);
+                    // enlève l'exception pour empecher que le serveur plante //throw err;
                 }
 
                 if (typeof perso[0] === "undefined") {
@@ -179,7 +173,8 @@ Personnage_BD.deletePerso = function(id, callbackDeletePerso)
 		if(err)
 		{
 			callbackDeletePerso(-1);
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if(users[0])
@@ -193,7 +188,8 @@ Personnage_BD.deletePerso = function(id, callbackDeletePerso)
 						if(err)
 						{
 							callbackDeletePerso(-1);
-							throw err;
+							EventLog.error(err);
+							// enlève l'exception pour empecher que le serveur plante //throw err;
 						}
 						callbackDeletePerso(1);
 					});
@@ -255,7 +251,8 @@ Personnage_BD.Creation = function (id)
 
     Perso.save(function (err) {
         if (err) {
-            throw err;
+        	EventLog.error(err);
+            // enlève l'exception pour empecher que le serveur plante //throw err;
         }
         
         EventLog.log('BASE DE DONNEES : Creation de personnage réussie !');

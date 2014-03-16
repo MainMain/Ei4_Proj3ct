@@ -29,7 +29,8 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 	{
 		if (err)
 		{
-			throw (err);
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw (err);
 		}
 		
 		if (typeof NewUser[0] === "undefined")
@@ -49,7 +50,8 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 			{
 			if (err)
 			{
-				throw err;
+				EventLog.error(err);
+				// enlève l'exception pour empecher que le serveur plante //throw err;
 			}
 			//EventLog.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 			
@@ -75,7 +77,8 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) 
 	{
 		if (err)  
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if (typeof NewUser[0] === "undefined")
@@ -106,7 +109,8 @@ Utilisateur_BD.deleteUser = function(idUser, callbackDelete)
 		if(err)
 		{
 			callbackDelete(-1);
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if(user[0])
@@ -115,8 +119,9 @@ Utilisateur_BD.deleteUser = function(idUser, callbackDelete)
 			{
 				if(err)
 				{
+					EventLog.error(err);
 					callbackDelete(-1);
-					throw err;
+					// enlève l'exception pour empecher que le serveur plante //throw err;
 				}
 				callbackDelete(1);
 			});
@@ -156,8 +161,10 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)
 	{
 		// si erreur 
-		if (err){ throw err; }		
-
+		if (err){
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err; }		
+		}
 		// si pseudo pas trouvé
 		if(typeof testuseru[0] === "undefined") { userExiste = false; }
 		// si pseudo trouvé
@@ -167,7 +174,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		Utilisateurmodel.find({email: emailU}, function (err, testusere)
 		{
 			// si erreur
-			if (err) { throw err; }
+			if (err) {EventLog.error(err);} // enlève l'exception pour empecher que le serveur plante //throw err; }
 			
 			// si email pas trouvé
 			if(typeof testusere[0] === "undefined") { mailExiste = false; }
@@ -200,7 +207,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 				{
 					if (err)
 					{
-						throw err;
+						EventLog.error(err); // enlève l'exception pour empecher que le serveur plante //throw err;
 					}
 					EventLog.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
 					
@@ -230,7 +237,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	{
 		if (err)
 		{
-			throw err;
+			EventLog.error(err); // enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if(typeof user[0] === "undefined")
@@ -263,7 +270,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	{
 		if(err)
 		{
-			throw err;
+			EventLog.error(err); // enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		for(var i in users)
 		{
