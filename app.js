@@ -63,7 +63,7 @@ var dateLancement = new Date();
 var dateLancementSrv = dateLancement;
 var heureDerniereAttaque = dateLancement;
 
-EventLog.log(dateLancementSrv);
+EventLog.log(dateLancementSrv.toString());
 
 //Tableau des utilisateur en ligne
 var usersOnline = new Array();
@@ -1787,13 +1787,15 @@ function SauvegardeGlobale()
 {
 	EventLog.log("***************** SAUVEGARDE GLOBALE DES DONNEES *****************************");
    	var date = new Date();
-   	EventLog.log("[ ! ] Sauvegarde globale ! Date: " + date);
-   				
+   	
+   	EventLog.log("[ ! ] Nouvelle journée ! Date: " + date);
 	// regain des pts move et action
 	oPersonnage_Manager.nouvelleJournee();
 	// rajout des goules
 	oCase_Manager.nouvelleJournee();
-			
+		
+	date = new Date();
+	EventLog.log("[ ! ] Sauvegarde globale ! Date: " + date);
    	// sauvegarde de données
    	oUtilisateur_Manager.Save();
 	oPersonnage_Manager.Save();

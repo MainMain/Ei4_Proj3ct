@@ -585,9 +585,6 @@ var Personnage = (function() {
 		
 		ajouterMessage : function(msg)
 		{
-			// si le perso est mort, on n'ajoute pas le message
-			if (this.ptSante <= 0) return;
-			
 			//EventLog.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
 
 			if (msg == "Z" || msg == "N" || msg == "F")
@@ -596,6 +593,9 @@ var Personnage = (function() {
 			}
 			else
 			{
+				// si le perso est mort, on n'ajoute pas le message
+				if (this.ptSante <= 0) return;
+				
 				//var date = new Date();
 				//var mois = parseInt(date.getMonth()) + 1;
 				//var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
@@ -670,6 +670,7 @@ var Personnage = (function() {
 				this.ptSante = 0;
 				this.ajouterMessage("Vous êtes mort à cause de la faim !");
 				this.ajouterMessage("F");
+				EventLog.log("PERSONNAGE : Perso mort de faim ! ");
 			}
 			else
 			{
