@@ -352,10 +352,10 @@ function initialize() {
 	// *******************************************
 	var manifest = [
 	                {src:"public/Background_liste.jpg", id:"idBackgroundListe"},   
-	                {src:"public/Background_1.jpg", id:"idBackground_1"}, 
-	                {src:"public/Background_11.jpg", id:"idBackground_11"},  
-	                {src:"public/Background_Dead.jpg", id:"idBackground_Dead"},
-	                {src:"public/Background_Nuit.jpg", id:"idBackground_Nuit"},
+	                {src:"public/Background_1.png", id:"idBackground_1"}, 
+	                {src:"public/Background_11.png", id:"idBackground_11"},  
+	                {src:"public/Background_Dead.png", id:"idBackground_Dead"},
+	                {src:"public/Background_Nuit.png", id:"idBackground_Nuit"},
 	                {src:"public/blood.jpg", id:"idBackground_blood"}, 
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
 	                {src:"public/Boutons/Attaquer.png", id:"idBtnAttaquer"},
@@ -537,7 +537,7 @@ function initialize() {
 	                ];
 
 	// application du background Preload
-	backgroundPreload = new createjs.Bitmap("public/Background_1.jpg");
+	backgroundPreload = new createjs.Bitmap("public/Background_1.png");
 	backgroundPreload.image.onload = setImg(backgroundPreload, 0, 0);
 	backgroundPreload.cursor="wait";
 
@@ -622,7 +622,7 @@ function start()
 function setPlateau()
 {
 	// application du background
-	var background = new createjs.Bitmap("public/Background_11.jpg");
+	var background = new createjs.Bitmap("public/Background_11.png");
 	background.image.onload = setImg(background, 0, 0);
 
 	// ******************************************
@@ -1171,7 +1171,6 @@ function setPlateau()
 		PageItemPerso++;
 		pressBtnEquip=false;
 		socket.emit('INFO_PERSONNAGE_CS');
-
 	});
 
 	BtnPageItemPersoLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
@@ -1243,7 +1242,7 @@ function message()
 	shapeMessage.graphics.setStrokeStyle(4).beginStroke("#006600").drawRect(
 			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);
 
-	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
+	var background_message = new createjs.Bitmap("public/Background_liste.png");
 	contMessage.addChild(background_message);
 
 	labelMessage = contMessage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
@@ -1258,8 +1257,11 @@ function message()
 	BtnValideMsg.y=365;
 	contMessage.addChild(BtnValideMsg);
 	BtnValideMsg.addEventListener('click', function(event) {
+		//alert("1");
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
+		//alert("2");
 		stage.removeChild(contMessage);
+		//	alert("3");
 		game();
 	});
 
@@ -1531,7 +1533,7 @@ function attaqueNuit()
 			contNuit.x, contNuit.y, contNuit.width, contNuit.height);
 	
 	// Application du background qui va recouvrir le canvas
-	var background_nuit = new createjs.Bitmap("public/Background_Nuit.jpg");
+	var background_nuit = new createjs.Bitmap("public/Background_Nuit.png");
 	contNuit.addChild(background_nuit);
 	
 	var BtnVivant = new createjs.Bitmap("public/Boutons/Vivant.png");
@@ -1562,7 +1564,7 @@ function dead(currentPerso)
 			contDead.x, contDead.y, contDead.width, contDead.height);
 
 	// Application du background qui va recouvrir le canvas
-	var background_dead = new createjs.Bitmap("public/Background_Dead.jpg");
+	var background_dead = new createjs.Bitmap("public/Background_Dead.png");
 	contDead.addChild(background_dead);
 
 	var causeDeLaMort;
@@ -1645,6 +1647,7 @@ function dead(currentPerso)
 	BtnCancelDead.y=560;
 	contDead.addChild(BtnCancelDead);
 	BtnCancelDead.addEventListener('click', function (event) {
+		alert("click mort ok !");
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
 		setPlateau();
