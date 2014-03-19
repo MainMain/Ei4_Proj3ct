@@ -1242,7 +1242,7 @@ function message()
 	shapeMessage.graphics.setStrokeStyle(4).beginStroke("#006600").drawRect(
 			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);
 
-	var background_message = new createjs.Bitmap("public/Background_liste.png");
+	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
 	contMessage.addChild(background_message);
 
 	labelMessage = contMessage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
