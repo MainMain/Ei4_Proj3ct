@@ -1647,7 +1647,7 @@ function dead(currentPerso)
 	BtnCancelDead.y=560;
 	contDead.addChild(BtnCancelDead);
 	BtnCancelDead.addEventListener('click', function (event) {
-		alert("click mort ok !");
+		//alert("click mort ok !");
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
 		setPlateau();
@@ -4035,8 +4035,9 @@ socket.on('GET_DATE_SC', function (dateLancementSrv)
 	var annee = dateLancementSrv.substring(0,4);
 	var mois = dateLancementSrv.substring(5,7);
 	var jour = dateLancementSrv.substring(8,10);
-	var heure = dateLancementSrv.substring(11,19);
-	labelLancementServeur.text="Le "+jour+"/"+mois+" à "+heure;
+	var heure = parseInt(dateLancementSrv.substring(11,13))+1;
+	var minuit = dateLancementSrv.substring(17,19);
+	labelLancementServeur.text="Le "+jour+"/"+mois+" à "+heure +":" +minuit;
 		});
 
 //Creer bouton tout simple :
