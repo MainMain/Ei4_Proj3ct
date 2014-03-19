@@ -29,7 +29,8 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 	{
 		if (err)
 		{
-			throw (err);
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw (err);
 		}
 		
 		if (typeof NewUser[0] === "undefined")
@@ -43,22 +44,22 @@ Utilisateur_BD.SetUtilisateur = function(utilisateurToSave,callbackSetUtilisateu
 			NewUser[0].personnage 			= utilisateurToSave.idPersonnage;
 			NewUser[0].numEquipe 			= utilisateurToSave.numEquipe;
 			NewUser[0].idSession			= utilisateurToSave.idSession;
-			NewUser[0].save(function (err)
-					{
-						if (err)
-						{
-							throw err;
-						}
-						console.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
-						
-						callbackSetUtilisateur(new oUtilisateur(
-							NewUser._id,			NewUser.pseudo,				NewUser.email,				NewUser.pass,
-							NewUser.numEquipe,		NewUser.personnage, 		NewUser.idSession));
-					});
+			NewUser[0].compteConfirme		= utilisateurToSave.compteConfirme;
 			
+			NewUser[0].save(function (err)
+			{
+			if (err)
+			{
+				EventLog.error(err);
+				// enlève l'exception pour empecher que le serveur plante //throw err;
+			}
+			//EventLog.log('UTILISATEUR_BD : Mis à jour de l\'utilisateur : ['+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
+			
+			callbackSetUtilisateur(new oUtilisateur(
+				NewUser[0]._id,			NewUser[0].pseudo,				NewUser[0].email,				NewUser[0].pass,
+				NewUser[0].numEquipe,		NewUser[0].personnage, 		NewUser[0].idSession, 			NewUser[0].compteConfirme));
+			});
 		}
-		
-		
 	});
 },
 
@@ -76,21 +77,23 @@ Utilisateur_BD.GetUtilisateur = function(idUtilisateur, callbackGetUtilisateur) 
 	{
 		if (err)  
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if (typeof NewUser[0] === "undefined")
 		{
-			console.log("Get Utilisateur : undefined");
+			EventLog.log("Get Utilisateur : undefined");
 			callbackGetUtilisateur(idUtilisateur, -1);	
 		}
 		else
 		{
-			//console.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
+			//EventLog.log("Appel du callBack avec un utilisateur -- " + NewUser[0].scoreByMeutre);
 			var user = new oUtilisateur(
 					NewUser[0]._id,				NewUser[0].pseudo,				NewUser[0].email,				//NewUser[0].pass,
-					NewUser[0].numEquipe,		NewUser[0].personnage,			NewUser[0].idSession);
-			console.log("UTILISATEUR_BD : Chargement de l'utilisateur : ["+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
+					NewUser[0].numEquipe,		NewUser[0].personnage,			NewUser[0].idSession,
+					NewUser[0].compteConfirme);
+			EventLog.log("UTILISATEUR_BD : Chargement de l'utilisateur : ["+NewUser[0].id+"-"+NewUser[0].pseudo+"]");
 			callbackGetUtilisateur(idUtilisateur, user);
 		}
 	});
@@ -106,7 +109,8 @@ Utilisateur_BD.deleteUser = function(idUser, callbackDelete)
 		if(err)
 		{
 			callbackDelete(-1);
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if(user[0])
@@ -115,8 +119,9 @@ Utilisateur_BD.deleteUser = function(idUser, callbackDelete)
 			{
 				if(err)
 				{
+					EventLog.error(err);
 					callbackDelete(-1);
-					throw err;
+					// enlève l'exception pour empecher que le serveur plante //throw err;
 				}
 				callbackDelete(1);
 			});
@@ -136,7 +141,6 @@ Utilisateur_BD.deleteUser = function(idUser, callbackDelete)
  * Renvoi -2 si email deja pris
  * @method Inscription
  */
- 
 Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callbackInscription)
 {
  	var Utilisateurmodel = mongoose.model('Utilisateur'); 				//recupération de la classe utilisateur
@@ -151,13 +155,16 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	newUser.email 				= emailU;
 	newUser.numEquipe 			= 0;
 	newUser.idSession			= -1;
+	newUser.compteConfirme		= true;
 	
-	// on cherche si ce pseudo existee déja
+	// on cherche si ce pseudo existe déja
 	Utilisateurmodel.find({pseudo: pseudoU}, function (err, testuseru)
 	{
 		// si erreur 
-		if (err){ throw err; }		
-
+		if (err){
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err; }		
+		}
 		// si pseudo pas trouvé
 		if(typeof testuseru[0] === "undefined") { userExiste = false; }
 		// si pseudo trouvé
@@ -167,7 +174,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		Utilisateurmodel.find({email: emailU}, function (err, testusere)
 		{
 			// si erreur
-			if (err) { throw err; }
+			if (err) {EventLog.error(err);} // enlève l'exception pour empecher que le serveur plante //throw err; }
 			
 			// si email pas trouvé
 			if(typeof testusere[0] === "undefined") { mailExiste = false; }
@@ -190,7 +197,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 				newPerso = oPersonnageDB.Creation();
 				
 				// log
-				console.log('BASE DE DONNEES : ID du perso cree ' + newPerso._id);
+				EventLog.log('BASE DE DONNEES : ID du perso cree ' + newPerso._id);
 				
 				// on attribut l'id de personnage crée à l'attribut "personnage" du nouvel user
 				newUser.personnage = newPerso._id;
@@ -200,9 +207,9 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 				{
 					if (err)
 					{
-						throw err;
+						EventLog.error(err); // enlève l'exception pour empecher que le serveur plante //throw err;
 					}
-					console.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
+					EventLog.log('BASE DE DONNEES : Utilisateur inscrit dans la base !');
 					
 					// renvoi réponse
 					callbackInscription(newUser._id, req, res);
@@ -230,7 +237,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	{
 		if (err)
 		{
-			throw err;
+			EventLog.error(err); // enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if(typeof user[0] === "undefined")
@@ -241,9 +248,14 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 		{
 			callbackConnexion(-1, req, res);
 		}
+		else if(user[0].compteConfirme == false)
+		{
+			callbackConnexion(-2, req, res);
+			EventLog.log("USER_BD : refus de connexion de l'user = " + user[0].pseudo + " cause : compte non-confirmé");
+		}
 		else
 		{
-			console.log("USER_BD : connexion de l'user = " + user[0].pseudo);
+			EventLog.log("USER_BD : connexion de l'user = " + user[0].pseudo);
 			callbackConnexion(user[0].id, req, res);
 		}
 	});
@@ -258,7 +270,7 @@ Utilisateur_BD.Inscription = function(pseudoU, passU, emailU, req, res, callback
 	{
 		if(err)
 		{
-			throw err;
+			EventLog.error(err); // enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		for(var i in users)
 		{

@@ -37,11 +37,11 @@ GameRules.combat_proba_perdreItem = function() 				{ return (Math.floor(Math.ran
 
 // ********** CONFIGURATION DES GOULES **********
 //minimun de goules qui spawn dans chaque case par jour
-GameRules.goules_RespawnMin = function() 					{ return 2; }, 
+GameRules.goules_RespawnMin = function() 					{ return 0; }, 
 //maximun de goules qui spawn dans chaque case par jour
-GameRules.goules_RespawnMax = function() 					{ return 10;}, 
+GameRules.goules_RespawnMax = function() 					{ return 3; }, 
 // calcul un nbr aléatoire de nombre de goule
-GameRules.goules_nbrNouvellesGoules = function()			{ return (Math.floor(Math.random() * (10-2) + 2 ));},
+GameRules.goules_nbrNouvellesGoules = function()			{ return (Math.floor(Math.random() * (3-0) + 0 ));},
 //minimun de pts d'attaque par goules
 GameRules.goules_PtsAttaqueMin = function() 				{ return 2; },
 //maximun de pts d'attaque par goules
@@ -57,7 +57,7 @@ GameRules.goules_proba_TuerDeuxGoules = function() 			{ return (Math.floor(Math.
 // différence max de nombre de joueurs entre les équipes
 GameRules.jeu_diffMaxEntreEquipes = function() 				{ return 3; }, 
 // temps de fouilles
-GameRules.jeu_duree_fouille = function() 					{ return 1000 * 5/*60 * 60*/ ; }, // 1 heure
+GameRules.jeu_duree_fouille = function() 					{ return 1000 *5/**60 * 60 */; }, // 1 heure
 // Gain de score quand meurtre
 GameRules.jeu_score_gain_meurtre = function() 				{ return 5; }, 
 // Perte score quand tué
@@ -72,6 +72,8 @@ GameRules.regain_sante = function()							{ return (Math.floor(Math.random() * 5
 GameRules.pt_actionMax_min = function()						{ return 3;},
 //Nombre de points de déplacement minimum
 GameRules.pt_deplacementMax_min = function()				{ return 3;},
+// duree entre chaque attaque / save
+GameRules.dureeCycle = function()							{ return 1000 * 60 * 1; },
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },

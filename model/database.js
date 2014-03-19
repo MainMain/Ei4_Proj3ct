@@ -39,6 +39,7 @@ database.Initialiser = function() {
 		personnage 			: String,
 		numEquipe			: Number,
 		idSession			: Number,
+		compteConfirme		: Boolean,
 	});
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
 	
@@ -113,6 +114,7 @@ database.Initialiser = function() {
 	var ScoreSchema = new mongoose.Schema({
 		idUser 			: String,
 		idSession		: Number,
+		numEquipe		: Number,
 		scoreODD		: Number,
 		scoreByODD 		: Number,
 		scoreByMeutre 	: Number,

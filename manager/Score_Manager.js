@@ -18,7 +18,7 @@ function Score_Manager(){}
 
 Score_Manager.Load = function (idSession)
 {
-	EventLog.log("SCMANAGER : Chargement avec l'id session =  " + idSession);
+	EventLog.log("SCORE_MANAGER : Initialisation avec l'id session =  " + idSession);
     // initialise la liste
 
     // récupère id des scores
@@ -39,7 +39,7 @@ Score_Manager.Load = function (idSession)
 			{
 				if (score == -1)
 				{
-					EventLog.log("/!\ WARNING : SCMANAGER : erreur lecture du score de " + idScore);
+					EventLog.error("/!\ WARNING : SCMANAGER : erreur lecture du score de " + idScore);
 				} 
 				else 
 				{
@@ -53,7 +53,7 @@ Score_Manager.Load = function (idSession)
 						context.listeScores[iduser] = new Array();
 					}
 					context.listeScores[iduser][idsession] = score;
-					//EventLog.log("-> " + iduser + "<->" + idsession + "<->" + score.id);
+					EventLog.log("SCORE_MANAGER : Load() : Chargement en mémoire du score de " + oUtilisateur_Manager.getPseudo(iduser) + " pour la session : " + idsession );
 				}
 			});
 		}
@@ -63,7 +63,8 @@ Score_Manager.Load = function (idSession)
 Score_Manager.Save = function()
 {
 	var context = this;
-	// pour chaque user
+	var currentScore;
+	// pour chaque user...
 	oUtilisateur_BD.GetUsersId(function(tabId)
 	{
 		for(var i = 0; i < tabId.length; i++)
@@ -72,19 +73,28 @@ Score_Manager.Save = function()
 			// pour chaque session
 			//for(var jSess = 1; jSess <= context.idSessionEnCours; jSess++)
 			//{
-			EventLog.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+context.idSessionEnCours);
-			// ... le sauvegarder en BD
-			oScore_BD.SetScore(context.listeScores[tabId[i]][context.idSessionEnCours],  function(reponse)
-			{
-				if (reponse == -1)
+			
+			// ... sauvegarder son score de la session en cours en BD
+			try 
+			{ 
+				currentScore = context.listeScores[tabId[i]][context.idSessionEnCours]; 
+		
+				if (! (typeof currentScore === "undefined"))
 				{
-					EventLog.log("/!\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
+					oScore_BD.SetScore(currentScore,  function(reponse)
+					{
+						if (reponse == -1)
+						{
+							EventLog.error("/!\\ WARNING : SCMANAGER : erreur ecriture du score de " + idScore);
+						}
+						else
+						{
+							EventLog.log("SCORE_MANAGER : MAJ du score de " + oUtilisateur_Manager.getPseudo(tabId[i]) + " pour la session "+context.idSessionEnCours+" OK !");
+						}
+					});
 				}
-				else
-				{
-					EventLog.log("SC_MANAGER :ENR DU SCORE DE " + tabId[i] + " de SESS "+jSess+" OK !");
-				}
-			});
+			}
+			catch(err) { EventLog.error("SCORE_MANAGER : Save() : " + err + " (utilisateur sans score)"); }
 		}
 	});
 },
@@ -93,9 +103,10 @@ Score_Manager.nouvelleSession = function(idSession)
 {
 	// modifie l'id de session de jeu
 	this.idSessionEnCours = idSession;
-	this.listeScores = new Array();
-	var maListe = this.listeScores;
+	//this.listeScores = new Array();
+	//var maListe = this.listeScores;
 	
+	/*
 	// créé les scores en BD pour chaque utilisateur
 	oUtilisateur_BD.GetUsersId(function(tabId)
 	{
@@ -112,7 +123,7 @@ Score_Manager.nouvelleSession = function(idSession)
 					EventLog.log("SC_MANAGER : nouvelleSession() - idSession = " + idSession );
 					if (score == -1)
 					{
-						EventLog.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
+						EventLog.error("/!\\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
 					}
 					else
 					{
@@ -125,9 +136,40 @@ Score_Manager.nouvelleSession = function(idSession)
 			});
 			
 		}
-	});
+	});*/
 },
 
+Score_Manager.createScore = function(idUser, equipe, callback)
+{
+	var context = this;
+	// il crée un score avec l'id de ma nouvelle session
+	oScore_BD.Creation(idUser, this.idSessionEnCours, equipe, function(idScore)
+	{
+		// on le récupère
+		oScore_BD.GetScoreById(idScore, function(idScore, score)
+		{
+			// chargement des scores en mémoire
+			EventLog.log("SC_MANAGER : createScore() - idUser = " + idUser + " idSession = " + context.idSessionEnCours);
+			if (score == -1)
+			{
+				EventLog.error("/!\\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
+			}
+			else
+			{
+				// enregistrement du score
+				context.listeScores[idUser] = new Array();
+				context.listeScores[idUser][context.idSessionEnCours] = score;
+				
+				EventLog.log("SC_MANAGER : Chargement en mémoire du nouveau score pour le nouveau joueur : " + idUser + "<->" + context.idSessionEnCours);
+				EventLog.log(score);
+				callback();
+			}
+		});		
+	});
+	
+	
+},
+/*
 Score_Manager.nouveauJoueur = function(idUser, idSession)
 {
 	EventLog.log("SC_MANAGER : nouveauJoueur() - idUser = " + idUser );
@@ -145,7 +187,7 @@ Score_Manager.nouveauJoueur = function(idUser, idSession)
 			EventLog.log("SC_MANAGER : getScoreById() - idSession = " + idSession );
 			if (score == -1)
 			{
-				EventLog.log("/!\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
+				EventLog.error("/!\\ WARNING : SC_MANAGER : erreur lecture du score de " + score.id);
 			}
 			else
 			{
@@ -157,7 +199,7 @@ Score_Manager.nouveauJoueur = function(idUser, idSession)
 		});
 	});
 },
-
+*/
 Score_Manager.compabiliserMeurtre = function(idBourreau, idVictime)
 {
 	EventLog.log("SCORE_MANAGER : ComptabiliserMeurtre idB =  " + idBourreau+"<-> idV = "+idVictime);
@@ -179,7 +221,7 @@ Score_Manager.compabiliserDepotODD = function(idUser, valeurODD)
 
 Score_Manager.compabiliserGouleTue = function(idUser, nbr)
 {
-	EventLog.log("------------------------------------- COMPTABILISE GOULE ");
+	EventLog.log("SCORE_MANAGER : comptabilisation de " + nbr + "  goule(s) tuée(s) pour le joueur " + idUser);
 	this.listeScores[idUser][this.idSessionEnCours].ajoutGouleTue(nbr);
 },
 
@@ -280,5 +322,136 @@ sortByScoreODD = function(a, b)
 {
 	return a.scoreByODD - b.scoreByODD;
 },
+
+
+Score_Manager.getBilanScoreSession = function(idUser, idSession)
+{
+	console.log("SCORE_MANAGER : GetBilanScoreSession pour session = " + idSession);
+	
+	var currentScore, scoreTotal;
+	var struct = 
+	{
+		"scoreAGI_odd"		: 0,
+		"scoreINNO_odd" 	: 0,
+		"scoreQSF_odd"  	: 0,
+		"scoreAGI_meurtre"	: 0,
+		"scoreINNO_meurtre" : 0,
+		"scoreQSF_meurtre"  : 0,
+		"scoreAGI"			: 0,
+		"scoreINNO" 		: 0,
+		"scoreQSF"  		: 0,
+		"nbrAGI"			: 0,
+		"nbrINNO"			: 0,
+		"nbrQSF"			: 0,
+		"nbrTotal"			: 0,
+		"scoreODD"  		: 0,
+		"nbrMeurtres"		: 0,
+		"nbrFoisTue"		: 0,
+		"scoreMeurtre"  	: 0,
+		"nbrGoulesTues"  	: 0,
+		"sortByNbrMorts"  	: 0,
+		"total"				: 0,
+		"AGI_meurtres"		: 0,
+		"AGI_tués"			: 0,
+		"AGI_zombies"		: 0,
+		"INNO_meurtres"		: 0,
+		"INNO_tués"			: 0,
+		"INNO_zombies"		: 0,
+		"QSF_meurtres"		: 0,
+		"QSF_tués"			: 0,
+		"QSF_zombies"		: 0,
+		"lastSession"		: 0,
+		"nbrAGI_sessionEnCours"		: 0,
+		"nbrINNO_sessionEnCours"	: 0,
+		"nbrQSF_sessionEnCours"		: 0,
+		"lastIdSession"		: idSession
+	};
+	
+	for(var currentIdUser in this.listeScores)
+	{
+		//console.log(">>>> currentIduser = " + currentIdUser);
+		for(var currentIdSession in this.listeScores[currentIdUser])
+		{
+			currentScore = this.listeScores[currentIdUser][currentIdSession];
+			
+			
+			//console.log(currentIdUser + " - " + currentIdSession +" :");
+			//console.log(currentScore);
+			//console.log(">>>> currentIdSession = " + currentIdSession);
+			//console.log(">>>> id score = " + this.listeScores[currentIdUser][currentIdSession].id);
+			if (!(typeof currentScore === "undefined"))
+			{
+				//console.log(">>>>>>>>> id session = " + idSession);
+				if (currentScore.idSession == idSession)
+				{
+					struct["nbrTotal"] += 1;
+					if (currentScore.idUser == idUser)
+					{
+						console.log("SCORE_MANAGER : getBilanScoreSession()  user trouvé !");
+						struct["scoreODD"]		= currentScore.scoreByODD ;
+						struct["nbrMeurtres"]	= currentScore.nbrMeurtres ;
+						struct["nbrFoisTue"]	= currentScore.nbrFoisTue ;
+						struct["scoreMeurtre"]	= currentScore.scoreByMeutre ;
+						struct["nbrGoulesTues"]	= currentScore.nbrGoulesTues ;
+						struct["total"] = currentScore.scoreByODD + currentScore.scoreByMeutre;
+					}
+					scoreTotal = currentScore.scoreByMeutre + currentScore.scoreByODD;
+					
+					if (currentScore.numEquipe == 1)
+					{
+						struct["scoreAGI"] 			+= scoreTotal;
+						struct["scoreAGI_odd"] 		+= currentScore.scoreByODD;
+						struct["scoreAGI_meurtre"] 	+= currentScore.scoreByMeutre;
+						struct["nbrAGI"]			+= 1;
+						struct["AGI_meurtres"] 		+= currentScore.nbrMeurtres;
+						struct["AGI_tués"] 			+= currentScore.nbrFoisTue;
+						struct["AGI_zombies"]		+= currentScore.nbrGoulesTues ;
+					}
+					else if (currentScore.numEquipe == 2)
+					{
+						struct["scoreINNO"] 		+= scoreTotal;
+						struct["scoreINNO_odd"] 	+= currentScore.scoreByODD;
+						struct["scoreINNO_meurtre"] += currentScore.scoreByMeutre;
+						struct["nbrINNO"]			+= 1;
+						struct["INNO_meurtres"] 	+= currentScore.nbrMeurtres;
+						struct["INNO_tués"] 		+= currentScore.nbrFoisTue;
+						struct["INNO_zombies"]		+= currentScore.nbrGoulesTues;
+					}
+					else if (currentScore.numEquipe == 3)
+					{
+						struct["scoreQSF"] 			+= scoreTotal;
+						struct["scoreQSF_odd"] 		+= currentScore.scoreByODD;
+						struct["scoreQSF_meurtre"] 	+= currentScore.scoreByMeutre;
+						struct["nbrQSF"]			+= 1;
+						struct["QSF_meurtres"] 		+= currentScore.nbrMeurtres;
+						struct["QSF_tués"] 			+= currentScore.nbrFoisTue;
+						struct["QSF_zombies"]		+= currentScore.nbrGoulesTues;
+					}
+				} // fin if idSession = sessionEnCours
+				else if (currentScore.idSession == this.idSessionEnCours)
+				{
+					if (currentScore.numEquipe == 1)
+					{
+						struct["nbrAGI_sessionEnCours"]		+= 1;
+					}
+					else if (currentScore.numEquipe == 2)
+					{
+						struct["nbrINNO_sessionEnCours"]	+= 1;
+					}
+					else if (currentScore.numEquipe == 3)
+					{
+						struct["nbrQSF_sessionEnCours"]		+= 1;
+					}
+				}
+			} // fin if pas undef
+		} // fin for
+	} // fin for
+	//console.log(struct);
+	
+	console.log("FIN SCORE");
+	return struct;
+},
+
+
 
 module.exports = Score_Manager;

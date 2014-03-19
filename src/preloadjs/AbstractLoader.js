@@ -97,7 +97,7 @@ this.createjs = this.createjs||{};
 	 *     var queue = new createjs.LoadQueue();
 	 *     queue.loadFile("largeImage.png");
 	 *     queue.on("progress", function() {
-	 *         console.log("Progress:", queue.progress, event.progress);
+	 *         EventLog.log("Progress:", queue.progress, event.progress);
 	 *     });
 	 *
 	 * @property progress

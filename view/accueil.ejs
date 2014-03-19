@@ -12,7 +12,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 	<!-- Put your title here! -->
-	<title>Accueil - Zomb'IstiA</title>
+	<title>Zomb'IstiA - Accueil</title>
 
 	<meta name="description" content="">
 
@@ -82,7 +82,7 @@
 	<% } else { %>
 		<form id="LogoutForm" class="logoutform" action="/" method=POST>
 			<input type="hidden"name="_method" value="delete"/>
-			<div> Bonjour <%= username %></div>
+			<div> Bonjour <%= username %> Survivrez-vous à la prochaine nuit ?</div>
 			<input type="submit" value="Retour chez les vivants ?!" align=right>
 		</form>
 	<% } %>
@@ -106,10 +106,16 @@
 
 		<div class="entry-content">
 			<p>
-				Au cas où tu n’aurais pas vu le magnifique arrière-plan, nous sommes dans un univers parallèle apocalyptique, dans lequel nous sommes envahis par des zombies affamés. Du coup, seule ta survie et celle de ton équipe compte !
-				<br><br>A l’IstiA, trois grandes équipes se sont formées, tu devras donc choisir dans quel camp tu te situe : AGI, INNO ou QSF (et si tu as choisi d'arrêter tes études, c’est pareil).
+				Nous sommes dans un univers parallèle apocalyptique, dans lequel nous sommes envahis par des zombies affamés. 
+				Du coup, seule ta survie et celle de ton équipe compte !
+				<br><br>
+				A l’IstiA, trois grandes équipes se sont formées, tu devras donc choisir dans quel camp tu te situe : 
+				AGI, INNO ou QSF (et si tu as choisi d'arrêter tes études, c’est pareil).
 				
-				<br><br>Une fois la partie lancée, tu as 30 jours pour ramasser un maximum d’objets pour construire ta zone sûre. Tu vas errer au détour des couloirs de l’IstiA mais attention aux zombies qui rodent. Méfies toi aussi des autres équipes qui peuvent t’attaquer et te dépouiller de tes biens.
+				<br><br>
+				Une fois la partie lancée, tu as plusieurs pour ramasser un maximum d’objets pour construire ta zone sûre. 
+				Tu vas errer au détour des couloirs de l’IstiA mais attention aux zombies qui rodent. Méfies toi aussi des autres 
+				équipes qui peuvent t’attaquer et te dépouiller de tes biens.
 				<br><br>Les clés de la victoire seront le travail d’équipe et la communication, sans ça, dis adieu à la vie !
 			</p>
 		</div> <!-- .entry-content -->
@@ -127,14 +133,19 @@
 <div id="sidebar" role="complementary" class="span4">
 	
 	<% if (username == null) { %>
-		<% if (InfoInscription != null) {%>
-			<div id="subscribtionAlert" class="alert-error" style="font-size: 20px;">
-				<%=InfoInscription %> déjà utilisé !
+		<% if (InfoInscription != null) { %>
+			<div id="subscribtionAlert" class="alert-error" style="font-size: 16px;">
+			<% if 	(InfoInscription == "Login_nonConforme") { %> Echec : Login non conforme ! <br/>4 caractères obligatoires !
+			<% } else if 	(InfoInscription == "Pass_nonConforme")  { %> Echec : Mot de passe non conforme ! <br/>6 caractères obligatoires ! 	
+			<% } else if 	(InfoInscription == "Mail_nonConforme") { %> Echec : Email non conforme ! <br/>Mail de l'université d'Angers obligatoire !
+			<% } else 										 { %> <%=InfoInscription %> déjà utilisé ! <% } %>
 			</div>
 		<% } %>
-		<% if (usernameInscription != null){ %>
-			<div id="subscribtionAlert" class="alert-success" style="font-size: 20px;">
-				Bienvenue dans la communauté <%= usernameInscription %>
+		
+		<% if (usernameInscription != null) { %>
+			<div id="subscribtionAlert" class="alert-success" style="font-size: 16px;">
+				Bienvenue en enfer <%= usernameInscription %>. 
+				<br/>Tu viens de recevoir un mail de validation avec un lien pour activer ton compte !
 			</div>
 		<% } else { %>
 			<!-- Subscription form -->

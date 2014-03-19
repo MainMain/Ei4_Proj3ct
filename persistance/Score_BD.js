@@ -20,7 +20,8 @@ Score_BD.GetIds = function(callback)
 	{
 		if(err)
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		for(var i in score)
 		{
@@ -39,23 +40,24 @@ Score_BD.GetScoreById = function(idScore, callbackGetScore) {
 	{
 		if (err)  
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if (typeof Score[0] === "undefined")
 		{
-			console.log("Get Score : undefined");
+			EventLog.log("Get Score : undefined");
 			callbackGetScore(idScore, -1);	
 		}
 		else
 		{
 			var score = new oScore(
-				Score[0]._id,				Score[0].idUser,			Score[0].idSession,				
+				Score[0]._id,				Score[0].idUser,			Score[0].idSession,		Score[0].numEquipe,			
 				Score[0].nbrMeurtres,		Score[0].nbrFoisTue,		Score[0].scoreByMeutre,
 				Score[0].scoreByODD,		Score[0].nbrGoulesTues,		Score[0].listeVictimes,
 				Score[0].listeBourreaux
 				);
-			//console.log("SCORE_BD : Chargement du score : ["+Score[0].idUser+"-"+Score[0].idSession+"]");
+			//EventLog.log("SCORE_BD : Chargement du score : ["+Score[0].idUser+"-"+Score[0].idSession+"]");
 			callbackGetScore(idScore, score);
 		}
 	});
@@ -71,23 +73,24 @@ Score_BD.GetScoreByIdUser = function(id, callbackGetScore) {
 	{
 		if (err)  
 		{
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if (typeof Score[0] === "undefined")
 		{
-			console.log("Get Score : undefined");
+			EventLog.log("Get Score : undefined");
 			callbackGetScore(-1);	
 		}
 		else
 		{
 			var score = new oScore(
-				Score[0]._id,				Score[0].idUser,			Score[0].idSession,				
+				Score[0]._id,				Score[0].idUser,			Score[0].idSession,		Score[0].numEquipe,		
 				Score[0].nbrMeurtres,		Score[0].nbrFoisTue,		Score[0].scoreByMeutre,
 				Score[0].scoreByODD,		Score[0].nbrGoulesTues,		Score[0].listeVictimes,
 				Score[0].listeBourreaux
 				);
-			//console.log("SCORE_BD : Chargement du score : ["+Score[0].idUser+"-"+Score[0].idSession+"]");
+			EventLog.log("SCORE_BD : Chargement du score : ["+Score[0].idUser+"-"+Score[0].idSession+"-"+Score[0].numEquipe+"]");
 			callbackGetScore(score);
 		}
 	});
@@ -95,22 +98,23 @@ Score_BD.GetScoreByIdUser = function(id, callbackGetScore) {
 },
 Score_BD.SetScore = function (scoreToSave, callbackSetScore)
 {
+	
     var ScoreModel = mongoose.model('Score');
     var newScore = ScoreModel();
 
-    console.log("SCORE_BD : TENTATIVE Mise à jour du score : ["+scoreToSave.id+"]");
+    //console.log(scoreToSave);
+    EventLog.log("SCORE_BD : TENTATIVE Mise à jour du score : ["+scoreToSave.id+"]");
     ScoreModel.find({_id: scoreToSave.id}, function (err, newScore) 
     {
-    	console.log("---> BD : id score to save " + scoreToSave.id);
-    	
         if (err) 
         {
-            console.log("SCORE_BD : SetScore() : erreur ! ");
-            throw err;
+            EventLog.log("SCORE_BD : SetScore() : erreur ! ");
+            EventLog.error(err);
+            // enlève l'exception pour empecher que le serveur plante //throw err;
         }
 
         if (typeof newScore[0] === "undefined") {
-            console.log("SCORE_BD : SetScore() : undefined ! ");
+            EventLog.log("SCORE_BD : SetScore() : undefined ! ");
             callbackSetPersonnage(-1);
         } 
         else 
@@ -119,6 +123,7 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
         	{
         		idUser			: scoreToSave.idUser,
         		idSession		: scoreToSave.idSession,
+        		numEquipe		: scoreToSave.numEquipe,
         		nbrMeurtres		: scoreToSave.nbrMeurtres,
         		nbrFoisTue		: scoreToSave.nbrFoisTue,
         		scoreByMeutre	: scoreToSave.scoreByMeutre,
@@ -131,24 +136,27 @@ Score_BD.SetScore = function (scoreToSave, callbackSetScore)
             {
             	if (err)
                 {
-                	throw err;
+                	EventLog.error(err);
+                	// enlève l'exception pour empecher que le serveur plante //throw err;
                 }
 					
-                console.log("SCORE_BD : Mis à jour du score : ["+scoreToSave.id+"]");
-				callbackSetPersonnage(1);
+                
             });
+        	//EventLog.log("SCORE_BD : Mis à jour du score : ["+scoreToSave.id+"]");
+			callbackSetPersonnage(1);
         }
 
     });
 },
 
-Score_BD.Creation = function (idUser, idSession, callback) {
+Score_BD.Creation = function (idUser, idSession, equipe, callback) {
 
     var ScoreModel = mongoose.model('Score');
     var newScore = new ScoreModel();
 
 	newScore.idUser			= idUser;
 	newScore.idSession		= idSession;
+	newScore.numEquipe		= equipe;
 	newScore.nbrMeurtres	= 0;
 	newScore.nbrFoisTue		= 0;
 	newScore.scoreByMeutre	= 0;
@@ -159,10 +167,11 @@ Score_BD.Creation = function (idUser, idSession, callback) {
 
 	newScore.save(function (err) {
         if (err) {
-            throw err;
+        	EventLog.error(err);
+        	// enlève l'exception pour empecher que le serveur plante //throw err;
         }
-        console.log("SCORE_BD : Ajout d'un score -> " + idUser + " <-> " + idSession);
-		console.log("newScore.id = " + newScore.id);
+        EventLog.log("SCORE_BD : Ajout d'un score -> " + idUser + " <-> " + idSession);
+		EventLog.log("newScore.id = " + newScore.id);
         callback(newScore.id);
 	});
 	
@@ -177,7 +186,8 @@ Score_BD.deleteUser = function(id, callback)
 		if(err)
 		{
 			callback(-1);
-			throw err;
+			EventLog.error(err);
+			// enlève l'exception pour empecher que le serveur plante //throw err;
 		}
 		
 		if(score[0])
@@ -187,7 +197,8 @@ Score_BD.deleteUser = function(id, callback)
 				if(err)
 				{
 					callbackDelete(-1);
-					throw err;
+					EventLog.error(err);
+					// enlève l'exception pour empecher que le serveur plante //throw err;
 				}
 				callbackDelete(1);
 			});
@@ -196,7 +207,7 @@ Score_BD.deleteUser = function(id, callback)
 		{
 			callbackDelete(-1);
 		}
-	})
+	});
 },
 
 

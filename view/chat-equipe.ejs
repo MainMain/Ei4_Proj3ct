@@ -89,7 +89,7 @@
 		<% } %>
 		<p>Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spécial de votre personnage.<br>
 		Vous avez le choix entre trois compétences :<br>
-		Vous pouvez être <b>UNE BRUTE</b>: Cela signifie alors que votre personnage a des <b>dégats d'attaque</b> et une <b>défense augmentée</b>. En revanche il aura moins de chance de pouvoir se cacher.<br>
+		Vous pouvez être <b>UNE cvbcvbBRUTE</b>: Cela signifie alors que votre personnage a des <b>dégats d'attaque</b> et une <b>défense augmentée</b>. En revanche il aura moins de chance de pouvoir se cacher.<br>
 		Vous pouvez être <b>UN EXPLORATEUR</b>: Dans ce cas là c'est au contraire la <b>probabilité de se cacher</b> vos <b>points de mouvements maximum</b> qui sont augmentés. Par contre faites attention à ne pas vous faire attaquer car vos points de défense sont relativement faibles.<br>
 		Vous pouvez être <b>UN CHERCHEUR</b>: Ici vous êtes fait pour fouiller les alentours afin de trouver les objets nécessaires à votre victoire. Bien entendu cela a un côut, vos dégats sont réduits ainsi que votre probabilité de cache.<br>
 		</p>
@@ -151,7 +151,6 @@
 		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 
-
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 			//var chat = io.connect('http://192.168.0.24:25536/chat-equipe');
@@ -160,20 +159,6 @@
 			$( document ).ready(function()
 			{
 				chat.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
-			});
-			
-			chat.on('USER_CONNECTED_SC', function(users)
-			{
-				$("#listUsers").html("");
-				for(var i in users)
-				{
-					$("#listUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
-				}
-			});
-			
-			chat.on('USER_MESSAGE_SC', function(user, message)
-			{
-				$("#msgs").append("<div>" + user + " : " + message + "</div>");
 			});
 			
 			$("#msgSubmit").click(function()
@@ -187,6 +172,23 @@
 			}
 			});
 			
+			// nv user vient de se connecter
+			chat.on('USER_CONNECTED_SC', function(users)
+			{
+				$("#listUsers").html("");
+				for(var i in users)
+				{
+					$("#listUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
+				}
+			});
+			
+			// réception d'un message
+			chat.on('USER_MESSAGE_SC', function(user, message)
+			{
+				$("#msgs").append("<div>" + user + " : " + message + "</div>");
+			});
+			
+			// envoi d'un message
 			sendMessage = function()
 			{
 				var message = $("#msgTextBox").val();
@@ -195,7 +197,7 @@
 					chat.emit("USER_MESSAGE_CS", '<%= username %>', message);
 				}
 				$("#msgTextBox").val("");
-			}
+			},
 			
 			socket.on("DECONEXION_SC", function(msg)
 			{

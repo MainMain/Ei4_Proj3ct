@@ -8,6 +8,9 @@ var hour = date.getHours();
 var minutes = date.getMinutes();
 
 var file = "";
+
+var myDate = new Date;
+
 //  Singleton
 function EventLog() {
 	if (false === (this instanceof EventLog)) {
@@ -19,20 +22,20 @@ function EventLog() {
 EventLog.log = function(event) 						
 {	
 
-	console.log(event );
-	fs.appendFile(this.file + '.log','code - '+event+'\n');
+	console.log(this.getDate() +" : "+event );
+	fs.appendFile(this.file + '.log',this.getDate() + ' - code - '+event+'\n');
 },
 
 EventLog.warning = function(event) 						
 { 
-	console.log("/!\\" + event);
+	EventLog.error("/!\\" + event);
 },
 
 EventLog.error = function(event) 						
 { 
-	console.log("/!\\" + event);
-	fs.appendFile(this.file + '.log','code - '+event+'\n');
-	fs.appendFile(this.file + '.error','code - '+event+'\n');
+	console.error("/!\\ : "+ this.getDate() +" : " + event);
+	fs.appendFile(this.file + '.log', this.getDate() + ' - code - '+event+'\n');
+	fs.appendFile(this.file + '.error',this.getDate() + ' - code - '+event+'\n');
 
 },
 
@@ -44,14 +47,27 @@ EventLog.init = function()
 		fs.mkdir('./log');
 	}
 	
-	fs.open(this.file + '.log', 'w+', function(err, fd)
-	{
-	});
-	fs.open(this.file + '.error', 'w+', function(err, fd)
-	{
-	});
+	fs.open(this.file + '.log', 'w+', function(err, fd) { });
+	fs.open(this.file + '.error', 'w+', function(err, fd) { });
 	
-}
+},
+
+EventLog.getDate = function()
+{
+	myDate = new Date();
+	//var time = myDate.toLocaleTimeString();
+	//var date = myDate.toDateString(); 
+	
+	try
+	{
+		return myDate.toLocaleTimeString() + " - " +  myDate.toDateString();
+	}
+	catch(e)
+	{
+		return "date : ";
+	}
+},
+
 
 // export
 module.exports = EventLog;

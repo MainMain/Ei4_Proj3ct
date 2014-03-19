@@ -28,7 +28,7 @@ oCase_BD.Initialiser();
 // Chargement du fichier index.html affiché au client
 var server = http.createServer(function (request, response)
 {
-    console.log("SERVEUR : initialisation du serveur");
+    EventLog.log("SERVEUR : initialisation du serveur");
 	
 	var myPath = url.parse(request.url).pathname;
     myPath = path.join('../view', myPath);
@@ -79,7 +79,7 @@ var myPerso = new oPersonnage(10, 100, 100, 20, 25, 10,
 * CONNEXION D'UN CLIENT
 */
 io.sockets.on('connection', function (socket) {
-    console.log('SERVER : Un client est connecté !');
+    EventLog.log('SERVER : Un client est connecté !');
     socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.getIdSalleEnCours());
 
     /*
@@ -90,12 +90,12 @@ io.sockets.on('connection', function (socket) {
 */
     socket.on('MOVE_PERSONNAGE_CS', function (move) {
         // log
-        console.log('SERVER : Déplacement du personnage demandé : ' + move);
+        EventLog.log('SERVER : Déplacement du personnage demandé : ' + move);
         // déplacement du personnage
         var ansDeplacementOk = myPerso.deplacement(move);
         // si le déplacement a réussi
         if (ansDeplacementOk == true) {
-            console.log('SERVER : DEBUG envoi de la nouvelle position');
+            EventLog.log('SERVER : DEBUG envoi de la nouvelle position');
             // récupère la salle en cours
             var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
             // renvoi la salle ou erreur
@@ -106,7 +106,7 @@ io.sockets.on('connection', function (socket) {
         }
         // si le déplacement a raté
         else {
-            console.log('SERVER : DEBUG envoi deplacement impossible');
+            EventLog.log('SERVER : DEBUG envoi deplacement impossible');
             socket.emit('MOVE_PERSONNAGE_SC', "ERREUR_MOVE");
         }
     });
@@ -119,7 +119,7 @@ io.sockets.on('connection', function (socket) {
     socket.on('INFO_CASE_CS', function ()
 	{	
         // log
-        console.log('SERVER : Infos case demandées ! id : ' + myPerso.idSalleEnCours);
+        EventLog.log('SERVER : Infos case demandées ! id : ' + myPerso.idSalleEnCours);
         // récupère la salle en cours
         var currentCase = oCase_BD.GetCaseById(myPerso.idSalleEnCours);
         // return selon la valeur de retour
@@ -148,7 +148,7 @@ io.sockets.on('connection', function (socket) {
             var currentItem = oItem_BD.GetItemById(id_item);
 
             // log
-            console.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
+            EventLog.log("SERVER : Demande pour ramasser l'currentItem : " + id_item + " - " + currentItem.nom);
 
             // check si currentItem est bien dans la salle
             var exist = currentCase.itemInSalle(currentItem);
@@ -156,7 +156,7 @@ io.sockets.on('connection', function (socket) {
             // si l'objet est bien dans la salle
             if (exist == true) {
                 // check si l'objet peut être ajouté au personnage
-                console.log("SERVER : poids sac : " + myPerso.getPoidsSac() + " - poids item : " + currentItem.poids + " - poids max : " + myPerso.poidsMax);
+                EventLog.log("SERVER : poids sac : " + myPerso.getPoidsSac() + " - poids item : " + currentItem.poids + " - poids max : " + myPerso.poidsMax);
                 if ((myPerso.getPoidsSac() + currentItem.poids) < myPerso.poidsMax) {
                     // ajout de l'currentItem au sac du perso
                     myPerso.ajouterAuSac(currentItem);
@@ -165,7 +165,7 @@ io.sockets.on('connection', function (socket) {
                     // return au client
                     socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, myPerso.getPoidsSac());
                 } else {
-                    console.log("SERVER : Demande de ramassage impossible : poids max atteint");
+                    EventLog.log("SERVER : Demande de ramassage impossible : poids max atteint");
                     // return au client que l'objet ne peut être ajouté (poids insufisant)
                     socket.emit('INV_CASE_SC', 'RAMASSER', currentItem.id, -1);
                 }
@@ -198,7 +198,7 @@ io.sockets.on('connection', function (socket) {
 	*/
     socket.on('CONNEXION_CS', function (username, password) {
         // log
-        console.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
+        EventLog.log('SERVER : Demande Connexion avec le couple : ' + username + ":" + password);
 		socket.emit('CONNEXION_SC', "CONNEXION_OK");
     });
 
@@ -210,7 +210,7 @@ io.sockets.on('connection', function (socket) {
 	*/
     socket.on('INSCRIPTION_CS', function (username, password) {
         // log
-        console.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password);
+        EventLog.log('SERVER : Demande inscription avec le couple : ' + username + ":" + password);
 		socket.emit('INSCRIPTION_SC', "INSCRIPTION_OK");
     });
 
@@ -219,8 +219,8 @@ io.sockets.on('connection', function (socket) {
 
 //server.listen(8080);
 server.on('close', function () { // On écoute l'évènement close
-    console.log('Bye bye !');
+    EventLog.log('Bye bye !');
 });
 
-console.log("Script lancé ! sur http://127.0.0.1:8080");
+EventLog.log("Script lancé ! sur http://127.0.0.1:8080");
 server.listen(8080);

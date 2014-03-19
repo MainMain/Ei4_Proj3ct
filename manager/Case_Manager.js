@@ -18,7 +18,7 @@ function Case_Manager(){}
 Case_Manager.Load = function()
 {
 	var context = this;
-	oCase_BD.Initialiser(function()
+	oCase_BD.Initialiser(function(creation)
 	{
 		// creation des listes
 		var idCases = new Array();
@@ -27,7 +27,7 @@ Case_Manager.Load = function()
 		// récupération des clés
 		idCases = oCase_BD.GetCasesId(function(idCases)
 		{
-			EventLog.log(">> CASE_MANAGER : Load : nbr d'id de case : " + idCases.length);
+			EventLog.log("CASE_MANAGER  : Load : nbr d'id de case : " + idCases.length);
 			// pour chaque case
 			for(var i in idCases)
 			{
@@ -39,16 +39,18 @@ Case_Manager.Load = function()
 					// gestion des erreurs
 					if(reponse == -1 || reponse == -2)
 					{
-						EventLog.error("Erreur Case : " + idCase);
+						EventLog.error("CASE_MANAGER  : Load() : Erreur Case : " + idCase);
 					}
 					// enregistrement effectif
 					else
 					{
-						EventLog.log("CASE_MANAGER : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
+						EventLog.log("CASE_MANAGER  : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
 						context.listeCases[idCase] = reponse;
 					}
 				});
 			}
+			// si les cases viennent d'être créées, on les remplies
+			if (creation) context.RemplirCases();
 		});
 	});
 },
@@ -74,6 +76,7 @@ Case_Manager.SupprimerItem = function(idCase, item)
 Case_Manager.RemplirCases = function()
 {
 	// =>rempli aléatoirement les cases d'items
+	EventLog.log("CASE_MANAGER : RemplirCases()");
 	
 	var nbrItems;
 	// pour chaque case
@@ -135,7 +138,7 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 		"actionOk" 	: true,
 	};
 	
-	EventLog.log(">> CASE_MANAGER : AttaqueDeGoules() : " + idCase);
+	EventLog.log(">> CASE_MANAGER : AttaqueDeGoules() : id Case : " + idCase);
 	// si pas de goules, on quitte 
 	try
 	{
@@ -171,7 +174,7 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 			"nbrGoulesA" : nbrGoulesAttaquantes,
 			"actionOk" 	: actionOk,
 		};
-		EventLog.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
+	EventLog.log("CASE_MANAGER : AttaqueDeGoules () : degats goules  " + degatsGoules + " - nb attaques : " + nbrGoulesAttaquantes + " - total : " +total + " action ok ? " + actionOk);
 	
 	}
 	catch(err)
@@ -217,13 +220,13 @@ Case_Manager.nouvelleJournee = function()
 	// ajout de goules
 	for(var idCase in this.listeCases)
 	{
-		if (!((idCase == GameRules.idZoneSure_1()) || (idCase == GameRules.idZoneSure_2())))
+		if (!((idCase == GameRules.idZoneSure_1()) || (idCase == GameRules.idZoneSure_2() || (idCase == GameRules.idZoneSure_3()))))
 		{
 			// calcul du nombre de goules a ajouter
 			var nbrGoules = GameRules.goules_nbrNouvellesGoules();
 		
 			// log
-			EventLog.log("CASE_MANAGER : case " + idCase + " : ajout de " + nbrGoules + " goules !");
+			EventLog.log("CASE_MANAGER : ADD " + nbrGoules + " goule(s) : " + this.listeCases[idCase].getNom());
 		
 			// ajout
 			this.listeCases[idCase].nbrGoules += nbrGoules;
@@ -246,11 +249,14 @@ Case_Manager.GetNombreGoules = function(idCase)
 
 Case_Manager.getZoneSure = function(numEquipe)
 {
-	if(numEquipe == 1)
+	console.log(">>>>>> GET ZONE SURE " + numEquipe);
+	switch(numEquipe)
 	{
-		return GameRules.idZoneSure_1();
+		case 1 : return GameRules.idZoneSure_1();
+		case 2 : return GameRules.idZoneSure_2();
+		case 3 : return GameRules.idZoneSure_3();
+		default : return -1;
 	}
-	return GameRules.idZoneSure_2();
 },
 
 Case_Manager.GetIdZoneSureEnnemi = function(numEquipe)

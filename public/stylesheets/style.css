@@ -88,11 +88,13 @@ input,
 select,
 textarea {
   font-family: "calibri";
-  color: #222222;
+  font-size : "8px";
+  width: 100% ;
+  background-color: transparent;
 }
 body {
   margin: 0;
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1.6;
   /* Page width */
 
@@ -539,15 +541,14 @@ figure img {
    Tables
    ========================================================================== */
 table {
-  background-color: #ffffff;
-  border: 1px solid #dddddd;
+  border: 1px solid #aaaaaa;
   border-collapse: separate;
   *border-collapse: collapsed;
-  border-radius: 4px;
+  border-radius: 5px;
   border-spacing: 0;
   width: 100%;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  margin-bottom: 25px;
+  box-shadow: 0 3px 2px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
 }
 table th,
 table td {
@@ -643,8 +644,7 @@ button,
 input,
 select,
 textarea {
-  font-size: 100%;
-  margin: 0;
+  font-size: 90%;
   vertical-align: baseline;
   *vertical-align: middle;
 }
@@ -701,14 +701,12 @@ textarea {
 input,
 select,
 textarea {
-  color: #555555;
   font-size: 13px;
   margin-bottom: 9px;
   padding: 6px;
 }
 input,
 textarea {
-  background-color: #ffffff;
   border: 1px solid #cccccc;
   border-radius: 3px;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
@@ -896,7 +894,6 @@ input[type="search"] {
 }
 textarea {
     resize: none;
-	margin: 10px 15px;
 }
 .classement
 {
@@ -919,6 +916,11 @@ textarea {
 	min-height:200px;
 	border: 1px solid rgba(0, 0, 0, 0.75);
 	background-color: #bbbbbb;
+	color:#000000;
+}
+.msgTextAreaRapide
+{
+	min-height:75px;
 	color:#000000;
 }
 .chat
@@ -976,11 +978,11 @@ textarea {
 }
 
 .loginform input[type="submit"]{
-  width: 20%;
+  width: 23%;
   margin: auto 15px;
-  padding: 6px 6px;
+  padding: 4px 4px;
   font-family: "calibri";
-  font-size: 20px;
+  font-size: 17px;
   color: #FFFFFF;
   background-color: #100000;
   background-image: -moz-linear-gradient(top, #900000, #100000 100%);
@@ -989,16 +991,77 @@ textarea {
   background-image: -o-linear-gradient(top, #900000, #100000 100%);
   background-image: linear-gradient(top, #900000, #100000 100%);
   border-color: #100000 #100000 #100000 #100000;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 .loginform input{
   width: 23%;
   margin: auto 15px;
-  padding: 6px 0px;
-  font-size: 20px;
+  padding: 4px 0px;
+  font-size: 17px;
   background-color: rgba(15, 15, 15, 0.25);
   color:#000000;
 }
+.loginform select{
+  width: 15%;
+  margin: auto 15px;
+  padding: 2px 0px;
+  font-size: 15px;
+  background-color: rgba(15, 15, 15, 0.25);
+  color:#000000;
+}
+
+/*
+ * Formulaire de choix Equipe
+ */
+.choixEquipeform {
+  min-height: 20px;
+  padding: 15px;
+  background-color: rgba(200, 200, 200, 0.20);
+  font-size: 16px;
+}
+.choixEquipeform:before,
+.choixEquipeform:after {
+  display: table;
+  content: "";
+}
+.choixEquipeform:after {
+  clear: both;
+}
+
+.choixEquipeform input[type="submit"]{
+  width: 23%;
+  margin: auto 15px;
+  padding: 4px 4px;
+  font-family: "calibri";
+  font-size: 17px;
+  color: #FFFFFF;
+  background-color: #100000;
+  background-image: -moz-linear-gradient(top, #900000, #100000 100%);
+  background-image: -ms-linear-gradient(top, #900000, #100000 100%);
+  background-image: -webkit-linear-gradient(top, #900000, #100000 100%);
+  background-image: -o-linear-gradient(top, #900000, #100000 100%);
+  background-image: linear-gradient(top, #900000, #100000 100%);
+  border-color: #100000 #100000 #100000 #100000;
+  border-radius: 4px;
+}
+.choixEquipeform input{
+  width: 23%;
+  margin: auto 15px;
+  padding: 4px 0px;
+  font-size: 17px;
+  background-color: rgba(15, 15, 15, 0.25);
+  color:#000000;
+}
+.choixEquipeform select{
+  width: 15%;
+  margin: auto 15px;
+  padding: 2px 0px;
+  font-size: 15px;
+  background-color: rgba(15, 15, 15, 0.25);
+  color:#000000;
+}
+
+
 /*
  * Formulaire de Logout
  */
@@ -1008,7 +1071,7 @@ textarea {
   background-color: rgba(200, 200, 200, 0.15);
   margin-top: 70px;
   margin-bottom: 25px;
-  font-size: 20px;
+  font-size: 17px;
   line-height:1px;
 }
 .logoutform:before,

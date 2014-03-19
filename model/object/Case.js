@@ -114,6 +114,7 @@ var Case = (function() {
 			return this.nbrGoules;
 		},
 		
+		getNom : function() { return this.nom; },
 		/*
 		 * LECTURE
 		 * 

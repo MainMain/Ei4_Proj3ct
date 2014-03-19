@@ -87,6 +87,7 @@ var Personnage = (function() {
 				this.ptSanteMax 		= 140;
 				this.ptDeplacementMax	= 25;
 				this.ptActionMax		= 30;
+				this.poidsMax 			= 120;
 				this.multiPtsAttaque	= 2;
 				this.multiPtsDefense	= 2;
 				this.multiProbaCache	= 0.5;
@@ -98,6 +99,7 @@ var Personnage = (function() {
 				this.ptSanteMax 		= 100;
 				this.ptDeplacementMax	= 50;
 				this.ptActionMax		= 40;
+				this.poidsMax 			= 140;
 				this.multiPtsAttaque	= 1;
 				this.multiPtsDefense	= 0.3;
 				this.multiProbaCache	= 3;
@@ -109,6 +111,7 @@ var Personnage = (function() {
 				this.ptSanteMax 		= 100;
 				this.ptDeplacementMax	= 25;
 				this.ptActionMax		= 50;
+				this.poidsMax 			= 170;
 				this.multiPtsAttaque	= 0.5;
 				this.multiPtsDefense	= 1.5;
 				this.multiProbaCache	= 1;
@@ -127,8 +130,8 @@ var Personnage = (function() {
 		    this.ptDeplacementMax 	= -1;
 		    this.ptFaim		 		= GameRules.init_faimMax();
 		    this.ptFaimMax		 	= GameRules.init_faimMax();
-		    this.poidsMax 			= GameRules.init_poidsMax();
-		    this.gouleLimite 		= -1;
+		    this.poidsMax 			= -1;
+		    this.goulesMax 			= -1;
 		    this.competence 		= -1;
 		    this.sacADos 			= new Array();
 		    this.idSalleEnCours 	= -1;
@@ -321,10 +324,6 @@ var Personnage = (function() {
 			return 1;
 		},
 		
-		testPoidsOk : function(item)
-		{
-			return (this.getPoidsSac() + item.poids) <= this.poidsMax;
-		},
 
 		/**
 		 * ECRITURE
@@ -343,21 +342,33 @@ var Personnage = (function() {
 				if (this.sacADos[i].id == item.id) 
 				{
 					// si c'est l'arme équipe
-					EventLog.log("---------------> RETRAIT DE L'ITEM " + this.sacADos[i].id);
-					if (this.armeEquipee != null) EventLog.log("---------------> id arme " + this.armeEquipee.id);
-					if (this.armureEquipee != null) EventLog.log("---------------> id armure " + this.armureEquipee.id);
+					EventLog.log("PERSONNAGE : retrait de l'item " + this.sacADos[i].id);
+					//if (this.armeEquipee != null)	EventLog.log("---------------> id arme " + this.armeEquipee.id);
+					//if (this.armureEquipee != null) EventLog.log("---------------> id armure " + this.armureEquipee.id);
 					
-					if (this.armeEquipee != null   && this.sacADos[i].id == this.armeEquipee.id) 	this.armeEquipee = null;
-					if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id) 	this.armureEquipee = null;
+					if (this.getNbrMemeItemDansSac(item) == 1)
+					{
+						if (this.armeEquipee != null   && this.sacADos[i].id == this.armeEquipee.id) 	this.armeEquipee = null;
+						if (this.armureEquipee != null && this.sacADos[i].id == this.armureEquipee.id) 	this.armureEquipee = null;
+					}
+					
 					break;
 				}
 			}
-			// index = index - 1;
 			//EventLog.log("CASE : DEBUG index : " + index);
 			this.sacADos.splice(i, 1);
 			this.logAfficherSacADos();
 		},
 		
+		getNbrMemeItemDansSac : function(item)
+		{
+			var nbrFoisItem = 0;
+			for (var i = 0; i < this.sacADos.length; i++) 
+			{
+				if (this.sacADos[i].id == item.id) nbrFoisItem++;
+			}
+			return nbrFoisItem;
+		},
 		subirDegats : function(degats)
 		{
 			
@@ -396,96 +407,6 @@ var Personnage = (function() {
 			EventLog.log("PERSONNAGE : Acquittement des messages ! ");
 			this.nbrNvMsg = 0;
  		},
-		
-		/*setPtsSante : function(newPtSante)
-		{
-			if(newPtSante >= this.ptSanteMax)
-			{
-				this.ptSante = this.ptSanteMax;
-			}
-			else if(newPtSante <= 0)
-			{
-				this.ptSante = 0;
-			}
-			else
-			{
-				this.ptSante = newPtSante;
-			}
-		},
-		
-		setptSanteMax : function(newPtSanteMax)
-		{
-			this.ptSanteMax = newPtSanteMax;
-			this.ptSante = this.ptSanteMax;
-		},
-		
-		setptDeplacement : function(newPtDeplacement)
-		{
-			if(newPtMouvement >= this.ptDeplacementMax)
-			{
-				newPtDeplacement = this.ptDeplacementMax;
-			}
-			else if(newPtDeplacement <= 0)
-			{
-				newPtDeplacement = 0;
-			}
-			this.ptDeplacement = newPtDeplacement;
-		},
-		
-		setptDeplacementMax : function(newPtDeplacementMax)
-		{
-			this.ptDeplacementMax = newPtDeplacementMax;
-			this.ptDeplacement = this.ptDeplacementMax;
-		},
-		
-		setptAction : function(newPtAction)
-		{
-			if(newPtAction >= this.ptActionMax)
-			{
-				newPtAction = this.ptActionMax;
-			}
-			else if(newPtAction <= 0)
-			{
-				newPtAction = 0;
-			}
-			this.ptAction = newPtAction;
-		},
-		
-		setptActionMax : function(newptActionMax)
-		{
-			this.ptActionMax = newptActionMax;
-			this.ptAction = this.ptActionMax;
-		},
-		
-		setmultiPtsAttaque : function(multiPtsAttaque)
-		{
-			this.multiPtsAttaque = multiPtsAttaque;
-		},
-		
-		setmultiPtsDefense : function(multiPtsDefense)
-		{
-			this.multiPtsDefense = multiPtsDefense;
-		},
-		
-		setmultiProbaCache : function(multiProbaCache)
-		{
-			this.multiProbaCache = multiProbaCache;
-		},
-		
-		setmultiProbaFouille : function(multiProbaFouille)
-		{
-			this.multiProbaFouille = multiProbaFouille;
-		},
-		
-		setgoulesMax : function(goulesMax)
-		{
-			this.goulesMax = goulesMax;
-		},*/
-		
-		getCompetence : function()
-		{
-			return this.competence;
-		},
 
 		/*
 		 * LECTURE
@@ -501,38 +422,6 @@ var Personnage = (function() {
 			//EventLog.log("PERSONNAGE : *********************************");
 		},
 
-		getValeurAttaque : function()
-		{
-			var att;
-			if (this.competence == "brute") 		 att = GameRules.combat_ptsAttaque_base_brute();
-			if (this.competence == "explorateur")	 att = GameRules.combat_ptsAttaque_base_explo();
-			if (this.competence == "chercheur") 	 att = GameRules.combat_ptsAttaque_base_chercheur();
-			
-			if (this.armeEquipee != null)
-			{
-				att += this.armeEquipee.valeur;
-			}
-			
-			return (att * this.multiPtsAttaque);
-		},
-		
-		getValeurArmure : function()
-		{
-			var def = GameRules.combat_ptsDefense_base();
-			
-			if (this.armureEquipee != null)
-			{
-				def += this.armureEquipee.valeur;
-			}
-
-			return (def * this.multiPtsDefense);
-		},
-		
-		initialiserMode : function()
-		{
-			this.mode = 0;
-		},
-		
 		changerMode : function(mode)
 		{
 			EventLog.log("PERSONNAGE : passage en mode " + mode);
@@ -550,10 +439,6 @@ var Personnage = (function() {
 			return 1;
 		},
 		
-		setIdCase : function(idCase)
-		{
-			this.idSalleEnCours = idCase;
-		},
 		
 		Attaquer : function(coutAttaquer)
 		{
@@ -630,10 +515,7 @@ var Personnage = (function() {
 					return -3;
 			}
 		},
-		/**
-		 * ECRITURE FONCTION POUR SE DEQUIPER D'UN ITEM
-		 * 
-		 */
+
 		desequiper : function(item)
 		{
 			if(this.isItemEquipee(item))
@@ -661,11 +543,6 @@ var Personnage = (function() {
 			return false;
 		},
 		
-		/**
-		 * FONCTION POUR UTILISER UN ITEM
-		 * 
-		 * @method utiliser
-		 */
 		utiliser : function(item)
 		{
 			var type = parseInt(item.type);
@@ -711,7 +588,7 @@ var Personnage = (function() {
 			// si le perso est mort, on n'ajoute pas le message
 			if (this.ptSante <= 0) return;
 			
-			EventLog.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
+			//EventLog.log("PERSONNAGE : Début : Ajout d'un message : '" + msg+"'");
 
 			if (msg == "Z" || msg == "N" || msg == "F")
 			{
@@ -719,14 +596,23 @@ var Personnage = (function() {
 			}
 			else
 			{
-				var date = new Date();
-				var mois = parseInt(date.getMonth()) + 1;
-				var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
-				this.listeMsgAtt.push(str + " : " + msg + "\n");
+				//var date = new Date();
+				//var mois = parseInt(date.getMonth()) + 1;
+				//var str = date.getDate() +"/"+mois+" - "+date.getHours()+ ":"+date.getMinutes(); 
+				this.listeMsgAtt.push(this.getDate() + " : " + msg + "\n");
 			}
 			this.nbrNvMsg++;
 			
 			EventLog.log("PERSONNAGE : Fin   : Ajout d'un message : '" + msg + "'");
+		},
+		
+		getDate : function()
+		{
+			var myDate = new Date();
+			var time = myDate.toLocaleTimeString();
+			var date = myDate.toDateString(); 
+			
+			return date +" - " + time;
 		},
 		
 		ajouterMessageMort : function(pseudoMeurtrier)
@@ -809,8 +695,6 @@ var Personnage = (function() {
 			}
 		},
 		
-		
-		
 		seRetablir : function(idSalleReveil)
 		{			
 			// go a la zone sure
@@ -827,147 +711,84 @@ var Personnage = (function() {
 		
 			this.ptSante = Math.floor(this.ptSanteMax / 4);
 		},
-		/**
-		 * LECTURE
-		 * 
-		 * FONCTION QUI RENVOI LE POIDS DU SAC A DOS
-		 * 
-		 * @method getPoidsSac
-		 */
+
 		getPoidsSac : function() {
 			var poids = 0;
-			//EventLog.log("PERSONNAGE : DEBUG : nombre d'objets dans sac "
-					//+ this.sacADos.length);
 			// calcule le poids du sac + poids item
 			var i = 0;
-			for (i = 0; i < this.sacADos.length; i++) {
+			for (i = 0; i < this.sacADos.length; i++) 
+			{
 				poids = poids + parseInt(this.sacADos[i].poids);
 			}
-			// if (armeEquipee != null) poids += armeEquipee.poids;
-			// if (armureEquipee != null) poids += armeEquipee.poids;
-			//EventLog.log("PERSONNAGE : Calcul du poids total du sac : " + poids);
 			return parseInt(poids);
 		},
 
-		/**
-		 * Retourne le poids max du personnage
-		 * 
-		 * @method getPoidsMax
-		 */
-		getPoidsMax : function()
-		{
-			return this.poidsMax;
-		},
+		setIdCase 			: function(idCase)	{ this.idSalleEnCours = idCase;},
+		
+		
+		testPoidsOk 		: function(item) { return (this.getPoidsSac() + item.poids) <= this.poidsMax;},
+		
+		initialiserMode 	: function(){ this.mode = 0; },
+		
+		getCompetence 		: function(){ return this.competence; },
+		
+		getPoidsMax 		: function(){ return this.poidsMax; },
 
-		/**
-		 * Retourne l'arme equipe par le personnage
-		 * 
-		 * @method getArmeEquipee
-		 */
-		getArmeEquipee : function()
-		{
-			return this.armeEquipee;
-		},
+		getArmeEquipee 		: function(){ return this.armeEquipee;},
 
-		/**
-		 * Retourne l'armure equipe par le personnage
-		 * 
-		 * @method getArmureEquipee
-		 */
-		getArmureEquipee : function()
-		{
-			return this.armureEquipee;
-		},
+		getArmureEquipee 	: function(){ return this.armureEquipee;},
 		
-		/**
-		 * Retourne la sante du personnage
-		 * 
-		 * @method getPtSante
-		 */
-		getPtSante : function()
-		{
-			return this.ptSante;
-		},
+		getPtSante 			: function(){ return this.ptSante;},
 
-		/**
-		 * Retourne la sante max du personnage
-		 * 
-		 * @method getPtSanteMax
-		 */
-		getPtSanteMax : function()
-		{
-			return this.ptSanteMax;
-		},
+		getPtSanteMax 		: function(){ return this.ptSanteMax;},
 
-		/**
-		 * Retourne les points d'action du personnage
-		 * 
-		 * @method getptAction
-		 */
-		getPtAction : function()
-		{
-			return this.ptAction;
-		},
+		getPtAction 		: function(){ return this.ptAction;},
 
-		/**
-		 * Retourne les points de déplacement du personnage
-		 * 
-		 * @method getPtDeplacement
-		 */
-		getPtDeplacement : function()
-		{
-			return this.ptDeplacement;
-		},
+		getPtDeplacement 	: function(){ return this.ptDeplacement;},
 
-		/**
-		 * Retourne la salle du personnage
-		 * 
-		 * @method getIdSalleEnCours
-		 */
-		getIdSalleEnCours : function()
+		getIdSalleEnCours 	: function(){ return this.idSalleEnCours;},
+		
+		getIdPerso 			: function(){ return this.id;},
+		
+		getListMsgAtt 		: function(){ return this.listeMsgAtt;},
+		
+		getMultiFouille 	: function(){ return this.multiProbaFouille;},
+		
+		GetMultiCache		: function(){ return this.multiProbaCache;},
+		
+		GetMode 			: function(){ return this.mode;},
+		
+		GetSac 				: function(){ return this.sacADos;},
+		
+		estMort 			: function(){ return (this.ptSante <= 0);},
+		
+		getValeurAttaque : function()
 		{
-			return this.idSalleEnCours;
+			var att;
+			if (this.competence == "brute") 		 att = GameRules.combat_ptsAttaque_base_brute();
+			if (this.competence == "explorateur")	 att = GameRules.combat_ptsAttaque_base_explo();
+			if (this.competence == "chercheur") 	 att = GameRules.combat_ptsAttaque_base_chercheur();
+			
+			if (this.armeEquipee != null)
+			{
+				att += this.armeEquipee.valeur;
+			}
+			
+			return (att * this.multiPtsAttaque);
 		},
 		
-		getIdPerso : function()
+		getValeurArmure : function()
 		{
-			return this.id;
+			var def = GameRules.combat_ptsDefense_base();
+			
+			if (this.armureEquipee != null)
+			{
+				def += this.armureEquipee.valeur;
+			}
+
+			return (def * this.multiPtsDefense);
 		},
 		
-		/**
-		 * Retourne la liste des messages
-		 * 
-		 * @method getListMsgAtt
-		 */
-		getListMsgAtt : function()
-		{
-			return this.listeMsgAtt;
-		},
-		
-		getMultiFouille : function()
-		{
-			return this.multiProbaFouille;
-		},
-		
-		GetMultiCache : function()
-		{
-			return this.multiProbaCache;
-		},
-		
-		GetMode : function()
-		{
-			return this.mode;
-		},
-		
-		GetSac : function()
-		{
-			return this.sacADos;
-		},
-		
-		estMort : function()
-		{
-			return (this.ptSante <= 0);
-		},
 		
 	};
 	// On pense à retourner le constructeur (afin de pouvoir construire des

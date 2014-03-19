@@ -11,14 +11,39 @@ var express     = require('express'),
     path        = require('path');
 var app         = express();
 var server      = http.createServer(app);
-var oEventLog    = require('./model/EventLog');
+var EventLog    = require('./model/EventLog');
+
+// pour envoyer les mails
+var key = "11332178-c46b-41e6-9099-a8ac60d7f4b3";
+var postmark = require("postmark")(key);
+var ejs = require("ejs");
+
+//TEST MAIL
+postmark.send(
+{
+    "From": "psyko469@hotmail.fr",
+    "To": "psyko469@hotmail.fr",
+    "Subject": "Confirm your email address",
+    "TextBody": "Test pour dév", //" +pseudo ,
+    "HtmlBody": "http://testDev.com"
+}, function (err, to)
+{
+    if (err)
+    {
+        EventLog.error("APP : Erreur envoi de mail : " + err);
+        return;
+    }
+    console.log("Email sent to: %s", to);
+});
+// FIN TEST MAIL
 
 // require objets
-var oCarte	= require('./model/object/Carte');
+var oCarte		= require('./model/object/Carte');
+var GameRules	= require('./model/GameRules');
 
 //require persistance
-var oCase_BD       = require('./persistance/Case_BD');
-var oUtilisateur_BD  = require('./persistance/Utilisateur_BD');
+var oCase_BD       	= require('./persistance/Case_BD');
+var oUtilisateur_BD = require('./persistance/Utilisateur_BD');
 
 // require manager
 var oPersonnage_Manager  = require('./manager/Personnage_Manager');
@@ -33,10 +58,12 @@ var oSession_Manager	 = require('./manager/Session_Manager');
  */
  
 //Initialisation des log
-oEventLog.init();
+EventLog.init();
+var dateLancement = new Date();
+var dateLancementSrv = dateLancement;
+var heureDerniereAttaque = dateLancement;
 
-var dateLancementSrv = new Date();
-oEventLog.log(dateLancementSrv);
+EventLog.log(dateLancementSrv);
 
 //Tableau des utilisateur en ligne
 var usersOnline = new Array();
@@ -47,20 +74,19 @@ oDatabase.Initialiser();
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(28, 17);
 
+//Chargement des sessions de jeu en mémoire
+oSession_Manager.Load(function(idSession)
+{
+	oScore_Manager.Load(idSession);
+	
+	//Chargement des personnages en mémoire
+	//le callback est réservé pour la fin des fouilles...
+	//... et rafraichi l'affichage
+	oPersonnage_Manager.Load(callbackFinFouille);
+});
+
 // Chargement des utilisateurs en mémoire
 oUtilisateur_Manager.Load();
-
-// Chargement des personnages en mémoire
-// le callback est réservé pour la fin des fouilles...
-// ... et rafraichi l'affichage
-oPersonnage_Manager.Load(function(idUser)
-{
-	// actualiser joueurs, au cas où l'item est arrivé dans la case
-	var idCase = oPersonnage_Manager.GetIdCase(idUser);
-	
-	
-	ActualiserAllGlobal(idCase);
-});
 
 // Chargement de la liste des items en mémoire
 oItem_Manager.Load();
@@ -68,15 +94,20 @@ oItem_Manager.Load();
 // Chargement des cases en mémoire
 oCase_Manager.Load();
 
+
+function callbackFinFouille(idUser)
+{
+	EventLog.log("Fin de la fouille du personnage " + oUtilisateur_Manager.getPseudo(idUser));
+	// actualiser joueurs, au cas où l'item est arrivé dans la case
+	var idCase = oPersonnage_Manager.GetIdCase(idUser);
+	
+	ActualiserAllGlobal(idCase);
+}
+
 //////////////TEST SESSIONJEU
 var date = new Date(2016, 12, 1, 1, 1, 1, 1);
 //oSession_Manager.demarrer(date);
 
-// Chargement des sessions de jeu en mémoire
-oSession_Manager.Load(function(idSession)
-{
-	oScore_Manager.Load(idSession);
-});
 
 
 /*
@@ -101,7 +132,7 @@ app.use(function(req, res, next)
 {
 	res.status(404);
 	
-	res.send('Not found');
+	res.send('Page not found');
 });
 
 
@@ -120,7 +151,7 @@ var optionAccueil = {
 function restrict(req, res, next)
 {
 	var idSession = oSession_Manager.getIdSessionEnCours();
-	oEventLog.log("IdSession : " + idSession + " ! ");
+	EventLog.log("IdSession : " + idSession + " ! ");
 	if (req.session.username && idSession >= 0)
 	{
 		next();
@@ -267,40 +298,83 @@ app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
 app.get('/jeu', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
-	var options;
 	
-	var isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
-	options = { "username": s.username, "idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), "sessionID" : s.idUser, "isUpToDate" : isUpToDate};
+	EventLog.log("APP GET /jeu - Id session en cours  : " + oSession_Manager.getIdSessionEnCours());
+	EventLog.log("APP GET /jeu - Id session du joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
 	
-	oEventLog.log("Id Session En Cours : " + oSession_Manager.getIdSessionEnCours());
-	oEventLog.log("Id Session Du Joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
+	var options = getDonnesPageJeu(s.idUser, s.username);
 	
-	res.render('game', options);
+	// si l'utilisateur n'est pas dans la bonne session
+	if (!options["isUpToDate"])
+	{
+		// on récupère le bilan des score de la derniere session
+		options["bilanScores_last"] = oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
+		
+		// on récupère les dates de la derniere session
+		oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser), function(dates)
+		{
+			// attribution des dates
+			options["dateLastSession"] = dates;
+			// renvoi de la page
+			res.render('game', options);
+		});
+	}
+	else
+	{
+		// renvoi de la page
+		res.render('game', options);
+	}
 });
 
 app.put('/jeu', restrict, function fonctionJeu(req, res)
 {
 	var b = req.body;
 	var s = req.session;
-	var idSession = oSession_Manager.getIdSessionEnCours();
-	var isUpToDate = (idSession == oUtilisateur_Manager.getIdSession(s.idUser));
-	var options = { 
-		"username": s.username, 
-		"idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser), 
-		"sessionID" : s.idUser,
-		"isUpToDate" : isUpToDate
-		};
 	
+	EventLog.log("APP PUT /jeu - Id session en cours  : " + oSession_Manager.getIdSessionEnCours());
+	EventLog.log("APP PUT /jeu - Id session du joueur : " + oUtilisateur_Manager.getIdSession(s.idUser));
+	
+	
+	
+	// l'équipe vient d'être choisie
 	if(b.competence == "brute" || b.competence == "explorateur" || b.competence == "chercheur")
 	{
 		var idSession = oSession_Manager.getIdSessionEnCours();
+		
+		// on attribut le num d'équipe à l'utilisateur
 		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe, idSession);
-		oPersonnage_Manager.SetCompetence(s.idUser, b.competence, b.equipe);
-		options.idEquipe = b.equipe;
-		options.isUpToDate = (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
+		
+		// on attribut la compétence au personnage de l'utilisateur
+		oPersonnage_Manager.nvPersonnageEnJeu(s.idUser, b.competence, b.equipe);
+		
+		// on crée le score en mémoire et en BD
+		oScore_Manager.createScore(s.idUser, b.equipe, function()
+		{
+			// on remet à jour la structure
+			/*options["idEquipe"] 		= b.equipe;
+			options["isUpToDate"] 		= (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(s.idUser));
+			options["idEquipe"]			= oUtilisateur_Manager.GetNumEquipe(s.idUser); 
+			options["sessionID"]		= s.idUser;
+			options["bilanScores"]		= oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
+			options["sessionInfo"] 		= oSession_Manager.getDatesSessionEnCours();
+			options["bilanScores_last"] = oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
+			*/
+			
+			/*
+			oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser), function(dates)
+			{
+				options["dateLastSession"] = dates;
+				res.render('game', options);
+			});*/
+			options = getDonnesPageJeu(s.idUser, s.username);
+			res.render('game', options);
+		});
 	}
-	
-	res.render('game', options);
+	else
+	{
+		var options	= getDonnesPageJeu(s.idUser, s.username);
+		res.render('game', options);
+	}
 });
 
 app.get('/tutoriel', function fonctionIndex(req, res)
@@ -330,14 +404,27 @@ app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 	var s = req.session;
 	var idSession = oSession_Manager.getIdSessionEnCours();
 	var isUpToDate = (idSession == oUtilisateur_Manager.getIdSession(s.idUser));
-	var options = { 
-		"username": s.username, 
-		"sessionID" : s.idUser, 
-		"idEquipe": oUtilisateur_Manager.GetNumEquipe(s.idUser),
-		"isUpToDate" : isUpToDate
-		};
+	var options = getDonnesPageJeu(s.idUser, s.username);
 	
-	res.render('chat-equipe', options);
+		// si l'utilisateur n'est pas dans la bonne session
+		if (!options["isUpToDate"])
+		{
+			// on récupère le bilan des score de la derniere session
+			options["bilanScores_last"] = oScore_Manager.getBilanScoreSession(s.idUser, oUtilisateur_Manager.getIdSession(s.idUser));
+			// on récupère les dates de la derniere session
+			oSession_Manager.getDatesSession(oUtilisateur_Manager.getIdSession(s.idUser), function(dates)
+			{
+				// attribution des dates
+				options["dateLastSession"] = dates;
+				// renvoi de la page
+				res.render('game', options);
+			});
+		}
+		else
+		{
+			// renvoi de la page
+			res.render('chat-equipe', options);
+		}
 });
 
 app.get('/classement', restrict, function fonctionIndex(req, res)
@@ -362,7 +449,7 @@ app.get('/classement/:order([0-9])', restrict, function fonctionIndex(req, res)
 		"order" : order 
 		};
 	
-	oEventLog.log("order = " + order);
+	EventLog.log("order = " + order);
 	
 	res.render('classement', options);
 });
@@ -380,9 +467,28 @@ app.get('/chat-general', restrict, function fonctionIndex(req, res)
 app.post("/", function (req, res)
 {
 	var b = req.body;
+	
 	oUtilisateur_BD.Connexion(b.username, b.password, req, res, callbackConnexion);
 });
 
+getDonnesPageJeu = function(idUser, userName)
+{
+	var options = 
+	{ 
+		"username"			: userName, 
+		"idEquipe"			: oUtilisateur_Manager.GetNumEquipe(idUser), 
+		"sessionID" 		: idUser, 
+		"dateLastSession" 	: -1,
+		"isUpToDate" 		: (oSession_Manager.getIdSessionEnCours() == oUtilisateur_Manager.getIdSession(idUser)),
+		"bilanScores" 		: oScore_Manager.getBilanScoreSession(idUser, oUtilisateur_Manager.getIdSession(idUser)),
+		"bilanScores_last" 	: -1,
+		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
+		"heureAttaque" 		: new Date(Date.parse(heureDerniereAttaque)+GameRules.dureeCycle()).toLocaleTimeString(),
+		"dureeCycle" 		: GameRules.dureeCycle() / (1000*3600)
+	};
+		
+	return options;
+},
 callbackConnexion = function(reponseConnexion, req, res)
 {
 	var b = req.body;
@@ -390,7 +496,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 	// Si bon couple, on recoi l'id de l'user
 	if (typeof reponseConnexion === 'string')
 	{
-		oEventLog.log("REPONSE CONNEXION =" + reponseConnexion);
+		EventLog.log("REPONSE CONNEXION =" + reponseConnexion);
 		
 		s.username = b.username;
 		s.idUser = reponseConnexion;
@@ -406,12 +512,22 @@ callbackConnexion = function(reponseConnexion, req, res)
 	}
 	else if(reponseConnexion == -1)
 	{
-		optionAccueil.errorLogin = "Couple Login/Mot de passe incorrect";
+		optionAccueil.errorLogin = "Couple login/mot de passe incorrect.";
 		
 		res.render("accueil", optionAccueil);
 		
 		optionAccueil.errorLogin = null;
 	}
+	else if(reponseConnexion == -2)
+	{
+		optionAccueil.errorLogin = "Compte non validé. Veuillez confirmer votre compte en cliquant sur le lien envoyé par mail " +
+				"lors de votre inscription !";
+		
+		res.render("accueil", optionAccueil);
+		
+		optionAccueil.errorLogin = null;
+	}
+	
 	else
 	{
 		optionAccueil.errorLogin = "Erreur Interne";
@@ -425,7 +541,24 @@ callbackConnexion = function(reponseConnexion, req, res)
 app.put('/', function (req, res)
 {
 	var b = req.body;
-	oUtilisateur_BD.Inscription(b.username, b.password, b.email, req, res, callbackInscription);
+	var testsOk = false;
+	// regex test email
+	var regTestMailAngers = /.@univ-angers.fr/;
+	
+	// test si c'est en bonne forme
+	//if
+	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regTestMailAngers.test(b.email) );
+	if		(b.username.length < 4) 			optionAccueil.InfoInscription = "Login_nonConforme";
+	else if (b.password.length < 6) 			optionAccueil.InfoInscription = "Pass_nonConforme";
+	else if (!regTestMailAngers.test(b.email)) 	optionAccueil.InfoInscription = "Mail_nonConforme";
+	else
+	{
+		// si ok
+		oUtilisateur_BD.Inscription(b.username, b.password, b.email, req, res, callbackInscription);
+		testsOk = true;
+	}
+	// si test nok, on renvoi la page d'accueil
+	if (!testsOk) res.render("accueil", optionAccueil);
 	
 });
 	
@@ -455,7 +588,7 @@ callbackInscription = function(reponseInscription, req, res)
 		oUtilisateur_Manager.LoadUser(reponseInscription);
 		oPersonnage_Manager.LoadUser(reponseInscription);
 		// ajout de l'objet score pour la session de jeu en cours
-		oScore_Manager.nouveauJoueur(reponseInscription, oSession_Manager.getIdSessionEnCours());
+		//oScore_Manager.nouveauJoueur(reponseInscription, oSession_Manager.getIdSessionEnCours());
 		
 		res.render("accueil", optionAccueil);
 		
@@ -465,7 +598,7 @@ callbackInscription = function(reponseInscription, req, res)
 
 app.delete("/", function (req, res)
 {
-	oEventLog.log("OH : Deconnexion de " + req.session.username);
+	EventLog.log("OH : Deconnexion de " + req.session.username);
 	req.session.destroy();
 	res.render('accueil', optionAccueil);
 });
@@ -476,7 +609,7 @@ app.delete("/", function (req, res)
  */
 server.listen(app.get('port'), function ()
 {
-    oEventLog.log("Express server listening on port " + app.get('port'));
+    EventLog.log("Express server listening on port " + app.get('port'));
 });
 
 
@@ -488,39 +621,171 @@ var io = require('socket.io').listen(server, { log: false });
  * *************************** 6 - CONFIGURATION DES TCHATS ***************************
  */
  
- var usersInTeamChat = new Array();
- var usersInGeneralChat = new Array();
+var usersInTeamChat = new Array();
+var usersInGeneralChat = new Array();
  
  
- //Client Connecté au chat d'équipe
+//Client Connecté au chat d'équipe
 var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 {
 	var id = "";
+	console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> _CHAT_EQUIPE_PAGE");
 	
 	socket.on('INFO_USER_CS', function(userID, user)
 	{
-		var users = new Array();
-		var j = 0;
-		var newUser = false;
-		var numEquipe;
+		onChatEquipe_INFO_USER(userID, user, socket);
+	});
+	
+	// Reception d'un message
+	socket.on('USER_MESSAGE_CS', function(id, user, message)
+	{
+		onChatEquipe_USER_MESSAGE(id, user, message);
+	});
+	
+	socket.on('disconnect', function()
+	{
+		onChatEquipe_DISCONNECT(socket);
+	});
+});
+
+var chatEquipeOnGame = io.of('/jeu').on('connection', function (socket)
+{
+	
+});
+ 
+onChatEquipe_INFO_USER = function(id, user, socket)
+{
+	console.log("APP - CONNEXION D'UN UTILISATEUR A UN TCHAT EQUIPE : " + user);
+	var alliesConnected = new Array();
+	var j = 0;
+	var newUser = false;
+	var numEquipe;
+	
+	// si l'id de l'user existe
+	if(oUtilisateur_Manager.exist(id))
+	{
+		// get le num d'équipe
+		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
 		
-		id = userID;
-		
-		if(oUtilisateur_Manager.exist(id))
+		// si l'utilisateur n'est pas dans la liste des user connectés au tchat
+		if(!usersInTeamChat[id])
 		{
-			numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
-			
-			if(!usersInTeamChat[id])
+			// on crée l'espace pour accueil l'user
+			usersInTeamChat[id] 		= new Object();
+			usersInTeamChat[id].sockets = new Array();
+			newUser = true;
+		}
+		
+		// on défini les propriétés de l'userTchat
+		usersInTeamChat[id].username = user;
+		usersInTeamChat[id].sockets.push(socket);
+		usersInTeamChat[id].numEquipe = numEquipe;
+	
+		//console.log(usersInTeamChat[id]);
+		// Remplissage de la liste contenant les alliés connectés
+		// pour chaque utilisateur connecté au tchat d'équipe
+		for(var i in usersInTeamChat)
+		{
+			// s'il appartient à la meme équipe
+			if(usersInTeamChat[i].numEquipe == numEquipe)
 			{
-				usersInTeamChat[id] = new Object();
-				usersInTeamChat[id].sockets = new Array();
-				newUser = true;
+				alliesConnected[j] = usersInTeamChat[i].username;
+				j++;			
+			}
+		}
+		//console.log(usersInTeamChat);
+		// si l'utilisateur vient d'arriver
+		if(newUser)
+		{
+			// log
+			EventLog.log("L'utilisateur " + user + " s'est connecté au chat d'equipe n° : " + usersInTeamChat[i].numEquipe);
+			// pour chaque utilisateur connecté au tchat d'équipe
+			for(var i in usersInTeamChat)
+			{
+				EventLog.log("> PARCOURS DES ALLIES CONNECTED : " + usersInTeamChat[i].username);
+				// s'il appartient à la meme équipe 
+				if(usersInTeamChat[i].numEquipe == numEquipe)
+				{
+					EventLog.log("> ENVOI MESSAGE POUR AVERTIR NV USER");
+					// on l'informe sur sa socket
+					for(var k in usersInTeamChat[i].sockets)
+					{
+						EventLog.log(">> ENVOI MESSAGE POUR AVERTIR NV USER : BOUCLE SOCKET ");
+						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Connexion d'un utilisateur ", user);
+						usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', alliesConnected);
+					}
+				}
+			}
+		}
+	}
+},
+
+onChatEquipe_USER_MESSAGE = function(id, user, message)
+{
+	EventLog.log("> APP : RECEPTION MSG. id : " + id +" - user : " + user + " message : "+message);
+	var numEquipe;
+	// si l'utilisateur qui envoi existe bien
+	if(oUtilisateur_Manager.exist(id))
+	{
+		EventLog.log("> UTILISATEUR EXISTE ! ");
+		// get le num d'équipe
+		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
+		//log
+		EventLog.log(usersInTeamChat);
+		// pour chaque utilisateur connecté au tchat d'équipe
+		for(var i in usersInTeamChat)
+		{
+			EventLog.log("> PARCOURS DE BOUCLE DES USER TEAM. CURRENT USER : " + usersInTeamChat[i].username);
+			// s'il appartient à la meme équipe 
+			if(usersInTeamChat[i].numEquipe == numEquipe)
+			{
+				EventLog.log(">> USER MEME EQUIPE : " + usersInTeamChat[i].username);
+				// on l'informe sur ses sockets
+				for(var k in usersInTeamChat[i].sockets)
+				{
+					EventLog.log(">>> ENVOI MESSAGE SUR SOCKET DE USER " + usersInTeamChat[i].username);
+					try
+					{
+						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", user, message);
+					}catch(err)
+					{
+						EventLog.error(">>> - onChatEquipe_USER_MESSAGE() " + err);
+					}
+				}
+			}
+		}
+	}
+	else { EventLog.log("> UTILISATEUR N'EXISTE PAS ! ");}
+},
+
+onChatEquipe_DISCONNECT = function(id, socket)
+{
+	var users = new Array();
+	var j = 0;
+	var numEquipe;
+	
+	if(oUtilisateur_Manager.exist(id))
+	{
+		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
+		if(usersInTeamChat[id])
+		{
+			usersInTeamChat[id].sockets.splice(usersInTeamChat[id].sockets.indexOf(socket), 1);
+			if(usersInTeamChat[id].sockets.length == 0)
+			{				
+				for(var i in usersInTeamChat)
+				{
+					if(usersInTeamChat[i].numEquipe == numEquipe)
+					{
+						for(var k in usersInTeamChat[i].sockets)
+						{
+							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInTeamChat[id].username);
+						}
+					}
+				}
+				EventLog.log("Déconnexion de " + usersInTeamChat[id].username + " du chat");
+				delete usersInTeamChat[id];
 			}
 			
-			usersInTeamChat[id].username = user;
-			usersInTeamChat[id].sockets.push(socket);
-			usersInTeamChat[id].numEquipe = numEquipe;
-		
 			for(var i in usersInTeamChat)
 			{
 				if(usersInTeamChat[i].numEquipe == numEquipe)
@@ -529,102 +794,29 @@ var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 					j++;			
 				}
 			}
-			if(newUser)
-			{
-				oEventLog.log("L'utilisateur " + user + " s'est connecté au chat d'equipe.");
-				for(var i in usersInTeamChat)
-				{
-					if(usersInTeamChat[i].numEquipe == numEquipe)
-					{
-						for(var k in usersInTeamChat[i].sockets)
-						{
-							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
-							usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
-						}
-					}
-				}
-			}
-		}
-	});
-	
-	socket.on('USER_MESSAGE_CS', function(user, message)
-	{
-		var numEquipe;
-		if(oUtilisateur_Manager.exist(id))
-		{
-			numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
+			
 			for(var i in usersInTeamChat)
 			{
 				if(usersInTeamChat[i].numEquipe == numEquipe)
 				{
 					for(var k in usersInTeamChat[i].sockets)
 					{
-						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", user, message);
+						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+						usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
 					}
 				}
 			}
 		}
-	});
-	
-	socket.on('disconnect', function()
-	{
-		var users = new Array();
-		var j = 0;
-		var numEquipe;
-		
-		if(oUtilisateur_Manager.exist(id))
-		{
-			numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
-			if(usersInTeamChat[id])
-			{
-				usersInTeamChat[id].sockets.splice(usersInTeamChat[id].sockets.indexOf(socket), 1);
-				if(usersInTeamChat[id].sockets.length == 0)
-				{				
-					for(var i in usersInTeamChat)
-					{
-						if(usersInTeamChat[i].numEquipe == numEquipe)
-						{
-							for(var k in usersInTeamChat[i].sockets)
-							{
-								usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInTeamChat[id].username);
-							}
-						}
-					}
-					oEventLog.log("Déconnexion de " + usersInTeamChat[id].username + " du chat");
-					delete usersInTeamChat[id];
-				}
-				
-				for(var i in usersInTeamChat)
-				{
-					if(usersInTeamChat[i].numEquipe == numEquipe)
-					{
-						users[j] = usersInTeamChat[i].username;
-						j++;			
-					}
-				}
-				
-				for(var i in usersInTeamChat)
-				{
-					if(usersInTeamChat[i].numEquipe == numEquipe)
-					{
-						for(var k in usersInTeamChat[i].sockets)
-						{
-							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
-							usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
-						}
-					}
-				}
-			}
-		}
-	});
-});
+	}
+};
  
- 
+
+
  //Client Connecté au chat général
 var chat = io.of('/chat-general').on('connection', function (socket)
 {
 	var id = "";
-	socket.on('INFO_USER_CS', function(userID, user)
+	socket.on('INFO_USER_CHAT_CS', function(userID, user)
 	{
 		var users = new Array();
 		var j = 0;
@@ -648,7 +840,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 		}
 		if(newUser)
 		{
-			oEventLog.log("L'utilisateur " + user + " s'est connecté au chat.");
+			EventLog.log("L'utilisateur " + user + " s'est connecté au chat.");
 			chat.emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
 		}
 		
@@ -672,14 +864,14 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 			if(usersInGeneralChat[id].sockets.length == 0)
 			{
 				chat.emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInGeneralChat[id].username);
-				oEventLog.log("Déconnexion de " + usersInGeneralChat[id].username + " du chat");
+				EventLog.log("Déconnexion de " + usersInGeneralChat[id].username + " du chat");
 				delete usersInGeneralChat[id];
 			}
 			
 			for(var i in usersInGeneralChat)
 			{
 				users[j] = usersInGeneralChat[i].username;
-				oEventLog.log("User :" + usersInGeneralChat[i].username);
+				EventLog.log("User :" + usersInGeneralChat[i].username);
 				j++;
 			}
 			chat.emit("USER_CONNECTED_SC", users);
@@ -699,9 +891,25 @@ io.sockets.on('connection', function (socket)
     socket.emit('MESSAGE_TEST', 'Vous êtes bien connecté !');
     socket.broadcast.emit('MESSAGE_TEST', 'Un autre client vient de se connecter !');
 	
-    oEventLog.log('SERVER : Un client est connecté !');
+    EventLog.log('SERVER : Un client est connecté !');
     //socket.emit('MESSAGE_SC', "Salle du perso : " + myPerso.GetIdCase());
 
+	socket.on('INFO_USER_CHAT_CS', function(userID, user)
+	{
+		onChatEquipe_INFO_USER(userID, user, socket);
+	});
+	
+	// Reception d'un message
+	socket.on('USER_MESSAGE_CS', function(id, user, message)
+	{
+		onChatEquipe_USER_MESSAGE(id, user, message);
+	});
+	
+	socket.on('disconnect', function()
+	{
+		onChatEquipe_DISCONNECT(socket);
+	});
+	
 	socket.on('INFO_USER_CS', function(sessionID, username, page, param)
 	{
 		idUser = sessionID;
@@ -712,26 +920,23 @@ io.sockets.on('connection', function (socket)
 		
 		if(!usersOnline[idUser])
 		{
-			usersOnline[idUser] = new Object();
+			usersOnline[idUser] 		= new Object();
 			usersOnline[idUser].sockets = new Array();
-			usersOnline[idUser].pages = new Array();
+			usersOnline[idUser].pages 	= new Array();
 		}
-		usersOnline[idUser].username = user;
+		usersOnline[idUser].username 	= user;
 		usersOnline[idUser].pages[socket] = page;
 		usersOnline[idUser].sockets.push(socket);
 		
 		// charger le pseudo du joueur en mémoire
 		pseudoUser = username;
-		oEventLog.log(">>> Pseudo chargé en mémoire ! Utilisateur -> "+username);
+		EventLog.log(">>> Pseudo chargé en mémoire ! Utilisateur -> "+username);
 		
 		if(page == "classement")
 		{
 			scores = oScore_Manager.getScoreCurrentSession(param);
 			socket.emit('CLASSEMENT_SC', scores);
 		}
-		
-
-		
 
 		if(page == "admin")
 		{
@@ -745,8 +950,7 @@ io.sockets.on('connection', function (socket)
 			socket.emit('EDIT_ADMIN_SC', user);
 		}
 		
-		oEventLog.log("Connexion de " + user + " à la page " + page);
-
+		EventLog.log("INFO - Connexion de " + user + " à la page " + page);
 	});
 	
 	socket.on('disconnect', function()
@@ -759,11 +963,11 @@ io.sockets.on('connection', function (socket)
 			usersOnline[idUser].sockets.splice(usersOnline[idUser].sockets.indexOf(socket), 1);
 			delete usersOnline[idUser].pages[socket];
 			
-			oEventLog.log("Déconnexion de " + user + " de la page " + page);
+			EventLog.log("Déconnexion de " + user + " de la page " + page);
 			
 			if(usersOnline[idUser].sockets.length == 0)
 			{
-				oEventLog.log("Déconnexion de " + usersOnline[idUser].username);
+				EventLog.log("Déconnexion de " + usersOnline[idUser].username);
 				delete usersOnline[idUser];
 			}
 		}
@@ -792,7 +996,7 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('MOVE_PERSONNAGE_CS', function (move)
 	{
-		oEventLog.log("****************** MOVE_PERSONNAGE_CS - EMETTEUR : " + pseudoUser +" ********************");
+		EventLog.log("****************** MOVE_PERSONNAGE_CS - EMETTEUR : " + pseudoUser +" ********************");
 		
 		//try
 		//{
@@ -820,15 +1024,17 @@ io.sockets.on('connection', function (socket)
 			}
 		}
 		
-		oEventLog.log(pseudoUser + " - APP : Réponse déplacement " + reponseDeplacement);
-		socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
+		EventLog.log(pseudoUser + " - APP : Réponse déplacement " + reponseDeplacement);
+		if (reponseDeplacement < 0)socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
+		else 						socket.emit('MOVE_PERSONNAGE_SC', oCase_Manager.GetCopieCase(reponseDeplacement));
+		
 		/*}
 		catch(err)
 		{
 
-			oEventLog.log("/!\\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
+			EventLog.error("/!\\\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
 
-			oEventLog.error("/!\\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
+			EventLog.error("/!\\ ERREUR : SERVEUR : MOVE_PERSONNAGE : " + err);
 
 			return;
 		}*/
@@ -852,34 +1058,28 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INV_PERSONNAGE_CS', function (type, id_item)
 	{
-		oEventLog.log("****************** INV_PERSONNAGE_CS - EMETTEUR : " + pseudoUser +" ********************");
-		try
-		{
+		EventLog.log("****************** INV_PERSONNAGE_CS - EMETTEUR : " + pseudoUser +" ********************");
+		//try
+		//{
 		var currentItem = oItem_Manager.GetItem(id_item);
 		var reponse;
-		
-
-		oEventLog.log("*******************************************************");
-		
 
 		if (type == "EQUIPER")
 		{
 			reponse = oPersonnage_Manager.equiper(idUser, id_item);
-			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, reponse);
+			
+			socket.emit('INV_PERSONNAGE_SC', 'EQUIPER', currentItem, reponse, oPersonnage_Manager.GetCopiePerso(idUser));
 
-			oEventLog.log("SERVEUR : INV_PERSONNAGE_CS : Equipement" + reponse);
-
-			oEventLog.log(pseudoUser + " - APP : Réponse équipement " + reponse);
+			EventLog.log(pseudoUser + " - APP : Réponse équipement " + reponse);
 
 		}
 		else if (type == "DESEQUIPER") 
 		{
 			reponse = oPersonnage_Manager.desequiper(idUser, id_item);
-			socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem, reponse);
+			
+			socket.emit('INV_PERSONNAGE_SC', 'DEQUIPER', currentItem, reponse, oPersonnage_Manager.GetCopiePerso(idUser));
 
-			oEventLog.log("SERVEUR : INV_PERSONNAGE_CS : Desequipement" + reponse);
-
-			oEventLog.log(pseudoUser + " - APP : Réponse déquipement " + reponse);
+			EventLog.log(pseudoUser + " - APP : Réponse déquipement " + reponse);
 
 		}
 		
@@ -887,14 +1087,14 @@ io.sockets.on('connection', function (socket)
 		//ActualiserAllInCase();
 
 		
-		oEventLog.log("*******************************************************");
+		EventLog.log("*******************************************************");
 
-		}
-		catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : INV_PERSONNAGE_CS : " + err);
-			return;
-		}
+		//}
+		//catch(err)
+		//{
+		//	EventLog.error("/!\\ ERREUR : SERVEUR : INV_PERSONNAGE_CS : " + err);
+		//	return;
+		//}
 		
     });
     /*
@@ -927,18 +1127,14 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INV_CASE_CS', function (type, id_item)
 	{
-		oEventLog.log("****************** INV_CASE - EMETTEUR : " + pseudoUser +" ********************");
-		try
-		{
+		EventLog.log("****************** INV_CASE - EMETTEUR : " + pseudoUser +" ********************");
+		//try
+		//{
 		var currentItem = oItem_Manager.GetItem(id_item);
 		var reponse;
 		
+		EventLog.log("SERVEUR : INV_CASE_CS : Demande pour " + type + " l'item : " + id_item);
 
-		oEventLog.log("*******************************************************");
-		
-		oEventLog.log("SERVEUR : INV_CASE_CS : Demande pour " + type + " l'item : " + id_item);
-
-		
 		// délègue au manager
 		reponse = oPersonnage_Manager.ramasserDeposer(idUser, type, currentItem);
 		
@@ -955,15 +1151,11 @@ io.sockets.on('connection', function (socket)
 				if (type == "DEPOSER")  InformerAllInCase("vient de déposer cet item : " + currentItem.nom);
 			}
 
-		
-		
-		oEventLog.log("*******************************************************");
-
-		}
-		catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
-		}
+		//}
+		//catch(err)
+		//{
+		//	EventLog.error("/!\\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
+		//}
     });
 	
     /******************************************************************************************************************
@@ -977,23 +1169,23 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_CASE_CS', function ()
 	{
-		oEventLog.log("****************** INFO_CASE_CS - EMETTEUR : " + pseudoUser +" ********************");
-		try
-		{
+		EventLog.log("****************** INFO_CASE_CS - EMETTEUR : " + pseudoUser +" ********************");
+		//try
+		//{
 		var liste		= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(idUser);
 		var idSalle		= oPersonnage_Manager.GetIdCase(idUser);
 		var idSousSalle = oPersonnage_Manager.GetIdSousCase(idUser);
 		var maCase		= oCase_Manager.GetCopieCase(idSalle);
 		
 
-		oEventLog.log("SERVER : INFO_CASE() : Renvoi de l'id de case : " + idSalle + " - Sous case : " + idSousSalle);
+		EventLog.log("SERVER : INFO_CASE() : Renvoi de l'id de case : " + idSalle + " - Sous case : " + idSousSalle);
 
 		socket.emit('INFO_CASE_SC', maCase, liste.nbrAllies, liste.nbrEnnemis, idSousSalle);
-		}
-		catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_CS : " + err);
-		}
+		//}
+		//catch(err)
+		//{
+		//	EventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_CS : " + err);
+		//}
     });
     /*
      * 
@@ -1009,16 +1201,16 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('INFO_PERSONNAGE_CS', function ()
 	{
-		oEventLog.log("****************** INFO_PERSONNAGE_CS - EMETTEUR : " + pseudoUser +" ********************");
-		try
-		{
+		EventLog.log("****************** INFO_PERSONNAGE_CS - EMETTEUR : " + pseudoUser +" ********************");
+		//try
+		//{
 			var monPerso = oPersonnage_Manager.GetCopiePerso(idUser);
 			socket.emit('INFO_PERSONNAGE_SC', monPerso);
-		}
-		catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
-		}
+			//}
+			//catch(err)
+			//{
+			//EventLog.error("/!\\ ERREUR : SERVEUR : INV_CASE_CS : " + err);
+			//}
     });
     /*
      * 
@@ -1040,12 +1232,10 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('PERSONNAGE_USE_CS', function (id_item)
     {
-    	oEventLog.log("******************* PERSONNAGE_USE_CS - EMETTEUR : " + pseudoUser +" ***********************");
-    	try
-    	{
-
-    	oEventLog.log("******************* UTILISER ***********************");
-
+    	EventLog.log("******************* PERSONNAGE_USE_CS - EMETTEUR : " + pseudoUser +" ***********************");
+    	
+    	//try
+    	//{
     	// délègue au manager et récupère le code retour
 		var reponse = oPersonnage_Manager.Utiliser(idUser, id_item);
 		
@@ -1054,16 +1244,14 @@ io.sockets.on('connection', function (socket)
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
 		//ActualiserAllInCase();
-		
 
-		oEventLog.log("SERVEUR : UTILISER - " + idUser +" - Item " + id_item + " - Code : " + reponse);
-		oEventLog.log("*******************************************************");
+		EventLog.log("SERVEUR : UTILISER - " + idUser +" - Item " + id_item + " - Code : " + reponse);
 
-    	}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : PERSONNAGE_USE_CS : " + err);
-		}
+		//}
+		//catch(err)
+		//{
+		//	EventLog.error("/!\\ ERREUR : SERVEUR : PERSONNAGE_USE_CS : " + err);
+		//}
     });
     /*
      * 
@@ -1091,13 +1279,10 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('PERSONNAGE_MODE_CS', function (mode)
 	{
-		oEventLog.log("******************* PERSONNAGE_MODE_CS - EMETTEUR : " + pseudoUser +" ***********************");
-		try
-		{
+		EventLog.log("******************* PERSONNAGE_MODE_CS - EMETTEUR : " + pseudoUser +" ***********************");
+		//try
+		//{
 
-        oEventLog.log("*******************************************************");
-
-		
         // délègue au manager
         var reponse = oPersonnage_Manager.ChangementMode(idUser, mode);
 		
@@ -1109,15 +1294,15 @@ io.sockets.on('connection', function (socket)
 		if (mode == 3) InformerAllInCase("se prépare au combat !");
 		
 
-		oEventLog.log("SERVEUR : CHGT MODE - " + idUser +" - Mode " + mode + " - Code : " + reponse.reponseChangement);
-        oEventLog.log("*******************************************************");
+		EventLog.log("SERVEUR : CHGT MODE - " + idUser +" - Mode " + mode + " - Code : " + reponse.reponseChangement);
+        EventLog.log("*******************************************************");
 
 
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : PERSONNAGE_MODE_CS : " + err);
-		}
+        //}
+        //catch(err)
+        //{
+        //	EventLog.error("/!\\ ERREUR : SERVEUR : PERSONNAGE_MODE_CS : " + err);
+        //}
     });
     /*
      * 
@@ -1150,39 +1335,35 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_FOUILLE_RAPIDE_CS', function ()
     {
-    	oEventLog.log("******************* ACTION_FOUILLE_RAPIDE_CS - EMETTEUR : " + pseudoUser +" ***********************");
-    	try
-    	{
+    	EventLog.log("******************* ACTION_FOUILLE_RAPIDE_CS - EMETTEUR : " + pseudoUser +" ***********************");
+    	//try
+    	//{
 
-    		
-    	oEventLog.log("***************** FOUILLE RAPIDE ******************************");
-
-       
     	var reponse = oPersonnage_Manager.fouilleRapide(idUser);
     	
     	switch(reponse.codeRetour)
     	{
     		case 1 : 
-    			oEventLog.log("SERVEUR : Fouille Rapide() : Fouille réussie ! Objet découvert : " + reponse.itemDecouvert.nom);
+    			EventLog.log("SERVEUR : Fouille Rapide() : Fouille réussie ! Objet découvert : " + reponse.itemDecouvert.nom);
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', 1, reponse.itemDecouvert,
     					reponse.degatSubis, reponse.itemDansSac, reponse.nbrEnnemisDecouverts, reponse.nbrGoulesA);
     			// actualiser l'ihm pour les perso de la meme case connectés
     			ActualiserAllInCase();
     			break;
     		case -1 : 
-    			oEventLog.log("SERVEUR : Fouille Rapide() : Fouille ratée !");
+    			EventLog.log("SERVEUR : Fouille Rapide() : Fouille ratée !");
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -1, null, reponse.degatSubis, 0, 
     					reponse.nbrEnnemisDecouverts, reponse.nbrGoulesA);
     			break;
     			
     		case -5 : 
-    			oEventLog.log("SERVEUR : Fouille Rapide() : Intercepté par goule !");
+    			EventLog.log("SERVEUR : Fouille Rapide() : Intercepté par goule !");
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -5, null, reponse.degatSubis, 
     					0, 0, reponse.nbrGoulesA);
     			break;
     			
     		case -10 : 
-    			oEventLog.log("SERVEUR : Fouille Rapide() : Pas assez de PA !");
+    			EventLog.log("SERVEUR : Fouille Rapide() : Pas assez de PA !");
     			socket.emit('ACTION_FOUILLE_RAPIDE_SC', -10, null, 0, 0, 0, 0);
     			break;
     		default :
@@ -1190,14 +1371,13 @@ io.sockets.on('connection', function (socket)
     		break;
     	}
 
-    	oEventLog.log("SERVEUR : FOUILLE_RAPIDE - " + idUser +" - item découvert : " + reponse.itemDecouvert);
-    	oEventLog.log("***************************************************************");
+    	EventLog.log("SERVEUR : FOUILLE_RAPIDE - " + idUser +" - item découvert : " + reponse.itemDecouvert);
 
-    	}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : ACTION_FOUILLE_RAPIDE_CS : " + err);
-		}
+    	//}
+    	//catch(err)
+    	//{
+    	//	EventLog.error("/!\\ ERREUR : SERVEUR : ACTION_FOUILLE_RAPIDE_CS : " + err);
+    	//}
     });
     /*
      * 
@@ -1226,9 +1406,9 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_CS', function (idPersonnageCible)
 	{
-		oEventLog.log("******************* ACTION_ATTAQUE_CS - EMETTEUR : " + pseudoUser +" ***********************");
-		try
-		{
+		EventLog.log("******************* ACTION_ATTAQUE_CS - EMETTEUR : " + pseudoUser +" ***********************");
+		//try
+		//{
     	// récupèration de l'id de l'user propriétaire de ce perso
     	var idCible = oUtilisateur_Manager.findIdUser(idPersonnageCible);
     	var idCase = oPersonnage_Manager.GetIdCase(idUser);
@@ -1245,12 +1425,12 @@ io.sockets.on('connection', function (socket)
 		// information des autres joueurs avec message
 		InformerAllInCase("vient d'attaquer un autre joueur ! ");
 		
-		oEventLog.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : ACTION_ATTAQUE_CS : " + err);
-		}
+		EventLog.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
+		//}
+		//catch(err)
+		//{
+		//	EventLog.error("/!\\ ERREUR : SERVEUR : ACTION_ATTAQUE_CS : " + err);
+		//}
 	});
     /*
      * 
@@ -1277,11 +1457,9 @@ io.sockets.on('connection', function (socket)
 	 */
     socket.on('ACTION_ATTAQUE_GOULE_CS', function ()
 	{
-		oEventLog.log("******************* ACTION_ATTAQUE_GOULE_CS - EMETTEUR : " + pseudoUser +" ***********************");
-		try
-		{
-
-    	oEventLog.log("******************** ATTAQUE DE GOULES *****************");
+		EventLog.log("******************* ACTION_ATTAQUE_GOULE_CS - EMETTEUR : " + pseudoUser +" ***********************");
+		//try
+		//{
     	// délègue au manager
     	var reponseManager 			= oPersonnage_Manager.AttaquerGoule(idUser);
 		
@@ -1318,11 +1496,11 @@ io.sockets.on('connection', function (socket)
 			ActualiserAllInCase();
 			
 */
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : ACTION_ATTAQUE_GOULE_CS : " + err);
-		}
+		//}
+    	//catch(err)
+		//{
+		//	EventLog.error("/!\\ ERREUR : SERVEUR : ACTION_ATTAQUE_GOULE_CS : " + err);
+		//}
     });
     /*
      * 
@@ -1338,10 +1516,10 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('ACCUSE_LECTURE_MSG_CS', function ()
 	{
-		oEventLog.log("******************* ACCUSE_LECTURE_MSG_CS - EMETTEUR : " + pseudoUser +" ***********************");
-		try
-		{
-    	oEventLog.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.getPseudo(idUser));
+		EventLog.log("******************* ACCUSE_LECTURE_MSG_CS - EMETTEUR : " + pseudoUser +" ***********************");
+		//try
+		//{
+    	EventLog.log("SERVEUR : Effacement des messages en attente du joueur " + oUtilisateur_Manager.getPseudo(idUser));
     	
     	// aquittement
     	oPersonnage_Manager.acquitterMsg(idUser);
@@ -1355,11 +1533,11 @@ io.sockets.on('connection', function (socket)
     		// retablissement de la sante et transfert en zone sure
     		oPersonnage_Manager.SeRetablir(idUser);
     	}
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : ACCUSE_LECTURE_MSG_CS : " + err);
-		}
+    	//}
+    	//catch(err)
+    	//{
+    	//	EventLog.error("/!\\ ERREUR : SERVEUR : ACCUSE_LECTURE_MSG_CS : " + err);
+    	//}
     });
     /*
      * 
@@ -1378,16 +1556,16 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('INFO_CASE_ALLIES_CS', function ()
 	{
-		oEventLog.log("******************* INFO_CASE_ALLIES_CS - EMETTEUR : " + pseudoUser +" ***********************");
-		try
-		{
+		EventLog.log("******************* INFO_CASE_ALLIES_CS - EMETTEUR : " + pseudoUser +" ***********************");
+		//try
+		//{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, false);
     	socket.emit('INFO_CASE_ALLIES_SC', liste.Allies);
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_ALLIES_CS : " + err);
-		}
+    	//}
+    	//catch(err)
+    	//{
+    	//	EventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_ALLIES_CS : " + err);
+    	//}
     });
     /*
      * 
@@ -1406,16 +1584,16 @@ io.sockets.on('connection', function (socket)
 	 */ 
     socket.on('INFO_CASE_ENNEMIS_CS', function ()
 	{
-		oEventLog.log("******************* INFO_CASE_ENNEMIS_CS - EMETTEUR : " + pseudoUser +" ***********************");
-		try
-		{
+		EventLog.log("******************* INFO_CASE_ENNEMIS_CS - EMETTEUR : " + pseudoUser +" ***********************");
+		//try
+		//{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
     	socket.emit('INFO_CASE_ENNEMIS_SC', liste.Ennemis);
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
-		}
+    	//}
+    	//catch(err)
+    	//{
+    	//	EventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
+    	//}
     });
     /*  
      *
@@ -1431,14 +1609,14 @@ io.sockets.on('connection', function (socket)
      */
     socket.on('SAVE_BD_DEBUG_CS', function ()
 	{
-		try
-		{
+		//try
+		//{
     	SauvegardeGlobale();
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : SAVE_BD_DEBUG_CS : " + err);
-		}
+    	//}
+    	//catch(err)
+    	//{
+    	//	EventLog.error("/!\\ ERREUR : SERVEUR : SAVE_BD_DEBUG_CS : " + err);
+    	//}
     });
     /*  
     *
@@ -1454,14 +1632,14 @@ io.sockets.on('connection', function (socket)
     */
    socket.on('GET_DATE_CS', function ()
 	{
-		try
-		{
+		//try
+		//{
 		socket.emit('GET_DATE_SC', dateLancementSrv);
-		}
-    	catch(err)
-		{
-			oEventLog.error("/!\\ ERREUR : SERVEUR : GET_DATE_CS : " + err);
-		}
+		//}
+		////catch(err)
+		//{
+		//	EventLog.error("/!\\ ERREUR : SERVEUR : GET_DATE_CS : " + err);
+			//}
    });
     /*
      * 
@@ -1482,13 +1660,13 @@ io.sockets.on('connection', function (socket)
     	if (typeof idCase === "undefined")
     	{
     		var idCase = oPersonnage_Manager.GetIdCase(idUser);
-    		oEventLog.log("******************* [INFORMER-ALL-IN-CASE]   ("+idCase+"[AUTO]) - EMETTEUR : " + pseudoUser +" ***********************");
+    		EventLog.log("******************* [INFORMER-ALL-IN-CASE]   ("+idCase+"[AUTO]) - EMETTEUR : " + pseudoUser +" ***********************");
     		// on récupère la liste des persos de la case
     		liste = oPersonnage_Manager.GetAlliesEnnemisDansSalle(idUser);
     	}
     	else
     	{
-    		oEventLog.log("******************* [INFORMER-ALL-IN-CASE]   ("+idCase+"[MANU]) - EMETTEUR : " + pseudoUser +" ***********************");
+    		EventLog.log("******************* [INFORMER-ALL-IN-CASE]   ("+idCase+"[MANU]) - EMETTEUR : " + pseudoUser +" ***********************");
     		// on récupère la liste des persos de la case
     		liste = oPersonnage_Manager.GetAlliesEnnemisDansSalle(idUser, idCase);
     	}
@@ -1543,11 +1721,11 @@ io.sockets.on('connection', function (socket)
     	if (typeof idCase === "undefined")
     	{	
     		var idCase = oPersonnage_Manager.GetIdCase(idUser);
-    		oEventLog.log("******************* [ACTUALISER-ALL-IN-CASE] ("+idCase+"[AUTO]) - EMETTEUR : " + pseudoUser +" ***********************");
+    		EventLog.log("******************* [ACTUALISER-ALL-IN-CASE] ("+idCase+"[AUTO]) - EMETTEUR : " + pseudoUser +" ***********************");
     	}
     	else
     	{
-    		oEventLog.log("******************* [ACTUALISER-ALL-IN-CASE] ("+idCase+"[MANU]) - EMETTEUR : " + pseudoUser +" ***********************");
+    		EventLog.log("******************* [ACTUALISER-ALL-IN-CASE] ("+idCase+"[MANU]) - EMETTEUR : " + pseudoUser +" ***********************");
     	}
 		
     	// on récupère la liste des personnages de la case
@@ -1563,7 +1741,6 @@ io.sockets.on('connection', function (socket)
 			// si meme case ET si en ligne ET différent de l'user qui a crée l'event
 			if(idCase == idCasePerso && usersOnline[id] && !oPersonnage_Manager.estMort(id))
 			{
-				
 				// on récupère son indice de ss-case
 				var idSousCase = oPersonnage_Manager.GetIdSousCase(id);
 				// on récupère les infos sur les peros de la case
@@ -1581,7 +1758,7 @@ io.sockets.on('connection', function (socket)
 
 function ActualiserAllGlobal(idCase)
 {
-	oEventLog.log("******************* [ACTUALISER-ALL-GLOBAL] ("+idCase+") - EMETTEUR : ***********************");
+	EventLog.log("******************* [ACTUALISER-ALL-GLOBAL] ("+idCase+") - EMETTEUR : ***********************");
 	var listePerso = oPersonnage_Manager.GetPersonnagesDansSalle(idCase);
 	
 	for(var i in listePerso) 
@@ -1608,9 +1785,9 @@ function ActualiserAllGlobal(idCase)
  */
 function SauvegardeGlobale()
 {
-	oEventLog.log("***************** SAUVEGARDE GLOBALE DES DONNEES *****************************");
+	EventLog.log("***************** SAUVEGARDE GLOBALE DES DONNEES *****************************");
    	var date = new Date();
-   	oEventLog.log("[ ! ] Sauvegarde globale ! Date: " + date);
+   	EventLog.log("[ ! ] Sauvegarde globale ! Date: " + date);
    				
 	// regain des pts move et action
 	oPersonnage_Manager.nouvelleJournee();
@@ -1628,27 +1805,30 @@ function SauvegardeGlobale()
 	{
 		for(var j in usersOnline[id].sockets)
 		{
-			//oPersonnage_Manager.AddMessage(id, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
+			//oPersonnage_Manager.AddMessage(i 	d, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
 			var res 		= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
 			var idSousSalle = oPersonnage_Manager.GetIdSousCase(id);
 			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
 			usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdCase(id)), res.nbrAllies, res.nbrEnnemis, idSousSalle);
+			// prévenir les joueurs de l'attaque de la nuit
+			usersOnline[id].sockets[j].emit('ATTAQUE_NUIT_SC');
 		}
 	}
 }
 setInterval(function() 
 { 
 	SauvegardeGlobale();
+	heureDerniereAttaque = new Date();
 	
-},  1000 * 60 * 60  ); // (1000) millisec * 60 sec * 60 min
+}, GameRules.dureeCycle()); // (1000) millisec * 60 sec * 60 min
 
 
 
 // server.listen(8080);
 app.on('close', function () { // On écoute l'évènement close
-    oEventLog.log('Bye bye !');
+    EventLog.log('Bye bye !');
 });
 
 
-//oEventLog.log("SERVEUR : Script lancé ! sur http://127.0.0.1:8080");
+//EventLog.log("SERVEUR : Script lancé ! sur http://127.0.0.1:8080");
 
