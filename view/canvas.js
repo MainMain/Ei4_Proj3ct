@@ -338,7 +338,10 @@ function initialize() {
 	stage.enableMouseOver(20);
 
 	// enable touch interactions if supported on the current device:
-	createjs.Touch.enable(stage);
+	if(createjs.Touch.isSupported())
+	{
+		createjs.Touch.enable(stage);
+	}
 
 	// Teste la présence de HTML5 et de drag & drop
 	/*if (Modernizr.draganddrop) {
@@ -584,11 +587,10 @@ function initialize() {
 
 function handleProgress() 
 {
-
 	loadingBar.scaleX = preload.progress * loadingBarWidth;
 
 	progresPrecentage = Math.round(preload.progress*100);
-	loadProgressLabel.text =("Loading Apocalypse...\n\n\n\n" + progresPrecentage);
+	loadProgressLabel.text =("Loading Apocalypse\n\n\n\n" + progresPrecentage);
 	labelPourcentLoad.text=" %";
 
 	stage.update();
@@ -604,11 +606,14 @@ function handleComplete()
 	stage.update();
 
 	canvas.addEventListener("click", handleClick);
+	canvas.addEventListener("touchstart", handleClick);
 }
 
 function handleClick() {
+	alert("touch");
 	stage.removeChild(loadProgressLabel, loadingBarContainer, backgroundPreload);
 	canvas.removeEventListener("click", handleClick);
+	canvas.removeEventListener("touchstart", handleClick);
 	start();
 }
 
@@ -616,14 +621,26 @@ function start()
 {
 	// Lancement du jeu si connexion ok
 	if(socket.socket.connected)
+		{
+		alert("connected");
 		setPlateau();
+		}
+		
+	
 }
 
 function setPlateau()
 {
+	alert("setPlateau");
+
 	// application du background
 	var background = new createjs.Bitmap("public/Background_11.png");
+	
+	alert("1");
+	
 	background.image.onload = setImg(background, 0, 0);
+	
+	alert("2");
 
 	// ******************************************
 	// ** creation des conteneurs               *
@@ -770,6 +787,8 @@ function setPlateau()
 	// ** Création des barres du perso 			*
 	// ******************************************
 
+	alert("3");
+	
 	//------------------- Zone 1 -----------------------------------------------------
 	// Barre de vie
 	lifeBarContainer = new createjs.Container();
@@ -925,7 +944,7 @@ function setPlateau()
 	// ******************************************
 	// ********* Déclaration des labels *********
 	// ******************************************
-
+	alert("4");
 	labelDescribeCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelDescribeCase.lineHeight = _LineHeight;
 	labelDescribeCase.textBaseline = _TextBaseline;
@@ -1112,7 +1131,7 @@ function setPlateau()
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
-
+	alert("5");
 	var Up = stage.addChild(new createjs.Bitmap("public/Boutons/Up.png"));
 	Up.x= _contMapX + _contMapW/2 - Up.image.width/2;
 	Up.y = _contMapY;
@@ -1142,7 +1161,7 @@ function setPlateau()
 	});
 
 	Up.cursor=Down.cursor=Left.cursor=Right.cursor="pointer";
-
+	alert("6");
 	// ******************************************
 	// ************ Boutons d'action ************
 	// ******************************************
@@ -1205,26 +1224,32 @@ function setPlateau()
 	BtnPageItemPersoRight.cursor=BtnPageItemPersoLeft.cursor=BtnPageItemCaseRight.cursor=BtnPageItemCaseLeft.cursor="pointer";
 
 	BtnFouilleRapide.cursor="pointer";
-
+	alert("7");
 	// ******************************************
 	// *********** INITIALISATION ***************
 	// ******************************************
 	socket.emit('GET_DATE_CS');
+	alert("8");
 	game();
+	alert("9");
 }
 
 
 function game() 
 {
+	alert("game");
 	// Couleur autour de la carte
 	shape4 = new createjs.Shape();
 	stage.addChild(shape4);
 	shape4.graphics.setStrokeStyle(4).beginStroke("#850000").drawRect(
 			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
+	stage.update();
+	alert("update");
 	
 	//_espaceBoutonYInitialisation des informations
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
+	alert("emit");
 }
 
 function message()
@@ -2843,6 +2868,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
+	alert("CONNARD");
 	var classe;
 
 	// ********* AFFICHAGE IMAGE DU PERSO *********/
