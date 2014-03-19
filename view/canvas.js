@@ -2132,31 +2132,157 @@ function setColorMsgRetour()
 
 function majPositionPerso(currentPerso)
 {
-		
+	
 }
 function majInventairePerso(currentPerso)
 {
-// ********* AFFICHAGE DE LA LISTE DES OBJETS *********/
+	// ********* AFFICHAGE POINTS ATT ET DEF DU PERSO *********/
+	// pt att
+	if(currentPerso.armeEquipee != null)	PointsAttaque = currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
+	else									PointsAttaque = currentPerso.multiPtsAttaque ;
+	// pt def
+	if(currentPerso.armureEquipee != null)	PointsDefense = currentPerso.multiPtsDefense * currentPerso.armureEquipee.valeur ;
+	else									PointsDefense = currentPerso.multiPtsDefense;
+	// Mise à jour des labels
+	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
+	labelPtsDef.text=("Points de défense : " + PointsDefense + "");	
+	
+	
+	// ********* AFFICHAGE DE LA LISTE DES OBJETS *********/
 	var PoidsSac=0;
 	var armeDejaEquip=false;
 	var armureDejaEquip=false;
 	
 	// tableau qui contient toutes les listes d'objets
 	var TabListe = new Array();
-	/*
-	var indexArmeEquip;
-	var indexArmureEquip;
-	currentPerso.sacADos.splice(indexArmeEquip,1);
-	currentPerso.sacADos.splice(indexArmureEquip,1);*/
 
-	var Taille 						= Math.ceil(currentPerso.sacADos.length / 10);
-	var TailleFinListe 				= (currentPerso.sacADos.length % 10);
-	var iPositionItemInConteneur	= 0;
-
-	// vide conteneurs
+	//// REINITIALISATION DES CONTENEURS
 	contInvPerso.removeAllChildren();
 	contArmure.removeAllChildren();
 	contArme.removeAllChildren();
+	
+	//// SUPPRESSION DE L'ARME EQUIPEE ET L'ARMURE EQUIPEE DE LA LISTE DES OBJETS
+	var indexArmeEquip = -1;
+	var indexArmureEquip = -1;
+	
+	// tri des items du sac a dos
+	currentPerso.sacADos.sort(function(item1,item2){return item1.id-item2.id;});
+	
+	// parcours de la liste des items
+	for (var i = 0; i < currentPerso.sacADos.length ; i++) 
+	{
+		if (currentPerso.armeEquipee != null && currentPerso.sacADos[i].id == currentPerso.armeEquipee.id)
+		{
+			indexArmeEquip = i;
+			PoidsSac += currentPerso.sacADos[i].poids;
+		}
+		else if (currentPerso.armureEquipee != null && currentPerso.sacADos[i].id == currentPerso.armureEquipee.id)
+		{
+			indexArmureEquip = i;
+			PoidsSac += currentPerso.sacADos[i].poids;
+		}
+	}
+	
+	// suppresion des items
+	if (indexArmeEquip != -1) 	currentPerso.sacADos.splice(indexArmeEquip,1);
+	if (indexArmureEquip != -1)
+		{
+			if (indexArmeEquip == -1 || indexArmureEquip < indexArmeEquip)
+				currentPerso.sacADos.splice(indexArmureEquip,1);
+			else
+				currentPerso.sacADos.splice(indexArmureEquip-1,1);
+		}
+
+	
+	//// AFFICHAGE DE L'ARME ET ENLEVAGE DE LA LISTE
+	if (currentPerso.armeEquipee != null)
+	{
+		var imgItemArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
+		imgItemArme.cursor = "pointer";
+
+		// Dessin de l'arme équipée
+		contArme.addChild(imgItemArme);
+
+		// évenement click
+		contArme.addEventListener("click", function (event) 
+		{
+			if (SelectEquipement!=null)
+			{
+				contArme.removeChild(SelectEquipement);
+				contArmure.removeChild(SelectEquipement);
+			}
+			SelectEquipement 	= contArme.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+			SelectEquipement.x	=-5;
+			SelectEquipement.y	=-4;
+			_selectedItemEquip 	= currentPerso.armeEquipee.id;
+			setContEquipement();
+		});
+
+		// évenement quand la souris passe dessus
+		contArme.addEventListener('mouseover', function(event) 
+		{
+			var descriptionItem		=currentPerso.armeEquipee.description;
+			labelDescribeItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
+			afficherDescItem(descriptionItem);
+			stage.update();
+		},false);
+
+		// évenement quand la souris s'en va
+		contArme.addEventListener('mouseout', function(event)
+		{
+			labelDescribeItem.text="";
+			stage.update();
+		},false);
+		
+		// retrait de l'arme de la liste des objets
+		
+	}
+	
+	//// AFFICHAGE DE L'ARMURE
+	if (currentPerso.armureEquipee != null)
+	{
+		var imgItemArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
+		imgItemArmure.cursor = "pointer";
+
+		// Dessin de l'armure équipée
+		contArmure.addChild(imgItemArmure);
+
+		// Ajout des évenements
+		contArmure.addEventListener("click", function (event) 
+			{
+			if (SelectEquipement!=null)
+			{
+				contArme.removeChild(SelectEquipement);
+				contArmure.removeChild(SelectEquipement);
+			}
+			SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+			SelectEquipement.x=-5;
+			SelectEquipement.y=-4;
+			_selectedItemEquip = currentPerso.armureEquipee.id;
+			setContEquipement();
+		});
+
+		contArmure.addEventListener('mouseover', function(event) 
+			{
+			var descriptionItem=currentPerso.armureEquipee.description;
+			labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
+			afficherDescItem(descriptionItem);
+			stage.update();
+		},false);
+
+		contArmure.addEventListener('mouseout', function(event)
+			{
+			labelDescribeItem.text="";
+			stage.update();
+		},false);
+		
+		// retrait de l'arme de la liste des objets
+		
+	}
+	
+	var Taille 						= Math.ceil(currentPerso.sacADos.length / 10);
+	var TailleFinListe 				= (currentPerso.sacADos.length % 10);
+	var iPositionItemInConteneur	= 0;
 	
 	for (var j=0; j<Taille; j++)
 	{
@@ -2216,7 +2342,7 @@ function majInventairePerso(currentPerso)
 
 	var Select;
 	var SelectEquipement;
-
+	
 	// instructions à essayer
 	try 
 	{
@@ -2228,92 +2354,17 @@ function majInventairePerso(currentPerso)
 			
 			//alert("iPositionItemInConteneur : " + iPositionItemInConteneur);
 
-			// si l'objet courant est le même que l'arme équipée 
-			// ET que l'arme équipée n'est pas affichée
-			if (currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id && armeDejaEquip==false /*&& pressBtnEquipArme==true*/) 
-			{
-				// affichage arme équipee
-				var imgItemArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
-				imgItemArme.cursor = "pointer";
-
-				// Dessin de l'arme équipée
-				contArme.addChild(imgItemArme);
-
-				// évenement click
-				contArme.addEventListener("click", function (event) 
-				{
-					if (SelectEquipement!=null)
-					{
-						contArme.removeChild(SelectEquipement);
-						contArmure.removeChild(SelectEquipement);
-					}
-					SelectEquipement 	= contArme.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-					SelectEquipement.x	=-5;
-					SelectEquipement.y	=-4;
-					_selectedItemEquip 	= currentPerso.armeEquipee.id;
-					setContEquipement();
-				});
-
-				// évenement quand la souris passe dessus
-				contArme.addEventListener('mouseover', function(event) 
-				{
-					var descriptionItem		=currentPerso.armeEquipee.description;
-					labelDescribeItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
-					afficherDescItem(descriptionItem);
-					stage.update();
-				},false);
-
-				// évenement quand la souris s'en va
-				contArme.addEventListener('mouseout', function(event)
-				{
-					labelDescribeItem.text="";
-					stage.update();
-				},false);
-				
-				armeDejaEquip = true;
-			}
-			else if (currentPerso.armureEquipee != null && Obj.id == currentPerso.armureEquipee.id && armureDejaEquip==false /*&& pressBtnEquipArmure==true*/) 
-			{
-				// affichage arme équipee
-				var imgItemArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
-				imgItemArmure.cursor = "pointer";
-
-				// Dessin de l'armure équipée
-				
-				contArmure.addChild(imgItemArmure);
-
-				contArmure.addEventListener("click", function (event) 
-				{
-					if (SelectEquipement!=null)
-					{
-						contArme.removeChild(SelectEquipement);
-						contArmure.removeChild(SelectEquipement);
-					}
-					SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-					SelectEquipement.x=-5;
-					SelectEquipement.y=-4;
-					_selectedItemEquip = currentPerso.armureEquipee.id;
-					setContEquipement();
-				});
-
-				contArmure.addEventListener('mouseover', function(event) 
-				{
-					var descriptionItem=currentPerso.armureEquipee.description;
-					labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
-					afficherDescItem(descriptionItem);
-					stage.update();
-				},false);
-
-				contArmure.addEventListener('mouseout', function(event)
-				{
-					labelDescribeItem.text="";
-					stage.update();
-				},false);
-				
-				armureDejaEquip = true;
-			}
-			else
-			{
+			// ici, on fait en sorte de ne pas afficher l'arme/armure équipe dans l'inventaire, seulement UNE fois
+			//if (currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id && armeDejaEquip==false /*&& pressBtnEquipArme==true*/) 
+			//{
+			//	armeDejaEquip = true;
+			//}
+			//else if (currentPerso.armureEquipee != null && Obj.id == currentPerso.armureEquipee.id && armureDejaEquip==false /*&& pressBtnEquipArmure==true*/) 
+			//{
+			//	armureDejaEquip = true;
+			//}
+			//else
+			//{
 				var imgItem = new createjs.Bitmap(Obj.imageName);
 
 				imgItem.name = i;
@@ -2364,12 +2415,12 @@ function majInventairePerso(currentPerso)
 				
 				// position de l'item dans le conteneur
 				iPositionItemInConteneur++;
-			}
+			//}
 		}
 	}
 	catch(e)
 	{
-		alert("Erreur bêta-test : Merci de reporter l'erreur suivante : " + e);
+		//alert("Erreur bêta-test : Merci de reporter l'erreur suivante : " + e);
 	}
 	
 	setContEquipement();
@@ -2628,6 +2679,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		{
 	//alert("INFO CASE");
 	
+	// tri des items de la case
+	currentCase.listeItem.sort(function(item1,item2){return item1.id-item2.id;});
 	// modification du nom de l'image a afficher
 	if (idSousCase == -1)
 	{
@@ -2875,18 +2928,6 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	_persoProbaCache	=currentPerso.multiProbaCache;
 	_persoProbaFouille	=currentPerso.multiProbaFouille;
 
-	
-	// ********* AFFICHAGE POINTS ATT ET DEF DU PERSO *********/
-	// pt att
-	if(currentPerso.armeEquipee != null)	PointsAttaque = currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
-	else									PointsAttaque = currentPerso.multiPtsAttaque ;
-	// pt def
-	if(currentPerso.armureEquipee != null)	PointsDefense = currentPerso.multiPtsDefense * currentPerso.armureEquipee.valeur ;
-	else									PointsDefense = currentPerso.multiPtsDefense;
-	// Mise à jour des labels
-	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
-	labelPtsDef.text=("Points de défense : " + PointsDefense + "");	
-	
 	
 	// ********** AFFICHAGE ITEMS DE L'INVENTAIRE *************/
 	majInventairePerso(currentPerso);
