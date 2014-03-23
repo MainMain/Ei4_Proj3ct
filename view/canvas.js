@@ -354,7 +354,10 @@ function initialize() {
 	stage.enableMouseOver(20);
 
 	// enable touch interactions if supported on the current device:
-	createjs.Touch.enable(stage);
+	if(createjs.Touch.isSupported())
+	{
+		createjs.Touch.enable(stage);
+	}
 
 	// Teste la présence de HTML5 et de drag & drop
 	/*if (Modernizr.draganddrop) {
@@ -600,11 +603,10 @@ function initialize() {
 
 function handleProgress() 
 {
-
 	loadingBar.scaleX = preload.progress * loadingBarWidth;
 
 	progresPrecentage = Math.round(preload.progress*100);
-	loadProgressLabel.text =("Loading Apocalypse...\n\n\n\n" + progresPrecentage);
+	loadProgressLabel.text =("Loading Apocalypse\n\n\n\n" + progresPrecentage);
 	labelPourcentLoad.text=" %";
 
 	stage.update();
@@ -620,11 +622,13 @@ function handleComplete()
 	stage.update();
 
 	canvas.addEventListener("click", handleClick);
+	canvas.addEventListener("touchstart", handleClick);
 }
 
 function handleClick() {
 	stage.removeChild(loadProgressLabel, loadingBarContainer, backgroundPreload);
 	canvas.removeEventListener("click", handleClick);
+	canvas.removeEventListener("touchstart", handleClick);
 	start();
 }
 
@@ -632,15 +636,20 @@ function start()
 {
 	// Lancement du jeu si connexion ok
 	if(socket.socket.connected)
+		{
 		setPlateau();
+		}
+		
+	
 }
 
 function setPlateau()
 {
 	// application du background
 	var background = new createjs.Bitmap("public/Background_11.png");
+	
 	background.image.onload = setImg(background, 0, 0);
-
+	
 	// ******************************************
 	// ** creation des conteneurs               *
 	// ******************************************
@@ -941,7 +950,6 @@ function setPlateau()
 	// ******************************************
 	// ********* Déclaration des labels *********
 	// ******************************************
-
 	labelDescribeCase = stage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
 	labelDescribeCase.lineHeight = _LineHeight;
 	labelDescribeCase.textBaseline = _TextBaseline;
@@ -1128,11 +1136,14 @@ function setPlateau()
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
-
+	
 	var Up = stage.addChild(new createjs.Bitmap("public/Boutons/Up.png"));
 	Up.x= _contMapX + _contMapW/2 - Up.image.width/2;
 	Up.y = _contMapY;
 	Up.addEventListener('click', function(event) {
+		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
+	});
+	Up.addEventListener('touchstart', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
 	});
 
@@ -1142,12 +1153,18 @@ function setPlateau()
 	Down.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 	});
+	Down.addEventListener('touchstart', function(event) {
+		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
+	});
 
 	var Left = stage.addChild(new createjs.Bitmap("public/Boutons/Left.png"));
 	Left.x = _contMapX;
 	Left.y = _contMapY + _contMapH/2 - Left.image.height/2;
 	Left.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
+	});
+	Down.addEventListener('touchstart', function(event) {
+		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 	});
 
 	var Right = stage.addChild(new createjs.Bitmap("public/Boutons/Right.png"));
@@ -1156,6 +1173,9 @@ function setPlateau()
 	Right.addEventListener('click', function(event) {
 		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 	});
+	Down.addEventListener('touchstart', function(event) {
+		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
+	});
 
 	Up.cursor=Down.cursor=Left.cursor=Right.cursor="pointer";
 
@@ -1163,18 +1183,13 @@ function setPlateau()
 	// ************ Boutons d'action ************
 	// ******************************************
 
-	/*var BtnSaveBD = stage.addChild(new Button("SAVE BD", ColorBtn));
-	BtnSaveBD.x = 970;
-	BtnSaveBD.y = 590;
-	BtnSaveBD.cursor="pointer";
-	BtnSaveBD.addEventListener('click', function(event) {
-		socket.emit('SAVE_BD_DEBUG_CS');
-	});*/
-
 	var BtnFouilleRapide = new createjs.Bitmap("public/Boutons/FouilleR.png");
 	BtnFouilleRapide.y = 2* _espaceBoutonY;
 	contBtnsInvCase.addChild(BtnFouilleRapide);
 	BtnFouilleRapide.addEventListener('click', function(event) {
+		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
+	});	
+	BtnFouilleRapide.addEventListener('touchstart', function(event) {
 		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
 	});	
 
@@ -1184,6 +1199,11 @@ function setPlateau()
 	BtnPageItemPersoRight.y= _contItemPersoY + 5;
 	BtnPageItemPersoRight.visible=false;
 	BtnPageItemPersoRight.addEventListener('click', function(event) {
+		PageItemPerso++;
+		pressBtnEquip=false;
+		socket.emit('INFO_PERSONNAGE_CS');
+	});
+	BtnPageItemPersoRight.addEventListener('touchstart', function(event) {
 		PageItemPerso++;
 		pressBtnEquip=false;
 		socket.emit('INFO_PERSONNAGE_CS');
@@ -1198,6 +1218,12 @@ function setPlateau()
 		pressBtnEquip=false;
 		socket.emit('INFO_PERSONNAGE_CS');
 	});
+	BtnPageItemPersoLeft.addEventListener('touchstart', function(event) {
+		PageItemPerso--;
+		pressBtnEquip=false;
+		socket.emit('INFO_PERSONNAGE_CS');
+	});
+	
 
 	BtnPageItemCaseRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
 	BtnPageItemCaseRight.x= _contItemCaseX  + _contItemCaseW;
@@ -1208,12 +1234,21 @@ function setPlateau()
 		socket.emit('INFO_CASE_CS');
 
 	});
+	BtnPageItemCaseRight.addEventListener('touchstart', function(event) {
+		PageItemCase++;
+		socket.emit('INFO_CASE_CS');
+
+	});
 
 	BtnPageItemCaseLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
 	BtnPageItemCaseLeft.x= _contItemCaseX - 30;
 	BtnPageItemCaseLeft.y= _contItemCaseY + 5;
 	BtnPageItemCaseLeft.visible=false;
 	BtnPageItemCaseLeft.addEventListener('click', function(event) {
+		PageItemCase--;
+		socket.emit('INFO_CASE_CS');
+	});
+	BtnPageItemCaseLeft.addEventListener('touchstart', function(event) {
 		PageItemCase--;
 		socket.emit('INFO_CASE_CS');
 	});
@@ -1273,13 +1308,16 @@ function message()
 	BtnValideMsg.y=365;
 	contMessage.addChild(BtnValideMsg);
 	BtnValideMsg.addEventListener('click', function(event) {
-		//alert("1");
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
-		//alert("2");
 		stage.removeChild(contMessage);
-		//	alert("3");
 		game();
 	});
+	BtnValideMsg.addEventListener('touchstart', function(event) {
+		socket.emit('ACCUSE_LECTURE_MSG_CS');
+		stage.removeChild(contMessage);
+		game();
+	});
+
 
 	BtnValideMsg.cursor="pointer";
 
@@ -1342,11 +1380,9 @@ function afficherMessage(TabListeMessage)
 		labelMessage.text="";
 		for (var i = 0; i < TabListeMessage[PageMessage].length ; i++) 
 		{
-			//alert(TabListeMessage[PageMessage][i].length);
 			for (var j=0; j<TabListeMessage[PageMessage][i].length ; j+=longLigneMax)
 			{
 				var message=TabListeMessage[PageMessage][i].substring(j,j+longLigneMax);
-				//alert("j : "+j);
 				if(j==longLigneMax || TabListeMessage[PageMessage][i].length<longLigneMax)
 				{
 					labelMessage.text+=message;
@@ -1484,6 +1520,11 @@ function liste()
 		stage.removeChild(contListe);
 		game();
 	});
+	BtnCancelListe.addEventListener('touchstart', function (event) {
+		_selectedPerso=-1;
+		stage.removeChild(contListe);
+		game();
+	});
 
 	BtnPagePersoAlliesRight = new createjs.Bitmap("public/Boutons/Right.png");
 	BtnPagePersoAlliesRight.x= contListeAllies.x + contListeAllies.width;
@@ -1491,6 +1532,10 @@ function liste()
 	BtnPagePersoAlliesRight.visible=false;
 	contListe.addChild(BtnPagePersoAlliesRight);
 	BtnPagePersoAlliesRight.addEventListener('click', function(event) {
+		PagePersoAllies++;
+		socket.emit('INFO_CASE_ALLIES_CS');
+	});
+	BtnPagePersoAlliesRight.addEventListener('touchstart', function(event) {
 		PagePersoAllies++;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
@@ -1504,6 +1549,10 @@ function liste()
 		PagePersoAllies--;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
+	BtnPagePersoAlliesLeft.addEventListener('touchstart', function(event) {
+		PagePersoAllies--;
+		socket.emit('INFO_CASE_ALLIES_CS');
+	});
 
 	BtnPagePersoEnnRight = new createjs.Bitmap("public/Boutons/Right.png");
 	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.witdh;
@@ -1514,6 +1563,10 @@ function liste()
 		PagePersoEnnemis++;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
+	BtnPagePersoEnnRight.addEventListener('touchstart', function(event) {
+		PagePersoEnnemis++;
+		socket.emit('INFO_CASE_ENNEMIS_CS');
+	});
 
 	BtnPagePersoEnnLeft = new createjs.Bitmap("public/Boutons/Left.png");
 	BtnPagePersoEnnLeft.x= contListeEnnemis.x - BtnPagePersoEnnLeft.image.width - 5;
@@ -1521,6 +1574,10 @@ function liste()
 	BtnPagePersoEnnLeft.visible=false;
 	contListe.addChild(BtnPagePersoEnnLeft);
 	BtnPagePersoEnnLeft.addEventListener('click', function(event) {
+		PagePersoEnnemis--;
+		socket.emit('INFO_CASE_ENNEMIS_CS');
+	});
+	BtnPagePersoEnnLeft.addEventListener('touchstart', function(event) {
 		PagePersoEnnemis--;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
@@ -1557,6 +1614,10 @@ function attaqueNuit()
 	BtnVivant.y=560;
 	contNuit.addChild(BtnVivant);
 	BtnVivant.addEventListener('click', function (event) {
+		stage.removeChild(contNuit);
+		setPlateau();
+	});
+	BtnVivant.addEventListener('touchstart', function (event) {
 		stage.removeChild(contNuit);
 		setPlateau();
 	});
@@ -1607,12 +1668,18 @@ function dead(currentPerso)
 	BtnPageItemPersoDeadRight.addEventListener('click', function(event) {
 		PageItemPersoDead++;
 	});
+	BtnPageItemPersoDeadRight.addEventListener('touchstart', function(event) {
+		PageItemPersoDead++;
+	});
 
 	BtnPageItemPersoDeadLeft = new createjs.Bitmap("public/Boutons/Left.png");
 	BtnPageItemPersoDeadLeft .x= contItemPersoDead.x - BtnPageItemPersoDeadLeft.image.width -5;
 	BtnPageItemPersoDeadLeft .y= contItemPersoDead.y-3;
 	contDead.addChild(BtnPageItemPersoDeadLeft );
 	BtnPageItemPersoDeadLeft.addEventListener('click', function(event) {
+		PageItemPersoDead--;
+	});
+	BtnPageItemPersoDeadLeft.addEventListener('touchstart', function(event) {
 		PageItemPersoDead--;
 	});
 
@@ -1663,11 +1730,16 @@ function dead(currentPerso)
 	BtnCancelDead.y=560;
 	contDead.addChild(BtnCancelDead);
 	BtnCancelDead.addEventListener('click', function (event) {
-		//alert("click mort ok !");
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
 		setPlateau();
 	});
+	BtnCancelDead.addEventListener('touchstart', function (event) {
+		socket.emit('ACCUSE_LECTURE_MSG_CS');
+		stage.removeChild(contDead);
+		setPlateau();
+	});
+
 
 	BtnCancelDead.cursor="pointer";
 	
@@ -1789,12 +1861,22 @@ function setBtnMessage(TabListeMessage, Taille)
 		setbtnMessageVisible(Taille);
 		afficherMessage(TabListeMessage);
 	});
+	BtnPageMessageDown.addEventListener('touchstart', function(event) {
+		PageMessage++;
+		setbtnMessageVisible(Taille);
+		afficherMessage(TabListeMessage);
+	});
 
 	BtnPageMessageUp = new createjs.Bitmap("public/Boutons/Up.png");
 	BtnPageMessageUp.x=746/2 - BtnPageMessageUp.image.width/2;
 	BtnPageMessageUp.y= 5;
 	contMessage.addChild(BtnPageMessageUp);
 	BtnPageMessageUp.addEventListener('click', function(event) {
+		PageMessage--;
+		setbtnMessageVisible(Taille);
+		afficherMessage(TabListeMessage);
+	});
+	BtnPageMessageUp.addEventListener('touchstart', function(event) {
 		PageMessage--;
 		setbtnMessageVisible(Taille);
 		afficherMessage(TabListeMessage);
@@ -1883,6 +1965,17 @@ function setBtnAttaquer(x,y)
 				liste();
 			}
 		});
+		BtnAttaquerListe.addEventListener('touchstart', function(event) {
+			if (_selectedPerso == -1) {
+				//alert("Selectionner Ennemi avant d'attaquer !");
+			}
+			else
+			{
+				socket.emit('ACTION_ATTAQUE_CS', _selectedPerso);
+				_selectedPerso = -1;
+				liste();
+			}
+		});
 		BtnAttaquerListe.cursor="pointer";
 	}
 	else
@@ -1912,6 +2005,14 @@ function setContPerso()
 				_selectedItemPerso = -1;
 			}
 		});	
+		BtnUtiliser.addEventListener('touchstart', function(event) {
+			if (_selectedItemPerso == -1) {
+				//alert("Selectionner Item avant de l'utiliser");
+			} else {
+				socket.emit('PERSONNAGE_USE_CS', _selectedItemPerso);
+				_selectedItemPerso = -1;
+			}
+		});	
 
 		BtnUtiliser.cursor ="pointer";
 
@@ -1932,6 +2033,14 @@ function setContPerso()
 				_selectedItemPerso = -1;
 			}
 		});
+		BtnDeposer.addEventListener('touchstart', function (event) {
+			if (_selectedItemPerso == -1) {
+				//alert("Selectionner Item avant de Déposer");
+			} else {
+				socket.emit('INV_CASE_CS', "DEPOSER", _selectedItemPerso);
+				_selectedItemPerso = -1;
+			}
+		});
 		BtnDeposer.cursor ="pointer";
 	}
 	else if(_selectedItemPerso!=-1 && (_selectedItemPersoType==1 || _selectedItemPersoType==2))
@@ -1940,6 +2049,14 @@ function setContPerso()
 		BtnEquiper.y=_espaceBoutonY;
 		contBtnsInvPerso.addChild(BtnEquiper);
 		BtnEquiper.addEventListener('click', function (event) {
+			if (_selectedItemPerso == -1) {
+				//alert("Selectionner Item avant de s'équiper");
+			} else {
+				socket.emit('INV_PERSONNAGE_CS', "EQUIPER", _selectedItemPerso);
+				_selectedItemPerso = -1;
+			}
+		});
+		BtnEquiper.addEventListener('touchstart', function (event) {
 			if (_selectedItemPerso == -1) {
 				//alert("Selectionner Item avant de s'équiper");
 			} else {
@@ -1967,6 +2084,14 @@ function setContPerso()
 				_selectedItemPerso = -1;
 			}
 		});
+		BtnDeposer.addEventListener('touchstart', function (event) {
+			if (_selectedItemPerso == -1) {
+				//alert("Selectionner Item avant de Déposer");
+			} else {
+				socket.emit('INV_CASE_CS', "DEPOSER", _selectedItemPerso);
+				_selectedItemPerso = -1;
+			}
+		});
 		BtnDeposer.cursor ="pointer";
 	}
 	else if(_selectedItemPerso!=-1)
@@ -1987,6 +2112,14 @@ function setContPerso()
 		BtnDeposer.y =0;
 		contBtnsInvCase.addChild(BtnDeposer);
 		BtnDeposer.addEventListener('click', function (event) {
+			if (_selectedItemPerso == -1) {
+				//alert("Selectionner Item avant de Déposer");
+			} else {
+				socket.emit('INV_CASE_CS', "DEPOSER", _selectedItemPerso);
+				_selectedItemPerso = -1;
+			}
+		});
+		BtnDeposer.addEventListener('touchstart', function (event) {
 			if (_selectedItemPerso == -1) {
 				//alert("Selectionner Item avant de Déposer");
 			} else {
@@ -2031,6 +2164,16 @@ function setContEquipement()
 				_selectedItemPerso = -1;
 			}
 		});
+		BtnDesequiper.addEventListener('touchstart', function (event) {
+			if (_selectedItemEquip == -1) {
+				//alert("Selectionner Item avant de se déséquiper");
+			}
+			else{
+				socket.emit('INV_PERSONNAGE_CS', "DESEQUIPER", _selectedItemEquip);
+				_selectedItemEquip = -1;
+				_selectedItemPerso = -1;
+			}
+		});
 		BtnDesequiper.cursor="pointer";
 	}
 	else
@@ -2059,7 +2202,14 @@ function setContCase()
 				_selectedItemCase = -1;
 			}
 		});
-
+		BtnRamasseObjet.addEventListener('touchstart', function (event) {
+			if (_selectedItemCase == -1) {
+				//alert("Selectionner Item avant de Ramasser");
+			} else {
+				socket.emit('INV_CASE_CS', "RAMASSER", _selectedItemCase);
+				_selectedItemCase = -1;
+			}
+		});
 		BtnRamasseObjet.cursor="pointer";
 	}
 	else
@@ -2084,7 +2234,9 @@ function setBtnJoueurs(nbJoueurs)
 		BtnJoueurs.addEventListener('click', function(event) {
 			liste();
 		});	
-
+		BtnJoueurs.addEventListener('touchstart', function(event) {
+			liste();
+		});	
 		BtnJoueurs.cursor="pointer";
 	}
 	else
@@ -2105,6 +2257,9 @@ function setBtnGoules(nbrGoules)
 		BtnAtqGoules.y = 3*_espaceBoutonY;
 		contBtnsInvCase.addChild(BtnAtqGoules);
 		BtnAtqGoules.addEventListener('click', function(event) {
+			socket.emit('ACTION_ATTAQUE_GOULE_CS');
+		});
+		BtnAtqGoules.addEventListener('touchstart', function(event) {
 			socket.emit('ACTION_ATTAQUE_GOULE_CS');
 		});
 		BtnAtqGoules.cursor="pointer";
@@ -2193,11 +2348,13 @@ function majInventairePerso(currentPerso)
 		if (currentPerso.armeEquipee != null && currentPerso.sacADos[i].id == currentPerso.armeEquipee.id)
 		{
 			indexArmeEquip = i;
+			// Calcul du poinds du sac
 			PoidsSac += currentPerso.sacADos[i].poids;
 		}
 		else if (currentPerso.armureEquipee != null && currentPerso.sacADos[i].id == currentPerso.armureEquipee.id)
 		{
 			indexArmureEquip = i;
+			// Calcul du poinds du sac
 			PoidsSac += currentPerso.sacADos[i].poids;
 		}
 	}
@@ -2236,6 +2393,25 @@ function majInventairePerso(currentPerso)
 			_selectedItemEquip 	= currentPerso.armeEquipee.id;
 			setContEquipement();
 		});
+		contArme.addEventListener("touchstart", function (event) 
+				{
+					var descriptionItem		=currentPerso.armeEquipee.description;
+					labelDescribeItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
+					afficherDescItem(descriptionItem);
+					
+					if (SelectEquipement!=null)
+					{
+						contArme.removeChild(SelectEquipement);
+						contArmure.removeChild(SelectEquipement);
+					}
+					SelectEquipement 	= contArme.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+					SelectEquipement.x	=-5;
+					SelectEquipement.y	=-4;
+					_selectedItemEquip 	= currentPerso.armeEquipee.id;
+					setContEquipement();
+					
+					stage.update();
+				});
 
 		// évenement quand la souris passe dessus
 		contArme.addEventListener('mouseover', function(event) 
@@ -2253,8 +2429,14 @@ function majInventairePerso(currentPerso)
 			stage.update();
 		},false);
 		
-		// retrait de l'arme de la liste des objets
+		// évenement quand la souris s'en va
+		contArme.addEventListener('touchend', function(event)
+		{
+			labelDescribeItem.text="";
+			stage.update();
+		},false);
 		
+		// retrait de l'arme de la liste des objets
 	}
 	
 	//// AFFICHAGE DE L'ARMURE
@@ -2280,6 +2462,26 @@ function majInventairePerso(currentPerso)
 			_selectedItemEquip = currentPerso.armureEquipee.id;
 			setContEquipement();
 		});
+		contArmure.addEventListener("touchstart", function (event) 
+				{
+			
+			var descriptionItem=currentPerso.armureEquipee.description;
+			labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
+			afficherDescItem(descriptionItem);
+			
+				if (SelectEquipement!=null)
+				{
+					contArme.removeChild(SelectEquipement);
+					contArmure.removeChild(SelectEquipement);
+				}
+				SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+				SelectEquipement.x=-5;
+				SelectEquipement.y=-4;
+				_selectedItemEquip = currentPerso.armureEquipee.id;
+				setContEquipement();
+				
+				stage.update();
+			});
 
 		contArmure.addEventListener('mouseover', function(event) 
 			{
@@ -2294,6 +2496,12 @@ function majInventairePerso(currentPerso)
 			labelDescribeItem.text="";
 			stage.update();
 		},false);
+		
+		contArmure.addEventListener('touchend', function(event)
+				{
+				labelDescribeItem.text="";
+				stage.update();
+			},false);
 		
 		// retrait de l'arme de la liste des objets
 		
@@ -2316,7 +2524,7 @@ function majInventairePerso(currentPerso)
 					var item = currentPerso.sacADos[i];
 					
 					// Calcul du poids du sac
-					PoidsSac+=item.poids;
+					//PoidsSac+=item.poids;
 					
 					// ajout de l'item à la nouvelle liste
 					NewListe.push(item);
@@ -2333,7 +2541,7 @@ function majInventairePerso(currentPerso)
 				// mise de l'item dans une variable
 				var item = currentPerso.sacADos[i];
 				// Calcul du poids du sac
-				PoidsSac+=item.poids;
+				//PoidsSac+=item.poids;
 				// mise de l'item dans une variable
 				NewListe.push(item);
 			}
@@ -2405,6 +2613,13 @@ function majInventairePerso(currentPerso)
 					labelDescribeItem.text="";
 					stage.update();
 				},false);
+				
+				imgItem.addEventListener('touchend', function(event)
+						{
+							labelDescribeItem.text="";
+							stage.update();
+						},false);
+
 
 				imgItem.addEventListener("click", function(event)
 				{
@@ -2422,6 +2637,29 @@ function majInventairePerso(currentPerso)
 					// Appel de fonction pour créer les boutons liés au Perso
 					setContPerso();
 				});
+				imgItem.addEventListener("touchstart", function(event)
+						{
+							var currentItem = TabListe[PageItemPerso][event.target.name];
+							var descriptionItem=currentItem.description;
+							labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+							afficherDescItem(descriptionItem);
+					
+							if (Select!=null)
+							{
+								contInvPerso.removeChild(Select);
+							}
+							var num=event.target.x;
+							var currentItem = TabListe[PageItemPerso][event.target.name];
+							_selectedItemPerso=currentItem.id;
+							_selectedItemPersoType=currentItem.type;
+							Select = contInvPerso.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+							Select.x=(num);
+							Select.y=0;
+							// Appel de fonction pour créer les boutons liés au Perso
+							setContPerso();
+							
+							stage.update();
+						});
 				
 				imgItem.x = (iPositionItemInConteneur * _spaceItem);
 				imgItem.y = 4;
@@ -2870,6 +3108,11 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 					labelDescribeItem.text="";
 					stage.update();
 				},false);
+				
+				imgItem.addEventListener('touchend', function(event){
+					labelDescribeItem.text="";
+					stage.update();
+				},false);
 
 				imgItem.addEventListener("click", function(event){
 					if (Select!=null)
@@ -2884,6 +3127,26 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 					Select.y=0;
 
 					setContCase();
+				});
+				
+				imgItem.addEventListener("touchstart", function(event){
+					var currentItem = TabListe[PageItemCase][event.target.name];
+					var descriptionItem=currentItem.description;
+					labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+					afficherDescItem(descriptionItem);
+					if (Select!=null)
+					{
+						contInvCase.removeChild(Select);
+					}
+					var num=event.target.x;
+					var currentItem = TabListe[PageItemCase][event.target.name];
+					_selectedItemCase=currentItem.id;
+					Select = contInvCase.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+					Select.x=(num);
+					Select.y=0;
+					setContCase();
+					
+					stage.update();
 				});
 
 				imgItem.x = (iPositionItemInConteneur * _spaceItem);
@@ -3061,6 +3324,12 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
+		BtnFouiller.addEventListener('touchstart', function(event)
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 1);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});	
+		
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
 		contMode.addChild(BtnCacher);
@@ -3069,6 +3338,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 2);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
+		BtnCacher.addEventListener('touchstart', function(event) 
+				{
+					socket.emit('PERSONNAGE_MODE_CS', 2);
+					socket.emit('INFO_PERSONNAGE_CS');
+				});	
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
 		contMode.addChild(BtnDefendre);
@@ -3077,6 +3351,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 3);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});
+		BtnDefendre.addEventListener('touchstart', function(event) 
+				{
+					socket.emit('PERSONNAGE_MODE_CS', 3);
+					socket.emit('INFO_PERSONNAGE_CS');
+				});
 		BtnFouiller.cursor=BtnCacher.cursor=BtnDefendre.cursor="pointer";
 		labelBonusArme.text=("");
 		labelBonusArmure.text=("");
@@ -3096,6 +3375,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 2);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
+		BtnCacher.addEventListener('touchstart', function(event) 
+				{
+					socket.emit('PERSONNAGE_MODE_CS', 2);
+					socket.emit('INFO_PERSONNAGE_CS');
+				});	
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
 		contMode.addChild(BtnDefendre);
@@ -3104,6 +3388,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 3);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
+		BtnDefendre.addEventListener('touchstart', function(event) 
+				{
+					socket.emit('PERSONNAGE_MODE_CS', 3);
+					socket.emit('INFO_PERSONNAGE_CS');
+				});	
 		BtnFouiller.cursor="not-allowed";
 		BtnCacher.cursor=BtnDefendre.cursor="pointer";
 		labelBonusArme.text=("");
@@ -3120,6 +3409,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
+		BtnFouiller.addEventListener('touchstart', function(event) 
+				{
+					socket.emit('PERSONNAGE_MODE_CS', 1);
+					socket.emit('INFO_PERSONNAGE_CS');
+				});	
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheGreen.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
 		contMode.addChild(BtnCacher);
@@ -3131,6 +3425,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 3);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});
+		BtnDefendre.addEventListener('touchstart', function(event) 
+				{
+					socket.emit('PERSONNAGE_MODE_CS', 3);
+					socket.emit('INFO_PERSONNAGE_CS');
+				});
 		BtnCacher.cursor="not-allowed";
 		BtnFouiller.cursor=BtnDefendre.cursor="pointer";
 		labelBonusArme.text=("");
@@ -3147,6 +3446,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
+		BtnFouiller.addEventListener('touchstart', function(event) 
+				{
+					socket.emit('PERSONNAGE_MODE_CS', 1);
+					socket.emit('INFO_PERSONNAGE_CS');
+				});	
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
 		contMode.addChild(BtnCacher);
@@ -3155,6 +3459,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 			socket.emit('PERSONNAGE_MODE_CS', 2);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
+		BtnCacher.addEventListener('touchstart', function(event) 
+				{
+					socket.emit('PERSONNAGE_MODE_CS', 2);
+					socket.emit('INFO_PERSONNAGE_CS');
+				});	
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseGreen.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
 		contMode.addChild(BtnDefendre);
@@ -3216,6 +3525,16 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 				//alert("Pas de nouveaux messages");
 			}
 		});
+		BtnMessages.addEventListener('touchstart', function(event) {
+			if(_listeMessages != null)
+			{
+				message();
+			}
+			else
+			{
+				//alert("Pas de nouveaux messages");
+			}
+		});
 		BtnMessages.cursor="pointer";
 	}
 	else if(_listeMessages!=null && currentPerso.nbrNvMsg ==0)
@@ -3226,6 +3545,16 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		BtnMessages.y=_espaceBoutonY;
 		contBtnsListes.addChild(BtnMessages);
 		BtnMessages.addEventListener('click', function(event) {
+			if(_listeMessages != null)
+			{
+				message(_listeMessages);
+			}
+			else
+			{
+				//alert("Pas de nouveaux messages");
+			}
+		});
+		BtnMessages.addEventListener('touchstart', function(event) {
 			if(_listeMessages != null)
 			{
 				message(_listeMessages);
@@ -4014,8 +4343,133 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				labelDescribePerso.text="";
 				stage.update();
 			},false);
+			
+			imgPersoEnnemi.addEventListener('touchend', function(event){
+				labelDescribePerso.text="";
+				stage.update();
+			},false);
+
 
 			imgPersoEnnemi.addEventListener("click", function(event){
+				if (Select!=null)
+				{
+					contListeEnnemis.removeChild(Select);
+				}
+				var num=event.target.x;
+				Select = contListeEnnemis.addChild(new createjs.Bitmap("public/Boutons/Select64.png"));
+				Select.x=(num);
+				Select.y=0;
+				var currentPerso = TabListe[PagePersoEnn][event.target.name];
+				_selectedPerso=currentPerso.id;
+				setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
+				stage.update();
+			});
+			imgPersoEnnemi.addEventListener("touchstart", function(event){
+				
+				var currentPerso = TabListe[PagePersoEnn][event.target.name];
+
+				// Calcul du pourcentage de vie
+				PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
+				// Texte de Description de la vie
+				if(PourcentVie>=0 && PourcentVie==0)
+				{
+					DescriptionVie="";
+					DescriptionVie="Le corps de ce joueur gît au sol...";
+				}
+				else if(PourcentVie>=0 && PourcentVie<20)
+				{
+					DescriptionVie="";
+					DescriptionVie="Ce joueur n'a pas l'air très en forme";
+				}
+				else if(PourcentVie>=20 && PourcentVie<40)
+				{
+					DescriptionVie="";
+					DescriptionVie="Ce joueur n'a pas l'air peu en forme";
+				}
+				else if(PourcentVie>=40 && PourcentVie<60)
+				{
+					DescriptionVie="";
+					DescriptionVie="Ce joueur a l'air en forme";
+				}
+				else if(PourcentVie>=60 && PourcentVie<80)
+				{
+					DescriptionVie="";
+					DescriptionVie="Ce joueur a l'air très en forme";
+				}
+				else if(PourcentVie>=80 && PourcentVie<=100)
+				{
+					DescriptionVie="";
+					DescriptionVie="Ce joueur a l'air au top de sa forme";
+				}
+
+				// Texte de description du poids du sac
+				if(currentPerso.sacADos>=0 && currentPerso.sacADos<20)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur n'a pas l'air très chargé !";
+				}
+				else if(currentPerso.sacADos>=20 && currentPerso.sacADos<40)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur a l'air peu chargé !";
+				}
+				else if(currentPerso.sacADos>=40 && currentPerso.sacADos<60)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur a l'air chargé !";
+				}
+				else if(currentPerso.sacADos>=60 && currentPerso.sacADos<80)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur a l'air très chargé !";
+				}
+				else if(currentPerso.sacADos>=80 && currentPerso.sacADos<=100)
+				{
+					DescriptionSac="";
+					DescriptionSac="Ce joueur a l'air surchargé !";
+				}
+
+				// Texte de description du Mode
+				switch(currentPerso.mode)
+				{
+				case 0: ModePerso="";
+				ModePerso="Normal";
+				break;
+				case 1: ModePerso="";
+				ModePerso="Fouille";
+				break;
+				case 2: ModePerso="";
+				ModePerso="Caché";
+				break;
+				case 3: ModePerso="";
+				ModePerso="Défense";
+				break;
+				}
+
+				labelDescribePerso.text=("Competence : "+currentPerso.competence+
+						"\nMode : "+ModePerso+
+						"\n"+DescriptionVie+
+						"\n"+DescriptionSac);
+
+				if(currentPerso.armeEquipee!=null)
+				{
+					labelDescribePerso.text +=("\nArme équipée : " + currentPerso.armeEquipee.nom);
+				}
+				else
+				{
+					labelDescribePerso.text += "\nPas d'arme équipée";
+				}
+
+
+				if(currentPerso.armureEquipee!=null)
+				{
+					labelDescribePerso.text +=("\nArmure équipée :" + currentPerso.armureEquipee.nom);
+				}
+				else
+				{
+					labelDescribePerso.text += "\nPas d'armure équipée";
+				}
+				
 				if (Select!=null)
 				{
 					contListeEnnemis.removeChild(Select);

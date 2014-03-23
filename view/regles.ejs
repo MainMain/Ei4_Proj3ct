@@ -202,9 +202,20 @@
 					joueur de se préparer au combat et d’augmenter ses points d’attaque et de défense.
 				</p>
 				<hr>
+				<!-- Colonne de gauche -->
+				<div style="width:82%; float:left; padding:10px;">
 				<h1>Les zombies</h1>
 				<p> Les zombies sont des morts-vivants, ils errent dans le bâtiment de l’IstiA, mais également en dehors. 
 					Ils débarquent de plus en plus nombreux chaque jour. Leurs rôles dans le jeu sont multiples :
+				</p>
+				</div>
+				<!-- Colonne de droite -->
+				<div style="width:18%; float:left; padding:10px;">
+					<div align="center">
+						<img align="center" src ="public/images/zombie.png" />
+					</div>
+				</div>
+				<br>
 					<br>•	Interception :
 					<br>Ces êtres sans âmes ni cerveaux opérationnels peuvent intercepter les actions du joueur c’est à dire que ce dernier a une chance 
 					de se faire blesser par un ou plusieurs zombies avant d’effectuer son action, et a une petite chance de la rater. En toute logique, 
@@ -218,7 +229,6 @@
 					<br>Par exemple: supposons que le nombre de zombie maximum qu’il peut gérer soit 3 :
 					<br> - cas n°1: le joueur est seul (sans alliés) dans une case, il peut effectuer un mouvement seulement s’il y a moins de 3 zombies dans la case. 
 					<br> - cas n°2: le joueur n’est pas seul (présence de 2 alliés) dans une case, il peut effectuer une action seulement s’il y a moins de 5 (3+2) zombies dans la salle.
-				</p>
 				<hr>
 				<h1>L’attaque de la nuit </h1>
 				<p> Chaque nuit, les zombies deviennent enragés, incontrôlables et destructeurs. <br>
@@ -262,7 +272,7 @@
 
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:443');
+			var socket = io.connect('http://localhost:25536');
 			
 			$( document ).ready(function()
 			{
