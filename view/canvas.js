@@ -321,6 +321,8 @@ onload = initialize;
 /**
  * FONCTION D'INITIALISATION ET DE CHARGEMENT
  */
+
+
 function initialize() {
 
 	// ************************************************
@@ -334,7 +336,15 @@ function initialize() {
 	stage = new createjs.Stage(canvas);
 	
 	// Rafraichissement
-	Ticker.addListener(tick);
+	createjs.Ticker.setInterval(20);
+	createjs.Ticker.addEventListener("tick", function()
+	{
+		stage.update();
+	});
+/*	createjs.Ticker.addListener("tick", function()
+	{
+		alert("tick");
+	});*/
 	
 	// tailles
 	_largeurCanvas = stage.canvas.width;
@@ -585,11 +595,6 @@ function initialize() {
 	preload.addEventListener("progress", handleProgress);
 
 	preload.loadManifest(manifest);
-	stage.update();
-}
-
-function tick()
-{
 	stage.update();
 }
 
@@ -2899,7 +2904,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		// insertion de la map
 		var map = new createjs.Bitmap(currentCase.pathImg);
 		// Placement de la map
-		map.x = contMap.width/2 - map.image.width/2;
+		//map.x = contMap.width/2 - map.image.width/2;
+		map.x = 0;
+		//alert(contMap.width + " - " + map.image.width + " - " + map.x);
 		contMap.addChild(map);
 	}
 	stage.update();
