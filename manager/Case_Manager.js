@@ -252,10 +252,10 @@ Case_Manager.getZoneSure = function(numEquipe)
 	console.log(">>>>>> GET ZONE SURE " + numEquipe);
 	switch(numEquipe)
 	{
-		case 1 : return GameRules.idZoneSure_1();
-		case 2 : return GameRules.idZoneSure_2();
-		case 3 : return GameRules.idZoneSure_3();
-		default : return -1;
+		case 1 : return GameRules.idZoneSure_1(); break;
+		case 2 : return GameRules.idZoneSure_2(); break;
+		case 3 : return GameRules.idZoneSure_3(); break;
+		default : return 34;
 	}
 },
 

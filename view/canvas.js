@@ -53,6 +53,7 @@ var BtnPageItemPersoRight, BtnPageItemPersoLeft, BtnPageItemCaseRight, BtnPageIt
 
 // Police des labels du Plateau de jeu
 var PoliceLabel="14px Consolas";
+var MessageLabel="11px Consolas";
 // label.lineHeight
 var _LineHeight = 15;
 // label.textBaseline
@@ -331,6 +332,11 @@ function initialize() {
 	
 	//Création du stage (la scène) + recupération de sa taille
 	stage = new createjs.Stage(canvas);
+	
+	// Rafraichissement
+	Ticker.addListener(tick);
+	
+	// tailles
 	_largeurCanvas = stage.canvas.width;
 	_hauteurCanvas = stage.canvas.height;
 
@@ -582,6 +588,11 @@ function initialize() {
 	stage.update();
 }
 
+function tick()
+{
+	stage.update();
+}
+
 function handleProgress() 
 {
 
@@ -636,10 +647,10 @@ function setPlateau()
 	contInvCase.height = _contItemCaseH;
 	contInvCase.width = _contItemCaseW;
 	stage.addChild(contInvCase);
-	shape = new createjs.Shape();
+	/*shape = new createjs.Shape();
 	stage.addChild(shape);
 	shape.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contItemCaseX-4, _contItemCaseY-4, _contItemCaseW+4, _contItemCaseH+4);
+			_contItemCaseX-4, _contItemCaseY-4, _contItemCaseW+4, _contItemCaseH+4);*/
 
 	//------------------ Zone 4 : Equipement perso -------------------------------------------------------
 	contInvPerso = new createjs.Container();
@@ -648,10 +659,10 @@ function setPlateau()
 	contInvPerso.height = _contItemPersoH;
 	contInvPerso.width = _contItemPersoW;
 	stage.addChild(contInvPerso);
-	shape1 = new createjs.Shape();
+	/*shape1 = new createjs.Shape();
 	stage.addChild(shape1);
 	shape1.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contItemPersoX-4, _contItemPersoY-4, _contItemPersoW+4, _contItemPersoH+4);
+			_contItemPersoX-4, _contItemPersoY-4, _contItemPersoW+4, _contItemPersoH+4);*/
 
 	contArme = new createjs.Container();
 	contArme.x = _contArmeX;
@@ -659,10 +670,10 @@ function setPlateau()
 	contArme.height = _contArmeH;
 	contArme.width = _contArmeW;
 	stage.addChild(contArme);
-	shape2 = new createjs.Shape();
+	/*shape2 = new createjs.Shape();
 	stage.addChild(shape2);
 	shape2.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contArmeX-4, _contArmeY-4, _contArmeW+4, _contArmeH+4);
+			_contArmeX-4, _contArmeY-4, _contArmeW+4, _contArmeH+4);*/
 
 	contArmure = new createjs.Container();
 	contArmure.x = _contArmureX;
@@ -670,10 +681,10 @@ function setPlateau()
 	contArmure.height = _contArmureH;
 	contArmure.width = _contArmureW;
 	stage.addChild(contArmure);
-	shape3 = new createjs.Shape();
+	/*shape3 = new createjs.Shape();
 	stage.addChild(shape3);
 	shape3.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contArmureX-4, _contArmureY-4, _contArmureW+4, _contArmureH+4);
+			_contArmureX-4, _contArmureY-4, _contArmureW+4, _contArmureH+4);*/
 
 	//------------------ Zone 12 : Map -------------------------------------------------------
 	contMap = new createjs.Container();
@@ -702,10 +713,10 @@ function setPlateau()
 	contMode.height = _contModeH;
 	contMode.width = _contModeW;
 	stage.addChild(contMode);
-	shapeMode = new createjs.Shape();
+	/*shapeMode = new createjs.Shape();
 	stage.addChild(shapeMode);
 	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contModeX-4, _contModeY-4, _contModeW+5, _contModeH+5);
+			_contModeX-4, _contModeY-4, _contModeW+5, _contModeH+5);*/
 
 	//------------------------- Zone 8 : Btns Listes---------------------------------------
 	contBtnsListes = new createjs.Container();
@@ -714,10 +725,10 @@ function setPlateau()
 	contBtnsListes.height = _contBtnsListesH;
 	contBtnsListes.width = _contBtnsListesW;
 	stage.addChild(contBtnsListes);
-	shapeBtnsListes = new createjs.Shape();
+	/*shapeBtnsListes = new createjs.Shape();
 	stage.addChild(shapeBtnsListes);
 	shapeBtnsListes.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsListesX-4, _contBtnsListesY-4, _contBtnsListesW+5, _contBtnsListesH+5);
+			_contBtnsListesX-4, _contBtnsListesY-4, _contBtnsListesW+5, _contBtnsListesH+5);*/
 
 	//------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
 	contBtnsInvPerso = new createjs.Container();
@@ -726,10 +737,10 @@ function setPlateau()
 	contBtnsInvPerso.height = _contBtnsInvPersoH;
 	contBtnsInvPerso.width = _contBtnsInvPersoW;
 	stage.addChild(contBtnsInvPerso);
-	shapeBtnsInvPerso = new createjs.Shape();
+	/*shapeBtnsInvPerso = new createjs.Shape();
 	stage.addChild(shapeBtnsInvPerso);
 	shapeBtnsInvPerso.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsInvPersoX-4, _contBtnsInvPersoY-4, _contBtnsInvPersoW+5, _contBtnsInvPersoH+5);
+			_contBtnsInvPersoX-4, _contBtnsInvPersoY-4, _contBtnsInvPersoW+5, _contBtnsInvPersoH+5);*/
 
 	//------------------------- Zone 6 : Btns Inv Case ---------------------------------------
 	contBtnsInvCase = new createjs.Container();
@@ -738,10 +749,10 @@ function setPlateau()
 	contBtnsInvCase.height = _contBtnsInvCaseH;
 	contBtnsInvCase.width = _contBtnsInvCaseW;
 	stage.addChild(contBtnsInvCase);
-	shapeBtnsInvCase = new createjs.Shape();
+	/*shapeBtnsInvCase = new createjs.Shape();
 	stage.addChild(shapeBtnsInvCase);
 	shapeBtnsInvCase.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsInvCaseX-4, _contBtnsInvCaseY-4, _contBtnsInvCaseW+5, _contBtnsInvCaseH+5);
+			_contBtnsInvCaseX-4, _contBtnsInvCaseY-4, _contBtnsInvCaseW+5, _contBtnsInvCaseH+5);*/
 
 	//------------------------- Zone 14 : Labels de retour ---------------------------------------
 	contLabelsAction = new createjs.Container();
@@ -750,10 +761,10 @@ function setPlateau()
 	contLabelsAction.height = _contLabelsActionH;
 	contLabelsAction.width = _contLabelsActionW;
 	stage.addChild(contLabelsAction);
-	shapeLabelsAction = new createjs.Shape();
+	/*shapeLabelsAction = new createjs.Shape();
 	stage.addChild(shapeLabelsAction);
 	shapeLabelsAction.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contLabelsActionX-4, _contLabelsActionY-4, _contLabelsActionW+5, _contLabelsActionH+5);
+			_contLabelsActionX-4, _contLabelsActionY-4, _contLabelsActionW+5, _contLabelsActionH+5);*/
 	
 	contInfoCase = new createjs.Container();
 	contInfoCase.x = _contInfoCaseX;
@@ -762,9 +773,9 @@ function setPlateau()
 	contInfoCase.width = _contInfoCaseW;
 	stage.addChild(contInfoCase);
 	shapeInfoCase = new createjs.Shape();
-	stage.addChild(shapeInfoCase);
+	/*stage.addChild(shapeInfoCase);
 	shapeInfoCase.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
-			_contInfoCaseX-4, _contInfoCaseY-4, _contInfoCaseW+5, _contInfoCaseH+5);
+			_contInfoCaseX-4, _contInfoCaseY-4, _contInfoCaseW+5, _contInfoCaseH+5);*/
 
 	// ******************************************
 	// ** Création des barres du perso 			*
@@ -1245,7 +1256,7 @@ function message()
 	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
 	contMessage.addChild(background_message);
 
-	labelMessage = contMessage.addChild(new createjs.Text("", PoliceLabel, ColorLabel));
+	labelMessage = contMessage.addChild(new createjs.Text("", MessageLabel, ColorLabel));
 	labelMessage.lineHeight = _LineHeight;
 	labelMessage.textBaseline = _TextBaseline;
 	labelMessage.x = 20;
@@ -1319,7 +1330,7 @@ function message()
 
 function afficherMessage(TabListeMessage)
 {
-	var longLigneMax=88;
+	var longLigneMax=117; //88
 	try 
 	{
 		// instructions à essayer
@@ -2409,6 +2420,8 @@ function majInventairePerso(currentPerso)
 				
 				imgItem.x = (iPositionItemInConteneur * _spaceItem);
 				imgItem.y = 4;
+				
+				//imgItem.
 				contInvPerso.addChild(imgItem);
 				
 				// test
