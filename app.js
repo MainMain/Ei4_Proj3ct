@@ -1028,8 +1028,8 @@ io.sockets.on('connection', function (socket)
 		}
 		
 		EventLog.log(pseudoUser + " - APP : Réponse déplacement " + reponseDeplacement);
-		if (reponseDeplacement < 0)socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
-		else 						socket.emit('MOVE_PERSONNAGE_SC', oCase_Manager.GetCopieCase(reponseDeplacement));
+		if (reponseDeplacement < 0) socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
+		else 						socket.emit('MOVE_PERSONNAGE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdCase(idUser)).nom);
     });
     /*
      * 
