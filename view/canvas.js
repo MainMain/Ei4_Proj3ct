@@ -21,8 +21,8 @@ var _selectedItemEquip = -1;
 var _selectedPerso = -1;
 
 // Variables pour les barres
-var _barHeight = 13 ;
-var _barWidth = 100;
+var _barHeight = 20 ;
+var _barWidth = 200;
 var _barFrameColor = createjs.Graphics.getRGB(0,0,0);
 
 // Variables pour les probabilités du perso
@@ -81,7 +81,7 @@ var _spaceItem = 32;
 var _spacePerso = 64;
 
 // Espacement entre les boutons
-var _espaceBoutonY=45;
+var _espaceBoutonY=60;
 
 // Espacement entre les labels
 var _EspaceLabelX = 265;
@@ -151,8 +151,8 @@ var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 //------------------ Zone 9 : Infos Case -------------------------------------------------------
 
 // Placement label Description Item
-var _labelDescribeItemX = _contItemCaseX-5;
-var _labelDescribeItemY = _contItemCaseY + 40;
+var _labelDescriptionItemX = _contItemCaseX-5;
+var _labelDescriptionItemY = _contItemCaseY + 40;
 
 // Placement label Nombre d'Aliés
 var _labelNbAlliesX  = 175;
@@ -181,8 +181,8 @@ var _labelProbaFouilleX = _labelProbaCacheX ;
 var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
 
 // Placement label id Salle en cours
-var _labelIdSalleX = _labelProbaCacheX;
-var _labelIdSalleY = _labelProbaCacheY + 2*_EspaceLabelY;
+var _labelCaseEnCoursX = _labelProbaCacheX;
+var _labelCaseEnCoursY = _labelProbaCacheY + 2*_EspaceLabelY;
 
 //-----------------------------------------------------------------------------------
 
@@ -190,13 +190,7 @@ var _labelIdSalleY = _labelProbaCacheY + 2*_EspaceLabelY;
 var _labelActionX = 10;
 var _labelActionY = 580;
 
-//------------------ Zone 13 : Modes-------------------------------------------------------
-
-// Placement Conteneur des _labelProbaCacheYboutons de mode
-var _contModeX = 20;
-var _contModeY = 330;
-var _contModeW = 140;
-var _contModeH = 3*_espaceBoutonY;
+//------------------ Zone 13 : Modes------------------------------------------------------
 
 // Placement label Choix Mode
 var _labelChoixModeX = _contModeX+5;
@@ -205,16 +199,16 @@ var _labelChoixModeY = _contModeY-20;
 //------------------ Zone 4 : Equipement Perso-------------------------------------------------------
 
 // Placement Conteneur ArmeEquip
-var _contArmeX = _labelArmeX + 125;
-var _contArmeY = _labelArmeY-3;
+var _contArmeX = 60;
+var _contArmeY = 530;
 
 // Dimension Conteneur ArmeEquip
 var _contArmeH = 30;
 var _contArmeW = 30;
 
 // Placement Conteneur ArmureEquip
-var _contArmureX = _labelArmureX + 135;
-var _contArmureY = _labelArmureY-3;
+var _contArmureX = _contArmeX;
+var _contArmureY = _contArmeY+40;
 
 // Dimension Conteneur ArmureEquip
 var _contArmureH = 30;
@@ -223,8 +217,8 @@ var _contArmureW = 30;
 //------------------ Zone 8 : Listes-------------------------------------------------------
 
 // Placement Conteneur des Boutons liste
-var _contBtnsListesX = _contModeX;
-var _contBtnsListesY = 500;
+var _contBtnsListesX = 10;
+var _contBtnsListesY = 200;
 var _contBtnsListesW = 140;
 var _contBtnsListesH = 2*_espaceBoutonY;
 
@@ -236,23 +230,36 @@ var _labelNombreNouvMsgY=_contBtnsListesY + 100;
 var _labelBtnsListesX = _contBtnsListesX+2;
 var _labelBtnsListesY = _contBtnsListesY-20;
 
-//------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
+// - ZONE DESSOUS CARTE -
+// Placement Conteneur des _labelProbaCacheYboutons de mode
+var _contModeX = 440;
+var _contModeY = 430;
+var _contModeW = 140;
+var _contModeH = 3*_espaceBoutonY;
+
 // Placement Conteneur des Boutons perso
-var _contBtnsInvPersoX = 945;
-var _contBtnsInvPersoY = 140;
+var _contBtnsInvPersoX = _contModeX+170;
+var _contBtnsInvPersoY = _contModeY;
 var _contBtnsInvPersoW = 140;
 var _contBtnsInvPersoH = 3*_espaceBoutonY;
+
+// Placement Conteneur des Boutons case
+var _contBtnsInvCaseX = _contModeX+2*170;
+var _contBtnsInvCaseY = _contModeY;
+var _contBtnsInvCaseW = 140;
+var _contBtnsInvCaseH = 2*_espaceBoutonY;
+
+// Placement Conteneur des Boutons case Bis
+var _contBtnsInvCaseBisX = _contModeX+3*170;
+var _contBtnsInvCaseBisY = _contModeY;
+var _contBtnsInvCaseBisW = 140;
+var _contBtnsInvCaseBisH = 2*_espaceBoutonY;
 
 // Placement label Choix Mode
 var _labelBtnsInvPersoX = _contBtnsInvPersoX-5;
 var _labelBtnsInvPersoY = _contBtnsInvPersoY-20;
 
 //------------------------- Zone 6 : Btns Inv Case ---------------------------------------
-// Placement Conteneur des Boutons case
-var _contBtnsInvCaseX = _contBtnsInvPersoX ;
-var _contBtnsInvCaseY = 310;
-var _contBtnsInvCaseW = 140;
-var _contBtnsInvCaseH = 4*_espaceBoutonY;
 
 // Placement label Choix Mode
 var _labelBtnsInvCaseX = _contBtnsInvCaseX-5;
@@ -261,12 +268,15 @@ var _labelBtnsInvCaseY = _contBtnsInvCaseY-20;
 //------------------ Zone 12 : Map -------------------------------------------------------
 
 // Placement Conteneur Map (en fonction de la taille de l'image !!)
-var _contMapX = 1100/2 - 746/2;
-var _contMapY = 620/2 - 420/2;
-
 // Dimension Conteneur Map
-var _contMapH = 420;
-var _contMapW = 746;
+
+var _contMapH = 316;
+var _contMapW = 627;
+
+var _contMapX = 1100/2 - _contMapW/2;
+var _contMapY = 0;
+//var _contMapY = 620/2 - 420/2;
+
 
 // Placement du dernier message
 var _labelDernierMessageX = _labelPtsVX;
@@ -291,9 +301,9 @@ var _contInfoCaseH = _hauteurCanvas-530;
 
 //-------------- Déclaration des labels----------------------------------------------
 
-var labelAction, labelObjetCase, labelInventaire, labelDescribeItem,
+var labelAction, labelObjetCase, labelInventaire, labelDescriptionItem,
 labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
-labelBonusArme, labelBonusArmure, labelIdSalle, labelNbAllies, labelNbEnnemis,
+labelBonusArme, labelBonusArmure, labelCaseEnCours, labelNbAllies, labelNbEnnemis,
 labelNbGoules, labelProbaCache, labelProbaFouille, labelPourcentLoad,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim, 
 labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, 
@@ -304,14 +314,14 @@ labelLancementServeur;
 //-------------- Déclaration des conteneurs----------------------------------------------
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
-contBtnsListes, contDead, contInfoCase, contBtnsInvPerso, contBtnsInvCase, contListe,
+contBtnsListes, contDead, contInfoCase, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
 contListeAllies, contListeEnnemis, contLabelsAction, contMessage;
 
 //-------------- Déclaration des contours----------------------------------------------
 
 var shape, shape1, shape2, shape3, shape4, shape6, shape7, shape8, shapeMode,
 shapeLabelsAction, shapeMessage, shapeDead, shapeInfoCase,
-shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsListes, 
+shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsInvCaseBis, shapeBtnsListes, 
 shapeBtnsInvPerso, shapeBtnsInvCase;
 
 //-------------- Déclaration des boutons----------------------------------------------
@@ -392,6 +402,7 @@ function initialize() {
 	                {src:"public/Boutons/Equiper.png", id:"idBtnEquiper"},
 	                {src:"public/Boutons/EquiperGris.png", id:"idBtnEquiperGris"},
 	                {src:"public/Boutons/FouilleR.png", id:"idBtnFouilleR"},
+	                {src:"public/Boutons/FouilleRGris.png", id:"idBtnFouilleRGris"},
 	                {src:"public/Boutons/Ramasser.png", id:"idBtnRamasser"},
 	                {src:"public/Boutons/RamasserGris.png", id:"idBtnRamasserGris"},
 	                {src:"public/Boutons/CacheGreen.png", id:"idBtnCacheGreen"},
@@ -667,10 +678,10 @@ function setPlateau()
 	contInvCase.height = _contItemCaseH;
 	contInvCase.width = _contItemCaseW;
 	stage.addChild(contInvCase);
-	/*shape = new createjs.Shape();
+	shape = new createjs.Shape();
 	stage.addChild(shape);
 	shape.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contItemCaseX-4, _contItemCaseY-4, _contItemCaseW+4, _contItemCaseH+4);*/
+			_contItemCaseX-4, _contItemCaseY-4, _contItemCaseW+4, _contItemCaseH+4);
 
 	//------------------ Zone 4 : Equipement perso -------------------------------------------------------
 	contInvPerso = new createjs.Container();
@@ -679,10 +690,10 @@ function setPlateau()
 	contInvPerso.height = _contItemPersoH;
 	contInvPerso.width = _contItemPersoW;
 	stage.addChild(contInvPerso);
-	/*shape1 = new createjs.Shape();
+	shape1 = new createjs.Shape();
 	stage.addChild(shape1);
 	shape1.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contItemPersoX-4, _contItemPersoY-4, _contItemPersoW+4, _contItemPersoH+4);*/
+			_contItemPersoX-4, _contItemPersoY-4, _contItemPersoW+4, _contItemPersoH+4);
 
 	contArme = new createjs.Container();
 	contArme.x = _contArmeX;
@@ -690,10 +701,10 @@ function setPlateau()
 	contArme.height = _contArmeH;
 	contArme.width = _contArmeW;
 	stage.addChild(contArme);
-	/*shape2 = new createjs.Shape();
+	shape2 = new createjs.Shape();
 	stage.addChild(shape2);
 	shape2.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contArmeX-4, _contArmeY-4, _contArmeW+4, _contArmeH+4);*/
+			_contArmeX-4, _contArmeY-4, _contArmeW+4, _contArmeH+4);
 
 	contArmure = new createjs.Container();
 	contArmure.x = _contArmureX;
@@ -701,10 +712,10 @@ function setPlateau()
 	contArmure.height = _contArmureH;
 	contArmure.width = _contArmureW;
 	stage.addChild(contArmure);
-	/*shape3 = new createjs.Shape();
+	shape3 = new createjs.Shape();
 	stage.addChild(shape3);
 	shape3.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contArmureX-4, _contArmureY-4, _contArmureW+4, _contArmureH+4);*/
+			_contArmureX-4, _contArmureY-4, _contArmureW+4, _contArmureH+4);
 
 	//------------------ Zone 12 : Map -------------------------------------------------------
 	contMap = new createjs.Container();
@@ -717,7 +728,7 @@ function setPlateau()
 
 	contPerso = new createjs.Container();
 	contPerso.x = -5;
-	contPerso.y = 15;
+	contPerso.y = 520;
 	contPerso.height = 64;
 	contPerso.width = 64;
 	stage.addChild(contPerso);
@@ -769,10 +780,22 @@ function setPlateau()
 	contBtnsInvCase.height = _contBtnsInvCaseH;
 	contBtnsInvCase.width = _contBtnsInvCaseW;
 	stage.addChild(contBtnsInvCase);
-	/*shapeBtnsInvCase = new createjs.Shape();
+	shapeBtnsInvCase = new createjs.Shape();
 	stage.addChild(shapeBtnsInvCase);
 	shapeBtnsInvCase.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsInvCaseX-4, _contBtnsInvCaseY-4, _contBtnsInvCaseW+5, _contBtnsInvCaseH+5);*/
+			_contBtnsInvCaseX-4, _contBtnsInvCaseY-4, _contBtnsInvCaseW+5, _contBtnsInvCaseH+5);
+
+	contBtnsInvCaseBis = new createjs.Container();
+	contBtnsInvCaseBis.x = _contBtnsInvCaseBisX;
+	contBtnsInvCaseBis.y = _contBtnsInvCaseBisY;
+	contBtnsInvCaseBis.height = _contBtnsInvCaseBisH;
+	contBtnsInvCaseBis.width = _contBtnsInvCaseBisW;
+	stage.addChild(contBtnsInvCaseBis);
+	shapeBtnsInvCaseBis = new createjs.Shape();
+	stage.addChild(shapeBtnsInvCaseBis);
+	shapeBtnsInvCaseBis.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+			_contBtnsInvCaseBisX-4, _contBtnsInvCaseBisY-4, _contBtnsInvCaseBisW+5, _contBtnsInvCaseBisH+5);
+
 
 	//------------------------- Zone 14 : Labels de retour ---------------------------------------
 	contLabelsAction 			= new createjs.Container();
@@ -796,9 +819,9 @@ function setPlateau()
 	contInfoCase.width = _contInfoCaseW;
 	stage.addChild(contInfoCase);
 	shapeInfoCase = new createjs.Shape();
-	/*stage.addChild(shapeInfoCase);
-	shapeInfoCase.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
-			_contInfoCaseX-4, _contInfoCaseY-4, _contInfoCaseW+5, _contInfoCaseH+5);*/
+	stage.addChild(shapeInfoCase);
+	shapeInfoCase.graphics.setStrokeStyle(2).beginStroke("#99FF00").drawRect(
+			_contInfoCaseX-4, _contInfoCaseY-4, _contInfoCaseW+5, _contInfoCaseH+5);
 
 	// ******************************************
 	// ** Création des barres du perso 			*
@@ -810,19 +833,18 @@ function setPlateau()
 
 	lifeBarHeight = _barHeight ;
 	lifeBarWidth = _barWidth;
-	lifeBarColor = createjs.Graphics.getRGB(0,150,0);
+	lifeBarColor = createjs.Graphics.getRGB(0,255,0, 0.7);
 	lifeBarFrameColor = _barFrameColor;
 
 	lifeBar = new createjs.Shape();
 	lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 1, lifeBarHeight).endFill();
-
 	frameLifeBar = new createjs.Shape();
 	paddingLifeBar = 3;
 	frameLifeBar.graphics.setStrokeStyle(1).beginStroke(lifeBarFrameColor).drawRect(-paddingLifeBar/2, -paddingLifeBar/2, lifeBarWidth+paddingLifeBar, lifeBarHeight+paddingLifeBar);
 
 	lifeBarContainer.addChild(lifeBar, frameLifeBar);
-	lifeBarContainer.x = _labelPtsVX+150;
-	lifeBarContainer.y = _labelPtsVY ;
+	lifeBarContainer.x = 10;
+	lifeBarContainer.y = 300;
 	stage.addChild(lifeBarContainer);
 
 	// Barre de Faim
@@ -864,8 +886,8 @@ function setPlateau()
 	frameActionBar.graphics.setStrokeStyle(1).beginStroke(actionBarFrameColor).drawRect(-paddingActionBar/2, -paddingActionBar/2, actionBarWidth+paddingActionBar, actionBarHeight+paddingActionBar);
 
 	actionBarContainer.addChild(actionBar, frameActionBar);
-	actionBarContainer.x = _labelPtsAX+175;
-	actionBarContainer.y = _labelPtsAY;
+	actionBarContainer.x = lifeBarContainer.x;
+	actionBarContainer.y = lifeBarContainer.y + 2*_EspaceLabelY;
 	stage.addChild(actionBarContainer);
 
 	// Barre de mouvement
@@ -885,55 +907,9 @@ function setPlateau()
 	frameMoveBar.graphics.setStrokeStyle(1).beginStroke(moveBarFrameColor).drawRect(-paddingMoveBar/2, -paddingMoveBar/2, moveBarWidth+paddingMoveBar, moveBarHeight+paddingMoveBar);
 
 	moveBarContainer.addChild(moveBar, frameMoveBar);
-	moveBarContainer.x = actionBarContainer.x;
-	moveBarContainer.y = _labelPtsMY;
+	moveBarContainer.x = lifeBarContainer.x;
+	moveBarContainer.y = lifeBarContainer.y + 3*_EspaceLabelY;
 	stage.addChild(moveBarContainer);
-
-	//------------------ Zone 8 : Proba de la case -------------------------------------------------------
-
-	// Barre de proba Cache
-
-	cacheBarContainer = new createjs.Container();
-
-	cacheBarHeight = _barHeight ;
-	cacheBarWidth = _barWidth;
-	cacheBarColor = createjs.Graphics.getRGB(102,102,51);
-	cacheBarFrameColor = _barFrameColor;
-
-	cacheBar = new createjs.Shape();
-	cacheBar.graphics.beginFill(cacheBarColor).drawRect(0, 0, 1, cacheBarHeight).endFill();
-
-	frameCacheBar = new createjs.Shape();
-	paddingCacheBar = 3;
-	frameCacheBar.graphics.setStrokeStyle(1).beginStroke(cacheBarFrameColor).drawRect(-paddingCacheBar/2, -paddingCacheBar/2, cacheBarWidth+paddingCacheBar, cacheBarHeight+paddingCacheBar);
-
-	cacheBarContainer.addChild(cacheBar, frameCacheBar);
-	cacheBarContainer.x = _labelProbaCacheX + 200;
-	cacheBarContainer.y = _labelProbaCacheY;
-	stage.addChild(cacheBarContainer);
-
-	// Barre de proba Fouille
-
-	fouilleBarContainer = new createjs.Container();
-
-	fouilleBarHeight = _barHeight ;
-	fouilleBarWidth = _barWidth;
-	fouilleBarColor = createjs.Graphics.getRGB(255,153,0);
-	fouilleBarFrameColor = _barFrameColor;
-
-	fouilleBar = new createjs.Shape();
-	fouilleBar.graphics.beginFill(fouilleBarColor).drawRect(0, 0, 1, fouilleBarHeight).endFill();
-
-	frameFouilleBar = new createjs.Shape();
-	paddingFouilleBar = 3;
-	frameFouilleBar.graphics.setStrokeStyle(1).beginStroke(fouilleBarFrameColor).drawRect(-paddingFouilleBar/2, -paddingFouilleBar/2, fouilleBarWidth+paddingFouilleBar, fouilleBarHeight+paddingFouilleBar);
-
-	fouilleBarContainer.addChild(fouilleBar, frameFouilleBar);
-	fouilleBarContainer.x = _labelProbaFouilleX + 200;
-	fouilleBarContainer.y = _labelProbaFouilleY;
-	stage.addChild(fouilleBarContainer);
-
-	//------------------------- Zone 4 : Equipement perso-----------------------------------------------
 
 	// Barre de Poids du Sac
 
@@ -952,19 +928,62 @@ function setPlateau()
 	frameSacBar.graphics.setStrokeStyle(1).beginStroke(sacBarFrameColor).drawRect(-paddingSacBar/2, -paddingSacBar/2, sacBarWidth+paddingSacBar, sacBarHeight+paddingSacBar);
 
 	sacBarContainer.addChild(sacBar, frameSacBar);
-	sacBarContainer.x = _labelItemPersoX + 180;
-	sacBarContainer.y = _labelItemPersoY;
+	sacBarContainer.x = lifeBarContainer.x;
+	sacBarContainer.y = lifeBarContainer.y + 4*_EspaceLabelY;
 	stage.addChild(sacBarContainer);
+
+	// Barre de proba Fouille
+
+	fouilleBarContainer = new createjs.Container();
+
+	fouilleBarHeight = _barHeight ;
+	fouilleBarWidth = _barWidth;
+	fouilleBarColor = createjs.Graphics.getRGB(255,153,0);
+	fouilleBarFrameColor = _barFrameColor;
+
+	fouilleBar = new createjs.Shape();
+	fouilleBar.graphics.beginFill(fouilleBarColor).drawRect(0, 0, 1, fouilleBarHeight).endFill();
+
+	frameFouilleBar = new createjs.Shape();
+	paddingFouilleBar = 3;
+	frameFouilleBar.graphics.setStrokeStyle(1).beginStroke(fouilleBarFrameColor).drawRect(-paddingFouilleBar/2, -paddingFouilleBar/2, fouilleBarWidth+paddingFouilleBar, fouilleBarHeight+paddingFouilleBar);
+
+	fouilleBarContainer.addChild(fouilleBar, frameFouilleBar);
+	fouilleBarContainer.x = lifeBarContainer.x;
+	fouilleBarContainer.y = lifeBarContainer.y + 7*_EspaceLabelY;
+	stage.addChild(fouilleBarContainer);
+
+	// Barre de proba Cache
+
+	cacheBarContainer = new createjs.Container();
+
+	cacheBarHeight = _barHeight ;
+	cacheBarWidth = _barWidth;
+	cacheBarColor = createjs.Graphics.getRGB(102,102,51);
+	cacheBarFrameColor = _barFrameColor;
+
+	cacheBar = new createjs.Shape();
+	cacheBar.graphics.beginFill(cacheBarColor).drawRect(0, 0, 1, cacheBarHeight).endFill();
+
+	frameCacheBar = new createjs.Shape();
+	paddingCacheBar = 3;
+	frameCacheBar.graphics.setStrokeStyle(1).beginStroke(cacheBarFrameColor).drawRect(-paddingCacheBar/2, -paddingCacheBar/2, cacheBarWidth+paddingCacheBar, cacheBarHeight+paddingCacheBar);
+
+	cacheBarContainer.addChild(cacheBar, frameCacheBar);
+	cacheBarContainer.x = lifeBarContainer.x;
+	cacheBarContainer.y = lifeBarContainer.y + 8*_EspaceLabelY;
+	stage.addChild(cacheBarContainer);
 
 	// ******************************************
 	// ********* Déclaration des labels *********
 	// ******************************************
+
+	// Label description case
 	labelDescribeCase = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelDescribeCase.lineHeight = _LineHeight;
 	labelDescribeCase.textBaseline = _TextBaseline;
 	labelDescribeCase.x = _labelDescribeCaseX;
 	labelDescribeCase.y = _labelDescribeCaseY;
-
 
 	labelFichePerso = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelFichePerso.lineHeight = _LineHeight;
@@ -972,35 +991,39 @@ function setPlateau()
 	labelFichePerso.x = contPerso.x + 58;
 	labelFichePerso.y = _labelPtsVY;
 
+	// Label nombre nouveaux messages
 	labelNombreNouvMsg = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelNombreNouvMsg.lineHeight = _LineHeight;
 	labelNombreNouvMsg.textBaseline = _TextBaseline;
 	labelNombreNouvMsg.x = _labelNombreNouvMsgX;
 	labelNombreNouvMsg.y = _labelNombreNouvMsgY;
 
+	// Label dernier message
 	labelDernierMessage = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelDernierMessage.lineHeight = _LineHeight;
 	labelDernierMessage.textBaseline = _TextBaseline;
 	labelDernierMessage.x = _labelDernierMessageX;
 	labelDernierMessage.y = _labelDernierMessageY;
 
-	labelIdSalle = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelIdSalle.lineHeight = _LineHeight;
-	labelIdSalle.textBaseline = _TextBaseline;
-	labelIdSalle.x = _labelIdSalleX;
-	labelIdSalle.y = _labelIdSalleY;
+	// Label nom case en cours
+	labelCaseEnCours = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelCaseEnCours.lineHeight = _LineHeight;
+	labelCaseEnCours.textBaseline = _TextBaseline;
+	labelCaseEnCours.x = _labelCaseEnCoursX;
+	labelCaseEnCours.y = _labelCaseEnCoursY;
 
+	// Label presentation objet dans la case
 	labelObjetCase = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelObjetCase.lineHeight = _LineHeight;
 	labelObjetCase.textBaseline = _TextBaseline;
 	labelObjetCase.x = _labelItemCaseX;
 	labelObjetCase.y = _labelItemCaseY;
 
-	labelDescribeItem = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelDescribeItem.lineHeight = _LineHeight;
-	labelDescribeItem.textBaseline = _TextBaseline;
-	labelDescribeItem.x = _labelDescribeItemX;
-	labelDescribeItem.y = _labelDescribeItemY;
+	labelDescriptionItem = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelDescriptionItem.lineHeight = _LineHeight;
+	labelDescriptionItem.textBaseline = _TextBaseline;
+	labelDescriptionItem.x = _labelDescriptionItemX;
+	labelDescriptionItem.y = _labelDescriptionItemY;
 
 	labelInventaire = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelInventaire.lineHeight = _LineHeight;
@@ -1013,42 +1036,42 @@ function setPlateau()
 	labelChoixMode.textBaseline = _TextBaseline;
 	labelChoixMode.x = _labelChoixModeX;
 	labelChoixMode.y = _labelChoixModeY;
-	labelChoixMode.text="Passer en Mode :";
+	//labelChoixMode.text="Passer en Mode :";
 
 	labelBtnsListes = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelBtnsListes.lineHeight = _LineHeight;
 	labelBtnsListes.textBaseline = _TextBaseline;
 	labelBtnsListes.x = _labelBtnsListesX;
 	labelBtnsListes.y = _labelBtnsListesY;
-	labelBtnsListes.text="Afficher liste :";
+	//labelBtnsListes.text="Afficher liste :";
 
 	labelBtnsInvPerso = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelBtnsInvPerso.lineHeight = _LineHeight;
 	labelBtnsInvPerso.textBaseline = _TextBaseline;
 	labelBtnsInvPerso.x = _labelBtnsInvPersoX-5;
 	labelBtnsInvPerso.y = _labelBtnsInvPersoY;
-	labelBtnsInvPerso.text="Actions sur le sac :";
+	//labelBtnsInvPerso.text="Actions sur le sac :";
 
 	labelBtnsInvCase = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelBtnsInvCase.lineHeight = _LineHeight;
 	labelBtnsInvCase.textBaseline = _TextBaseline;
 	labelBtnsInvCase.x = _labelBtnsInvCaseX-8;
 	labelBtnsInvCase.y = _labelBtnsInvCaseY;
-	labelBtnsInvCase.text="Actions sur la case :";
+	//labelBtnsInvCase.text="Actions sur la case :";
 
 	labelArme = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelArme.lineHeight = _LineHeight;
 	labelArme.textBaseline = _TextBaseline;
 	labelArme.x = _labelArmeX;
 	labelArme.y = _labelArmeY;
-	labelArme.text="Arme équipée : ";
+	//labelArme.text="Arme équipée : ";
 
 	labelArmure = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelArmure.lineHeight = _LineHeight;
 	labelArmure.textBaseline = _TextBaseline;
 	labelArmure.x = _labelArmureX;
 	labelArmure.y = _labelArmureY;
-	labelArmure.text="Armure équipée : ";
+	//labelArmure.text="Armure équipée : ";
 
 	//------------------- Zone 1 -----------------------------------------------------
 
@@ -1192,17 +1215,6 @@ function setPlateau()
 	// ************ Boutons d'action ************
 	// ******************************************
 
-	var BtnFouilleRapide = new createjs.Bitmap("public/Boutons/FouilleR.png");
-	BtnFouilleRapide.y = 2* _espaceBoutonY;
-	contBtnsInvCase.addChild(BtnFouilleRapide);
-	BtnFouilleRapide.addEventListener('click', function(event) {
-		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
-	});	
-	BtnFouilleRapide.addEventListener('touchstart', function(event) {
-		socket.emit('ACTION_FOUILLE_RAPIDE_CS');
-	});	
-
-
 	BtnPageItemPersoRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
 	BtnPageItemPersoRight.x= _contItemPersoX + _contItemPersoW;
 	BtnPageItemPersoRight.y= _contItemPersoY + 5;
@@ -1264,8 +1276,6 @@ function setPlateau()
 
 	BtnPageItemPersoRight.cursor=BtnPageItemPersoLeft.cursor=BtnPageItemCaseRight.cursor=BtnPageItemCaseLeft.cursor="pointer";
 
-	BtnFouilleRapide.cursor="pointer";
-
 	// ******************************************
 	// *********** INITIALISATION ***************
 	// ******************************************
@@ -1279,7 +1289,7 @@ function game()
 	// Couleur autour de la carte
 	shape4 = new createjs.Shape();
 	stage.addChild(shape4);
-	shape4.graphics.setStrokeStyle(4).beginStroke("#850000").drawRect(
+	shape4.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
 			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
 	
 	//_espaceBoutonYInitialisation des informations
@@ -1443,11 +1453,11 @@ function afficherDescItem(desc)
 			var message=desc.substring(i,i+longLigneMax);
 			if(i==longLigneMax || desc.length<longLigneMax)
 			{
-				labelDescribeItem.text+=message;
+				labelDescriptionItem.text+=message;
 			}
 			else
 			{
-				labelDescribeItem.text+=message + "-\n";
+				labelDescriptionItem.text+=message + "-\n";
 			}
 		}
 	}
@@ -2195,7 +2205,6 @@ function setContEquipement()
 	}
 }
 
-
 function setContCase()
 {
 	if(_selectedItemCase!=-1)
@@ -2267,8 +2276,8 @@ function setBtnGoules(nbrGoules)
 	if(nbrGoules>0)
 	{
 		var BtnAtqGoules = new createjs.Bitmap("public/Boutons/Zombie.png");
-		BtnAtqGoules.y = 3*_espaceBoutonY;
-		contBtnsInvCase.addChild(BtnAtqGoules);
+		BtnAtqGoules.y = _espaceBoutonY;
+		contBtnsInvCaseBis.addChild(BtnAtqGoules);
 		BtnAtqGoules.addEventListener('click', function(event) {
 			socket.emit('ACTION_ATTAQUE_GOULE_CS');
 		});
@@ -2280,10 +2289,37 @@ function setBtnGoules(nbrGoules)
 	else
 	{
 		var BtnAtqGoules = new createjs.Bitmap("public/Boutons/ZombieGris.png");
-		BtnAtqGoules.y = 3*_espaceBoutonY;
-		contBtnsInvCase.addChild(BtnAtqGoules);
+		BtnAtqGoules.y = _espaceBoutonY;
+		contBtnsInvCaseBis.addChild(BtnAtqGoules);
 		BtnAtqGoules.cursor="not-allowed";
 	}
+}
+
+function setBtnFouilleRapide(currentPerso)
+{
+	if(currentPerso.ptAction >=3)
+	{
+		var BtnFouilleRapide = new createjs.Bitmap("public/Boutons/FouilleR.png");
+		BtnFouilleRapide.y = 0;
+		contBtnsInvCaseBis.addChild(BtnFouilleRapide);
+		BtnFouilleRapide.addEventListener('click', function(event) {
+			socket.emit('ACTION_FOUILLE_RAPIDE_CS');
+		});	
+		BtnFouilleRapide.addEventListener('touchstart', function(event) {
+			socket.emit('ACTION_FOUILLE_RAPIDE_CS');
+		});	
+
+		BtnFouilleRapide.cursor="pointer";
+	}
+	else
+	{
+		var BtnFouilleRapide = new createjs.Bitmap("public/Boutons/FouilleRGris.png");
+		BtnFouilleRapide.y = 0;
+		contBtnsInvCaseBis.addChild(BtnFouilleRapide);
+
+		BtnFouilleRapide.cursor="pointer";
+	}
+	stage.update();
 }
 
 function setImg(img, X, Y) 
@@ -2333,8 +2369,8 @@ function majInventairePerso(currentPerso)
 	if(currentPerso.armureEquipee != null)	PointsDefense = currentPerso.multiPtsDefense * currentPerso.armureEquipee.valeur ;
 	else									PointsDefense = currentPerso.multiPtsDefense;
 	// Mise à jour des labels
-	labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
-	labelPtsDef.text=("Points de défense : " + PointsDefense + "");	
+	//labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
+	//labelPtsDef.text=("Points de défense : " + PointsDefense + "");	
 	
 	
 	// ********* AFFICHAGE DE LA LISTE DES OBJETS *********/
@@ -2411,7 +2447,7 @@ function majInventairePerso(currentPerso)
 		contArme.addEventListener("touchstart", function (event) 
 				{
 					var descriptionItem		=currentPerso.armeEquipee.description;
-					labelDescribeItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
+					labelDescriptionItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
 					afficherDescItem(descriptionItem);
 					
 					if (SelectEquipement!=null)
@@ -2432,7 +2468,7 @@ function majInventairePerso(currentPerso)
 		contArme.addEventListener('mouseover', function(event) 
 		{
 			var descriptionItem		=currentPerso.armeEquipee.description;
-			labelDescribeItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
+			labelDescriptionItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
 			afficherDescItem(descriptionItem);
 			stage.update();
 		},false);
@@ -2440,14 +2476,14 @@ function majInventairePerso(currentPerso)
 		// évenement quand la souris s'en va
 		contArme.addEventListener('mouseout', function(event)
 		{
-			labelDescribeItem.text="";
+			labelDescriptionItem.text="";
 			stage.update();
 		},false);
 		
 		// évenement quand la souris s'en va
 		contArme.addEventListener('touchend', function(event)
 		{
-			labelDescribeItem.text="";
+			labelDescriptionItem.text="";
 			stage.update();
 		},false);
 		
@@ -2481,7 +2517,7 @@ function majInventairePerso(currentPerso)
 				{
 			
 			var descriptionItem=currentPerso.armureEquipee.description;
-			labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
+			labelDescriptionItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
 			afficherDescItem(descriptionItem);
 			
 				if (SelectEquipement!=null)
@@ -2501,20 +2537,20 @@ function majInventairePerso(currentPerso)
 		contArmure.addEventListener('mouseover', function(event) 
 			{
 			var descriptionItem=currentPerso.armureEquipee.description;
-			labelDescribeItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
+			labelDescriptionItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
 			afficherDescItem(descriptionItem);
 			stage.update();
 		},false);
 
 		contArmure.addEventListener('mouseout', function(event)
 			{
-			labelDescribeItem.text="";
+			labelDescriptionItem.text="";
 			stage.update();
 		},false);
 		
 		contArmure.addEventListener('touchend', function(event)
 				{
-				labelDescribeItem.text="";
+				labelDescriptionItem.text="";
 				stage.update();
 			},false);
 		
@@ -2618,20 +2654,20 @@ function majInventairePerso(currentPerso)
 				{
 					var currentItem = TabListe[PageItemPerso][event.target.name];
 					var descriptionItem=currentItem.description;
-					labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+					labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 					afficherDescItem(descriptionItem);
 					stage.update();
 				},false);
 
 				imgItem.addEventListener('mouseout', function(event)
 				{
-					labelDescribeItem.text="";
+					labelDescriptionItem.text="";
 					stage.update();
 				},false);
 				
 				imgItem.addEventListener('touchend', function(event)
 						{
-							labelDescribeItem.text="";
+							labelDescriptionItem.text="";
 							stage.update();
 						},false);
 
@@ -2656,7 +2692,7 @@ function majInventairePerso(currentPerso)
 						{
 							var currentItem = TabListe[PageItemPerso][event.target.name];
 							var descriptionItem=currentItem.description;
-							labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+							labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 							afficherDescItem(descriptionItem);
 					
 							if (Select!=null)
@@ -2700,7 +2736,7 @@ function majInventairePerso(currentPerso)
 	setContEquipement();
 
 	labelInventaire.text="";
-	labelInventaire.text=("Inventaire du perso :      "+ PoidsSac + "/" + currentPerso.poidsMax);
+	labelInventaire.text=(PoidsSac + "/" + currentPerso.poidsMax);
 
 	// Affichage barre poids du sac
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
@@ -2740,7 +2776,6 @@ function afficherMessageRetour(msg, type)
 		stage.update();
 	}, 5000);	
 }
-
 
 var _lastPtsVie = 10000;
 
@@ -3077,12 +3112,12 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		ProbCache=(currentCase.probaCache * _persoProbaCache);
 		ProbFouille=(currentCase.probaObjet * _persoProbaFouille);
 
-		labelIdSalle.text=("Case en cours : " + currentCase.nom + "");
-		labelNbAllies.text=("Alliés dans la salle  : " + nbrAllies + "");
+		labelCaseEnCours.text=("Case en cours : " + currentCase.nom + "");
+		/*labelNbAllies.text=("Alliés dans la salle  : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %");
-		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %");
+		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %");*/
 
 		var descriptionCase=currentCase.description;
 		afficherDescCase(descriptionCase);
@@ -3105,9 +3140,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 			fouilleBar.scaleX = (ProbFouille/100) * fouilleBarWidth;
 		}
 
-		labelObjetCase.text="";
-		//labelObjetCase.text=("Objets présents : "+ currentCase.nom + "");
-		labelObjetCase.text=("Objets présents : ");
+		/*labelObjetCase.text="";
+		labelObjetCase.text=("Objets présents : ");*/
 
 		// CLear de la liste des items de case
 		contInvCase.removeAllChildren();
@@ -3209,18 +3243,18 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 				imgItem.addEventListener('mouseover', function(event) {
 					var currentItem = TabListe[PageItemCase][event.target.name];
 					var descriptionItem=currentItem.description;
-					labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+					labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 					afficherDescItem(descriptionItem);
 					stage.update();
 				},false);
 
 				imgItem.addEventListener('mouseout', function(event){
-					labelDescribeItem.text="";
+					labelDescriptionItem.text="";
 					stage.update();
 				},false);
 				
 				imgItem.addEventListener('touchend', function(event){
-					labelDescribeItem.text="";
+					labelDescriptionItem.text="";
 					stage.update();
 				},false);
 
@@ -3242,7 +3276,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 				imgItem.addEventListener("touchstart", function(event){
 					var currentItem = TabListe[PageItemCase][event.target.name];
 					var descriptionItem=currentItem.description;
-					labelDescribeItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+					labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 					afficherDescItem(descriptionItem);
 					if (Select!=null)
 					{
@@ -3276,6 +3310,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		contMap.removeChild(map);
 		// insertion de la map
 		var map = new createjs.Bitmap(currentCase.pathImg);
+		map.scaleX=0.840;
+		map.scaleY=0.750;
 		// Placement de la map
 		//map.x = contMap.width/2 - map.image.width/2;
 		map.x = 0;
@@ -3291,6 +3327,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	var msgAction = "";
 	var codeAction = 0;
+
+	setBtnFouilleRapide(currentPerso);
 
 	var classe;
 
@@ -3333,12 +3371,12 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	
 	
 	// ********* AFFICHAGE CARACTERISTIQUES PROPRES A LA COMPETENCE *********/
-	labelFichePerso.text=(classe+"\n"+
+	/*labelFichePerso.text=(classe+"\n"+
 			"Zombies : "+currentPerso.goulesMax+"\n"+
 			"Attaque x "+currentPerso.multiPtsAttaque+"\n"+
 			"Défense x "+currentPerso.multiPtsDefense+"\n"+
 			"Cache   x "+currentPerso.multiProbaCache+"\n"+
-			"Fouille x "+currentPerso.multiProbaFouille);
+			"Fouille x "+currentPerso.multiProbaFouille);*/
 
 	
 	// ********* AFFICHAGE POINTS DE VIE *********/
@@ -3355,17 +3393,17 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	if(currentPerso.ptFaim<=0)
 	{
 		//labelPtsFaim.text=("Points de faim :         	 	0/" + currentPerso.ptFaimMax);
-		labelPtsFaim.text=("Points de faim :        " + currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
+		//labelPtsFaim.text=(currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
 		faimBar.scaleX = 0;
 	}
 	else if(currentPerso.ptFaim>=currentPerso.ptFaimMax)
 	{
-		labelPtsFaim.text=("Points de faim :        " + currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
+		//labelPtsFaim.text=(currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
 		faimBar.scaleX = faimBarWidth;	
 	}
 	else
 	{
-		labelPtsFaim.text=("Points de faim :       " + currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
+		//labelPtsFaim.text=(currentPerso.ptFaim + "/" + currentPerso.ptFaimMax);
 		faimBar.scaleX = (currentPerso.ptFaim/currentPerso.ptFaimMax) * faimBarWidth;
 	}
 
@@ -3375,17 +3413,17 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	if(currentPerso.ptAction<=0)
 	{
 		//labelPtsAction.text=("Points d'action :	 	 	    	0/" + currentPerso.ptActionMax);
-		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptAction + "/" + currentPerso.ptActionMax);
+		//labelPtsAction.text=(currentPerso.ptAction + "/" + currentPerso.ptActionMax);
 		actionBar.scaleX = 0;
 	}
 	else if(currentPerso.ptAction>=currentPerso.ptActionMax)
 	{
-		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptAction + "/" + currentPerso.ptActionMax);
+		//labelPtsAction.text=(currentPerso.ptAction + "/" + currentPerso.ptActionMax);
 		actionBar.scaleX = actionBarWidth;
 	}
 	else
 	{
-		labelPtsAction.text=("Points d'action :	 	 	    " + currentPerso.ptAction + "/" + currentPerso.ptActionMax);
+		//labelPtsAction.text=(currentPerso.ptAction + "/" + currentPerso.ptActionMax);
 		actionBar.scaleX = (currentPerso.ptAction/currentPerso.ptActionMax) * actionBarWidth;
 	}
 
@@ -3394,18 +3432,18 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	// Sécurité pour le remplissage de la barre de move
 	if(currentPerso.ptDeplacement >=currentPerso.ptDeplacementMax)
 	{
-		labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
+		//labelPtsMove.text=(currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
 		moveBar.scaleX = moveBarWidth;
 	}
 	else if(currentPerso.ptDeplacement<=0)
 	{
 		//labelPtsMove.text=("Points de mouvement :     0/" + currentPerso.ptDeplacementMax);
-		labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
+		//labelPtsMove.text=(currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
 		moveBar.scaleX = 0;
 	}
 	else
 	{
-		labelPtsMove.text=("Points de mouvement :     " + currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
+		//labelPtsMove.text=(currentPerso.ptDeplacement + "/" + currentPerso.ptDeplacementMax);
 		moveBar.scaleX = (currentPerso.ptDeplacement/currentPerso.ptDeplacementMax) * moveBarWidth;
 	}
 
