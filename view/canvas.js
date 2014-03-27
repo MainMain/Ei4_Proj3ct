@@ -273,6 +273,32 @@ var _contInfoCaseH = _hauteurCanvas-530;
  * DECLARATION DES LABELS, CONTENEURS, CONTOURS ET BOUTONS
  */
 
+var _PERSO_LAST_PTS_VIE = 10000;
+var _LABEL_DEGATS 	= new createjs.Text("", _LABEL_POLICE, ColorLabel);
+//_LABEL_DEGATS.x 	=
+//_LABEL_DEGATS.y 	= 
+
+////////////// VARIABLES POUR LES TOOLTIPS ///////////////
+var _LABEL_POLICE="italic 12px Consolas";
+var _CONTENEUR_TOOLTIP				;
+var _LABEL_DESCRIPTION 				= new createjs.Text("", _LABEL_POLICE, ColorLabel);
+var _TAILLE_TOOLTIP					;
+var _FOND_TOOLTIP 					;
+_LABEL_DESCRIPTION.lineHeight 		= _LineHeight;
+_LABEL_DESCRIPTION.textBaseline 	= _TextBaseline;
+_LABEL_DESCRIPTION.x 				= 5;
+_LABEL_DESCRIPTION.y 				= 5;
+
+var _IMG_ITEM_SELECTED;
+
+////////////// VARIABLES POUR LES INTERVALS ///////////////
+var _ID_INTER_BLINK;
+var _ID_INTER_BLINK_BARRE_VIE;
+var _ID_INTER_MSG_RETOUR;
+var _ID_INTER_CADRE_MAP;
+
+var _BLINK_CPT;
+
 //-------------- Déclaration des labels----------------------------------------------
 
 var labelAction, labelObjetCase, labelInventaire, labelDescriptionItem,
@@ -2312,6 +2338,11 @@ function setColorMsgRetour()
 	*/
 }
 
+/*
+ *
+ * MISES A JOUR DE L'INTERFACE
+ *
+ */
 function majPositionPerso(currentPerso)
 {
 	
@@ -2390,7 +2421,10 @@ function majInventairePerso(currentPerso)
 		// évenement click
 		contArme.addEventListener("click", function (event) 
 		{
-			if (SelectEquipement!=null)
+			var currentItem = TabListe[PageItemCase][event.target.name];
+					afficherSelecteurItem(event.target.x, 0);
+					_selectedItemCase=currentItem.id;
+			/*if (SelectEquipement!=null)
 			{
 				contArme.removeChild(SelectEquipement);
 				contArmure.removeChild(SelectEquipement);
@@ -2398,7 +2432,7 @@ function majInventairePerso(currentPerso)
 			SelectEquipement 	= contArme.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 			SelectEquipement.x	=-5;
 			SelectEquipement.y	=-4;
-			_selectedItemEquip 	= currentPerso.armeEquipee.id;
+			_selectedItemEquip 	= currentPerso.armeEquipee.id;*/
 			setContEquipement();
 		});
 		contArme.addEventListener("touchstart", function (event) 
@@ -2459,7 +2493,10 @@ function majInventairePerso(currentPerso)
 		// Ajout des évenements
 		contArmure.addEventListener("click", function (event) 
 			{
-			if (SelectEquipement!=null)
+				var currentItem = TabListe[PageItemCase][event.target.name];
+					afficherSelecteurItem(event.target.x, 0);
+					_selectedItemCase=currentItem.id;
+			/*if (SelectEquipement!=null)
 			{
 				contArme.removeChild(SelectEquipement);
 				contArmure.removeChild(SelectEquipement);
@@ -2467,7 +2504,7 @@ function majInventairePerso(currentPerso)
 			SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 			SelectEquipement.x=-5;
 			SelectEquipement.y=-4;
-			_selectedItemEquip = currentPerso.armureEquipee.id;
+			_selectedItemEquip = currentPerso.armureEquipee.id;*/
 			setContEquipement();
 		});
 		contArmure.addEventListener("touchstart", function (event) 
@@ -2631,6 +2668,10 @@ function majInventairePerso(currentPerso)
 
 				imgItem.addEventListener("click", function(event)
 				{
+					var currentItem = TabListe[PageItemCase][event.target.name];
+					afficherSelecteurItem(event.target.x, 0);
+					_selectedItemCase=currentItem.id;
+					/*
 					if (Select!=null)
 					{
 						contInvPerso.removeChild(Select);
@@ -2642,6 +2683,7 @@ function majInventairePerso(currentPerso)
 					Select = contInvPerso.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 					Select.x=(num);
 					Select.y=0;
+					*/
 					// Appel de fonction pour créer les boutons liés au Perso
 					setContPerso();
 				});
@@ -2699,7 +2741,70 @@ function majInventairePerso(currentPerso)
 	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
 }
 
+function majBarreVie(ptsVie, ptsVieMax, degats)
+{
+	// si pas de diminution de vie
+	if (ptsVie > _PERSO_LAST_PTS_VIE) 
+	{
+		afficherBarreSante(ptsVie, ptsVieMax, false);
 
+		// on quite l'algo si y'a pas eu de blessure
+		return;
+	}
+	// maj variable
+	_PERSO_LAST_PTS_VIE = ptsVie;
+
+	// affiche les degats recus
+	//_LABEL_DEGATS.text = degats;
+	
+	// changer la couleur de la barre
+	afficherBarreSante(ptsVie, ptsVieMax, false)
+
+	// dessiner la barre de vie
+	afficherBarreSante(ptsVie, ptsVieMax);
+	
+	// efface l'ancien timer, au cas où
+	clearInterval(_ID_INTER_BLINK_BARRE_VIE);
+
+	// define nbr clignotement
+	_BLINK_CPT = 10;
+	
+	// lance le compteur
+	_ID_INTER_BLINK_BARRE_VIE = setInterval( function() 
+	{
+		if (_BLINK_CPT % 2 == 0)
+		{
+			// barre vie en vert
+			
+			// cadre map en gris
+			defineCadreMap("gris");
+		}
+		else
+		{
+			// barre vie en rouge
+			afficherBarreSante(ptsVie, ptsVieMax, true)
+			// cadre map en rouge
+			defineCadreMap("rouge");
+		}
+		// si fin du compteur
+		if (_BLINK_CPT == 0)
+		{
+			// vide label de degats
+			//_LABEL_DEGATS.text = "";
+			afficherBarreSante(ptsVie, ptsVieMax, false)
+			// supprime le timer
+			clearInterval(_ID_INTER_BLINK_BARRE_VIE);
+		}
+		_BLINK_CPT--;
+	}, 200);	
+
+}
+
+/*
+ *
+ * ACTIONS SUR L'INTERFACE
+ *
+ */
 function afficherMessageRetour(msg, type)
 {
 	/// CONFIGURATION COULEUR DU MESSAGE
@@ -2726,7 +2831,8 @@ function afficherMessageRetour(msg, type)
 
 	stage.update();
 	/// AFFICHAGE PENDANT JUSTE 5 SECONDES
-	setTimeout(function() 
+	clearInterval(_ID_INTER_MSG_RETOUR);
+	_ID_INTER_MSG_RETOUR = setTimeout(function() 
 	{
 		// vide le conteneur
 		contZoneMessage.removeChild(labelAction);
@@ -2734,42 +2840,129 @@ function afficherMessageRetour(msg, type)
 	}, 5000);	
 }
 
-var _lastPtsVie = 10000;
-
-function afficherModificationSante(ptsVie, ptsVieMax)
+function afficherBarreSante(ptsVie, ptsVieMax, couleurRouge)
 {
-	// si pas de diminution de vie
-	if (ptsVie > _lastPtsVie) 
+	if (couleurRouge == true)
 	{
-		afficherBarreSante(ptsVie, ptsVieMax);
-		return;
+			lifeBarColor = createjs.Graphics.getRGB(150,0,0);
+			lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 10, lifeBarHeight).endFill();
 	}
-	// changer la couleur de la barre
-	lifeBarColor = createjs.Graphics.getRGB(150,0,0);
-	afficherBarreSante(ptsVie, ptsVieMax);
-
-	// afficher les degats recus
-	//myNewLabel.text = "-"+degats;
-
-	/// AFFICHAGE PENDANT JUSTE 5 SECONDES
-	setTimeout( function() 
+	else
 	{
-		// initialise la couleur
-		lifeBarColor = createjs.Graphics.getRGB(0,150,0);
-		afficherBarreSante(ptsVie);
-
-		// initialise le label
-		// myNewLabel.text ="";
-		stage.update();
-	}, 5000);	
-}
-
-function afficherBarreSante(ptsVie, ptsVieMax)
-{
+			lifeBarColor = createjs.Graphics.getRGB(0,150,0);
+			lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 10, lifeBarHeight).endFill();
+	}
 	if(ptsVie<=0)				lifeBar.scaleX = 0;
 	else if(ptsVie>=ptsVieMax)	lifeBar.scaleX = _barWidth;
 	else 						lifeBar.scaleX = (ptsVie/ptsVieMax) * _barWidth;
 
+}
+
+function defineCadreMap(couleur)
+{
+	if (couleur == "rouge")
+	{shape4.graphics.setStrokeStyle(2).beginStroke("#FF0000").drawRect(
+			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
+	}
+	else
+	{
+		shape4.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
+			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
+	}
+}
+
+function afficherTooltip(x, y, obj)
+{
+	y += 40;
+
+	// conteneur
+	_CONTENEUR_TOOLTIP		= new createjs.Container();
+	_CONTENEUR_TOOLTIP.x 	= x;
+	_CONTENEUR_TOOLTIP.y 	= y;
+	
+	// défini les caractéristiques de l'objet
+	var ligne0 = obj.nom;
+	var ligne1 = "V : "+obj.valeur+" - P : " + obj.poids;
+	var ligne2 = obj.description;
+	
+	_LABEL_DESCRIPTION.text = ligne0 +"\n" +ligne1 +"\n" + ligne2;
+
+	// défini la taille du conteneur
+	 _TAILLE_TOOLTIP = (Math.max(ligne1.length,ligne2.length, ligne0.length)) * 7 + 10;
+
+	// config couleur fond conteneur
+	var coul;
+	switch (obj.type) 
+	{
+		case 1 : coul = createjs.Graphics.getRGB(150,0,0, 0.8); break;
+		case 2 : coul = createjs.Graphics.getRGB(0,150,0, 0.8); break;
+		case 3 : coul = createjs.Graphics.getRGB(0,0,150, 0.8); break;
+		case 4 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
+		case 5 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
+		case 6 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
+		case 7 : coul = createjs.Graphics.getRGB(0,0,0, 0.8); break;
+	}
+
+	// dessine le fond du conteneur
+ 	_FOND_TOOLTIP = new createjs.Shape();
+	_FOND_TOOLTIP.graphics.beginFill(coul).drawRect(0, 0, _TAILLE_TOOLTIP, 55).endFill();
+
+	// test si ca dépasse pas du canvas
+	if(_CONTENEUR_TOOLTIP.x + _TAILLE_TOOLTIP > _largeurCanvas)
+	{
+		_CONTENEUR_TOOLTIP.x = _largeurCanvas - _TAILLE_TOOLTIP - 7;
+	} 
+
+	// ajout du fond et label au conteneur
+	_CONTENEUR_TOOLTIP.addChild(_FOND_TOOLTIP);
+	_CONTENEUR_TOOLTIP.addChild(_LABEL_DESCRIPTION);
+
+	// ajout du conteneur au stage
+	stage.addChild(_CONTENEUR_TOOLTIP);
+}
+function supprimerTooltip()
+{
+	stage.removeChild(_CONTENEUR_TOOLTIP);
+}
+
+function afficherSelecteurItem(x, y, taille)
+{
+	// supprime l'ancien fond
+	supprimerSelecteurItem();
+
+	// affichage fond
+	_IMG_ITEM_SELECTED = new createjs.Shape();
+	_IMG_ITEM_SELECTED.graphics.beginFill(createjs.Graphics.getRGB(255,0,0, 0.5)).drawRect(0, 0, 10, 10).endFill();
+	_IMG_ITEM_SELECTED.x = x+5;
+	_IMG_ITEM_SELECTED.y = y+25;
+
+	Select   = contInvCase.addChild(_IMG_ITEM_SELECTED);
+	//Select.x = x;
+	//Select.y = 0;
+}
+function supprimerSelecteurItem()
+{
+	// supprime l'ancien fond
+	contInvCase.removeChild(_IMG_ITEM_SELECTED);
+}
+
+/*
+ *
+ * ANIMATIONS
+ *
+ */
+
+function animationCadreMap(couleur)
+{
+	// affichage contour carte en rouge
+	defineCadreMap(couleur);
+
+	clearInterval(_ID_INTER_CADRE_MAP);
+	_ID_INTER_CADRE_MAP = setTimeout( function() 
+	{
+		// passage dans sa couleur d'origine
+		defineCadreMap("gris");
+	}, 250);	
 }
 
 
@@ -3216,7 +3409,10 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 				},false);
 
 				imgItem.addEventListener("click", function(event){
-					if (Select!=null)
+					var currentItem = TabListe[PageItemCase][event.target.name];
+					afficherSelecteurItem(event.target.x, 0);
+					_selectedItemCase=currentItem.id;
+					/*if (Select!=null)
 					{
 						contInvCase.removeChild(Select);
 					}
@@ -3226,7 +3422,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 					Select = contInvCase.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 					Select.x=(num);
 					Select.y=0;
-
+*/
 					setContCase();
 				});
 				
@@ -3343,9 +3539,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 	// ********* AFFICHAGE POINTS DE VIE *********/
 	// Mise à jour des barres de vie, action, move		
 	// Sécurité pour le remplissage de la barre de vie
-	afficherBarreSante(currentPerso.ptSante, currentPerso.ptSanteMax);
-
-	_lastPtsVie = currentPerso.ptsVie;
+	majBarreVie(currentPerso.ptSante, currentPerso.ptSanteMax);
 	
 
 	
@@ -3938,35 +4132,36 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
  * 
  */
 socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis) {
+	animationCadreMap("rouge");
 	var msgAction = "";
 	var codeAction = 0;
 	switch(goulesTues)
 	{
 	case 2: 
-		labelAction.text=("2 zombies tués ! \n-" + degatsSubis + " points de vie");
+		labelAction.text=("2 zombies tués !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 1: 
-		labelAction.text=("1 zombie tué ! \n-" + degatsSubis + " points de vie");
+		labelAction.text=("1 zombie tué !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 0:
-		labelAction.text=("Attaque de zombie : \nerreur interne");
+		labelAction.text=("Attaque de zombie : erreur interne");
 		break;
 
 	case -1:
-		labelAction.text=("Attaque de zombie \néchouée ! -" + degatsSubis + " points de vie");
+		labelAction.text=("Attaque de zombie échouée !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case -2:
-		labelAction.text=("Pas de zombie \ndans la salle !");
+		labelAction.text=("Pas de zombie dans la salle !");
 		break;
 
 	case -10:
-		labelAction.text=("Pas assez de \npoints d'actions !");
+		labelAction.text=("Pas assez de points d'actions !");
 		break;
 	}
 	socket.emit('INFO_PERSONNAGE_CS');
