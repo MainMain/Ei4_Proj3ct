@@ -86,7 +86,7 @@ var _espaceBoutonY=60;
 // Espacement entre les labels
 var _EspaceLabelX = 265;
 var _EspaceLabelY = 20;
-
+var ESPACE_BARRES_Y = 25;
 // Placement Conteneur ItemCase
 var _contItemCaseX = 750;
 var _contItemCaseY = 530;
@@ -166,10 +166,6 @@ var _labelNbEnnemisY = _labelNbAlliesY + _EspaceLabelY;
 var _labelNbGoulesX = _labelNbAlliesX ;
 var _labelNbGoulesY = _labelNbEnnemisY + _EspaceLabelY;
 
-// Placement label description case
-var _labelDescribeCaseX=_labelNbAlliesX;
-var _labelDescribeCaseY=_labelNbGoulesY + _EspaceLabelY;
-
 //------------------ Zone 8 : Proba de la case -------------------------------------------------------
 
 // Placement label Probabilité de Cache
@@ -180,16 +176,6 @@ var _labelProbaCacheY = _labelNbAlliesY ;
 var _labelProbaFouilleX = _labelProbaCacheX ;
 var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
 
-// Placement label id Salle en cours
-var _labelCaseEnCoursX = _labelProbaCacheX;
-var _labelCaseEnCoursY = _labelProbaCacheY + 2*_EspaceLabelY;
-
-//-----------------------------------------------------------------------------------
-
-// Placement label Retour des actions
-var _labelActionX = 10;
-var _labelActionY = 580;
-
 //------------------ Zone 13 : Modes------------------------------------------------------
 
 // Placement label Choix Mode
@@ -199,8 +185,8 @@ var _labelChoixModeY = _contModeY-20;
 //------------------ Zone 4 : Equipement Perso-------------------------------------------------------
 
 // Placement Conteneur ArmeEquip
-var _contArmeX = 60;
-var _contArmeY = 530;
+var _contArmeX = 100;
+var _contArmeY = 470;
 
 // Dimension Conteneur ArmeEquip
 var _contArmeH = 30;
@@ -277,18 +263,6 @@ var _contMapX = 1100/2 - _contMapW/2;
 var _contMapY = 0;
 //var _contMapY = 620/2 - 420/2;
 
-
-// Placement du dernier message
-var _labelDernierMessageX = _labelPtsVX;
-var _labelDernierMessageY = _contMapY-20;
-
-//------------------- Zone 14 : Labels de retour------------------------------------------------------
-//Placement Conteneur des labels de retour
-var _contLabelsActionX = 5;
-var _contLabelsActionY = 120;
-var _contLabelsActionW = 165;
-var _contLabelsActionH = 20*9;
-
 //Placement Conteneur des informations de la case
 var _contInfoCaseX = 175;
 var _contInfoCaseY = 530;
@@ -307,7 +281,7 @@ labelBonusArme, labelBonusArmure, labelCaseEnCours, labelNbAllies, labelNbEnnemi
 labelNbGoules, labelProbaCache, labelProbaFouille, labelPourcentLoad,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim, 
 labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, 
-labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescribeCase,
+labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescriptionCase,
 labelLancementServeur;
 
 
@@ -315,14 +289,14 @@ labelLancementServeur;
 
 var contInvCase, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
 contBtnsListes, contDead, contInfoCase, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
-contListeAllies, contListeEnnemis, contLabelsAction, contMessage;
+contListeAllies, contListeEnnemis, contZoneMessage, contMessage;
 
 //-------------- Déclaration des contours----------------------------------------------
 
 var shape, shape1, shape2, shape3, shape4, shape6, shape7, shape8, shapeMode,
 shapeLabelsAction, shapeMessage, shapeDead, shapeInfoCase,
 shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsInvCaseBis, shapeBtnsListes, 
-shapeBtnsInvPerso, shapeBtnsInvCase;
+shapeBtnsInvPerso, shapeBtnsInvCase, shapeZoneMessage;
 
 //-------------- Déclaration des boutons----------------------------------------------
 
@@ -671,6 +645,36 @@ function setPlateau()
 	// ** creation des conteneurs               *
 	// ******************************************
 
+	// - ZONE CONTENEUR MESSAGE -
+	contZoneMessage = new createjs.Container();
+	contZoneMessage.x = 0;
+	contZoneMessage.y = _contMapH+2;
+	contZoneMessage.height = 60;
+	contZoneMessage.width = _largeurCanvas;
+	stage.addChild(contZoneMessage);
+	shapeZoneMessage = new createjs.Shape();
+	stage.addChild(shapeZoneMessage);
+	shapeZoneMessage.graphics.setStrokeStyle(2).beginStroke("#00FF00").drawRect(
+			contZoneMessage.x-2, contZoneMessage.y-2, contZoneMessage.width+2, contZoneMessage.height+2);
+
+	// Label des messages de retour
+	labelAction = contZoneMessage.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
+	labelAction.x = 5;
+
+	// Label dernier message
+	labelDernierMessage = contZoneMessage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	/*labelDernierMessage.lineHeight = _LineHeight;
+	labelDernierMessage.textBaseline = _TextBaseline;*/
+	labelDernierMessage.x = labelAction.x;
+	labelDernierMessage.y = _EspaceLabelY;
+
+	// Label description case
+	labelDescriptionCase = contZoneMessage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	/*labelDescriptionCase.lineHeight = _LineHeight;
+	labelDescriptionCase.textBaseline = _TextBaseline;*/
+	labelDescriptionCase.x = labelAction.x;
+	labelDescriptionCase.y = 2*_EspaceLabelY;
+
 	//------------------ Zone 7 : Inv Case -------------------------------------------------------
 	contInvCase = new createjs.Container();
 	contInvCase.x = _contItemCaseX;
@@ -726,17 +730,6 @@ function setPlateau()
 	stage.addChild(contMap);
 	//contMap.cache(_contMapX, _contMapY, _contMapW, _contMapH);
 
-	contPerso = new createjs.Container();
-	contPerso.x = -5;
-	contPerso.y = 520;
-	contPerso.height = 64;
-	contPerso.width = 64;
-	stage.addChild(contPerso);
-	/*shapePerso = new createjs.Shape();
-	stage.addChild(shapePerso);
-	shapePerso.graphics.setStrokeStyle(4).beginStroke("#850000").drawRect(
-			2, 2, 173, 96);*/
-
 	//------------------------- Zone 13 : Modes-----------------------------------------------
 	contMode = new createjs.Container();
 	contMode.x = _contModeX;
@@ -744,10 +737,10 @@ function setPlateau()
 	contMode.height = _contModeH;
 	contMode.width = _contModeW;
 	stage.addChild(contMode);
-	/*shapeMode = new createjs.Shape();
+	shapeMode = new createjs.Shape();
 	stage.addChild(shapeMode);
 	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contModeX-4, _contModeY-4, _contModeW+5, _contModeH+5);*/
+			_contModeX-4, _contModeY-4, _contModeW+5, _contModeH+5);
 
 	//------------------------- Zone 8 : Btns Listes---------------------------------------
 	contBtnsListes = new createjs.Container();
@@ -756,10 +749,10 @@ function setPlateau()
 	contBtnsListes.height = _contBtnsListesH;
 	contBtnsListes.width = _contBtnsListesW;
 	stage.addChild(contBtnsListes);
-	/*shapeBtnsListes = new createjs.Shape();
+	shapeBtnsListes = new createjs.Shape();
 	stage.addChild(shapeBtnsListes);
 	shapeBtnsListes.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsListesX-4, _contBtnsListesY-4, _contBtnsListesW+5, _contBtnsListesH+5);*/
+			_contBtnsListesX-4, _contBtnsListesY-4, _contBtnsListesW+5, _contBtnsListesH+5);
 
 	//------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
 	contBtnsInvPerso = new createjs.Container();
@@ -768,10 +761,10 @@ function setPlateau()
 	contBtnsInvPerso.height = _contBtnsInvPersoH;
 	contBtnsInvPerso.width = _contBtnsInvPersoW;
 	stage.addChild(contBtnsInvPerso);
-	/*shapeBtnsInvPerso = new createjs.Shape();
+	shapeBtnsInvPerso = new createjs.Shape();
 	stage.addChild(shapeBtnsInvPerso);
 	shapeBtnsInvPerso.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsInvPersoX-4, _contBtnsInvPersoY-4, _contBtnsInvPersoW+5, _contBtnsInvPersoH+5);*/
+			_contBtnsInvPersoX-4, _contBtnsInvPersoY-4, _contBtnsInvPersoW+5, _contBtnsInvPersoH+5);
 
 	//------------------------- Zone 6 : Btns Inv Case ---------------------------------------
 	contBtnsInvCase = new createjs.Container();
@@ -795,22 +788,6 @@ function setPlateau()
 	stage.addChild(shapeBtnsInvCaseBis);
 	shapeBtnsInvCaseBis.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_contBtnsInvCaseBisX-4, _contBtnsInvCaseBisY-4, _contBtnsInvCaseBisW+5, _contBtnsInvCaseBisH+5);
-
-
-	//------------------------- Zone 14 : Labels de retour ---------------------------------------
-	contLabelsAction 			= new createjs.Container();
-	contLabelsAction.x 			= _contLabelsActionX;
-	contLabelsAction.y 			= _contLabelsActionY;
-	contLabelsAction.height 	= _contLabelsActionH;
-	contLabelsAction.width 		= _contLabelsActionW;
-	stage.addChild(contLabelsAction);
-
-	//labelAction 				= contLabelsAction.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
-
-	/*shapeLabelsAction = new createjs.Shape();
-	stage.addChild(shapeLabelsAction);
-	shapeLabelsAction.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contLabelsActionX-4, _contLabelsActionY-4, _contLabelsActionW+5, _contLabelsActionH+5);*/
 	
 	contInfoCase = new createjs.Container();
 	contInfoCase.x = _contInfoCaseX;
@@ -843,8 +820,8 @@ function setPlateau()
 	frameLifeBar.graphics.setStrokeStyle(1).beginStroke(lifeBarFrameColor).drawRect(-paddingLifeBar/2, -paddingLifeBar/2, lifeBarWidth+paddingLifeBar, lifeBarHeight+paddingLifeBar);
 
 	lifeBarContainer.addChild(lifeBar, frameLifeBar);
-	lifeBarContainer.x = 10;
-	lifeBarContainer.y = 300;
+	lifeBarContainer.x = 200;
+	lifeBarContainer.y = 380;
 	stage.addChild(lifeBarContainer);
 
 	// Barre de Faim
@@ -865,7 +842,7 @@ function setPlateau()
 
 	faimBarContainer.addChild(faimBar, frameFaimBar);
 	faimBarContainer.x = lifeBarContainer.x;
-	faimBarContainer.y = lifeBarContainer.y + _EspaceLabelY;
+	faimBarContainer.y = lifeBarContainer.y + ESPACE_BARRES_Y;
 	stage.addChild(faimBarContainer);
 
 	//------------------- Zone 2 -----------------------------------------------------
@@ -887,7 +864,7 @@ function setPlateau()
 
 	actionBarContainer.addChild(actionBar, frameActionBar);
 	actionBarContainer.x = lifeBarContainer.x;
-	actionBarContainer.y = lifeBarContainer.y + 2*_EspaceLabelY;
+	actionBarContainer.y = lifeBarContainer.y + 2*ESPACE_BARRES_Y;
 	stage.addChild(actionBarContainer);
 
 	// Barre de mouvement
@@ -908,7 +885,7 @@ function setPlateau()
 
 	moveBarContainer.addChild(moveBar, frameMoveBar);
 	moveBarContainer.x = lifeBarContainer.x;
-	moveBarContainer.y = lifeBarContainer.y + 3*_EspaceLabelY;
+	moveBarContainer.y = lifeBarContainer.y + 3*ESPACE_BARRES_Y;
 	stage.addChild(moveBarContainer);
 
 	// Barre de Poids du Sac
@@ -929,7 +906,7 @@ function setPlateau()
 
 	sacBarContainer.addChild(sacBar, frameSacBar);
 	sacBarContainer.x = lifeBarContainer.x;
-	sacBarContainer.y = lifeBarContainer.y + 4*_EspaceLabelY;
+	sacBarContainer.y = lifeBarContainer.y + 4*ESPACE_BARRES_Y;
 	stage.addChild(sacBarContainer);
 
 	// Barre de proba Fouille
@@ -950,7 +927,7 @@ function setPlateau()
 
 	fouilleBarContainer.addChild(fouilleBar, frameFouilleBar);
 	fouilleBarContainer.x = lifeBarContainer.x;
-	fouilleBarContainer.y = lifeBarContainer.y + 7*_EspaceLabelY;
+	fouilleBarContainer.y = lifeBarContainer.y + 7*ESPACE_BARRES_Y;
 	stage.addChild(fouilleBarContainer);
 
 	// Barre de proba Cache
@@ -971,25 +948,12 @@ function setPlateau()
 
 	cacheBarContainer.addChild(cacheBar, frameCacheBar);
 	cacheBarContainer.x = lifeBarContainer.x;
-	cacheBarContainer.y = lifeBarContainer.y + 8*_EspaceLabelY;
+	cacheBarContainer.y = lifeBarContainer.y + 8*ESPACE_BARRES_Y;
 	stage.addChild(cacheBarContainer);
 
 	// ******************************************
 	// ********* Déclaration des labels *********
 	// ******************************************
-
-	// Label description case
-	labelDescribeCase = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelDescribeCase.lineHeight = _LineHeight;
-	labelDescribeCase.textBaseline = _TextBaseline;
-	labelDescribeCase.x = _labelDescribeCaseX;
-	labelDescribeCase.y = _labelDescribeCaseY;
-
-	labelFichePerso = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelFichePerso.lineHeight = _LineHeight;
-	labelFichePerso.textBaseline = _TextBaseline;
-	labelFichePerso.x = contPerso.x + 58;
-	labelFichePerso.y = _labelPtsVY;
 
 	// Label nombre nouveaux messages
 	labelNombreNouvMsg = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
@@ -998,19 +962,12 @@ function setPlateau()
 	labelNombreNouvMsg.x = _labelNombreNouvMsgX;
 	labelNombreNouvMsg.y = _labelNombreNouvMsgY;
 
-	// Label dernier message
-	labelDernierMessage = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelDernierMessage.lineHeight = _LineHeight;
-	labelDernierMessage.textBaseline = _TextBaseline;
-	labelDernierMessage.x = _labelDernierMessageX;
-	labelDernierMessage.y = _labelDernierMessageY;
-
 	// Label nom case en cours
 	labelCaseEnCours = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelCaseEnCours.lineHeight = _LineHeight;
 	labelCaseEnCours.textBaseline = _TextBaseline;
-	labelCaseEnCours.x = _labelCaseEnCoursX;
-	labelCaseEnCours.y = _labelCaseEnCoursY;
+	labelCaseEnCours.x = 5;
+	labelCaseEnCours.y = 5;
 
 	// Label presentation objet dans la case
 	labelObjetCase = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
@@ -1424,17 +1381,17 @@ function afficherDescCase(desc)
 	try 
 	{
 		// instructions à essayer
-		labelDescribeCase.text="";
+		labelDescriptionCase.text="";
 		for (var i = 0; i < desc.length ; i+=longLigneMax) 
 		{
 			var message=desc.substring(i,i+longLigneMax);
 			if(i==longLigneMax || desc.length<longLigneMax)
 			{
-				labelDescribeCase.text+=message;
+				labelDescriptionCase.text+=message;
 			}
 			else
 			{
-				labelDescribeCase.text+=message + "-\n";
+				labelDescriptionCase.text+=message + "-\n";
 			}
 		}
 	}
@@ -2345,8 +2302,8 @@ function setColorMsgRetour()
 	}
 
 	// Conteneur labels Move
-	contLabelsAction.removeAllChildren();
-	labelAction = contLabelsAction.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
+	contZoneMessage.removeChild(labelAction);
+	labelAction = contZoneMessage.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
 	labelAction.lineHeight = _LineHeight;
 	labelAction.textBaseline = _TextBaseline;
 	labelAction.x = 0;
@@ -2756,10 +2713,10 @@ function afficherMessageRetour(msg, type)
 	else 				_colorLabelAction = "#FFFFFF";
 
 	// vide le conteneur
-	contLabelsAction.removeAllChildren();
+	contZoneMessage.removeChild(labelAction);
 
 	// ajoute le label
-	labelAction 				= contLabelsAction.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
+	labelAction 				= contZoneMessage.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
 	labelAction.lineHeight 		= _LineHeight;
 	labelAction.textBaseline 	= _TextBaseline;
 	labelAction.x 				= 0;
@@ -2772,7 +2729,7 @@ function afficherMessageRetour(msg, type)
 	setTimeout(function() 
 	{
 		// vide le conteneur
-		contLabelsAction.removeAllChildren();
+		contZoneMessage.removeChild(labelAction);
 		stage.update();
 	}, 5000);	
 }
@@ -3112,7 +3069,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		ProbCache=(currentCase.probaCache * _persoProbaCache);
 		ProbFouille=(currentCase.probaObjet * _persoProbaFouille);
 
-		labelCaseEnCours.text=("Case en cours : " + currentCase.nom + "");
+		labelCaseEnCours.text=("Case en cours :\n" + currentCase.nom + "");
 		/*labelNbAllies.text=("Alliés dans la salle  : " + nbrAllies + "");
 		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
 		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
@@ -3354,7 +3311,11 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso) {
 		imgPerso = new createjs.Bitmap("public/spritesheets/persos/perso.gif");
 		classe="Pas de compétence";
 	}
-	contPerso.addChild(imgPerso);
+	imgPerso.scaleX=1.5;
+	imgPerso.scaleY=1.5;
+	imgPerso.x = 0;
+	imgPerso.y = 450;
+	stage.addChild(imgPerso);
 
 	
 	var PointsAttaque, PointsDefense;
