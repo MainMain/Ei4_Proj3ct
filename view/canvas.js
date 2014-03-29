@@ -188,8 +188,8 @@ var _labelProbaFouilleY = _labelProbaCacheY + _EspaceLabelY;
 //------------------ Zone 13 : Modes------------------------------------------------------
 
 // Placement label Choix Mode
-var _labelChoixModeX = _contModeX+5;
-var _labelChoixModeY = _contModeY-20;
+//var _labelChoixModeX = _contBtnModesX+5;
+//var _labelChoixModeY = _contBtnModesY-20;
 
 //------------------ Zone 4 : Equipement Perso-------------------------------------------------------
 
@@ -212,8 +212,8 @@ var _contArmureW = 30;
 //------------------ Zone 8 : Listes-------------------------------------------------------
 
 // Placement Conteneur des Boutons liste
-var _contBtnsListesX = 10;
-var _contBtnsListesY = 200;
+var _contBtnsListesX = 50;
+var _contBtnsListesY = 180;
 var _contBtnsListesW = 140;
 var _contBtnsListesH = 2*_espaceBoutonY;
 
@@ -225,40 +225,15 @@ var _labelNombreNouvMsgY=_contBtnsListesY + 100;
 var _labelBtnsListesX = _contBtnsListesX+2;
 var _labelBtnsListesY = _contBtnsListesY-20;
 
-// - ZONE DESSOUS CARTE -
-// Placement Conteneur des _labelProbaCacheYboutons de mode
-var _contModeX = 440;
-var _contModeY = 430;
-var _contModeW = 140;
-var _contModeH = 3*_espaceBoutonY;
-
-// Placement Conteneur des Boutons perso
-var _contBtnsInvPersoX = _contModeX+170;
-var _contBtnsInvPersoY = _contModeY;
-var _contBtnsInvPersoW = 140;
-var _contBtnsInvPersoH = 3*_espaceBoutonY;
-
-// Placement Conteneur des Boutons case
-var _contBtnsInvCaseX = _contModeX+2*170;
-var _contBtnsInvCaseY = _contModeY;
-var _contBtnsInvCaseW = 140;
-var _contBtnsInvCaseH = 2*_espaceBoutonY;
-
-// Placement Conteneur des Boutons case Bis
-var _contBtnsInvCaseBisX = _contModeX+3*170;
-var _contBtnsInvCaseBisY = _contModeY;
-var _contBtnsInvCaseBisW = 140;
-var _contBtnsInvCaseBisH = 2*_espaceBoutonY;
-
 // Placement label Choix Mode
-var _labelBtnsInvPersoX = _contBtnsInvPersoX-5;
-var _labelBtnsInvPersoY = _contBtnsInvPersoY-20;
+//var _labelBtnsInvPersoX = _contBtnsInvPersoX-5;
+//var _labelBtnsInvPersoY = _contBtnsInvPersoY-20;
 
 //------------------------- Zone 6 : Btns Inv Case ---------------------------------------
 
 // Placement label Choix Mode
-var _labelBtnsInvCaseX = _contBtnsInvCaseX-5;
-var _labelBtnsInvCaseY = _contBtnsInvCaseY-20;
+//var _labelBtnsInvCaseX = _contBtnsInvCaseX-5;
+//var _labelBtnsInvCaseY = _contBtnsInvCaseY-20;
 
 //------------------ Zone 12 : Map -------------------------------------------------------
 
@@ -322,7 +297,7 @@ labelLancementServeur;
 
 //-------------- Déclaration des conteneurs----------------------------------------------
 
-var _CONT_INV_CASE, contInvPerso, contArme, contArmure, contMap, contPerso, contMode,
+var _CONT_INV_CASE, contInvPerso, contArme, contArmure, contMap, contPerso, contBtnModes,
 contBtnsListes, contDead, contInfoCase, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
 contListeAllies, contListeEnnemis, contZoneMessage, contMessage;
 
@@ -348,8 +323,8 @@ onload = initialize;
  */
 
 var lifeBarContainer;
-function initialize() {
-
+function initialize() 
+{
 	// ************************************************
 	// * Création du canvas et des autres élements   **
 	// ************************************************
@@ -359,8 +334,6 @@ function initialize() {
 	
 	//Création du stage (la scène) + recupération de sa taille
 	stage = new createjs.Stage(canvas);
-
-
 /*	createjs.Ticker.addListener("tick", function()
 	{
 		alert("tick");
@@ -573,7 +546,19 @@ function initialize() {
 	                {src:"public/spritesheets/nourriture/710.png", id:"710"},
 	                {src:"public/spritesheets/nourriture/711.png", id:"711"},
 	                {src:"public/spritesheets/nourriture/712.png", id:"712"},
-	                {src:"public/spritesheets/nourriture/713.png", id:"713"}
+	                {src:"public/spritesheets/nourriture/713.png", id:"713"},
+	                {src:"public/pictos/nbrAllie.png", id:"imgAllies"},
+	                {src:"public/pictos/nbrEnnemis.png", id:"imgEnnemis"},
+	                {src:"public/pictos/nbrZombies.png", id:"imgZombies"},
+	                {src:"public/pictos/ptsVie.png", id:"imgVie"},
+	                {src:"public/pictos/ptsFaim.png", id:"imgFaim"},
+	                {src:"public/pictos/ptsAction.png", id:"imgAction"},
+	                {src:"public/pictos/ptsMouvement.png", id:"imgMouvement"},
+	                {src:"public/pictos/poidsSac.png", id:"imgSac"},
+	                {src:"public/pictos/ptsAttaque.png", id:"imgAttaque"},
+	                {src:"public/pictos/ptsDef.png", id:"imgDefense"},
+	                {src:"public/pictos/probaFouille.png", id:"imgFouille"},
+	                {src:"public/pictos/probaCache.png", id:"imgCache"}
 	                ];
 
 	// application du background Preload
@@ -681,8 +666,6 @@ function start()
 		{
 		setPlateau();
 		}
-		
-	
 }
 
 function setPlateau()
@@ -728,15 +711,15 @@ function setPlateau()
 
 	//------------------ Zone 7 : Inv Case -------------------------------------------------------
 	_CONT_INV_CASE = new createjs.Container();
-	_CONT_INV_CASE.x = _contItemCaseX;
-	_CONT_INV_CASE.y = _contItemCaseY;
+	_CONT_INV_CASE.x = _contItemPersoX;
+	_CONT_INV_CASE.y = _contItemPersoY+40;
 	_CONT_INV_CASE.height = _contItemCaseH;
 	_CONT_INV_CASE.width = _contItemCaseW;
 	stage.addChild(_CONT_INV_CASE);
 	shape = new createjs.Shape();
 	stage.addChild(shape);
 	shape.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contItemCaseX-4, _contItemCaseY-4, _contItemCaseW+4, _contItemCaseH+4);
+			_CONT_INV_CASE.x-4, _CONT_INV_CASE.y-4, _CONT_INV_CASE.width+4, _CONT_INV_CASE.height+4);
 
 	//------------------ Zone 4 : Equipement perso -------------------------------------------------------
 	contInvPerso = new createjs.Container();
@@ -781,17 +764,17 @@ function setPlateau()
 	stage.addChild(contMap);
 	//contMap.cache(_contMapX, _contMapY, _contMapW, _contMapH);
 
-	//------------------------- Zone 13 : Modes-----------------------------------------------
-	contMode = new createjs.Container();
-	contMode.x = _contModeX;
-	contMode.y = _contModeY;
-	contMode.height = _contModeH;
-	contMode.width = _contModeW;
-	stage.addChild(contMode);
-	shapeMode = new createjs.Shape();
-	stage.addChild(shapeMode);
-	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contModeX-4, _contModeY-4, _contModeW+5, _contModeH+5);
+	// - ZONE BOUTONS -
+	contBoutons = new createjs.Container();
+	contBoutons.x = 420;
+	contBoutons.y = 380;
+	contBoutons.height = _CANVAS_HAUTEUR - contBoutons.y;
+	contBoutons.width = _CANVAS_LARGEUR - contBoutons.x;
+	stage.addChild(contBoutons);
+	shapeBoutons = new createjs.Shape();
+	stage.addChild(shapeBoutons);
+	shapeBoutons.graphics.setStrokeStyle(1).beginStroke("#FFFF00").drawRect(
+			contBoutons.x, contBoutons.y, contBoutons.width, contBoutons.height);
 
 	//------------------------- Zone 8 : Btns Listes---------------------------------------
 	contBtnsListes = new createjs.Container();
@@ -805,40 +788,52 @@ function setPlateau()
 	shapeBtnsListes.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_contBtnsListesX-4, _contBtnsListesY-4, _contBtnsListesW+5, _contBtnsListesH+5);
 
+	//------------------------- Placement Conteneur des Boutons perso -----------------------------------------------
+	contBtnModes = new createjs.Container();
+	contBtnModes.x = 20;
+	contBtnModes.y = 40;
+	contBtnModes.height = 3*_espaceBoutonY;
+	contBtnModes.width = 140;
+	contBoutons.addChild(contBtnModes);
+	/*shapeMode = new createjs.Shape();
+	contBoutons.addChild(shapeMode);
+	shapeMode.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+			contBtnModes.x-4, contBtnModes.y-4, contBtnModes.width+5, contBtnModes.height+5);*/
+
 	//------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
 	contBtnsInvPerso = new createjs.Container();
-	contBtnsInvPerso.x = _contBtnsInvPersoX;
-	contBtnsInvPerso.y = _contBtnsInvPersoY;
-	contBtnsInvPerso.height = _contBtnsInvPersoH;
-	contBtnsInvPerso.width = _contBtnsInvPersoW;
-	stage.addChild(contBtnsInvPerso);
-	shapeBtnsInvPerso = new createjs.Shape();
-	stage.addChild(shapeBtnsInvPerso);
+	contBtnsInvPerso.x = contBtnModes.x+170;
+	contBtnsInvPerso.y = contBtnModes.y;
+	contBtnsInvPerso.height = 3*_espaceBoutonY;
+	contBtnsInvPerso.width = contBtnModes.width ;
+	contBoutons.addChild(contBtnsInvPerso);
+	/*shapeBtnsInvPerso = new createjs.Shape();
+	contBoutons.addChild(shapeBtnsInvPerso);
 	shapeBtnsInvPerso.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsInvPersoX-4, _contBtnsInvPersoY-4, _contBtnsInvPersoW+5, _contBtnsInvPersoH+5);
+			contBtnsInvPerso.x-4, contBtnsInvPerso.y-4, contBtnsInvPerso.width+4, contBtnsInvPerso.height+4);*/
 
 	//------------------------- Zone 6 : Btns Inv Case ---------------------------------------
 	contBtnsInvCase = new createjs.Container();
-	contBtnsInvCase.x = _contBtnsInvCaseX;
-	contBtnsInvCase.y = _contBtnsInvCaseY;
-	contBtnsInvCase.height = _contBtnsInvCaseH;
-	contBtnsInvCase.width = _contBtnsInvCaseW;
-	stage.addChild(contBtnsInvCase);
-	shapeBtnsInvCase = new createjs.Shape();
-	stage.addChild(shapeBtnsInvCase);
+	contBtnsInvCase.x = contBtnModes.x+2*170;
+	contBtnsInvCase.y = contBtnModes.y;
+	contBtnsInvCase.height = 2*_espaceBoutonY;
+	contBtnsInvCase.width = contBtnModes.width;
+	contBoutons.addChild(contBtnsInvCase);
+	/*shapeBtnsInvCase = new createjs.Shape();
+	contBoutons.addChild(shapeBtnsInvCase);
 	shapeBtnsInvCase.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsInvCaseX-4, _contBtnsInvCaseY-4, _contBtnsInvCaseW+5, _contBtnsInvCaseH+5);
+			contBtnsInvCase.x-4, contBtnsInvCase.y-4, contBtnsInvCase.width+4, contBtnsInvCase.height+4);*/
 
 	contBtnsInvCaseBis = new createjs.Container();
-	contBtnsInvCaseBis.x = _contBtnsInvCaseBisX;
-	contBtnsInvCaseBis.y = _contBtnsInvCaseBisY;
-	contBtnsInvCaseBis.height = _contBtnsInvCaseBisH;
-	contBtnsInvCaseBis.width = _contBtnsInvCaseBisW;
-	stage.addChild(contBtnsInvCaseBis);
-	shapeBtnsInvCaseBis = new createjs.Shape();
-	stage.addChild(shapeBtnsInvCaseBis);
+	contBtnsInvCaseBis.x = contBtnModes.x+3*170;
+	contBtnsInvCaseBis.y = contBtnModes.y;
+	contBtnsInvCaseBis.height = 2*_espaceBoutonY;
+	contBtnsInvCaseBis.width = contBtnModes.width;
+	contBoutons.addChild(contBtnsInvCaseBis);
+	/*shapeBtnsInvCaseBis = new createjs.Shape();
+	contBoutons.addChild(shapeBtnsInvCaseBis);
 	shapeBtnsInvCaseBis.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsInvCaseBisX-4, _contBtnsInvCaseBisY-4, _contBtnsInvCaseBisW+5, _contBtnsInvCaseBisH+5);
+			contBtnsInvCaseBis.x-4, contBtnsInvCaseBis.y-4, contBtnsInvCaseBis.width+4, contBtnsInvCaseBis.height+4);*/
 	
 	contInfoCase = new createjs.Container();
 	contInfoCase.x = _contInfoCaseX;
@@ -969,6 +964,103 @@ function setPlateau()
 	stage.addChild(cacheBarContainer);
 
 	_CONTENEUR_BARRES_INITIALISES = true;
+
+	// - ZONE PICTOGRAMMES BARRES DU PERSO-
+	contPictoBarres = new createjs.Container();
+	contPictoBarres.x = lifeBarContainer.x - 40;
+	contPictoBarres.y = lifeBarContainer.y - 10;
+	contPictoBarres.height = 8*ESPACE_BARRES_Y + 40;
+	contPictoBarres.width = 32;
+	stage.addChild(contPictoBarres);
+	shapePictoBarres = new createjs.Shape();
+	stage.addChild(shapePictoBarres);
+	shapePictoBarres.graphics.setStrokeStyle(2).beginStroke("#00FF00").drawRect(
+			contPictoBarres.x-2, contPictoBarres.y-2, contPictoBarres.width+2, contPictoBarres.height+2);
+
+	imgVie = new createjs.Bitmap("public/pictos/ptsVie.png");
+	imgVie.y=-2;
+	contPictoBarres.addChild(imgVie);
+
+	imgFaim = new createjs.Bitmap("public/pictos/ptsFaim.png");
+	imgFaim.y=25;
+	contPictoBarres.addChild(imgFaim);
+
+	imgAction = new createjs.Bitmap("public/pictos/ptsAction.png");
+	imgAction.y=25*2;
+	contPictoBarres.addChild(imgAction);
+
+	imgMouvement = new createjs.Bitmap("public/pictos/ptsMouvement.png");
+	imgMouvement.y=25*3;
+	contPictoBarres.addChild(imgMouvement);
+
+	imgSac = new createjs.Bitmap("public/pictos/poidsSac.png");
+	imgSac.y=25*4;
+	contPictoBarres.addChild(imgSac);
+
+	imgAttaque = new createjs.Bitmap("public/pictos/ptsAttaque.png");
+	imgAttaque.y=25*5;
+	contPictoBarres.addChild(imgAttaque);
+
+	imgDefense = new createjs.Bitmap("public/pictos/ptsDef.png");
+	imgDefense.y=25*6;
+	contPictoBarres.addChild(imgDefense);
+
+	imgFouille = new createjs.Bitmap("public/pictos/probaFouille.png");
+	imgFouille.y=25*7;
+	contPictoBarres.addChild(imgFouille);
+
+	imgCache = new createjs.Bitmap("public/pictos/probaCache.png");
+	imgCache.y=25*8;
+	contPictoBarres.addChild(imgCache);
+
+	// - ZONE PICTOGRAMMES INFO CASE-
+	contPictoCase = new createjs.Container();
+	contPictoCase.x = 50;
+	contPictoCase.y = 45;
+	contPictoCase.height = 3*ESPACE_BARRES_Y + 40;
+	contPictoCase.width = 32;
+	stage.addChild(contPictoCase);
+	shapePictoCase = new createjs.Shape();
+	stage.addChild(shapePictoCase);
+	shapePictoCase.graphics.setStrokeStyle(2).beginStroke("#00FF00").drawRect(
+			contPictoCase.x-2, contPictoCase.y-2, contPictoCase.width+2, contPictoCase.height+2);
+
+	imgAllies = new createjs.Bitmap("public/pictos/nbrAllie.png");
+	imgAllies.y=-2;
+	contPictoCase.addChild(imgAllies);
+
+	imgEnnemis = new createjs.Bitmap("public/pictos/nbrEnnemis.png");
+	imgEnnemis.y=32;
+	contPictoCase.addChild(imgEnnemis);
+
+	imgZombies = new createjs.Bitmap("public/pictos/nbrZombies.png");
+	imgZombies.x=-2;
+	imgZombies.y=33*2;
+	contPictoCase.addChild(imgZombies);
+
+	labelNbAllies = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	/*labelNbAllies.lineHeight = _LineHeight;
+	labelNbAllies.textBaseline = _TextBaseline;*/
+	labelNbAllies.x = contPictoCase.x + 35 ;
+	labelNbAllies.y = contPictoCase.y + 5;
+	labelNbAllies.text="labelNbAllies";
+
+	labelNbEnnemis = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	/*labelNbEnnemis.lineHeight = _LineHeight;
+	labelNbEnnemis.textBaseline = _TextBaseline;*/
+	labelNbEnnemis.x = labelNbAllies.x;
+	labelNbEnnemis.y = labelNbAllies.y+35;
+	labelNbEnnemis.text="labelNbEnnemis";
+
+	labelNbGoules = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	/*labelNbGoules.lineHeight = _LineHeight;
+	labelNbGoules.textBaseline = _TextBaseline;*/
+	labelNbGoules.x = labelNbAllies.x;
+	labelNbGoules.y = labelNbAllies.y+32*2+10;
+	labelNbGoules.text="labelNbGoules";
+
+
+
 	// ******************************************
 	// ********* Déclaration des labels *********
 	// ******************************************
@@ -1006,7 +1098,7 @@ function setPlateau()
 	labelInventaire.x = _labelItemPersoX;
 	labelInventaire.y = _labelItemPersoY;
 
-	labelChoixMode = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	/*labelChoixMode = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelChoixMode.lineHeight = _LineHeight;
 	labelChoixMode.textBaseline = _TextBaseline;
 	labelChoixMode.x = _labelChoixModeX;
@@ -1032,7 +1124,7 @@ function setPlateau()
 	labelBtnsInvCase.textBaseline = _TextBaseline;
 	labelBtnsInvCase.x = _labelBtnsInvCaseX-8;
 	labelBtnsInvCase.y = _labelBtnsInvCaseY;
-	//labelBtnsInvCase.text="Actions sur la case :";
+	//labelBtnsInvCase.text="Actions sur la case :";*/
 
 	labelArme = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelArme.lineHeight = _LineHeight;
@@ -1101,24 +1193,6 @@ function setPlateau()
 	labelBonusArmure.textBaseline = _TextBaseline;
 	labelBonusArmure.x = _labelPtsDefX + 170;
 	labelBonusArmure.y = _labelPtsDefY;
-
-	labelNbAllies = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelNbAllies.lineHeight = _LineHeight;
-	labelNbAllies.textBaseline = _TextBaseline;
-	labelNbAllies.x = _labelNbAlliesX ;
-	labelNbAllies.y = _labelNbAlliesY;
-
-	labelNbEnnemis = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelNbEnnemis.lineHeight = _LineHeight;
-	labelNbEnnemis.textBaseline = _TextBaseline;
-	labelNbEnnemis.x = _labelNbEnnemisX;
-	labelNbEnnemis.y = _labelNbEnnemisY;
-
-	labelNbGoules = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelNbGoules.lineHeight = _LineHeight;
-	labelNbGoules.textBaseline = _TextBaseline;
-	labelNbGoules.x = _labelNbGoulesX;
-	labelNbGoules.y = _labelNbGoulesY;
 
 	labelProbaCache = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelProbaCache.lineHeight = _LineHeight;
@@ -2228,7 +2302,6 @@ function majBtnsItemCase()
 	//stage.update();
 }
 
-
 function setBtnJoueurs(nbJoueurs)
 {
 	if(nbJoueurs>0)
@@ -2369,7 +2442,6 @@ function setContourBarre(x, y)
 	ctx.stroke();
 }
 
-
 /*
  *
  * MISES A JOUR DE L'INTERFACE
@@ -2377,8 +2449,8 @@ function setContourBarre(x, y)
  */
 function majPositionPerso(currentPerso)
 {
-	
 }
+
 function majInventairePerso(currentPerso)
 {
 	// ********* AFFICHAGE POINTS ATT ET DEF DU PERSO *********/
@@ -2973,7 +3045,6 @@ function majBarreVie(ptsVie, ptsVieMax)
 		}
 		_BLINK_CPT--;
 	}, 200);	
-
 }
 
 function majFichePersoSimple(currentPerso)
@@ -3053,14 +3124,14 @@ function majBoutonsMode(currentPerso)
 {
 	// ********* AFFICHAGE DES BOUTONS DE MODE *********/
 	//stage.removeChild(BtnFouiller, BtnCacher, BtnDefendre);
-	contMode.removeAllChildren();
+	contBtnModes.removeAllChildren();
 	switch(currentPerso.mode)
 	{
 	// mode oisif
 	case 0:
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
 		BtnFouiller.y=0;
-		contMode.addChild(BtnFouiller);
+		contBtnModes.addChild(BtnFouiller);
 		BtnFouiller.addEventListener('click', function(event)
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 1);
@@ -3074,7 +3145,7 @@ function majBoutonsMode(currentPerso)
 		
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
-		contMode.addChild(BtnCacher);
+		contBtnModes.addChild(BtnCacher);
 		BtnCacher.addEventListener('click', function(event) 
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 2);
@@ -3087,7 +3158,7 @@ function majBoutonsMode(currentPerso)
 				});	
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
-		contMode.addChild(BtnDefendre);
+		contBtnModes.addChild(BtnDefendre);
 		BtnDefendre.addEventListener('click', function(event) 
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 3);
@@ -3107,11 +3178,11 @@ function majBoutonsMode(currentPerso)
 	case 1 :
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleGreen.png");
 		BtnFouiller.y=0;
-		contMode.addChild(BtnFouiller);
+		contBtnModes.addChild(BtnFouiller);
 
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
-		contMode.addChild(BtnCacher);
+		contBtnModes.addChild(BtnCacher);
 		BtnCacher.addEventListener('click', function(event) 
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 2);
@@ -3124,7 +3195,7 @@ function majBoutonsMode(currentPerso)
 				});	
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
-		contMode.addChild(BtnDefendre);
+		contBtnModes.addChild(BtnDefendre);
 		BtnDefendre.addEventListener('click', function(event) 
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 3);
@@ -3145,7 +3216,7 @@ function majBoutonsMode(currentPerso)
 	case 2 :  
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
 		BtnFouiller.y=0;
-		contMode.addChild(BtnFouiller);
+		contBtnModes.addChild(BtnFouiller);
 		BtnFouiller.addEventListener('click', function(event) 
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 1);
@@ -3158,10 +3229,10 @@ function majBoutonsMode(currentPerso)
 				});	
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheGreen.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
-		contMode.addChild(BtnCacher);
+		contBtnModes.addChild(BtnCacher);
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
-		contMode.addChild(BtnDefendre);
+		contBtnModes.addChild(BtnDefendre);
 		BtnDefendre.addEventListener('click', function(event) 
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 3);
@@ -3182,7 +3253,7 @@ function majBoutonsMode(currentPerso)
 	case 3 :  
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
 		BtnFouiller.y=0;
-		contMode.addChild(BtnFouiller);
+		contBtnModes.addChild(BtnFouiller);
 		BtnFouiller.addEventListener('click', function(event) 
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 1);
@@ -3195,7 +3266,7 @@ function majBoutonsMode(currentPerso)
 				});	
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
-		contMode.addChild(BtnCacher);
+		contBtnModes.addChild(BtnCacher);
 		BtnCacher.addEventListener('click', function(event) 
 		{
 			socket.emit('PERSONNAGE_MODE_CS', 2);
@@ -3208,7 +3279,7 @@ function majBoutonsMode(currentPerso)
 				});	
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseGreen.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
-		contMode.addChild(BtnDefendre);
+		contBtnModes.addChild(BtnDefendre);
 
 		BtnDefendre.cursor="not-allowed";
 		BtnFouiller.cursor=BtnCacher.cursor="pointer";
@@ -3322,7 +3393,6 @@ function majMessages(currentPerso)
 		BtnMessages.cursor="not-allowed";
 	}
 }
-
 
 /*
  *
@@ -3445,6 +3515,7 @@ function afficherTooltip(x, y, obj)
 	// ajout du conteneur au stage
 	stage.addChild(_CONTENEUR_TOOLTIP);
 }
+
 function supprimerTooltip()
 {
 	stage.removeChild(_CONTENEUR_TOOLTIP);
@@ -3465,6 +3536,7 @@ function afficherSelecteurItem(x, y, taille)
 	//Select.x = x;
 	//Select.y = 0;
 }
+
 function supprimerSelecteurItem()
 {
 	// supprime l'ancien fond
@@ -3473,11 +3545,10 @@ function supprimerSelecteurItem()
 
 function afficherFichePersoDetaillee()
 {
-
 }
+
 function supprimerFichePersoDetaillee()
 {
-
 }
 
 /*
@@ -3493,6 +3564,7 @@ function animationAttaqueZombie(nombreZombies)
 
 	// maj label zombies attaquantes
 }
+
 // fait clignoter une fois le cadre de map de la couleur voulu 
 function animationCadreMap(couleur)
 {
@@ -3506,8 +3578,6 @@ function animationCadreMap(couleur)
 		defineCadreMap("gris");
 	}, 250);	
 }
-
-
 
 //******************************************
 //********* RECEPTION SERVEUR **************
@@ -3525,7 +3595,8 @@ function animationCadreMap(couleur)
  * 
  * 
  */
-socket.on('MOVE_PERSONNAGE_SC', function (reponse) {
+socket.on('MOVE_PERSONNAGE_SC', function (reponse)
+{
 	switch(reponse)
 	{
 	case 0:
@@ -3559,7 +3630,8 @@ socket.on('MOVE_PERSONNAGE_SC', function (reponse) {
  * erreur : -3 si item n'est ni arme ni armure
  * erreur : -4 si l'item a dequiper n'est pas équipé au préalable
  */
-socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour, currentPerso) {
+socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour, currentPerso)
+{
 	var msgAction = "";
 	var codeAction = 0;
 	if (codeRetour == 0) 
@@ -3666,7 +3738,8 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour, currentP
  * 
  * ET nbr goules attaquantes
  */
-socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
+socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
+{
 	var msgAction = "";
 	var codeAction = 0;
 	if (type == 'RAMASSER') {
@@ -3769,7 +3842,8 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG) {
  * 
  * ET nbr ennemis
  */
-socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase) {
+socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase)
+{
 	var msgAction = "";
 	var codeAction = 0;
 	
@@ -3889,7 +3963,8 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso)
  * erreur : -1 si objet n'est pas dans le sac
  * erreur : -2 si objet pas utilisable
  */
-socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
+socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour)
+{
 	var msgAction = "";
 	var codeAction = 0;
 
@@ -3923,7 +3998,8 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour){
  * 
  * ET nbr goules attaquantes
  */
-socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoulesA) {
+socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoulesA)
+{
 	var msgAction = "";
 	var codeAction = 0;
 
@@ -3993,7 +4069,8 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoul
  * 
  * ET nbr goules attaquantes
  */
-socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, ajouteAuSac, nbrEnnemisDecouverts, nbrGoulesA) {
+socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, ajouteAuSac, nbrEnnemisDecouverts, nbrGoulesA)
+{
 	var msgAction = "";
 	var codeAction = 0;
 	switch(reponse)
@@ -4083,7 +4160,8 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
  * 
  * ET nbr goules attaquantes
  */
-socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbrGoulesA){
+socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbrGoulesA)
+{
 	var msgAction = "";
 	var codeAction = 0;
 	switch(codeRetour)
@@ -4141,7 +4219,8 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
  * ET degats reçus
  * 
  */
-socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoulesA) {
+socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoulesA)
+{
 	// s'il a eu des degats, on maj le perso
 	if(degatsSubis != 0)
 	{
@@ -4193,7 +4272,8 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoule
  * return tableau associatif : [pseudo, personnageAAfficher]
  * erreur : liste vide si aucun allié dans la case
  */ 
-socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
+socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
+{
 	var msgAction = "";
 	var codeAction = 0;
 	var i=0;
@@ -4395,7 +4475,8 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
  * return liste des ennemis (tableau associatif) [idUtilisateur, personnageEnnemi]
  * erreur : liste vide si aucun ennemis dans la case
  */ 
-socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
+socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
+{
 	var msgAction = "";
 	var codeAction = 0;
 
@@ -4818,7 +4899,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 	catch(e){}
 
 	socket.emit('INFO_PERSONNAGE_CS');
-		});
+});
 
 socket.on('ATTAQUE_NUIT_SC', function ()
 {
@@ -4826,7 +4907,8 @@ socket.on('ATTAQUE_NUIT_SC', function ()
 	attaqueNuit();
 });
 
-socket.on('GET_DATE_SC', function (dateLancementSrv){
+socket.on('GET_DATE_SC', function (dateLancementSrv)
+{
 	labelLancementServeur.text="";
 	var annee = dateLancementSrv.substring(0,4);
 	var mois = dateLancementSrv.substring(5,7);
@@ -4834,7 +4916,7 @@ socket.on('GET_DATE_SC', function (dateLancementSrv){
 	var heure = parseInt(dateLancementSrv.substring(11,13))+1;
 	var minuit = dateLancementSrv.substring(17,19);
 	labelLancementServeur.text="Le "+jour+"/"+mois+" à "+heure +":" +minuit;
-		});
+});
 
 //Creer bouton tout simple :
 //var BtnSaveBD = stage.addChild(new Button("SAVE BD", ColorBtn));
