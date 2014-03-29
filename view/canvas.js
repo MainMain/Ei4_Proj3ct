@@ -7,27 +7,35 @@
  * 
  */
 
+
+
 // Variables pour le canvas
-var canvas, stage, _largeurCanvas, _hauteurCanvas;
+var canvas, stage, _CANVAS_LARGEUR, _CANVAS_HAUTEUR;
 
 // Variables pour les images
 var background, backgroundPreload, map, person, imgPerso;
 
+// Variables pour ne pas afficher les object sur context
+var _ECRAN_ATTAQUE_NUIT = false;
+var _ECRAN_MORT			= false
 // Variables pour les sélections
 var _SELECTED_ITEM_CASE = -1;
 var _SELECTED_ITEM_PERSO = -1;
 var _SELECTED_ITEM_PERSOType = -1;
 var _SELECTED_ITEM_EQUIP = -1;
-var _selectedPerso = -1;
+var _SELECTED_PERSO = -1;
 
 // Variables pour les barres
-var _barHeight = 20 ;
-var _barWidth = 200;
-var _barFrameColor = createjs.Graphics.getRGB(0,0,0);
+var _BARRES_HEIGHT = 11;
+var _BARRES_WIDTH = 200;
+var _BARRES_CONTOUR_COULEUR = createjs.Graphics.getRGB(150,150,150);
+var _BARRES_PADDING = 2;
+var _BARRES_FRAMES_STROKE = 2;
 
-// Variables pour les probabilités du perso
+// Variables pour le  perso
 var _PERSO_PROBA_CACHE=1;
 var _PERSO_PROBA_FOUILLE=1;
+var _PERSO_LAST_PTS_VIE = 0;
 
 //Liste des messages du personnage ( ! global ) 
 var _listeMessages;
@@ -37,12 +45,12 @@ var _boolColorAction=false;
 var _colorLabelAction;
 
 // Variables pour la navigation entre les pages items/persos/messages
-var PageItemPerso=0;
-var PageItemPersoDead=0;
-var PageItemCase=0;
-var PagePersoEnn=0;
-var PagePersoAllies=0;
-var PageMessage=0;
+var _PAGE_ITEM_PERSO=0;
+var _PAGE_ITEM_PERSO_DEAD=0;
+var _PAGE_ITEM_CASE=0;
+var _PAGE_PERSO_ENN=0;
+var _PAGE_PERSO_ALLIES=0;
+var _PAGE_MESSAGES=0;
 
 // Variables pour l'affichage des items équipés une fois
 
@@ -50,12 +58,13 @@ var PageMessage=0;
 //var pressBtnEquipArmure=true;
 
 // Variables correspondant aux flèches des pages
-var BtnPageItemPersoRight, BtnPageItemPersoLeft, BtnPageItemCaseRight, BtnPageItemCaseLeft, BtnPageItemPersoDeadRight, BtnPageItemPersoDeadLeft;
+var Btn_PAGE_ITEM_PERSORight, Btn_PAGE_ITEM_PERSOLeft, Btn_PAGE_ITEM_CASERight, Btn_PAGE_ITEM_CASELeft, Btn_PAGE_ITEM_PERSO_DEADRight, Btn_PAGE_ITEM_PERSO_DEADLeft;
 
 //******************************************
 //*  Réglages mise en forme (partie Design)*
 //******************************************
 
+ var _CONTENEUR_BARRES_INITIALISES = false;
 // Police des labels du Plateau de jeu
 var _labelPolice="14px Consolas";
 var _labelMessage="11px Consolas";
@@ -267,13 +276,13 @@ var _contMapY = 0;
 var _contInfoCaseX = 175;
 var _contInfoCaseY = 530;
 var _contInfoCaseW = 750-_contInfoCaseX;
-var _contInfoCaseH = _hauteurCanvas-530;
+var _contInfoCaseH = _CANVAS_HAUTEUR-530;
 
 /**
  * DECLARATION DES LABELS, CONTENEURS, CONTOURS ET BOUTONS
  */
 
-var _PERSO_LAST_PTS_VIE = 10000;
+
 var _LABEL_DEGATS 	= new createjs.Text("", _LABEL_POLICE, ColorLabel);
 //_LABEL_DEGATS.x 	=
 //_LABEL_DEGATS.y 	= 
@@ -326,8 +335,8 @@ shapeBtnsInvPerso, shapeBtnsInvCase, shapeZoneMessage;
 
 //-------------- Déclaration des boutons----------------------------------------------
 
-var BtnPagePersoAlliesRight, BtnPagePersoAlliesLeft, BtnPagePersoEnnRight, BtnPagePersoEnnLeft,
-BtnPageMessageDown, BtnPageMessageUp, BtnCancelListe;
+var Btn_PAGE_PERSO_ALLIESRight, Btn_PAGE_PERSO_ALLIESLeft, Btn_PAGE_PERSO_ENNRight, Btn_PAGE_PERSO_ENNLeft,
+Btn_PAGE_MESSAGESDown, Btn_PAGE_MESSAGESUp, BtnCancelListe;
 
 /**
  * IMPORTANT : PERMET DE LANCER LE CANVAS !!
@@ -338,7 +347,7 @@ onload = initialize;
  * FONCTION D'INITIALISATION ET DE CHARGEMENT
  */
 
-
+var lifeBarContainer;
 function initialize() {
 
 	// ************************************************
@@ -350,21 +359,16 @@ function initialize() {
 	
 	//Création du stage (la scène) + recupération de sa taille
 	stage = new createjs.Stage(canvas);
-	
-	// Rafraichissement
-	createjs.Ticker.setInterval(20);
-	createjs.Ticker.addEventListener("tick", function()
-	{
-		stage.update();
-	});
+
+
 /*	createjs.Ticker.addListener("tick", function()
 	{
 		alert("tick");
 	});*/
 	
 	// tailles
-	_largeurCanvas = stage.canvas.width;
-	_hauteurCanvas = stage.canvas.height;
+	_CANVAS_LARGEUR = stage.canvas.width;
+	_CANVAS_HAUTEUR = stage.canvas.height;
 
 	// autoriser le mouse over / out events
 	stage.enableMouseOver(20);
@@ -615,7 +619,28 @@ function initialize() {
 	preload.addEventListener("progress", handleProgress);
 
 	preload.loadManifest(manifest);
-	stage.update();
+	//stage.update();
+
+
+	// Rafraichissement
+	createjs.Ticker.setInterval(20);
+	createjs.Ticker.addEventListener("tick", function()
+	{
+		// actualise les éléments d'easel
+		stage.update();
+		
+		// redessine les barres de vie (utilisation du contexte)
+		if (_CONTENEUR_BARRES_INITIALISES && !_ECRAN_MORT && !_ECRAN_ATTAQUE_NUIT) 
+		{
+			setContourBarre(lifeBarContainer.x,lifeBarContainer.y);
+			setContourBarre(faimBarContainer.x, faimBarContainer.y);
+			setContourBarre(actionBarContainer.x, actionBarContainer.y);
+			setContourBarre(moveBarContainer.x, moveBarContainer.y);
+			setContourBarre(sacBarContainer.x, sacBarContainer.y);
+			setContourBarre(fouilleBarContainer.x, fouilleBarContainer.y);
+			setContourBarre(cacheBarContainer.x, cacheBarContainer.y);
+		}
+	});
 }
 
 function handleProgress() 
@@ -626,7 +651,7 @@ function handleProgress()
 	loadProgressLabel.text =("Loading Apocalypse\n\n\n\n" + progresPrecentage);
 	labelPourcentLoad.text=" %";
 
-	stage.update();
+	//stage.update();
 }
 
 function handleComplete() 
@@ -636,7 +661,7 @@ function handleComplete()
 	loadingBarContainer.cursor="pointer";
 
 	loadProgressLabel.text = "Click to Survive";
-	stage.update();
+	//stage.update();
 
 	canvas.addEventListener("click", handleClick);
 	canvas.addEventListener("touchstart", handleClick);
@@ -676,7 +701,7 @@ function setPlateau()
 	contZoneMessage.x = 0;
 	contZoneMessage.y = _contMapH+2;
 	contZoneMessage.height = 60;
-	contZoneMessage.width = _largeurCanvas;
+	contZoneMessage.width = _CANVAS_LARGEUR;
 	stage.addChild(contZoneMessage);
 	shapeZoneMessage = new createjs.Shape();
 	stage.addChild(shapeZoneMessage);
@@ -823,7 +848,7 @@ function setPlateau()
 	stage.addChild(contInfoCase);
 	shapeInfoCase = new createjs.Shape();
 	stage.addChild(shapeInfoCase);
-	shapeInfoCase.graphics.setStrokeStyle(2).beginStroke("#99FF00").drawRect(
+	shapeInfoCase.graphics.setStrokeStyle(_BARRES_FRAMES_STROKE).beginStroke("#99FF00").drawRect(
 			_contInfoCaseX-4, _contInfoCaseY-4, _contInfoCaseW+5, _contInfoCaseH+5);
 
 	// ******************************************
@@ -834,39 +859,30 @@ function setPlateau()
 	// Barre de vie
 	lifeBarContainer = new createjs.Container();
 
-	lifeBarHeight = _barHeight ;
-	lifeBarWidth = _barWidth;
-	lifeBarColor = createjs.Graphics.getRGB(0,255,0, 0.7);
-	lifeBarFrameColor = _barFrameColor;
+	lifeBarHeight = _BARRES_HEIGHT ;
+	lifeBarWidth = _BARRES_WIDTH;
+	lifeBarColor = createjs.Graphics.getRGB(0,255,0);
 
 	lifeBar = new createjs.Shape();
 	lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 1, lifeBarHeight).endFill();
-	frameLifeBar = new createjs.Shape();
-	paddingLifeBar = 3;
-	frameLifeBar.graphics.setStrokeStyle(1).beginStroke(lifeBarFrameColor).drawRect(-paddingLifeBar/2, -paddingLifeBar/2, lifeBarWidth+paddingLifeBar, lifeBarHeight+paddingLifeBar);
-
-	lifeBarContainer.addChild(lifeBar, frameLifeBar);
+	
+	lifeBarContainer.addChild(lifeBar);
 	lifeBarContainer.x = 200;
-	lifeBarContainer.y = 380;
+	lifeBarContainer.y = 390;
 	stage.addChild(lifeBarContainer);
 
 	// Barre de Faim
 
 	faimBarContainer = new createjs.Container();
 
-	faimBarHeight = _barHeight ;
-	faimBarWidth = _barWidth;
+	faimBarHeight = _BARRES_HEIGHT ;
+	faimBarWidth = _BARRES_WIDTH;
 	faimBarColor = createjs.Graphics.getRGB(99,0,66);
-	faimBarFrameColor = _barFrameColor;
 
 	faimBar = new createjs.Shape();
 	faimBar.graphics.beginFill(faimBarColor).drawRect(0, 0, 1, faimBarHeight).endFill();
 
-	frameFaimBar = new createjs.Shape();
-	paddingFaimBar = 3;
-	frameFaimBar.graphics.setStrokeStyle(1).beginStroke(faimBarFrameColor).drawRect(-paddingFaimBar/2, -paddingFaimBar/2, faimBarWidth+paddingFaimBar, faimBarHeight+paddingFaimBar);
-
-	faimBarContainer.addChild(faimBar, frameFaimBar);
+	faimBarContainer.addChild(faimBar);
 	faimBarContainer.x = lifeBarContainer.x;
 	faimBarContainer.y = lifeBarContainer.y + ESPACE_BARRES_Y;
 	stage.addChild(faimBarContainer);
@@ -876,19 +892,14 @@ function setPlateau()
 
 	actionBarContainer = new createjs.Container();
 
-	actionBarHeight = _barHeight ;
-	actionBarWidth = _barWidth;
+	actionBarHeight = _BARRES_HEIGHT ;
+	actionBarWidth = _BARRES_WIDTH;
 	actionBarColor = createjs.Graphics.getRGB(255,0,0);
-	actionBarFrameColor = _barFrameColor;
 
 	actionBar = new createjs.Shape();
 	actionBar.graphics.beginFill(actionBarColor).drawRect(0, 0, 1, actionBarHeight).endFill();
 
-	frameActionBar = new createjs.Shape();
-	paddingActionBar = 3;
-	frameActionBar.graphics.setStrokeStyle(1).beginStroke(actionBarFrameColor).drawRect(-paddingActionBar/2, -paddingActionBar/2, actionBarWidth+paddingActionBar, actionBarHeight+paddingActionBar);
-
-	actionBarContainer.addChild(actionBar, frameActionBar);
+	actionBarContainer.addChild(actionBar);
 	actionBarContainer.x = lifeBarContainer.x;
 	actionBarContainer.y = lifeBarContainer.y + 2*ESPACE_BARRES_Y;
 	stage.addChild(actionBarContainer);
@@ -897,19 +908,14 @@ function setPlateau()
 
 	moveBarContainer = new createjs.Container();
 
-	moveBarHeight = _barHeight ;
-	moveBarWidth = _barWidth;
+	moveBarHeight = _BARRES_HEIGHT ;
+	moveBarWidth = _BARRES_WIDTH;
 	moveBarColor = createjs.Graphics.getRGB(0,51,255);
-	moveBarFrameColor = _barFrameColor;
 
 	moveBar = new createjs.Shape();
 	moveBar.graphics.beginFill(moveBarColor).drawRect(0, 0, 1, moveBarHeight).endFill();
 
-	frameMoveBar = new createjs.Shape();
-	paddingMoveBar = 3;
-	frameMoveBar.graphics.setStrokeStyle(1).beginStroke(moveBarFrameColor).drawRect(-paddingMoveBar/2, -paddingMoveBar/2, moveBarWidth+paddingMoveBar, moveBarHeight+paddingMoveBar);
-
-	moveBarContainer.addChild(moveBar, frameMoveBar);
+	moveBarContainer.addChild(moveBar);
 	moveBarContainer.x = lifeBarContainer.x;
 	moveBarContainer.y = lifeBarContainer.y + 3*ESPACE_BARRES_Y;
 	stage.addChild(moveBarContainer);
@@ -918,19 +924,14 @@ function setPlateau()
 
 	sacBarContainer = new createjs.Container();
 
-	sacBarHeight = _barHeight ;
-	sacBarWidth = _barWidth;
+	sacBarHeight = _BARRES_HEIGHT ;
+	sacBarWidth = _BARRES_WIDTH;
 	sacBarColor = createjs.Graphics.getRGB(204,153,0);
-	sacBarFrameColor = _barFrameColor;
 
 	sacBar = new createjs.Shape();
 	sacBar.graphics.beginFill(sacBarColor).drawRect(0, 0, 1, sacBarHeight).endFill();
 
-	frameSacBar = new createjs.Shape();
-	paddingSacBar = 3;
-	frameSacBar.graphics.setStrokeStyle(1).beginStroke(sacBarFrameColor).drawRect(-paddingSacBar/2, -paddingSacBar/2, sacBarWidth+paddingSacBar, sacBarHeight+paddingSacBar);
-
-	sacBarContainer.addChild(sacBar, frameSacBar);
+	sacBarContainer.addChild(sacBar);
 	sacBarContainer.x = lifeBarContainer.x;
 	sacBarContainer.y = lifeBarContainer.y + 4*ESPACE_BARRES_Y;
 	stage.addChild(sacBarContainer);
@@ -939,19 +940,14 @@ function setPlateau()
 
 	fouilleBarContainer = new createjs.Container();
 
-	fouilleBarHeight = _barHeight ;
-	fouilleBarWidth = _barWidth;
+	fouilleBarHeight = _BARRES_HEIGHT ;
+	fouilleBarWidth = _BARRES_WIDTH;
 	fouilleBarColor = createjs.Graphics.getRGB(255,153,0);
-	fouilleBarFrameColor = _barFrameColor;
 
 	fouilleBar = new createjs.Shape();
 	fouilleBar.graphics.beginFill(fouilleBarColor).drawRect(0, 0, 1, fouilleBarHeight).endFill();
 
-	frameFouilleBar = new createjs.Shape();
-	paddingFouilleBar = 3;
-	frameFouilleBar.graphics.setStrokeStyle(1).beginStroke(fouilleBarFrameColor).drawRect(-paddingFouilleBar/2, -paddingFouilleBar/2, fouilleBarWidth+paddingFouilleBar, fouilleBarHeight+paddingFouilleBar);
-
-	fouilleBarContainer.addChild(fouilleBar, frameFouilleBar);
+	fouilleBarContainer.addChild(fouilleBar);
 	fouilleBarContainer.x = lifeBarContainer.x;
 	fouilleBarContainer.y = lifeBarContainer.y + 7*ESPACE_BARRES_Y;
 	stage.addChild(fouilleBarContainer);
@@ -960,23 +956,19 @@ function setPlateau()
 
 	cacheBarContainer = new createjs.Container();
 
-	cacheBarHeight = _barHeight ;
-	cacheBarWidth = _barWidth;
+	cacheBarHeight = _BARRES_HEIGHT ;
+	cacheBarWidth = _BARRES_WIDTH;
 	cacheBarColor = createjs.Graphics.getRGB(102,102,51);
-	cacheBarFrameColor = _barFrameColor;
 
 	cacheBar = new createjs.Shape();
 	cacheBar.graphics.beginFill(cacheBarColor).drawRect(0, 0, 1, cacheBarHeight).endFill();
 
-	frameCacheBar = new createjs.Shape();
-	paddingCacheBar = 3;
-	frameCacheBar.graphics.setStrokeStyle(1).beginStroke(cacheBarFrameColor).drawRect(-paddingCacheBar/2, -paddingCacheBar/2, cacheBarWidth+paddingCacheBar, cacheBarHeight+paddingCacheBar);
-
-	cacheBarContainer.addChild(cacheBar, frameCacheBar);
+	cacheBarContainer.addChild(cacheBar);
 	cacheBarContainer.x = lifeBarContainer.x;
 	cacheBarContainer.y = lifeBarContainer.y + 8*ESPACE_BARRES_Y;
 	stage.addChild(cacheBarContainer);
 
+	_CONTENEUR_BARRES_INITIALISES = true;
 	// ******************************************
 	// ********* Déclaration des labels *********
 	// ******************************************
@@ -1198,66 +1190,66 @@ function setPlateau()
 	// ************ Boutons d'action ************
 	// ******************************************
 
-	BtnPageItemPersoRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	BtnPageItemPersoRight.x= _contItemPersoX + _contItemPersoW;
-	BtnPageItemPersoRight.y= _contItemPersoY + 5;
-	BtnPageItemPersoRight.visible=false;
-	BtnPageItemPersoRight.addEventListener('click', function(event) {
-		PageItemPerso++;
+	Btn_PAGE_ITEM_PERSORight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+	Btn_PAGE_ITEM_PERSORight.x= _contItemPersoX + _contItemPersoW;
+	Btn_PAGE_ITEM_PERSORight.y= _contItemPersoY + 5;
+	Btn_PAGE_ITEM_PERSORight.visible=false;
+	Btn_PAGE_ITEM_PERSORight.addEventListener('click', function(event) {
+		_PAGE_ITEM_PERSO++;
 		pressBtnEquip=false;
 		socket.emit('INFO_PERSONNAGE_CS');
 	});
-	BtnPageItemPersoRight.addEventListener('touchstart', function(event) {
-		PageItemPerso++;
+	Btn_PAGE_ITEM_PERSORight.addEventListener('touchstart', function(event) {
+		_PAGE_ITEM_PERSO++;
 		pressBtnEquip=false;
 		socket.emit('INFO_PERSONNAGE_CS');
 	});
 
-	BtnPageItemPersoLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
-	BtnPageItemPersoLeft.x= _contItemPersoX - 30;
-	BtnPageItemPersoLeft.y= _contItemPersoY + 5;
-	BtnPageItemPersoLeft.visible=false;
-	BtnPageItemPersoLeft.addEventListener('click', function(event) {
-		PageItemPerso--;
+	Btn_PAGE_ITEM_PERSOLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+	Btn_PAGE_ITEM_PERSOLeft.x= _contItemPersoX - 30;
+	Btn_PAGE_ITEM_PERSOLeft.y= _contItemPersoY + 5;
+	Btn_PAGE_ITEM_PERSOLeft.visible=false;
+	Btn_PAGE_ITEM_PERSOLeft.addEventListener('click', function(event) {
+		_PAGE_ITEM_PERSO--;
 		pressBtnEquip=false;
 		socket.emit('INFO_PERSONNAGE_CS');
 	});
-	BtnPageItemPersoLeft.addEventListener('touchstart', function(event) {
-		PageItemPerso--;
+	Btn_PAGE_ITEM_PERSOLeft.addEventListener('touchstart', function(event) {
+		_PAGE_ITEM_PERSO--;
 		pressBtnEquip=false;
 		socket.emit('INFO_PERSONNAGE_CS');
 	});
 	
 
-	BtnPageItemCaseRight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	BtnPageItemCaseRight.x= _contItemCaseX  + _contItemCaseW;
-	BtnPageItemCaseRight.y= _contItemCaseY + 5;
-	BtnPageItemCaseRight.visible=false;
-	BtnPageItemCaseRight.addEventListener('click', function(event) {
-		PageItemCase++;
+	Btn_PAGE_ITEM_CASERight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+	Btn_PAGE_ITEM_CASERight.x= _contItemCaseX  + _contItemCaseW;
+	Btn_PAGE_ITEM_CASERight.y= _contItemCaseY + 5;
+	Btn_PAGE_ITEM_CASERight.visible=false;
+	Btn_PAGE_ITEM_CASERight.addEventListener('click', function(event) {
+		_PAGE_ITEM_CASE++;
 		socket.emit('INFO_CASE_CS');
 
 	});
-	BtnPageItemCaseRight.addEventListener('touchstart', function(event) {
-		PageItemCase++;
+	Btn_PAGE_ITEM_CASERight.addEventListener('touchstart', function(event) {
+		_PAGE_ITEM_CASE++;
 		socket.emit('INFO_CASE_CS');
 
 	});
 
-	BtnPageItemCaseLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
-	BtnPageItemCaseLeft.x= _contItemCaseX - 30;
-	BtnPageItemCaseLeft.y= _contItemCaseY + 5;
-	BtnPageItemCaseLeft.visible=false;
-	BtnPageItemCaseLeft.addEventListener('click', function(event) {
-		PageItemCase--;
+	Btn_PAGE_ITEM_CASELeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+	Btn_PAGE_ITEM_CASELeft.x= _contItemCaseX - 30;
+	Btn_PAGE_ITEM_CASELeft.y= _contItemCaseY + 5;
+	Btn_PAGE_ITEM_CASELeft.visible=false;
+	Btn_PAGE_ITEM_CASELeft.addEventListener('click', function(event) {
+		_PAGE_ITEM_CASE--;
 		socket.emit('INFO_CASE_CS');
 	});
-	BtnPageItemCaseLeft.addEventListener('touchstart', function(event) {
-		PageItemCase--;
+	Btn_PAGE_ITEM_CASELeft.addEventListener('touchstart', function(event) {
+		_PAGE_ITEM_CASE--;
 		socket.emit('INFO_CASE_CS');
 	});
 
-	BtnPageItemPersoRight.cursor=BtnPageItemPersoLeft.cursor=BtnPageItemCaseRight.cursor=BtnPageItemCaseLeft.cursor="pointer";
+	Btn_PAGE_ITEM_PERSORight.cursor=Btn_PAGE_ITEM_PERSOLeft.cursor=Btn_PAGE_ITEM_CASERight.cursor=Btn_PAGE_ITEM_CASELeft.cursor="pointer";
 
 	// ******************************************
 	// *********** INITIALISATION ***************
@@ -1370,7 +1362,7 @@ function message()
 	setBtnMessage(TabListe, Taille);
 	afficherMessage(TabListe);
 
-	stage.update();
+	//stage.update();
 }
 
 function afficherMessage(TabListeMessage)
@@ -1380,12 +1372,12 @@ function afficherMessage(TabListeMessage)
 	{
 		// instructions à essayer
 		labelMessage.text="";
-		for (var i = 0; i < TabListeMessage[PageMessage].length ; i++) 
+		for (var i = 0; i < TabListeMessage[_PAGE_MESSAGES].length ; i++) 
 		{
-			for (var j=0; j<TabListeMessage[PageMessage][i].length ; j+=longLigneMax)
+			for (var j=0; j<TabListeMessage[_PAGE_MESSAGES][i].length ; j+=longLigneMax)
 			{
-				var message=TabListeMessage[PageMessage][i].substring(j,j+longLigneMax);
-				if(j==longLigneMax || TabListeMessage[PageMessage][i].length<longLigneMax)
+				var message=TabListeMessage[_PAGE_MESSAGES][i].substring(j,j+longLigneMax);
+				if(j==longLigneMax || TabListeMessage[_PAGE_MESSAGES][i].length<longLigneMax)
 				{
 					labelMessage.text+=message;
 				}
@@ -1398,7 +1390,7 @@ function afficherMessage(TabListeMessage)
 		}
 	}
 	catch(e){}
-	stage.update();
+	//stage.update();
 }
 
 function afficherDescCase(desc)
@@ -1422,7 +1414,7 @@ function afficherDescCase(desc)
 		}
 	}
 	catch(e){}
-	stage.update();
+	//stage.update();
 }
 
 function afficherDescItem(desc)
@@ -1445,7 +1437,7 @@ function afficherDescItem(desc)
 		}
 	}
 	catch(e){}
-	stage.update();
+	//stage.update();
 }
 
 function liste()
@@ -1518,90 +1510,91 @@ function liste()
 	BtnCancelListe.y=365;
 	contListe.addChild(BtnCancelListe);
 	BtnCancelListe.addEventListener('click', function (event) {
-		_selectedPerso=-1;
+		_SELECTED_PERSO=-1;
 		stage.removeChild(contListe);
 		game();
 	});
 	BtnCancelListe.addEventListener('touchstart', function (event) {
-		_selectedPerso=-1;
+		_SELECTED_PERSO=-1;
 		stage.removeChild(contListe);
 		game();
 	});
 
-	BtnPagePersoAlliesRight = new createjs.Bitmap("public/Boutons/Right.png");
-	BtnPagePersoAlliesRight.x= contListeAllies.x + contListeAllies.width;
-	BtnPagePersoAlliesRight.y= contListeAllies.y + 8;
-	BtnPagePersoAlliesRight.visible=false;
-	contListe.addChild(BtnPagePersoAlliesRight);
-	BtnPagePersoAlliesRight.addEventListener('click', function(event) {
-		PagePersoAllies++;
+	Btn_PAGE_PERSO_ALLIESRight = new createjs.Bitmap("public/Boutons/Right.png");
+	Btn_PAGE_PERSO_ALLIESRight.x= contListeAllies.x + contListeAllies.width;
+	Btn_PAGE_PERSO_ALLIESRight.y= contListeAllies.y + 8;
+	Btn_PAGE_PERSO_ALLIESRight.visible=false;
+	contListe.addChild(Btn_PAGE_PERSO_ALLIESRight);
+	Btn_PAGE_PERSO_ALLIESRight.addEventListener('click', function(event) {
+		_PAGE_PERSO_ALLIES++;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
-	BtnPagePersoAlliesRight.addEventListener('touchstart', function(event) {
-		PagePersoAllies++;
-		socket.emit('INFO_CASE_ALLIES_CS');
-	});
-
-	BtnPagePersoAlliesLeft = new createjs.Bitmap("public/Boutons/Left.png");
-	BtnPagePersoAlliesLeft.x= contListeAllies.x - BtnPagePersoAlliesLeft.image.width -5;
-	BtnPagePersoAlliesLeft.y= contListeAllies.y + 8;
-	contListe.addChild(BtnPagePersoAlliesLeft);
-	BtnPagePersoAlliesLeft.visible=false;
-	BtnPagePersoAlliesLeft.addEventListener('click', function(event) {
-		PagePersoAllies--;
-		socket.emit('INFO_CASE_ALLIES_CS');
-	});
-	BtnPagePersoAlliesLeft.addEventListener('touchstart', function(event) {
-		PagePersoAllies--;
+	Btn_PAGE_PERSO_ALLIESRight.addEventListener('touchstart', function(event) {
+		_PAGE_PERSO_ALLIES++;
 		socket.emit('INFO_CASE_ALLIES_CS');
 	});
 
-	BtnPagePersoEnnRight = new createjs.Bitmap("public/Boutons/Right.png");
-	BtnPagePersoEnnRight.x= contListeEnnemis.x + contListeEnnemis.witdh;
-	BtnPagePersoEnnRight.y= contListeEnnemis.y + 8;
-	BtnPagePersoEnnRight.visible=false;
-	contListe.addChild(BtnPagePersoEnnRight);
-	BtnPagePersoEnnRight.addEventListener('click', function(event) {
-		PagePersoEnnemis++;
+	Btn_PAGE_PERSO_ALLIESLeft = new createjs.Bitmap("public/Boutons/Left.png");
+	Btn_PAGE_PERSO_ALLIESLeft.x= contListeAllies.x - Btn_PAGE_PERSO_ALLIESLeft.image.width -5;
+	Btn_PAGE_PERSO_ALLIESLeft.y= contListeAllies.y + 8;
+	contListe.addChild(Btn_PAGE_PERSO_ALLIESLeft);
+	Btn_PAGE_PERSO_ALLIESLeft.visible=false;
+	Btn_PAGE_PERSO_ALLIESLeft.addEventListener('click', function(event) {
+		_PAGE_PERSO_ALLIES--;
+		socket.emit('INFO_CASE_ALLIES_CS');
+	});
+	Btn_PAGE_PERSO_ALLIESLeft.addEventListener('touchstart', function(event) {
+		_PAGE_PERSO_ALLIES--;
+		socket.emit('INFO_CASE_ALLIES_CS');
+	});
+
+	Btn_PAGE_PERSO_ENNRight = new createjs.Bitmap("public/Boutons/Right.png");
+	Btn_PAGE_PERSO_ENNRight.x= contListeEnnemis.x + contListeEnnemis.witdh;
+	Btn_PAGE_PERSO_ENNRight.y= contListeEnnemis.y + 8;
+	Btn_PAGE_PERSO_ENNRight.visible=false;
+	contListe.addChild(Btn_PAGE_PERSO_ENNRight);
+	Btn_PAGE_PERSO_ENNRight.addEventListener('click', function(event) {
+		_PAGE_PERSO_ENNemis++;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
-	BtnPagePersoEnnRight.addEventListener('touchstart', function(event) {
-		PagePersoEnnemis++;
+	Btn_PAGE_PERSO_ENNRight.addEventListener('touchstart', function(event) {
+		_PAGE_PERSO_ENNemis++;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
 
-	BtnPagePersoEnnLeft = new createjs.Bitmap("public/Boutons/Left.png");
-	BtnPagePersoEnnLeft.x= contListeEnnemis.x - BtnPagePersoEnnLeft.image.width - 5;
-	BtnPagePersoEnnLeft.y= contListeEnnemis.y +  8;
-	BtnPagePersoEnnLeft.visible=false;
-	contListe.addChild(BtnPagePersoEnnLeft);
-	BtnPagePersoEnnLeft.addEventListener('click', function(event) {
-		PagePersoEnnemis--;
+	Btn_PAGE_PERSO_ENNLeft = new createjs.Bitmap("public/Boutons/Left.png");
+	Btn_PAGE_PERSO_ENNLeft.x= contListeEnnemis.x - Btn_PAGE_PERSO_ENNLeft.image.width - 5;
+	Btn_PAGE_PERSO_ENNLeft.y= contListeEnnemis.y +  8;
+	Btn_PAGE_PERSO_ENNLeft.visible=false;
+	contListe.addChild(Btn_PAGE_PERSO_ENNLeft);
+	Btn_PAGE_PERSO_ENNLeft.addEventListener('click', function(event) {
+		_PAGE_PERSO_ENNemis--;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
-	BtnPagePersoEnnLeft.addEventListener('touchstart', function(event) {
-		PagePersoEnnemis--;
+	Btn_PAGE_PERSO_ENNLeft.addEventListener('touchstart', function(event) {
+		_PAGE_PERSO_ENNemis--;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
 
 	setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
 
 	BtnCancelListe.cursor="pointer";
-	BtnPagePersoAlliesRight.cursor=BtnPagePersoAlliesLeft.cursor=BtnPagePersoEnnRight.cursor=BtnPagePersoEnnLeft.cursor="pointer";
+	Btn_PAGE_PERSO_ALLIESRight.cursor=Btn_PAGE_PERSO_ALLIESLeft.cursor=Btn_PAGE_PERSO_ENNRight.cursor=Btn_PAGE_PERSO_ENNLeft.cursor="pointer";
 
-	stage.update();
+	//stage.update();
 }
 
 function attaqueNuit()
 {
 	stage.removeAllChildren();
 	
-	contNuit = new createjs.Container();
-	contNuit.x = 0;
-	contNuit.y = 0;
+	contNuit 		= new createjs.Container();
+	contNuit.x 		= 0;
+	contNuit.y 		= 0;
 	contNuit.height = canvas.height;
-	contNuit.width = canvas.width;
+	contNuit.width 	= canvas.width;
 	stage.addChild(contNuit);
+
 	shapeNuit = new createjs.Shape();
 	stage.addChild(shapeNuit);
 	shapeNuit.graphics.setStrokeStyle(10).beginStroke("#009900").drawRect(
@@ -1617,6 +1610,7 @@ function attaqueNuit()
 	contNuit.addChild(BtnVivant);
 	BtnVivant.addEventListener('click', function (event) {
 		stage.removeChild(contNuit);
+		_ECRAN_ATTAQUE_NUIT = false;
 		setPlateau();
 	});
 	BtnVivant.addEventListener('touchstart', function (event) {
@@ -1629,6 +1623,7 @@ function attaqueNuit()
 
 function dead(currentPerso) 
 {
+	_ECRAN_MORT = true;
 	stage.removeAllChildren();
 
 	contDead = new createjs.Container();
@@ -1663,26 +1658,26 @@ function dead(currentPerso)
 				contItemPersoDead.x-4, contItemPersoDead.y-4, contItemPersoDead.width+4, contItemPersoDead.height+4);
 	}
 
-	BtnPageItemPersoDeadRight= new createjs.Bitmap("public/Boutons/Right.png");
-	BtnPageItemPersoDeadRight.x= contItemPersoDead.x + contItemPersoDead.width;
-	BtnPageItemPersoDeadRight.y= contItemPersoDead.y-3;
-	contDead.addChild(BtnPageItemPersoDeadRight);
-	BtnPageItemPersoDeadRight.addEventListener('click', function(event) {
-		PageItemPersoDead++;
+	Btn_PAGE_ITEM_PERSO_DEADRight= new createjs.Bitmap("public/Boutons/Right.png");
+	Btn_PAGE_ITEM_PERSO_DEADRight.x= contItemPersoDead.x + contItemPersoDead.width;
+	Btn_PAGE_ITEM_PERSO_DEADRight.y= contItemPersoDead.y-3;
+	contDead.addChild(Btn_PAGE_ITEM_PERSO_DEADRight);
+	Btn_PAGE_ITEM_PERSO_DEADRight.addEventListener('click', function(event) {
+		_PAGE_ITEM_PERSO_DEAD++;
 	});
-	BtnPageItemPersoDeadRight.addEventListener('touchstart', function(event) {
-		PageItemPersoDead++;
+	Btn_PAGE_ITEM_PERSO_DEADRight.addEventListener('touchstart', function(event) {
+		_PAGE_ITEM_PERSO_DEAD++;
 	});
 
-	BtnPageItemPersoDeadLeft = new createjs.Bitmap("public/Boutons/Left.png");
-	BtnPageItemPersoDeadLeft .x= contItemPersoDead.x - BtnPageItemPersoDeadLeft.image.width -5;
-	BtnPageItemPersoDeadLeft .y= contItemPersoDead.y-3;
-	contDead.addChild(BtnPageItemPersoDeadLeft );
-	BtnPageItemPersoDeadLeft.addEventListener('click', function(event) {
-		PageItemPersoDead--;
+	Btn_PAGE_ITEM_PERSO_DEADLeft = new createjs.Bitmap("public/Boutons/Left.png");
+	Btn_PAGE_ITEM_PERSO_DEADLeft .x= contItemPersoDead.x - Btn_PAGE_ITEM_PERSO_DEADLeft.image.width -5;
+	Btn_PAGE_ITEM_PERSO_DEADLeft .y= contItemPersoDead.y-3;
+	contDead.addChild(Btn_PAGE_ITEM_PERSO_DEADLeft );
+	Btn_PAGE_ITEM_PERSO_DEADLeft.addEventListener('click', function(event) {
+		_PAGE_ITEM_PERSO_DEAD--;
 	});
-	BtnPageItemPersoDeadLeft.addEventListener('touchstart', function(event) {
-		PageItemPersoDead--;
+	Btn_PAGE_ITEM_PERSO_DEADLeft.addEventListener('touchstart', function(event) {
+		_PAGE_ITEM_PERSO_DEAD--;
 	});
 
 	var labelDeadByWho = contDead.addChild(new createjs.Text("", __labelPoliceMort, _colorLabelMort));
@@ -1734,11 +1729,13 @@ function dead(currentPerso)
 	BtnCancelDead.addEventListener('click', function (event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
+		_ECRAN_MORT = false;
 		setPlateau();
 	});
 	BtnCancelDead.addEventListener('touchstart', function (event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
+		_ECRAN_MORT = false;
 		setPlateau();
 	});
 
@@ -1747,37 +1744,37 @@ function dead(currentPerso)
 	
 	var Taille=Math.ceil(currentPerso.sacADos.length / 10);
 	
-	if(PageItemPersoDead>Taille-1)
+	if(_PAGE_ITEM_PERSO_DEAD>Taille-1)
 	{
-		PageItemPersoDead=Taille-1;
+		_PAGE_ITEM_PERSO_DEAD=Taille-1;
 	}
-	else if (PageItemPersoDead<0)
+	else if (_PAGE_ITEM_PERSO_DEAD<0)
 	{
-		PageItemPersoDead=0;
+		_PAGE_ITEM_PERSO_DEAD=0;
 	}
 
-	if(PageItemPersoDead==Taille-1)
+	if(_PAGE_ITEM_PERSO_DEAD==Taille-1)
 	{
-		BtnPageItemPersoDeadRight.visible=false;
+		Btn_PAGE_ITEM_PERSO_DEADRight.visible=false;
 	}
 	else
 	{
-		BtnPageItemPersoDeadRight.visible=true;
+		Btn_PAGE_ITEM_PERSO_DEADRight.visible=true;
 	}
 
-	if(PageItemPersoDead==0)
+	if(_PAGE_ITEM_PERSO_DEAD==0)
 	{
-		BtnPageItemPersoDeadLeft.visible=false;
+		Btn_PAGE_ITEM_PERSO_DEADLeft.visible=false;
 	}
 	else
 	{
-		BtnPageItemPersoDeadLeft.visible=true;
+		Btn_PAGE_ITEM_PERSO_DEADLeft.visible=true;
 	}
 
 	if(Taille ==0)
 	{
-		BtnPageItemPersoDeadLeft.visible=false;
-		BtnPageItemPersoDeadRight.visible=false;
+		Btn_PAGE_ITEM_PERSO_DEADLeft.visible=false;
+		Btn_PAGE_ITEM_PERSO_DEADRight.visible=false;
 	}
 	
 	if(currentPerso.sacADos[0]!=null)
@@ -1826,9 +1823,9 @@ function dead(currentPerso)
 		try 
 		{
 			// instructions à essayer
-			for (var i = 0; i < TabListe[PageItemPersoDead].length ; i++) 
+			for (var i = 0; i < TabListe[_PAGE_ITEM_PERSO_DEAD].length ; i++) 
 			{
-				var Obj=TabListe[PageItemPersoDead][i];
+				var Obj=TabListe[_PAGE_ITEM_PERSO_DEAD][i];
 
 				// Ajout de l'image à l'ihm
 				var imgItem = new createjs.Bitmap(Obj.imageName);
@@ -1840,7 +1837,7 @@ function dead(currentPerso)
 				// position de l'item dans le conteneur
 				iPositionItemInConteneur++;
 			}
-			stage.update();
+			//stage.update();
 		}
 		catch(e){
 			//alert("Page inexistante");
@@ -1854,102 +1851,102 @@ function dead(currentPerso)
 
 function setBtnMessage(TabListeMessage, Taille)
 {
-	BtnPageMessageDown = new createjs.Bitmap("public/Boutons/Down.png");
-	BtnPageMessageDown.x= 746/2 - BtnPageMessageDown.image.width/2;
-	BtnPageMessageDown.y= 365;
-	contMessage.addChild(BtnPageMessageDown);
-	BtnPageMessageDown.addEventListener('click', function(event) {
-		PageMessage++;
+	Btn_PAGE_MESSAGESDown = new createjs.Bitmap("public/Boutons/Down.png");
+	Btn_PAGE_MESSAGESDown.x= 746/2 - Btn_PAGE_MESSAGESDown.image.width/2;
+	Btn_PAGE_MESSAGESDown.y= 365;
+	contMessage.addChild(Btn_PAGE_MESSAGESDown);
+	Btn_PAGE_MESSAGESDown.addEventListener('click', function(event) {
+		_PAGE_MESSAGES++;
 		setbtnMessageVisible(Taille);
 		afficherMessage(TabListeMessage);
 	});
-	BtnPageMessageDown.addEventListener('touchstart', function(event) {
-		PageMessage++;
-		setbtnMessageVisible(Taille);
-		afficherMessage(TabListeMessage);
-	});
-
-	BtnPageMessageUp = new createjs.Bitmap("public/Boutons/Up.png");
-	BtnPageMessageUp.x=746/2 - BtnPageMessageUp.image.width/2;
-	BtnPageMessageUp.y= 5;
-	contMessage.addChild(BtnPageMessageUp);
-	BtnPageMessageUp.addEventListener('click', function(event) {
-		PageMessage--;
-		setbtnMessageVisible(Taille);
-		afficherMessage(TabListeMessage);
-	});
-	BtnPageMessageUp.addEventListener('touchstart', function(event) {
-		PageMessage--;
+	Btn_PAGE_MESSAGESDown.addEventListener('touchstart', function(event) {
+		_PAGE_MESSAGES++;
 		setbtnMessageVisible(Taille);
 		afficherMessage(TabListeMessage);
 	});
 
-	if(PageMessage==Taille-1)
+	Btn_PAGE_MESSAGESUp = new createjs.Bitmap("public/Boutons/Up.png");
+	Btn_PAGE_MESSAGESUp.x=746/2 - Btn_PAGE_MESSAGESUp.image.width/2;
+	Btn_PAGE_MESSAGESUp.y= 5;
+	contMessage.addChild(Btn_PAGE_MESSAGESUp);
+	Btn_PAGE_MESSAGESUp.addEventListener('click', function(event) {
+		_PAGE_MESSAGES--;
+		setbtnMessageVisible(Taille);
+		afficherMessage(TabListeMessage);
+	});
+	Btn_PAGE_MESSAGESUp.addEventListener('touchstart', function(event) {
+		_PAGE_MESSAGES--;
+		setbtnMessageVisible(Taille);
+		afficherMessage(TabListeMessage);
+	});
+
+	if(_PAGE_MESSAGES==Taille-1)
 	{
-		BtnPageMessageDown.visible=false;
+		Btn_PAGE_MESSAGESDown.visible=false;
 	}
 	else
 	{
-		BtnPageMessageDown.visible=true;
+		Btn_PAGE_MESSAGESDown.visible=true;
 	}
 
-	if(PageMessage==0)
+	if(_PAGE_MESSAGES==0)
 	{
-		BtnPageMessageUp.visible=false;
+		Btn_PAGE_MESSAGESUp.visible=false;
 	}
 	else
 	{
-		BtnPageMessageUp.visible=true;
+		Btn_PAGE_MESSAGESUp.visible=true;
 	}
 
 	if(Taille ==0)
 	{
-		BtnPageMessageUp.visible=false;
-		BtnPageMessageDown.visible=false;
+		Btn_PAGE_MESSAGESUp.visible=false;
+		Btn_PAGE_MESSAGESDown.visible=false;
 	}
 
-	BtnPageMessageUp.cursor=BtnPageMessageDown.cursor="pointer";
+	Btn_PAGE_MESSAGESUp.cursor=Btn_PAGE_MESSAGESDown.cursor="pointer";
 }
 
 function setbtnMessageVisible(Taille)
 {
-	if(PageMessage>Taille-1)
+	if(_PAGE_MESSAGES>Taille-1)
 	{
-		PageMessage=Taille-1;
+		_PAGE_MESSAGES=Taille-1;
 	}
-	else if (PageMessage<0)
+	else if (_PAGE_MESSAGES<0)
 	{
-		PageMessage=0;
+		_PAGE_MESSAGES=0;
 	}
 
-	if(PageMessage==Taille-1)
+	if(_PAGE_MESSAGES==Taille-1)
 	{
-		BtnPageMessageDown.visible=false;
+		Btn_PAGE_MESSAGESDown.visible=false;
 	}
 	else
 	{
-		BtnPageMessageDown.visible=true;
+		Btn_PAGE_MESSAGESDown.visible=true;
 	}
 
-	if(PageMessage==0)
+	if(_PAGE_MESSAGES==0)
 	{
-		BtnPageMessageUp.visible=false;
+		Btn_PAGE_MESSAGESUp.visible=false;
 	}
 	else
 	{
-		BtnPageMessageUp.visible=true;
+		Btn_PAGE_MESSAGESUp.visible=true;
 	}
 
 	if(Taille ==0)
 	{
-		BtnPageMessageUp.visible=false;
-		BtnPageMessageDown.visible=false;
+		Btn_PAGE_MESSAGESUp.visible=false;
+		Btn_PAGE_MESSAGESDown.visible=false;
 	}
 }
 
 function setBtnAttaquer(x,y)
 {
-	if (_selectedPerso != -1)
+	if (_SELECTED_PERSO != -1)
 	{
 		// Bouton ATTAQUER
 		var BtnAttaquerListe = new createjs.Bitmap("public/Boutons/Attaquer.png");
@@ -1957,24 +1954,24 @@ function setBtnAttaquer(x,y)
 		BtnAttaquerListe.y=y;
 		contListe.addChild(BtnAttaquerListe);
 		BtnAttaquerListe.addEventListener('click', function(event) {
-			if (_selectedPerso == -1) {
+			if (_SELECTED_PERSO == -1) {
 				//alert("Selectionner Ennemi avant d'attaquer !");
 			}
 			else
 			{
-				socket.emit('ACTION_ATTAQUE_CS', _selectedPerso);
-				_selectedPerso = -1;
+				socket.emit('ACTION_ATTAQUE_CS', _SELECTED_PERSO);
+				_SELECTED_PERSO = -1;
 				liste();
 			}
 		});
 		BtnAttaquerListe.addEventListener('touchstart', function(event) {
-			if (_selectedPerso == -1) {
+			if (_SELECTED_PERSO == -1) {
 				//alert("Selectionner Ennemi avant d'attaquer !");
 			}
 			else
 			{
-				socket.emit('ACTION_ATTAQUE_CS', _selectedPerso);
-				_selectedPerso = -1;
+				socket.emit('ACTION_ATTAQUE_CS', _SELECTED_PERSO);
+				_SELECTED_PERSO = -1;
 				liste();
 			}
 		});
@@ -2228,8 +2225,9 @@ function majBtnsItemCase()
 		BtnRamasseObjet.cursor="not-allowed";
 	}
 
-	stage.update();
+	//stage.update();
 }
+
 
 function setBtnJoueurs(nbJoueurs)
 {
@@ -2317,7 +2315,7 @@ function setImg(img, X, Y)
 	stage.addChild(img);	
 	img.x = X;
 	img.y = Y;
-	//stage.update();
+	////stage.update();
 }
 
 function setColorMsgRetour()
@@ -2344,6 +2342,33 @@ function setColorMsgRetour()
 	//-------Fin changer couleur message de retour
 	*/
 }
+
+// crée un contour arrondi autour des barres 
+function setContourBarre(x, y)
+{
+	// plus propore (cache angles des barres)
+	x -= 1;
+
+	var ctx = canvas.getContext('2d');
+    radius = 5;
+  
+	ctx.beginPath();
+  
+	ctx.lineWidth = 2;
+	ctx.moveTo(x + radius, y);
+	ctx.lineTo(x + _BARRES_WIDTH+2 - radius, y);
+	ctx.quadraticCurveTo(x + _BARRES_WIDTH+2, y, x + _BARRES_WIDTH+2, y + radius);
+	ctx.lineTo(x + _BARRES_WIDTH+2, y + _BARRES_HEIGHT - radius);
+	ctx.quadraticCurveTo(x + _BARRES_WIDTH+2, y + _BARRES_HEIGHT, x + _BARRES_WIDTH+2 - radius, y + _BARRES_HEIGHT);
+	ctx.lineTo(x + radius, y + _BARRES_HEIGHT);
+	ctx.quadraticCurveTo(x, y + _BARRES_HEIGHT, x, y + _BARRES_HEIGHT - radius);
+	ctx.lineTo(x, y + radius);
+	ctx.quadraticCurveTo(x, y, x + radius, y);
+	ctx.closePath();
+	ctx.strokeStyle = 'gray';
+	ctx.stroke();
+}
+
 
 /*
  *
@@ -2428,7 +2453,7 @@ function majInventairePerso(currentPerso)
 		// évenement click
 		contArme.addEventListener("click", function (event) 
 		{
-			var currentItem = TabListe[PageItemCase][event.target.name];
+			var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 					afficherSelecteurItem(event.target.x, 0);
 					_SELECTED_ITEM_CASE=currentItem.id;
 			/*if (SelectEquipement!=null)
@@ -2467,21 +2492,21 @@ function majInventairePerso(currentPerso)
 			var descriptionItem		=currentPerso.armeEquipee.description;
 			labelDescriptionItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
 			afficherDescItem(descriptionItem);
-			stage.update();
+			//stage.update();
 		},false);
 
 		// évenement quand la souris s'en va
 		contArme.addEventListener('mouseout', function(event)
 		{
 			labelDescriptionItem.text="";
-			stage.update();
+			//stage.update();
 		},false);
 		
 		// évenement quand la souris s'en va
 		contArme.addEventListener('touchend', function(event)
 		{
 			labelDescriptionItem.text="";
-			stage.update();
+			//stage.update();
 		},false);
 		
 		// retrait de l'arme de la liste des objets
@@ -2499,7 +2524,7 @@ function majInventairePerso(currentPerso)
 		// Ajout des évenements
 		contArmure.addEventListener("click", function (event) 
 			{
-				var currentItem = TabListe[PageItemCase][event.target.name];
+				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 					afficherSelecteurItem(event.target.x, 0);
 					_SELECTED_ITEM_CASE=currentItem.id;
 			/*if (SelectEquipement!=null)
@@ -2531,7 +2556,7 @@ function majInventairePerso(currentPerso)
 				_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;
 				setContEquipement();
 				
-				stage.update();
+				//stage.update();
 			});
 
 		contArmure.addEventListener('mouseover', function(event) 
@@ -2539,19 +2564,19 @@ function majInventairePerso(currentPerso)
 			var descriptionItem=currentPerso.armureEquipee.description;
 			labelDescriptionItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
 			afficherDescItem(descriptionItem);
-			stage.update();
+			//stage.update();
 		},false);
 
 		contArmure.addEventListener('mouseout', function(event)
 			{
 			labelDescriptionItem.text="";
-			stage.update();
+			//stage.update();
 		},false);
 		
 		contArmure.addEventListener('touchend', function(event)
 				{
 				labelDescriptionItem.text="";
-				stage.update();
+				//stage.update();
 			},false);
 		
 		// retrait de l'arme de la liste des objets
@@ -2600,19 +2625,19 @@ function majInventairePerso(currentPerso)
 		}
 	}
 
-	if(PageItemPerso>Taille-1)	PageItemPerso = Taille-1;
-	else if (PageItemPerso<0)	PageItemPerso = 0;
+	if(_PAGE_ITEM_PERSO>Taille-1)	_PAGE_ITEM_PERSO = Taille-1;
+	else if (_PAGE_ITEM_PERSO<0)	_PAGE_ITEM_PERSO = 0;
 
-	if(PageItemPerso==Taille-1)	BtnPageItemPersoRight.visible = false;
-	else						BtnPageItemPersoRight.visible = true;
+	if(_PAGE_ITEM_PERSO==Taille-1)	Btn_PAGE_ITEM_PERSORight.visible = false;
+	else						Btn_PAGE_ITEM_PERSORight.visible = true;
 
-	if(PageItemPerso==0)		BtnPageItemPersoLeft.visible = false;
-	else						BtnPageItemPersoLeft.visible = true;
+	if(_PAGE_ITEM_PERSO==0)		Btn_PAGE_ITEM_PERSOLeft.visible = false;
+	else						Btn_PAGE_ITEM_PERSOLeft.visible = true;
 
 	if(Taille ==0)
 	{
-		BtnPageItemPersoLeft.visible=false;
-		BtnPageItemPersoRight.visible=false;
+		Btn_PAGE_ITEM_PERSOLeft.visible=false;
+		Btn_PAGE_ITEM_PERSORight.visible=false;
 	}
 
 	// Appel de fonction pour créer les boutons liés au Perso
@@ -2625,10 +2650,10 @@ function majInventairePerso(currentPerso)
 	try 
 	{
 		// affichage des objets du sac
-		for (var i = 0; i < TabListe[PageItemPerso].length ; i++) 
+		for (var i = 0; i < TabListe[_PAGE_ITEM_PERSO].length ; i++) 
 		{
 			// récupèration de l'item courant
-			var Obj=TabListe[PageItemPerso][i];
+			var Obj=TabListe[_PAGE_ITEM_PERSO][i];
 			
 			//alert("iPositionItemInConteneur : " + iPositionItemInConteneur);
 
@@ -2651,7 +2676,7 @@ function majInventairePerso(currentPerso)
 				// ajout d'un texte quand l'user passera la souris dessus
 				imgItem.addEventListener('mouseover', function(event) 
 				{
-					var currentItem = TabListe[PageItemPerso][event.target.name];
+					var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
 					var descriptionItem=currentItem.description;
 					labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 					afficherDescItem(descriptionItem);
@@ -2670,7 +2695,7 @@ function majInventairePerso(currentPerso)
 
 				imgItem.addEventListener("click", function(event)
 				{
-					var currentItem = TabListe[PageItemPerso][event.target.name];
+					var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
 					afficherSelecteurItem(event.target.x, 0);
 					_SELECTED_ITEM_PERSO=currentItem.id;
 					_SELECTED_ITEM_PERSOType=currentItem.type;
@@ -2680,7 +2705,7 @@ function majInventairePerso(currentPerso)
 						contInvPerso.removeChild(Select);
 					}
 					var num=event.target.x;
-					var currentItem = TabListe[PageItemPerso][event.target.name];
+					var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
 					_SELECTED_ITEM_PERSO=currentItem.id;
 					_SELECTED_ITEM_PERSOType=currentItem.type;
 					Select = contInvPerso.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
@@ -2692,7 +2717,7 @@ function majInventairePerso(currentPerso)
 				});
 				imgItem.addEventListener("touchstart", function(event)
 						{
-							var currentItem = TabListe[PageItemPerso][event.target.name];
+							var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
 							var descriptionItem=currentItem.description;
 							labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 							afficherDescItem(descriptionItem);
@@ -2702,7 +2727,7 @@ function majInventairePerso(currentPerso)
 								contInvPerso.removeChild(Select);
 							}
 							var num=event.target.x;
-							var currentItem = TabListe[PageItemPerso][event.target.name];
+							var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
 							_SELECTED_ITEM_PERSO=currentItem.id;
 							_SELECTED_ITEM_PERSOType=currentItem.type;
 							Select = contInvPerso.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
@@ -2711,7 +2736,7 @@ function majInventairePerso(currentPerso)
 							// Appel de fonction pour créer les boutons liés au Perso
 							setContPerso();
 							
-							stage.update();
+							//stage.update();
 						});
 				
 				imgItem.x = (iPositionItemInConteneur * _spaceItem);
@@ -2778,19 +2803,19 @@ function majInventaireCase(currentCase)
 			TabListe.push(NewListe);
 		}
 	}
-	if(PageItemCase>Taille-1) 	PageItemCase=Taille-1;
-	else if (PageItemCase<=0) 	PageItemCase=0;
+	if(_PAGE_ITEM_CASE>Taille-1) 	_PAGE_ITEM_CASE=Taille-1;
+	else if (_PAGE_ITEM_CASE<=0) 	_PAGE_ITEM_CASE=0;
 		
-	if(PageItemCase==Taille-1) 	BtnPageItemCaseRight.visible=false;
-	else 						BtnPageItemCaseRight.visible=true;
+	if(_PAGE_ITEM_CASE==Taille-1) 	Btn_PAGE_ITEM_CASERight.visible=false;
+	else 						Btn_PAGE_ITEM_CASERight.visible=true;
 		
-	if(PageItemCase==0) 		BtnPageItemCaseLeft.visible=false;
-	else 						BtnPageItemCaseLeft.visible=true;
+	if(_PAGE_ITEM_CASE==0) 		Btn_PAGE_ITEM_CASELeft.visible=false;
+	else 						Btn_PAGE_ITEM_CASELeft.visible=true;
 		
 	if(Taille ==0)
 	{
-		BtnPageItemCaseLeft.visible=false;
-		BtnPageItemCaseRight.visible=false;
+		Btn_PAGE_ITEM_CASELeft.visible=false;
+		Btn_PAGE_ITEM_CASERight.visible=false;
 	}
 		
 	majBtnsItemCase();
@@ -2798,9 +2823,9 @@ function majInventaireCase(currentCase)
 	try 
 	{
 		// instructions à essayer
-		for (var i = 0; i < TabListe[PageItemCase].length ; i++) 
+		for (var i = 0; i < TabListe[_PAGE_ITEM_CASE].length ; i++) 
 		{
-			var currentItem = TabListe[PageItemCase][i];
+			var currentItem = TabListe[_PAGE_ITEM_CASE][i];
 			
 			// Ajout de l'image à l'ihm
 			var imgItem 	= new createjs.Bitmap(currentItem.imageName);
@@ -2817,7 +2842,7 @@ function majInventaireCase(currentCase)
 			// ajout d'un texte quand l'user passera la souris dessus
 			imgItem.addEventListener('mouseover', function(event) 
 			{
-				var currentItem = TabListe[PageItemCase][event.target.name];
+				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 				afficherTooltip(_CONT_INV_CASE.x + event.target.x, _CONT_INV_CASE.y + event.target.y, currentItem);
 				//var descriptionItem=currentItem.description;
 				//labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
@@ -2836,7 +2861,7 @@ function majInventaireCase(currentCase)
 
 			imgItem.addEventListener("click", function(event)
 			{
-				var currentItem = TabListe[PageItemCase][event.target.name];
+				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 				afficherSelecteurItem(event.target.x, 0);
 				_SELECTED_ITEM_CASE=currentItem.id;
 
@@ -2848,7 +2873,7 @@ function majInventaireCase(currentCase)
 					_CONT_INV_CASE.removeChild(Select);
 				}
 				var num=event.target.x;
-				var currentItem = TabListe[PageItemCase][event.target.name];
+				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 				_SELECTED_ITEM_CASE=currentItem.id;
 				Select = _CONT_INV_CASE.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 				Select.x=(num);
@@ -2860,18 +2885,18 @@ function majInventaireCase(currentCase)
 			imgItem.addEventListener("touchstart", function(event)
 			{
 				// event "sourie sur item"
-				var currentItem = TabListe[PageItemCase][event.target.name];
+				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 				afficherTooltip(_CONT_INV_CASE.x + event.target.x, _CONT_INV_CASE.y + event.target.y, currentItem);
 
 				// event "click sur item"
-				var currentItem = TabListe[PageItemCase][event.target.name];
+				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 				afficherSelecteurItem(event.target.x, 0);
 				_SELECTED_ITEM_CASE=currentItem.id;
 
 				// maj des boutons
 				majBtnsItemCase();
 				/*
-				var currentItem = TabListe[PageItemCase][event.target.name];
+				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 				var descriptionItem=currentItem.description;
 				labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 				afficherDescItem(descriptionItem);
@@ -2880,7 +2905,7 @@ function majInventaireCase(currentCase)
 					_CONT_INV_CASE.removeChild(Select);
 				}
 				var num=event.target.x;
-				var currentItem = TabListe[PageItemCase][event.target.name];
+				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 				_SELECTED_ITEM_CASE=currentItem.id;
 				Select = _CONT_INV_CASE.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 				Select.x=(num);
@@ -3005,19 +3030,19 @@ function majBarresPerso(currentPerso)
 	// Sécurité pour le remplissage de la barre de faim
 	if(currentPerso.ptFaim<=0)										faimBar.scaleX = 0;
 	else if(currentPerso.ptFaim>=currentPerso.ptFaimMax)			faimBar.scaleX = faimBarWidth;	
-	else 															faimBar.scaleX = (currentPerso.ptFaim/currentPerso.ptFaimMax) * faimBarWidth;
+	else 															faimBar.scaleX = (currentPerso.ptFaim/currentPerso.ptFaimMax) * _BARRES_WIDTH;
 	
 	// AFFICHAGE POINTS D'ACTION 
 	// Sécurité pour le remplissage de la barre d'action
 	if(currentPerso.ptAction<=0) 									actionBar.scaleX = 0;
 	else if(currentPerso.ptAction>=currentPerso.ptActionMax)		actionBar.scaleX = actionBarWidth;
-	else 															actionBar.scaleX = (currentPerso.ptAction/currentPerso.ptActionMax) * actionBarWidth;
+	else 															actionBar.scaleX = (currentPerso.ptAction/currentPerso.ptActionMax) * _BARRES_WIDTH;
 	
 	// AFFICHAGE POINTS DE MOUVEMENT
 	// Sécurité pour le remplissage de la barre de move
 	if(currentPerso.ptDeplacement >=currentPerso.ptDeplacementMax) 	moveBar.scaleX = moveBarWidth;
 	else if(currentPerso.ptDeplacement<=0) 							moveBar.scaleX = 0;
-	else 															moveBar.scaleX = (currentPerso.ptDeplacement/currentPerso.ptDeplacementMax) * moveBarWidth;
+	else 															moveBar.scaleX = (currentPerso.ptDeplacement/currentPerso.ptDeplacementMax) * _BARRES_WIDTH;
 
 	// mise à jour des variables globales, qui serviront pour afficher les proba quand on fera un info case
 	_PERSO_PROBA_CACHE	=currentPerso.multiProbaCache;
@@ -3328,33 +3353,34 @@ function afficherMessageRetour(msg, type)
 	labelAction.text 			= msg;
 	
 
-	stage.update();
+	//stage.update();
 	/// AFFICHAGE PENDANT JUSTE 5 SECONDES
 	clearInterval(_ID_INTER_MSG_RETOUR);
 	_ID_INTER_MSG_RETOUR = setTimeout(function() 
 	{
 		// vide le conteneur
 		contZoneMessage.removeChild(labelAction);
-		stage.update();
+		//stage.update();
 	}, 5000);	
 }
 
 function afficherBarreSante(ptsVie, ptsVieMax, couleurRouge)
 {
-	if (couleurRouge == true)
+	// config couleur de la barre
+	if (couleurRouge)
 	{
-			lifeBarColor = createjs.Graphics.getRGB(150,0,0);
-			lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 10, lifeBarHeight).endFill();
+		lifeBarColor = createjs.Graphics.getRGB(220,0,0);
+		lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 1, lifeBarHeight).endFill();
 	}
 	else
 	{
-			lifeBarColor = createjs.Graphics.getRGB(0,150,0);
-			lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 10, lifeBarHeight).endFill();
+		lifeBarColor = createjs.Graphics.getRGB(0,255,0);
+		lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 1, lifeBarHeight).endFill();
 	}
+	// config taille
 	if(ptsVie<=0)				lifeBar.scaleX = 0;
-	else if(ptsVie>=ptsVieMax)	lifeBar.scaleX = _barWidth;
-	else 						lifeBar.scaleX = (ptsVie/ptsVieMax) * _barWidth;
-
+	else if(ptsVie>=ptsVieMax)	lifeBar.scaleX = _BARRES_WIDTH;
+	else 						lifeBar.scaleX = (ptsVie/ptsVieMax) * _BARRES_WIDTH;
 }
 
 function defineCadreMap(couleur)
@@ -3407,9 +3433,9 @@ function afficherTooltip(x, y, obj)
 	_FOND_TOOLTIP.graphics.beginFill(coul).drawRect(0, 0, _TAILLE_TOOLTIP, 55).endFill();
 
 	// test si ca dépasse pas du canvas
-	if(_CONTENEUR_TOOLTIP.x + _TAILLE_TOOLTIP > _largeurCanvas)
+	if(_CONTENEUR_TOOLTIP.x + _TAILLE_TOOLTIP > _CANVAS_LARGEUR)
 	{
-		_CONTENEUR_TOOLTIP.x = _largeurCanvas - _TAILLE_TOOLTIP - 7;
+		_CONTENEUR_TOOLTIP.x = _CANVAS_LARGEUR - _TAILLE_TOOLTIP - 7;
 	} 
 
 	// ajout du fond et label au conteneur
@@ -3818,7 +3844,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		//alert(contMap.width + " - " + map.image.width + " - " + map.x);
 		contMap.addChild(map);
 	}
-	stage.update();
+	//stage.update();
 });
 
 /************************************************************************************************************
@@ -3944,7 +3970,7 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoul
 		afficherMessageRetour("Changement de \nmode raté !\nPoints d'action \ninsuffisants !");
 		break;
 	}
-	stage.update();
+	//stage.update();
 });
 
 /******************************************************************************************************************
@@ -4038,7 +4064,7 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		afficherMessageRetour("Points d'action \ninsuffisants !");
 		break;
 	}
-	stage.update();
+	//stage.update();
 });
 
 /******************************************************************************************************************
@@ -4100,7 +4126,7 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 		labelAction.text=("Points d'action \ninsuffisants");
 		break;
 	}
-	stage.update();
+	//stage.update();
 });
 
 /******************************************************************************************************************
@@ -4117,7 +4143,7 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
  */
 socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoulesA) {
 	// s'il a eu des degats, on maj le perso
-	if(degatsInfliges != 0)
+	if(degatsSubis != 0)
 	{
 		socket.emit('INFO_PERSONNAGE_CS');
 	}
@@ -4225,45 +4251,45 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 		}
 	}
 
-	if(PagePersoAllies>Taille-1)
+	if(_PAGE_PERSO_ALLIES>Taille-1)
 	{
-		PagePersoAllies=Taille-1;
+		_PAGE_PERSO_ALLIES=Taille-1;
 	}
-	else if (PagePersoAllies<0)
+	else if (_PAGE_PERSO_ALLIES<0)
 	{
-		PagePersoAllies=0;
+		_PAGE_PERSO_ALLIES=0;
 	}
 
-	if(PagePersoAllies==Taille-1)
+	if(_PAGE_PERSO_ALLIES==Taille-1)
 	{
-		BtnPagePersoAlliesRight.visible=false;
+		Btn_PAGE_PERSO_ALLIESRight.visible=false;
 	}
 	else
 	{
-		BtnPagePersoAlliesRight.visible=true;
+		Btn_PAGE_PERSO_ALLIESRight.visible=true;
 	}
 
-	if(PagePersoAllies==0)
+	if(_PAGE_PERSO_ALLIES==0)
 	{
-		BtnPagePersoAlliesLeft.visible=false;
+		Btn_PAGE_PERSO_ALLIESLeft.visible=false;
 	}
 	else
 	{
-		BtnPagePersoAlliesLeft.visible=true;
+		Btn_PAGE_PERSO_ALLIESLeft.visible=true;
 	}
 
 	if(Taille ==0)
 	{
-		BtnPagePersoAlliesLeft.visible=false;
-		BtnPagePersoAlliesRight.visible=false;
+		Btn_PAGE_PERSO_ALLIESLeft.visible=false;
+		Btn_PAGE_PERSO_ALLIESRight.visible=false;
 	}
 
 	try 
 	{
 		// instructions à essayer
-		for (var i = 0; i < TabListe[PagePersoAllies].length ; i++) 
+		for (var i = 0; i < TabListe[_PAGE_PERSO_ALLIES].length ; i++) 
 		{
-			var persoA=TabListe[PagePersoAllies][i];
+			var persoA=TabListe[_PAGE_PERSO_ALLIES][i];
 
 			var ModePerso;
 			var DescriptionSac;
@@ -4297,7 +4323,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 			// Ajout de l'évenement a l'image
 			// ajout d'un texte quand l'user passera la souris dessus
 			imgPersoAllie.addEventListener('mouseover', function(event) {
-				var currentPerso = TabListe[PagePersoAllies][event.target.name];
+				var currentPerso = TabListe[_PAGE_PERSO_ALLIES][event.target.name];
 				// Texte de description du Mode
 				ModePerso="";
 				switch(currentPerso.mode)
@@ -4341,13 +4367,13 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies){
 					labelDescribePerso.text += "\nPas d'armure équipée";
 
 				}
-				stage.update();
+				//stage.update();
 			},false);
 
 			imgPersoAllie.addEventListener('mouseout', function(event){
 				labelDescribePerso.text="";
 				labelPseudo.text="";
-				stage.update();
+				//stage.update();
 			},false);
 
 			contListeAllies.addChild( imgPersoAllie);
@@ -4421,37 +4447,37 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 		}
 	}
 
-	if(PagePersoEnn>Taille-1)
+	if(_PAGE_PERSO_ENN>Taille-1)
 	{
-		PagePersoEnn=Taille-1;
+		_PAGE_PERSO_ENN=Taille-1;
 	}
-	else if (PagePersoEnn<0)
+	else if (_PAGE_PERSO_ENN<0)
 	{
-		PagePersoEnn=0;
+		_PAGE_PERSO_ENN=0;
 	}
 
-	if(PagePersoEnn==Taille-1)
+	if(_PAGE_PERSO_ENN==Taille-1)
 	{
-		BtnPagePersoEnnRight.visible=false;
+		Btn_PAGE_PERSO_ENNRight.visible=false;
 	}
 	else
 	{
-		BtnPagePersoEnnRight.visible=true;
+		Btn_PAGE_PERSO_ENNRight.visible=true;
 	}
 
-	if(PagePersoEnn==0)
+	if(_PAGE_PERSO_ENN==0)
 	{
-		BtnPagePersoEnnLeft.visible=false;
+		Btn_PAGE_PERSO_ENNLeft.visible=false;
 	}
 	else
 	{
-		BtnPagePersoEnnLeft.visible=true;
+		Btn_PAGE_PERSO_ENNLeft.visible=true;
 	}
 
 	if(Taille ==0)
 	{
-		BtnPagePersoEnnLeft.visible=false;
-		BtnPagePersoEnnRight.visible=false;
+		Btn_PAGE_PERSO_ENNLeft.visible=false;
+		Btn_PAGE_PERSO_ENNRight.visible=false;
 	}
 
 	var Select;
@@ -4459,9 +4485,9 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 	try 
 	{
 		// instructions à essayer
-		for (var i = 0; i < TabListe[PagePersoEnn].length ; i++) 
+		for (var i = 0; i < TabListe[_PAGE_PERSO_ENN].length ; i++) 
 		{
-			var persoE=TabListe[PagePersoEnn][i];
+			var persoE=TabListe[_PAGE_PERSO_ENN][i];
 
 			var ModePerso;
 			var DescriptionSac;
@@ -4529,7 +4555,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 			// ajout d'un texte quand l'user passera la souris dessus
 			imgPersoEnnemi.addEventListener('mouseover', function(event)
 					{
-				var currentPerso = TabListe[PagePersoEnn][event.target.name];
+				var currentPerso = TabListe[_PAGE_PERSO_ENN][event.target.name];
 
 				// Calcul du pourcentage de vie
 				PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
@@ -4632,17 +4658,17 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 				{
 					labelDescribePerso.text += "\nPas d'armure équipée";
 				}
-				stage.update();
+				//stage.update();
 					},false);
 
 			imgPersoEnnemi.addEventListener('mouseout', function(event){
 				labelDescribePerso.text="";
-				stage.update();
+				//stage.update();
 			},false);
 			
 			imgPersoEnnemi.addEventListener('touchend', function(event){
 				labelDescribePerso.text="";
-				stage.update();
+				//stage.update();
 			},false);
 
 
@@ -4655,14 +4681,14 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 				Select = contListeEnnemis.addChild(new createjs.Bitmap("public/Boutons/Select64.png"));
 				Select.x=(num);
 				Select.y=0;
-				var currentPerso = TabListe[PagePersoEnn][event.target.name];
-				_selectedPerso=currentPerso.id;
+				var currentPerso = TabListe[_PAGE_PERSO_ENN][event.target.name];
+				_SELECTED_PERSO=currentPerso.id;
 				setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
-				stage.update();
+				//stage.update();
 			});
 			imgPersoEnnemi.addEventListener("touchstart", function(event){
 				
-				var currentPerso = TabListe[PagePersoEnn][event.target.name];
+				var currentPerso = TabListe[_PAGE_PERSO_ENN][event.target.name];
 
 				// Calcul du pourcentage de vie
 				PourcentVie = currentPerso.ptSante / currentPerso.ptSanteMax * 100;
@@ -4774,10 +4800,10 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 				Select = contListeEnnemis.addChild(new createjs.Bitmap("public/Boutons/Select64.png"));
 				Select.x=(num);
 				Select.y=0;
-				var currentPerso = TabListe[PagePersoEnn][event.target.name];
-				_selectedPerso=currentPerso.id;
+				var currentPerso = TabListe[_PAGE_PERSO_ENN][event.target.name];
+				_SELECTED_PERSO=currentPerso.id;
 				setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
-				stage.update();
+				//stage.update();
 			});
 
 			contListeEnnemis.addChild(imgPersoEnnemi);
@@ -4786,7 +4812,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 			iPositionPersoInConteneur++;
 
 			// Update l'ihm
-			stage.update();
+			//stage.update();
 		}
 	}
 	catch(e){}
@@ -4796,6 +4822,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn){
 
 socket.on('ATTAQUE_NUIT_SC', function ()
 {
+	_ECRAN_ATTAQUE_NUIT = true;
 	attaqueNuit();
 });
 
