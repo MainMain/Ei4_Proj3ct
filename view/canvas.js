@@ -66,21 +66,27 @@ var Btn_PAGE_ITEM_PERSORight, Btn_PAGE_ITEM_PERSOLeft, Btn_PAGE_ITEM_CASERight, 
 
  var _CONTENEUR_BARRES_INITIALISES = false;
 // Police des labels du Plateau de jeu
-var _labelPolice="14px Consolas";
-var _labelMessage="11px Consolas";
+var _POLICE_TOOLTIP	="12px Frail";
+var _POLICE_LABEL	="15px Frail";
+var _POLICE_MESSAGES="13px Frail";
+var _POLICE_TITRE_1	= "20px Frail"; //"30px BadGrunge";
+var _POLICE_TITRE_2	= "15px Frail"; //"23px BadGrunge";
+
 // label.lineHeight
 var _LineHeight = 15;
 // label.textBaseline
 var _TextBaseline = "top";
 
 // Couleurs des labels
-var ColorLabel = "#fff";
-var ColorLabelBonus = "#008000";
+var _COULEUR_LABELS = "#fff";
+var _COULEUR_TITRE = "#cccccc";
+var _COULEUR_TITRE_2 = "#dddddd";
+var _COULEUR_LABELSBonus = "#008000";
 
 // Police du label de la page de mort
-var __labelPoliceMort="30px Consolas";
-var _colorLabelMort="#FFFFFF";
-var _colorLabelHeureMort="#000000";
+var _POLICE_MORT="20px Frail";
+var _COULEUR_LABELS_MORT="#FFFFFF";
+var _COULEUR_LABELS_HEURE_MORT="#000000";
 
 // Pour centrer les flèches de la map
 var _centrageBpMap = 50;
@@ -142,22 +148,22 @@ var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 //------------------ Zone 9 : Infos Case ------------------------------------------------------
 
 // Placement label Nombre d'Aliés
-var _labelNbAlliesX  = 175;
-var _labelNbAlliesY = 530;
+var __LABEL_NB_ALLIESX  = 185;
+var __LABEL_NB_ALLIESY = 530;
 
 // Placement label Nombre d'Ennemis
-var _labelNbEnnemisX = _labelNbAlliesX ;
-var _labelNbEnnemisY = _labelNbAlliesY + _EspaceLabelY;
+var __LABEL_NB_ENNEMISX = __LABEL_NB_ALLIESX ;
+var __LABEL_NB_ENNEMISY = __LABEL_NB_ALLIESY + _EspaceLabelY;
 
 // Placement label Nombre de Goules
-var _labelNbGoulesX = _labelNbAlliesX ;
-var _labelNbGoulesY = _labelNbEnnemisY + _EspaceLabelY;
+var __LABEL_NB_GOULESX = __LABEL_NB_ALLIESX ;
+var __LABEL_NB_GOULESY = __LABEL_NB_ENNEMISY + _EspaceLabelY;
 
 //------------------ Zone 8 : Proba de la case -------------------------------------------------------
 
 // Placement label Probabilité de Cache
-var _labelProbaCacheX = _labelNbAlliesX + 240;
-var _labelProbaCacheY = _labelNbAlliesY ;
+var _labelProbaCacheX = __LABEL_NB_ALLIESX + 240;
+var _labelProbaCacheY = __LABEL_NB_ALLIESY ;
 
 // Placement label Probabilité de Fouille
 var _labelProbaFouilleX = _labelProbaCacheX ;
@@ -236,14 +242,19 @@ var _contInfoCaseH = _CANVAS_HAUTEUR-530;
  */
 
 
-var _LABEL_DEGATS 	= new createjs.Text("", _LABEL_POLICE, ColorLabel);
+var _LABEL_DEGATS 	= new createjs.Text("", _LABEL_POLICE, _COULEUR_LABELS);
+var _LABEL_ATTAQUE_ZOMBIE;
+var _LABEL_MODIF_NBR_ALLIES;
+var _LABEL_MODIF_NBR_ENNEMIS;
+var _LABEL_MODIF_NBR_ZOMBIE;
+
 //_LABEL_DEGATS.x 	=
 //_LABEL_DEGATS.y 	= 
 
 ////////////// VARIABLES POUR LES TOOLTIPS ///////////////
 var _LABEL_POLICE="italic 12px Consolas";
 var _CONTENEUR_TOOLTIP				;
-var _LABEL_DESCRIPTION 				= new createjs.Text("", _LABEL_POLICE, ColorLabel);
+var _LABEL_DESCRIPTION 				= new createjs.Text("", _LABEL_POLICE, _COULEUR_LABELS);
 var _TAILLE_TOOLTIP					;
 var _FOND_TOOLTIP 					;
 _LABEL_DESCRIPTION.lineHeight 		= _LineHeight;
@@ -258,6 +269,8 @@ var _ID_INTER_BLINK;
 var _ID_INTER_BLINK_BARRE_VIE;
 var _ID_INTER_MSG_RETOUR;
 var _ID_INTER_CADRE_MAP;
+var _ID_INTER_MODIF_FORCES;
+var _ID_INTER_NBR_ZOMBIE_ATTAQUANTS;
 
 var _BLINK_CPT;
 
@@ -265,8 +278,8 @@ var _BLINK_CPT;
 
 var labelAction, labelObjetCase, labelInventaire, labelDescriptionItem,
 labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
-labelBonusArme, labelBonusArmure, labelCaseEnCours, labelNbAllies, labelNbEnnemis,
-labelNbGoules, labelProbaCache, labelProbaFouille, labelPourcentLoad,
+labelBonusArme, labelBonusArmure, labelCaseEnCours, _LABEL_NB_ALLIES, _LABEL_NB_ENNEMIS,
+_LABEL_NB_GOULES, labelProbaCache, labelProbaFouille, labelPourcentLoad,
 labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim, 
 labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, 
 labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescriptionCase,
@@ -653,7 +666,37 @@ function setPlateau()
 	
 	background.image.onload = setImg(background, 0, 0);
 	
-	// ******************************************
+	// Affichage des labels de titres
+
+	var _labelTitreSac			= new createjs.Text("SAC", _POLICE_TITRE_1, _COULEUR_TITRE);
+	var _labelTitreMode			= new createjs.Text("MODE", _POLICE_TITRE_1, _COULEUR_TITRE);
+	var _labelTitreCase			= new createjs.Text("CASE", _POLICE_TITRE_1, _COULEUR_TITRE);
+	var _labelTitreInventaire   = new createjs.Text("INVENTAIRE", _POLICE_TITRE_2, _COULEUR_TITRE_2);
+	var _labelTitreObjetsCase   = new createjs.Text("OBJETS DE LA CASE", _POLICE_TITRE_2, _COULEUR_TITRE_2);
+	var _labelTitreForces   = new createjs.Text("FORCES EN PRESENCE", _POLICE_TITRE_2, _COULEUR_TITRE_2);
+
+	_labelTitreSac.x 		= 690;
+	_labelTitreSac.y 		= 392;
+	_labelTitreMode.x 		= 527;
+	_labelTitreMode.y 		= 392;
+	_labelTitreCase.x 		= 910;
+	_labelTitreCase.y 		= 392;
+
+	_labelTitreInventaire.x = 870;
+	_labelTitreInventaire.y = 10;
+	_labelTitreObjetsCase.x = 870;
+	_labelTitreObjetsCase.y = 120;
+
+	_labelTitreForces.x = 5;
+	_labelTitreForces.y = 45;
+
+	stage.addChild(_labelTitreSac);
+	stage.addChild(_labelTitreMode);
+	stage.addChild(_labelTitreCase);
+	stage.addChild(_labelTitreInventaire);
+	stage.addChild(_labelTitreObjetsCase);
+	stage.addChild(_labelTitreForces);
+	// *****************************************
 	// ** creation des conteneurs               *
 	// ******************************************
 
@@ -670,18 +713,18 @@ function setPlateau()
 			contZoneMessage.x-2, contZoneMessage.y-2, contZoneMessage.width+2, contZoneMessage.height+2);
 
 	// Label des messages de retour
-	labelAction = contZoneMessage.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
+	labelAction = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _colorLabelAction));
 	labelAction.x = 5;
 
 	// Label dernier message
-	labelDernierMessage = contZoneMessage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelDernierMessage = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	/*labelDernierMessage.lineHeight = _LineHeight;
 	labelDernierMessage.textBaseline = _TextBaseline;*/
 	labelDernierMessage.x = labelAction.x;
 	labelDernierMessage.y = _EspaceLabelY;
 
 	// Label description case
-	labelDescriptionCase = contZoneMessage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelDescriptionCase = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	/*labelDescriptionCase.lineHeight = _LineHeight;
 	labelDescriptionCase.textBaseline = _TextBaseline;*/
 	labelDescriptionCase.x = labelAction.x;
@@ -1006,8 +1049,8 @@ function setPlateau()
 
 	// - ZONE PICTOGRAMMES INFO CASE-
 	contPictoCase = new createjs.Container();
-	contPictoCase.x = 50;
-	contPictoCase.y = 45;
+	contPictoCase.x = 10; // avt : 50
+	contPictoCase.y = 65; // avt : 45
 	contPictoCase.width = 32;
 	contPictoCase.height = 3*ESPACE_BARRES_Y + 40;
 	stage.addChild(contPictoCase);
@@ -1024,31 +1067,31 @@ function setPlateau()
 	imgEnnemis.y=32;
 	contPictoCase.addChild(imgEnnemis);
 
-	imgZombies = new createjs.Bitmap("public/pictos/nbrZombies.png");
-	imgZombies.x=-2;
-	imgZombies.y=33*2;
+	imgZombies = new createjs.Bitmap("public/pictos/nbrZombies_plusPetit.png");
+	imgZombies.x=2; // avt : -2
+	imgZombies.y=33*2+4;
 	contPictoCase.addChild(imgZombies);
 
-	labelNbAllies = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	/*labelNbAllies.lineHeight = _LineHeight;
-	labelNbAllies.textBaseline = _TextBaseline;*/
-	labelNbAllies.x = contPictoCase.x + 35 ;
-	labelNbAllies.y = contPictoCase.y + 5;
-	labelNbAllies.text="labelNbAllies";
+	_LABEL_NB_ALLIES = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+	/*_LABEL_NB_ALLIES.lineHeight = _LineHeight;
+	_LABEL_NB_ALLIES.textBaseline = _TextBaseline;*/
+	_LABEL_NB_ALLIES.x = contPictoCase.x + 40 ;
+	_LABEL_NB_ALLIES.y = contPictoCase.y + 5;
+	_LABEL_NB_ALLIES.text="0";
 
-	labelNbEnnemis = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	/*labelNbEnnemis.lineHeight = _LineHeight;
-	labelNbEnnemis.textBaseline = _TextBaseline;*/
-	labelNbEnnemis.x = labelNbAllies.x;
-	labelNbEnnemis.y = labelNbAllies.y+35;
-	labelNbEnnemis.text="labelNbEnnemis";
+	_LABEL_NB_ENNEMIS = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+	/*_LABEL_NB_ENNEMIS.lineHeight = _LineHeight;
+	_LABEL_NB_ENNEMIS.textBaseline = _TextBaseline;*/
+	_LABEL_NB_ENNEMIS.x = _LABEL_NB_ALLIES.x;
+	_LABEL_NB_ENNEMIS.y = _LABEL_NB_ALLIES.y+35;
+	_LABEL_NB_ENNEMIS.text="0";
 
-	labelNbGoules = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	/*labelNbGoules.lineHeight = _LineHeight;
-	labelNbGoules.textBaseline = _TextBaseline;*/
-	labelNbGoules.x = labelNbAllies.x;
-	labelNbGoules.y = labelNbAllies.y+32*2+10;
-	labelNbGoules.text="labelNbGoules";
+	_LABEL_NB_GOULES = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+	/*_LABEL_NB_GOULES.lineHeight = _LineHeight;
+	_LABEL_NB_GOULES.textBaseline = _TextBaseline;*/
+	_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
+	_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23; // avt : y*32*2+10
+	_LABEL_NB_GOULES.text="0";
 
 
 
@@ -1065,74 +1108,74 @@ function setPlateau()
 	var _labelDescriptionItemY = contTousItems.y + _CONT_INV_CASE.y + 40;
 
 	// Label nombre nouveaux messages
-	labelNombreNouvMsg = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelNombreNouvMsg = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelNombreNouvMsg.lineHeight = _LineHeight;
 	labelNombreNouvMsg.textBaseline = _TextBaseline;
 	labelNombreNouvMsg.x = _labelNombreNouvMsgX;
 	labelNombreNouvMsg.y = _labelNombreNouvMsgY;
 
 	// Label nom case en cours
-	labelCaseEnCours = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelCaseEnCours = stage.addChild(new createjs.Text("", _POLICE_TITRE_1, _COULEUR_TITRE));
 	labelCaseEnCours.lineHeight = _LineHeight;
 	labelCaseEnCours.textBaseline = _TextBaseline;
 	labelCaseEnCours.x = 5;
 	labelCaseEnCours.y = 5;
 
 	// Label presentation objet dans la case
-	labelObjetCase = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelObjetCase = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelObjetCase.lineHeight = _LineHeight;
 	labelObjetCase.textBaseline = _TextBaseline;
 	labelObjetCase.x = _labelItemCaseX;
 	labelObjetCase.y = _labelItemCaseY;
 
-	labelDescriptionItem = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelDescriptionItem = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelDescriptionItem.lineHeight = _LineHeight;
 	labelDescriptionItem.textBaseline = _TextBaseline;
 	labelDescriptionItem.x = _labelDescriptionItemX;
 	labelDescriptionItem.y = _labelDescriptionItemY;
 
-	labelInventaire = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelInventaire = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelInventaire.lineHeight = _LineHeight;
 	labelInventaire.textBaseline = _TextBaseline;
 	labelInventaire.x = _labelItemPersoX;
 	labelInventaire.y = _labelItemPersoY;
 
-	/*labelChoixMode = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	/*labelChoixMode = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelChoixMode.lineHeight = _LineHeight;
 	labelChoixMode.textBaseline = _TextBaseline;
 	labelChoixMode.x = _labelChoixModeX;
 	labelChoixMode.y = _labelChoixModeY;
 	//labelChoixMode.text="Passer en Mode :";
 
-	labelBtnsListes = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelBtnsListes = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelBtnsListes.lineHeight = _LineHeight;
 	labelBtnsListes.textBaseline = _TextBaseline;
 	labelBtnsListes.x = _labelBtnsListesX;
 	labelBtnsListes.y = _labelBtnsListesY;
 	//labelBtnsListes.text="Afficher liste :";
 
-	labelBtnsInvPerso = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelBtnsInvPerso = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelBtnsInvPerso.lineHeight = _LineHeight;
 	labelBtnsInvPerso.textBaseline = _TextBaseline;
 	labelBtnsInvPerso.x = _labelBtnsInvPersoX-5;
 	labelBtnsInvPerso.y = _labelBtnsInvPersoY;
 	//labelBtnsInvPerso.text="Actions sur le sac :";
 
-	labelBtnsInvCase = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelBtnsInvCase = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelBtnsInvCase.lineHeight = _LineHeight;
 	labelBtnsInvCase.textBaseline = _TextBaseline;
 	labelBtnsInvCase.x = _labelBtnsInvCaseX-8;
 	labelBtnsInvCase.y = _labelBtnsInvCaseY;
 	//labelBtnsInvCase.text="Actions sur la case :";*/
 
-	labelArme = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelArme = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelArme.lineHeight = _LineHeight;
 	labelArme.textBaseline = _TextBaseline;
 	labelArme.x = _labelArmeX;
 	labelArme.y = _labelArmeY;
 	//labelArme.text="Arme équipée : ";
 
-	labelArmure = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelArmure = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelArmure.lineHeight = _LineHeight;
 	labelArmure.textBaseline = _TextBaseline;
 	labelArmure.x = _labelArmureX;
@@ -1141,13 +1184,13 @@ function setPlateau()
 
 	//------------------- Zone 1 -----------------------------------------------------
 
-	labelPtsVie = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelPtsVie = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelPtsVie.lineHeight = _LineHeight;
 	labelPtsVie.textBaseline = _TextBaseline;
 	labelPtsVie.x = _labelPtsVX;
 	labelPtsVie.y = _labelPtsVY;
 
-	labelPtsFaim = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelPtsFaim = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelPtsFaim.lineHeight = _LineHeight;
 	labelPtsFaim.textBaseline = _TextBaseline;
 	labelPtsFaim.x = _labelPtsFX;
@@ -1155,13 +1198,13 @@ function setPlateau()
 
 	//------------------- Zone 2 -----------------------------------------------------
 
-	labelPtsAction = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelPtsAction = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelPtsAction.lineHeight = _LineHeight;
 	labelPtsAction.textBaseline = _TextBaseline;
 	labelPtsAction.x = _labelPtsAX;
 	labelPtsAction.y = _labelPtsAY;
 
-	labelPtsMove = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelPtsMove = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelPtsMove.lineHeight = _LineHeight;
 	labelPtsMove.textBaseline = _TextBaseline;
 	labelPtsMove.x = _labelPtsMX;
@@ -1169,37 +1212,37 @@ function setPlateau()
 
 	//---------------------------------------
 
-	labelPtsAtq = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelPtsAtq = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelPtsAtq.lineHeight = _LineHeight;
 	labelPtsAtq.textBaseline = _TextBaseline;
 	labelPtsAtq.x = _labelPtsAtqX;
 	labelPtsAtq.y = _labelPtsAtqY;
 
-	labelPtsDef = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelPtsDef = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelPtsDef.lineHeight = _LineHeight;
 	labelPtsDef.textBaseline = _TextBaseline;
 	labelPtsDef.x = _labelPtsDefX;
 	labelPtsDef.y = _labelPtsDefY;
 
-	labelBonusArme = stage.addChild(new createjs.Text("", _labelPolice, ColorLabelBonus));
+	labelBonusArme = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELSBonus));
 	labelBonusArme.lineHeight = _LineHeight;
 	labelBonusArme.textBaseline = _TextBaseline;
 	labelBonusArme.x = _labelPtsAtqX + 170 ;
 	labelBonusArme.y = _labelPtsAtqY;
 
-	labelBonusArmure = stage.addChild(new createjs.Text("", _labelPolice, ColorLabelBonus));
+	labelBonusArmure = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELSBonus));
 	labelBonusArmure.lineHeight = _LineHeight;
 	labelBonusArmure.textBaseline = _TextBaseline;
 	labelBonusArmure.x = _labelPtsDefX + 170;
 	labelBonusArmure.y = _labelPtsDefY;
 
-	labelProbaCache = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelProbaCache = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelProbaCache.lineHeight = _LineHeight;
 	labelProbaCache.textBaseline = _TextBaseline;
 	labelProbaCache.x = _labelProbaCacheX;
 	labelProbaCache.y = _labelProbaCacheY;
 
-	labelProbaFouille = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelProbaFouille = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelProbaFouille.lineHeight = _LineHeight;
 	labelProbaFouille.textBaseline = _TextBaseline;
 	labelProbaFouille.x = _labelProbaFouilleX;
@@ -1207,10 +1250,10 @@ function setPlateau()
 
 	//----------------------- Zone 14 : labels de retour-------------------------
 
-	labelLancementServeur = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelLancementServeur = stage.addChild(new createjs.Text("", _LABEL_POLICE, _COULEUR_LABELS));
 	labelLancementServeur.lineHeight = _LineHeight;
 	labelLancementServeur.textBaseline = _TextBaseline;
-	labelLancementServeur.x = 950;
+	labelLancementServeur.x =880;
 	labelLancementServeur.y =600;
 
 	// ******************************************
@@ -1364,7 +1407,7 @@ function message()
 	background_message.scaleY=0.750
 	contMessage.addChild(background_message);
 
-	labelMessage = contMessage.addChild(new createjs.Text("", _labelMessage, ColorLabel));
+	labelMessage = contMessage.addChild(new createjs.Text("", _POLICE_MESSAGES, _COULEUR_LABELS));
 	labelMessage.lineHeight = _LineHeight;
 	labelMessage.textBaseline = _TextBaseline;
 	labelMessage.x = 20;
@@ -1536,7 +1579,7 @@ function liste()
 	background_liste.scaleY=0.750;
 	contListe.addChild(background_liste);
 
-	labelAlliesListe = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelAlliesListe = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelAlliesListe.lineHeight = _LineHeight;
 	labelAlliesListe.textBaseline = _TextBaseline;
 	labelAlliesListe.x = 20;
@@ -1555,7 +1598,7 @@ function liste()
 	shape7.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
 			contListeAllies.x+7, contListeAllies.y, contListeAllies.width-14, contListeAllies.height);*/
 
-	labelEnnemisListe = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelEnnemisListe = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelEnnemisListe.lineHeight = _LineHeight;
 	labelEnnemisListe.textBaseline = _TextBaseline;
 	labelEnnemisListe.x = 20;
@@ -1574,7 +1617,7 @@ function liste()
 	shape8.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
 			contListeEnnemis.x+7, contListeEnnemis.y, contListeEnnemis.width-14, contListeEnnemis.height);*/
 
-	labelDescribePerso = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelDescribePerso = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelDescribePerso.lineHeight = _LineHeight;
 	labelDescribePerso.textBaseline = _TextBaseline;
 	labelDescribePerso.x = labelAlliesListe.x;
@@ -1756,16 +1799,16 @@ function dead(currentPerso)
 		_PAGE_ITEM_PERSO_DEAD--;
 	});
 
-	var labelDeadByWho = contDead.addChild(new createjs.Text("", __labelPoliceMort, _colorLabelMort));
+	var labelDeadByWho = contDead.addChild(new createjs.Text("", _POLICE_MORT, _COULEUR_LABELS_MORT));
 	labelDeadByWho.x=20;
 	labelDeadByWho.y=20;
 	
-	var labelDeadHour = contDead.addChild(new createjs.Text("", __labelPoliceMort, _colorLabelHeureMort));
+	var labelDeadHour = contDead.addChild(new createjs.Text("", _POLICE_MORT, _COULEUR_LABELS_HEURE_MORT));
 	labelDeadHour.x = 450 ;
 	labelDeadHour.y = 175;
 	labelDeadHour.text="";
 	
-	var labelItemsRestants = contDead.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	var labelItemsRestants = contDead.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelItemsRestants.x=60;
 	labelItemsRestants.y=contItemPersoDead.y+5;
 	
@@ -1806,12 +1849,24 @@ function dead(currentPerso)
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
 		_ECRAN_MORT = false;
+
+		// on remet les last à -1 pour pas qu'il affiche un msg au chgt de case
+		_LAST_NOMBRE_ALLIES  = -1;
+		_LAST_NOMBRE_ENNEMIS = -1;
+		_LAST_NOMBRE_ZOMBIES = -1;
+
 		setPlateau();
 	});
 	BtnCancelDead.addEventListener('touchstart', function (event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contDead);
 		_ECRAN_MORT = false;
+
+		// on remet les last à -1 pour pas qu'il affiche un msg au chgt de case
+		_LAST_NOMBRE_ALLIES  = -1;
+		_LAST_NOMBRE_ENNEMIS = -1;
+		_LAST_NOMBRE_ZOMBIES = -1;
+
 		setPlateau();
 	});
 
@@ -2408,7 +2463,7 @@ function setColorMsgRetour()
 
 	// Conteneur labels Move
 	contZoneMessage.removeChild(labelAction);
-	labelAction = contZoneMessage.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
+	labelAction = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _colorLabelAction));
 	labelAction.lineHeight = _LineHeight;
 	labelAction.textBaseline = _TextBaseline;
 	labelAction.x = 0;
@@ -2994,23 +3049,16 @@ function majInventaireCase(currentCase)
 function majBarreVie(ptsVie, ptsVieMax)
 {
 	var degatsRecus = _PERSO_LAST_PTS_VIE - ptsVie;
+	afficherBarreSante(ptsVie, ptsVieMax, false);
 	// si pas de diminution de vie
 	if (degatsRecus <= 0) 
 	{
-		afficherBarreSante(ptsVie, ptsVieMax, false);
-
 		// on quite l'algo si y'a pas eu de blessure
 		return;
 	}
 
 	// affiche les degats recus
 	//_LABEL_DEGATS.text = degatsRecus;
-	
-	// changer la couleur de la barre
-	afficherBarreSante(ptsVie, ptsVieMax, false)
-
-	// dessiner la barre de vie
-	afficherBarreSante(ptsVie, ptsVieMax);
 	
 	// efface l'ancien timer, au cas où
 	clearInterval(_ID_INTER_BLINK_BARRE_VIE);
@@ -3024,7 +3072,8 @@ function majBarreVie(ptsVie, ptsVieMax)
 		if (_BLINK_CPT % 2 == 0)
 		{
 			// barre vie en vert
-			
+			afficherBarreSante(ptsVie, ptsVieMax, false)
+
 			// cadre map en gris
 			defineCadreMap("gris");
 		}
@@ -3396,6 +3445,21 @@ function majMessages(currentPerso)
 	}
 }
 
+function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
+{
+	_LABEL_NB_ALLIES.text = nbrAllies;
+	_LABEL_NB_ENNEMIS.text = nbrEnnemis;
+	_LABEL_NB_GOULES.text = nbrZombies;
+
+	// animation correspondante
+	animationModificationForces(nbrAllies, nbrEnnemis, nbrZombies)	
+
+	// update variables 
+	_LAST_NOMBRE_ALLIES = nbrAllies;
+	_LAST_NOMBRE_ENNEMIS = nbrEnnemis;
+	_LAST_NOMBRE_ZOMBIES = nbrZombies;
+}
+
 /*
  *
  * ACTIONS SUR L'INTERFACE
@@ -3417,10 +3481,10 @@ function afficherMessageRetour(msg, type)
 	contZoneMessage.removeChild(labelAction);
 
 	// ajoute le label
-	labelAction 				= contZoneMessage.addChild(new createjs.Text("", _labelPolice, _colorLabelAction));
+	labelAction 				= contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _colorLabelAction));
 	labelAction.lineHeight 		= _LineHeight;
 	labelAction.textBaseline 	= _TextBaseline;
-	labelAction.x 				= 0;
+	labelAction.x 				= 5;
 	labelAction.y 				= 0;
 	labelAction.text 			= msg;
 	
@@ -3558,13 +3622,103 @@ function supprimerFichePersoDetaillee()
  * ANIMATIONS
  *
  */
+ // crée un petite animation quand le joueur subit une attaque de zomzom
+ var _LAST_NOMBRE_ALLIES = -1;
+ var _LAST_NOMBRE_ENNEMIS = -1;
+ var _LAST_NOMBRE_ZOMBIES = -1;
+
+function animationModificationForces(nbrAllies, nbrEnnemis, nbrZombies)
+{
+	//if (typeof nbrEnnemis === "undefined") alert("NBR ENNEMI undefined");
+
+	// si c'est à -1, c'est qu'on vient de faire un chgt de case, donc on n'affiche rien
+	if (_LAST_NOMBRE_ALLIES == -1) return;
+
+	if (nbrAllies < _LAST_NOMBRE_ALLIES)
+	{
+		stage.removeChild(_LABEL_MODIF_NBR_ALLIES);
+
+		_LABEL_MODIF_NBR_ALLIES = new createjs.Text("Départ d'un allié !", _POLICE_TITRE_2, "#ff0000");
+		_LABEL_MODIF_NBR_ALLIES.x = 74;
+		_LABEL_MODIF_NBR_ALLIES.y = 70;
+
+		stage.addChild(_LABEL_MODIF_NBR_ALLIES);
+	}
+	else if (nbrAllies > _LAST_NOMBRE_ALLIES)
+	{
+		stage.removeChild(_LABEL_MODIF_NBR_ALLIES);
+
+		_LABEL_MODIF_NBR_ALLIES = new createjs.Text("Arrivée d'un allié !", _POLICE_TITRE_2, "#00ff00");
+		_LABEL_MODIF_NBR_ALLIES.x = 74;
+		_LABEL_MODIF_NBR_ALLIES.y = 70;
+
+		stage.addChild(_LABEL_MODIF_NBR_ALLIES);
+	}
+
+	if (nbrEnnemis < _LAST_NOMBRE_ENNEMIS)
+	{
+		stage.removeChild(_LABEL_MODIF_NBR_ENNEMIS);
+
+		_LABEL_MODIF_NBR_ENNEMIS = new createjs.Text("Départ d'un ennemi !", _POLICE_TITRE_2, "#00ff00");
+		_LABEL_MODIF_NBR_ENNEMIS.x = 70;
+		_LABEL_MODIF_NBR_ENNEMIS.y = 107;
+		
+		stage.addChild(_LABEL_MODIF_NBR_ENNEMIS);
+	}
+	else if (nbrEnnemis > _LAST_NOMBRE_ENNEMIS)
+	{
+		stage.removeChild(_LABEL_MODIF_NBR_ENNEMIS);
+
+		_LABEL_MODIF_NBR_ENNEMIS = new createjs.Text("Arrivée d'un ennemi !", _POLICE_TITRE_2, "#ff0000");
+		_LABEL_MODIF_NBR_ENNEMIS.x = 70;
+		_LABEL_MODIF_NBR_ENNEMIS.y = 107;
+		
+		stage.addChild(_LABEL_MODIF_NBR_ENNEMIS);
+	}	
+
+	if (nbrZombies < _LAST_NOMBRE_ZOMBIES)
+	{
+		stage.removeChild(_LABEL_MODIF_NBR_ZOMBIE);
+		_LABEL_MODIF_NBR_ZOMBIE = new createjs.Text((_LAST_NOMBRE_ZOMBIES-nbrZombies)+" zombie(s) en moins !", _POLICE_TITRE_2, "#00ff00");
+		_LABEL_MODIF_NBR_ZOMBIE.x = 70;
+		_LABEL_MODIF_NBR_ZOMBIE.y = 135;
+		
+		stage.addChild(_LABEL_MODIF_NBR_ZOMBIE);
+	}
+
+	clearInterval(_ID_INTER_MODIF_FORCES);
+	_ID_INTER_MODIF_FORCES = setTimeout( function() 
+	{
+		// on enlèves les labels non permanants 
+		stage.removeChild(_LABEL_MODIF_NBR_ALLIES);
+		stage.removeChild(_LABEL_MODIF_NBR_ENNEMIS);
+		stage.removeChild(_LABEL_MODIF_NBR_ZOMBIE);
+	}, 2000);
+}
+
 // crée un petite animation quand le joueur subit une attaque de zomzom
 function animationAttaqueZombie(nombreZombies)
 {
+	// si y'a pas de zombie -> Pas d'animation
+	if (nombreZombies == 0)	 return;
+
+	// maj label zombies attaquantes
+	_LABEL_ATTAQUE_ZOMBIE = new createjs.Text("Attaque de "+nombreZombies+" zombie(s) !", _POLICE_TITRE_2, "#ff0000");
+	_LABEL_ATTAQUE_ZOMBIE.x = 70;
+	_LABEL_ATTAQUE_ZOMBIE.y = 150;
+	stage.addChild(_LABEL_ATTAQUE_ZOMBIE);
+
 	// faire clignoter le cadre
 	animationCadreMap("rouge");
 
-	// maj label zombies attaquantes
+	clearInterval(_ID_INTER_NBR_ZOMBIE_ATTAQUANTS);
+
+	_ID_INTER_NBR_ZOMBIE_ATTAQUANTS = setInterval(function()
+	{
+		stage.removeChild(_LABEL_ATTAQUE_ZOMBIE);
+	}, 3000)
+	// on enlèves les labels non permanants 
+	
 }
 
 // fait clignoter une fois le cadre de map de la couleur voulu 
@@ -3578,6 +3732,7 @@ function animationCadreMap(couleur)
 	{
 		// passage dans sa couleur d'origine
 		defineCadreMap("gris");
+
 	}, 250);	
 }
 
@@ -3611,13 +3766,20 @@ socket.on('MOVE_PERSONNAGE_SC', function (reponse)
 		afficherMessageRetour("Déplacement impossible : vous n'avez plus de points de mouvement.", 3);
 		break;
 	case -3:
-		afficherMessageRetour("Déplacement impossible : Il y a trop de zombies dans la case.", 3);
+		afficherMessageRetour("Déplacement impossible : il y a trop de zombies dans la case.", 3);
 		break;
 	case -4:
-		afficherMessageRetour("Déplacement impossible : Vous ne pouvez pas entrer dans la zone sûre adverse.", 3);
+		afficherMessageRetour("Déplacement impossible : vous ne pouvez pas entrer dans la zone sûre adverse.", 3);
 		break;
 	default:
 		afficherMessageRetour("Vous venez de vous déplacer en " + reponse, 1);
+
+		// on remet les last à -1 pour pas qu'il affiche un msg au chgt de case
+		_LAST_NOMBRE_ALLIES  = -1;
+		_LAST_NOMBRE_ENNEMIS = -1;
+		_LAST_NOMBRE_ZOMBIES = -1;
+
+		// demande des infos de la nouvelle case
 		socket.emit('INFO_CASE_CS');
 		//socket.emit('INFO_PERSONNAGE_CS');
 		break;
@@ -3846,6 +4008,9 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase)
 {
+	// maj nbr alliés - ennemis
+	majForceEnPresence(nbrAllies, nbrEnnemis, currentCase.nbrGoules);
+
 	var msgAction = "";
 	var codeAction = 0;
 	
@@ -3868,8 +4033,6 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 
 	if (currentCase == "ERREUR_CASE")
 	{
-		//setColorMsgRetour();
-		//insereMessage("CLIENT :: nom case = " + "ERREUR_CASE");
 		labelAction.text=("Erreur de case !");
 	}
 	else {
@@ -3878,10 +4041,10 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		ProbCache=(currentCase.probaCache * _PERSO_PROBA_CACHE);
 		ProbFouille=(currentCase.probaObjet * _PERSO_PROBA_FOUILLE);
 
-		labelCaseEnCours.text=("Case en cours :\n" + currentCase.nom + "");
-		/*labelNbAllies.text=("Alliés dans la salle  : " + nbrAllies + "");
-		labelNbEnnemis.text=("Ennemis dans la salle : " + nbrEnnemis + "");
-		labelNbGoules.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
+		labelCaseEnCours.text=(/*"Case en cours :\n" + */currentCase.nom /*+ ""*/);
+		/*_LABEL_NB_ALLIES.text=("Alliés dans la salle  : " + nbrAllies + "");
+		_LABEL_NB_ENNEMIS.text=("Ennemis dans la salle : " + nbrEnnemis + "");
+		_LABEL_NB_GOULES.text=("Zombies dans la salle : " + currentCase.nbrGoules + "");
 		labelProbaCache.text=("Proba de Cache :              " + ProbCache + " %");
 		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %");*/
 
@@ -3919,6 +4082,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		map.x = 0;
 		//alert(contMap.width + " - " + map.image.width + " - " + map.x);
 		contMap.addChild(map);
+
+		// mise a jour des forces en présence
+
 	}
 	//stage.update();
 });
@@ -4107,11 +4273,11 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 			labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
 			if(nbrGoulesA==1)
 			{
-				labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
+				//labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
 			}
 			else if(nbrGoulesA>1)
 			{
-				labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
+				animationAttaqueZombie(nbrGoulesA);
 			}
 			socket.emit('INFO_PERSONNAGE_CS');
 		}
@@ -4131,11 +4297,11 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		}
 		if(nbrGoulesA==1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
+			animationAttaqueZombie(nbrGoulesA);
 		}
 		else if(nbrGoulesA>1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
+			animationAttaqueZombie(nbrGoulesA);
 		}
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
@@ -4224,10 +4390,10 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoulesA)
 {
 	// s'il a eu des degats, on maj le perso
-	if(degatsSubis != 0)
-	{
-		socket.emit('INFO_PERSONNAGE_CS');
-	}
+	//if(degatsSubis != 0)
+	//{
+		//socket.emit('INFO_PERSONNAGE_CS');
+	//}
 	// si des zombies l'on attaqué, on affiche l'animation
 	if (nbrGoulesA > 0)
 	{
@@ -4239,12 +4405,12 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoule
 	{
 	case 2: 
 		labelAction.text=("2 zombies tués !");
-		socket.emit('INFO_PERSONNAGE_CS');
+		//socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 1: 
 		labelAction.text=("1 zombie tué !");
-		socket.emit('INFO_PERSONNAGE_CS');
+		//socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case 0:
@@ -4253,7 +4419,7 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoule
 
 	case -1:
 		labelAction.text=("Attaque de zombie échouée !");
-		socket.emit('INFO_PERSONNAGE_CS');
+		//socket.emit('INFO_PERSONNAGE_CS');
 		break;
 
 	case -2:
@@ -4281,7 +4447,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 	var i=0;
 	var iPositionPersoInConteneur=0;
 
-	var labelPseudo = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	var labelPseudo = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelPseudo.lineHeight = _LineHeight;
 	labelPseudo.textBaseline = _TextBaseline;
 	labelPseudo.x = labelDescribePerso.x;
@@ -4458,7 +4624,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 				//stage.update();
 			},false);
 
-			contListeAllies.addChild( imgPersoAllie);
+			contListeAllies.addChild(imgPersoAllie);
 
 			// position de l'item dans le conteneur
 			iPositionPersoInConteneur++;
@@ -4469,7 +4635,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		//alert("Page inexistante !");
 	}
 	socket.emit('INFO_PERSONNAGE_CS');
-		});
+});
 
 /******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
@@ -4917,7 +5083,7 @@ socket.on('GET_DATE_SC', function (dateLancementSrv)
 	var jour = dateLancementSrv.substring(8,10);
 	var heure = parseInt(dateLancementSrv.substring(11,13))+1;
 	var minuit = dateLancementSrv.substring(17,19);
-	labelLancementServeur.text="Le "+jour+"/"+mois+" à "+heure +":" +minuit;
+	labelLancementServeur.text="Serveur lancé le "+jour+"/"+mois+" à "+heure +"h" +minuit;
 });
 
 //Creer bouton tout simple :

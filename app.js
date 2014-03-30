@@ -1007,6 +1007,10 @@ io.sockets.on('connection', function (socket)
 			var idCaseApsDepl;
 			var reponseDeplacement = oPersonnage_Manager.Deplacement(idUser, move);
 		
+		EventLog.log(pseudoUser + " - APP : Réponse déplacement " + reponseDeplacement);
+		if (reponseDeplacement < 0) socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
+		else 						socket.emit('MOVE_PERSONNAGE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdCase(idUser)).nom);
+		
 		// on ne rafraichit que si le deplacement à réussi
 		if (reponseDeplacement || reponseDeplacement >= 0)
 		{
@@ -1027,9 +1031,7 @@ io.sockets.on('connection', function (socket)
 			}
 		}
 		
-		EventLog.log(pseudoUser + " - APP : Réponse déplacement " + reponseDeplacement);
-		if (reponseDeplacement < 0) socket.emit('MOVE_PERSONNAGE_SC', reponseDeplacement);
-		else 						socket.emit('MOVE_PERSONNAGE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdCase(idUser)).nom);
+		
     });
     /*
      * 

@@ -16,7 +16,14 @@
 
 @font-face { 	font-family: "Infected"; 	src: url('../font/Infected.eot'); }
 @font-face { 	font-family: "Infected"; 	src: url('../font/Infected.ttf'); }
-
+@font-face {  font-family: "Defused";  src: url('../font/defused.ttf'); }
+@font-face {  font-family: "28DaysLater";  src: url('../font/28_Days_Later.ttf'); }
+@font-face {  font-family: "BadGrunge";  src: url('../font/BAD_GRUNGE.ttf'); }
+@font-face {  font-family: "KillEmAll";  src: url('../font/Kill_Em_All.ttf'); }
+@font-face {  font-family: "BlackWidow";  src: url('../font/BlackWidow.ttf'); }
+@font-face {  font-family: "Broken15";  src: url('../font/BROKEN15.ttf'); }
+@font-face {  font-family: "Crushed";  src: url('../font/CRUSHED.ttf'); }
+@font-face {  font-family: "Frail";  src: url('../font/FrailBedazzled.ttf'); }
 .clearfix {
   *zoom: 1;
 }
