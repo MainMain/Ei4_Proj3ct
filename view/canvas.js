@@ -90,23 +90,13 @@ var _spaceItem = 32;
 var _spacePerso = 64;
 
 // Espacement entre les boutons
+var _espaceBoutonX=160;
 var _espaceBoutonY=60;
 
 // Espacement entre les labels
 var _EspaceLabelX = 265;
 var _EspaceLabelY = 20;
 var ESPACE_BARRES_Y = 25;
-// Placement Conteneur ItemCase
-var _contItemCaseX = 750;
-var _contItemCaseY = 530;
-
-// Dimension Conteneur ItemCase
-var _contItemCaseH = 40;
-var _contItemCaseW = 330;
-
-// Placement label ItemCase
-var _labelItemCaseX = _contItemCaseX + 180;
-var _labelItemCaseY = _contItemCaseY - 20;
 
 // Placement label Arme
 var _labelArmeX = 750;
@@ -120,14 +110,6 @@ var _labelArmureY = _labelArmeY;
 // Placement label ItemPerso
 var _labelItemPersoX = _labelArmeX;
 var _labelItemPersoY = _labelArmureY 	+ _EspaceLabelY + 15;
-
-// Placement Conteneur ItemPerso
-var _contItemPersoX = _labelItemPersoX;
-var _contItemPersoY = _labelItemPersoY + _EspaceLabelY-5;
-
-// Dimension Conteneur ItemPerso
-var _contItemPersoH = 40;
-var _contItemPersoW = 330;
 
 //------------------- Zone 1 : 1/2 barres perso -----------------------------------------------------
 
@@ -157,11 +139,7 @@ var _labelPtsAY = _labelPtsVY;
 var _labelPtsMX = _labelPtsAX;
 var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 
-//------------------ Zone 9 : Infos Case -------------------------------------------------------
-
-// Placement label Description Item
-var _labelDescriptionItemX = _contItemCaseX-5;
-var _labelDescriptionItemY = _contItemCaseY + 40;
+//------------------ Zone 9 : Infos Case ------------------------------------------------------
 
 // Placement label Nombre d'Aliés
 var _labelNbAlliesX  = 175;
@@ -683,12 +661,12 @@ function setPlateau()
 	contZoneMessage = new createjs.Container();
 	contZoneMessage.x = 0;
 	contZoneMessage.y = _contMapH+2;
-	contZoneMessage.height = 60;
 	contZoneMessage.width = _CANVAS_LARGEUR;
+	contZoneMessage.height = 60;
 	stage.addChild(contZoneMessage);
 	shapeZoneMessage = new createjs.Shape();
 	stage.addChild(shapeZoneMessage);
-	shapeZoneMessage.graphics.setStrokeStyle(2).beginStroke("#00FF00").drawRect(
+	shapeZoneMessage.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
 			contZoneMessage.x-2, contZoneMessage.y-2, contZoneMessage.width+2, contZoneMessage.height+2);
 
 	// Label des messages de retour
@@ -709,35 +687,48 @@ function setPlateau()
 	labelDescriptionCase.x = labelAction.x;
 	labelDescriptionCase.y = 2*_EspaceLabelY;
 
-	//------------------ Zone 7 : Inv Case -------------------------------------------------------
+	// - ZONE ITEMS-
+	contTousItems = new createjs.Container();
+	contTousItems.x = _CANVAS_LARGEUR - (_contMapX);
+	contTousItems.y = 0;
+	contTousItems.width = _CANVAS_LARGEUR - (_contMapX+_contMapW);
+	contTousItems.height = _contMapH;
+	stage.addChild(contTousItems);
+	/*shapeTousItems = new createjs.Shape();
+	stage.addChild(shapeTousItems);
+	shapeTousItems.graphics.setStrokeStyle(2).beginStroke("#FF0000").drawRect(
+			contTousItems.x, contTousItems.y, contTousItems.width, contTousItems.height);*/
+
+	//------------------Inventaire Case -------------------------------------------------------
+
+	//------------------Inventaire perso -------------------------------------------------------
+	contInvPerso = new createjs.Container();
+	contInvPerso.x = 5;
+	contInvPerso.y = 5;
+	contInvPerso.width = 330;
+	contInvPerso.height = 40;
+	contTousItems.addChild(contInvPerso);
+	shape1 = new createjs.Shape();
+	contTousItems.addChild(shape1);
+	shape1.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+			contInvPerso.x-4, contInvPerso.y-4, contInvPerso.width+4, contInvPerso.height+4);
+
 	_CONT_INV_CASE = new createjs.Container();
-	_CONT_INV_CASE.x = _contItemPersoX;
-	_CONT_INV_CASE.y = _contItemPersoY+40;
-	_CONT_INV_CASE.height = _contItemCaseH;
-	_CONT_INV_CASE.width = _contItemCaseW;
-	stage.addChild(_CONT_INV_CASE);
+	_CONT_INV_CASE.x = contInvPerso.x;
+	_CONT_INV_CASE.y = contInvPerso.y + 32;
+	_CONT_INV_CASE.width = contInvPerso.width;
+	_CONT_INV_CASE.height = contInvPerso.height;
+	contTousItems.addChild(_CONT_INV_CASE);
 	shape = new createjs.Shape();
-	stage.addChild(shape);
+	contTousItems.addChild(shape);
 	shape.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 			_CONT_INV_CASE.x-4, _CONT_INV_CASE.y-4, _CONT_INV_CASE.width+4, _CONT_INV_CASE.height+4);
-
-	//------------------ Zone 4 : Equipement perso -------------------------------------------------------
-	contInvPerso = new createjs.Container();
-	contInvPerso.x = _contItemPersoX;
-	contInvPerso.y = _contItemPersoY;
-	contInvPerso.height = _contItemPersoH;
-	contInvPerso.width = _contItemPersoW;
-	stage.addChild(contInvPerso);
-	shape1 = new createjs.Shape();
-	stage.addChild(shape1);
-	shape1.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contItemPersoX-4, _contItemPersoY-4, _contItemPersoW+4, _contItemPersoH+4);
 
 	contArme = new createjs.Container();
 	contArme.x = _contArmeX;
 	contArme.y = _contArmeY;
-	contArme.height = _contArmeH;
 	contArme.width = _contArmeW;
+	contArme.height = _contArmeH;
 	stage.addChild(contArme);
 	shape2 = new createjs.Shape();
 	stage.addChild(shape2);
@@ -747,8 +738,8 @@ function setPlateau()
 	contArmure = new createjs.Container();
 	contArmure.x = _contArmureX;
 	contArmure.y = _contArmureY;
-	contArmure.height = _contArmureH;
 	contArmure.width = _contArmureW;
+	contArmure.height = _contArmureH;
 	stage.addChild(contArmure);
 	shape3 = new createjs.Shape();
 	stage.addChild(shape3);
@@ -759,41 +750,41 @@ function setPlateau()
 	contMap = new createjs.Container();
 	contMap.x = _contMapX;
 	contMap.y = _contMapY;
-	contMap.height = _contMapH;
 	contMap.width = _contMapW;
+	contMap.height = _contMapH;
 	stage.addChild(contMap);
-	//contMap.cache(_contMapX, _contMapY, _contMapW, _contMapH);
-
-	// - ZONE BOUTONS -
-	contBoutons = new createjs.Container();
-	contBoutons.x = 420;
-	contBoutons.y = 380;
-	contBoutons.height = _CANVAS_HAUTEUR - contBoutons.y;
-	contBoutons.width = _CANVAS_LARGEUR - contBoutons.x;
-	stage.addChild(contBoutons);
-	shapeBoutons = new createjs.Shape();
-	stage.addChild(shapeBoutons);
-	shapeBoutons.graphics.setStrokeStyle(1).beginStroke("#FFFF00").drawRect(
-			contBoutons.x, contBoutons.y, contBoutons.width, contBoutons.height);
+	//contMap.cache(_contMapX, _contMapY, _contMapW, _contMapH);7
 
 	//------------------------- Zone 8 : Btns Listes---------------------------------------
 	contBtnsListes = new createjs.Container();
 	contBtnsListes.x = _contBtnsListesX;
 	contBtnsListes.y = _contBtnsListesY;
-	contBtnsListes.height = _contBtnsListesH;
 	contBtnsListes.width = _contBtnsListesW;
+	contBtnsListes.height = _contBtnsListesH;
 	stage.addChild(contBtnsListes);
-	shapeBtnsListes = new createjs.Shape();
+	/*shapeBtnsListes = new createjs.Shape();
 	stage.addChild(shapeBtnsListes);
 	shapeBtnsListes.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contBtnsListesX-4, _contBtnsListesY-4, _contBtnsListesW+5, _contBtnsListesH+5);
+			_contBtnsListesX-4, _contBtnsListesY-4, _contBtnsListesW+5, _contBtnsListesH+5);*/
+
+	// - ZONE BOUTONS -
+	contBoutons = new createjs.Container();
+	contBoutons.x = 450;
+	contBoutons.y = 380;
+	contBoutons.width = _CANVAS_LARGEUR - contBoutons.x;
+	contBoutons.height = _CANVAS_HAUTEUR - contBoutons.y;
+	stage.addChild(contBoutons);
+	shapeBoutons = new createjs.Shape();
+	stage.addChild(shapeBoutons);
+	shapeBoutons.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
+			contBoutons.x-2, contBoutons.y-2, contBoutons.width+2, contBoutons.height+2);
 
 	//------------------------- Placement Conteneur des Boutons perso -----------------------------------------------
 	contBtnModes = new createjs.Container();
 	contBtnModes.x = 20;
 	contBtnModes.y = 40;
-	contBtnModes.height = 3*_espaceBoutonY;
 	contBtnModes.width = 140;
+	contBtnModes.height = 3*_espaceBoutonY;
 	contBoutons.addChild(contBtnModes);
 	/*shapeMode = new createjs.Shape();
 	contBoutons.addChild(shapeMode);
@@ -802,10 +793,10 @@ function setPlateau()
 
 	//------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
 	contBtnsInvPerso = new createjs.Container();
-	contBtnsInvPerso.x = contBtnModes.x+170;
+	contBtnsInvPerso.x = contBtnModes.x+_espaceBoutonX;
 	contBtnsInvPerso.y = contBtnModes.y;
+	contBtnsInvPerso.width = contBtnModes.width;
 	contBtnsInvPerso.height = 3*_espaceBoutonY;
-	contBtnsInvPerso.width = contBtnModes.width ;
 	contBoutons.addChild(contBtnsInvPerso);
 	/*shapeBtnsInvPerso = new createjs.Shape();
 	contBoutons.addChild(shapeBtnsInvPerso);
@@ -814,10 +805,10 @@ function setPlateau()
 
 	//------------------------- Zone 6 : Btns Inv Case ---------------------------------------
 	contBtnsInvCase = new createjs.Container();
-	contBtnsInvCase.x = contBtnModes.x+2*170;
+	contBtnsInvCase.x = contBtnModes.x+2*_espaceBoutonX;
 	contBtnsInvCase.y = contBtnModes.y;
-	contBtnsInvCase.height = 2*_espaceBoutonY;
 	contBtnsInvCase.width = contBtnModes.width;
+	contBtnsInvCase.height = 2*_espaceBoutonY;
 	contBoutons.addChild(contBtnsInvCase);
 	/*shapeBtnsInvCase = new createjs.Shape();
 	contBoutons.addChild(shapeBtnsInvCase);
@@ -825,10 +816,10 @@ function setPlateau()
 			contBtnsInvCase.x-4, contBtnsInvCase.y-4, contBtnsInvCase.width+4, contBtnsInvCase.height+4);*/
 
 	contBtnsInvCaseBis = new createjs.Container();
-	contBtnsInvCaseBis.x = contBtnModes.x+3*170;
+	contBtnsInvCaseBis.x = contBtnModes.x+3*_espaceBoutonX;
 	contBtnsInvCaseBis.y = contBtnModes.y;
-	contBtnsInvCaseBis.height = 2*_espaceBoutonY;
 	contBtnsInvCaseBis.width = contBtnModes.width;
+	contBtnsInvCaseBis.height = 2*_espaceBoutonY;
 	contBoutons.addChild(contBtnsInvCaseBis);
 	/*shapeBtnsInvCaseBis = new createjs.Shape();
 	contBoutons.addChild(shapeBtnsInvCaseBis);
@@ -838,8 +829,8 @@ function setPlateau()
 	contInfoCase = new createjs.Container();
 	contInfoCase.x = _contInfoCaseX;
 	contInfoCase.y = _contInfoCaseY;
-	contInfoCase.height = _contInfoCaseH;
 	contInfoCase.width = _contInfoCaseW;
+	contInfoCase.height = _contInfoCaseH;
 	stage.addChild(contInfoCase);
 	shapeInfoCase = new createjs.Shape();
 	stage.addChild(shapeInfoCase);
@@ -870,8 +861,8 @@ function setPlateau()
 
 	faimBarContainer = new createjs.Container();
 
-	faimBarHeight = _BARRES_HEIGHT ;
 	faimBarWidth = _BARRES_WIDTH;
+	faimBarHeight = _BARRES_HEIGHT ;
 	faimBarColor = createjs.Graphics.getRGB(99,0,66);
 
 	faimBar = new createjs.Shape();
@@ -887,8 +878,8 @@ function setPlateau()
 
 	actionBarContainer = new createjs.Container();
 
-	actionBarHeight = _BARRES_HEIGHT ;
 	actionBarWidth = _BARRES_WIDTH;
+	actionBarHeight = _BARRES_HEIGHT ;
 	actionBarColor = createjs.Graphics.getRGB(255,0,0);
 
 	actionBar = new createjs.Shape();
@@ -903,8 +894,8 @@ function setPlateau()
 
 	moveBarContainer = new createjs.Container();
 
-	moveBarHeight = _BARRES_HEIGHT ;
 	moveBarWidth = _BARRES_WIDTH;
+	moveBarHeight = _BARRES_HEIGHT ;
 	moveBarColor = createjs.Graphics.getRGB(0,51,255);
 
 	moveBar = new createjs.Shape();
@@ -919,8 +910,8 @@ function setPlateau()
 
 	sacBarContainer = new createjs.Container();
 
-	sacBarHeight = _BARRES_HEIGHT ;
 	sacBarWidth = _BARRES_WIDTH;
+	sacBarHeight = _BARRES_HEIGHT ;
 	sacBarColor = createjs.Graphics.getRGB(204,153,0);
 
 	sacBar = new createjs.Shape();
@@ -935,8 +926,8 @@ function setPlateau()
 
 	fouilleBarContainer = new createjs.Container();
 
-	fouilleBarHeight = _BARRES_HEIGHT ;
 	fouilleBarWidth = _BARRES_WIDTH;
+	fouilleBarHeight = _BARRES_HEIGHT ;
 	fouilleBarColor = createjs.Graphics.getRGB(255,153,0);
 
 	fouilleBar = new createjs.Shape();
@@ -951,8 +942,8 @@ function setPlateau()
 
 	cacheBarContainer = new createjs.Container();
 
-	cacheBarHeight = _BARRES_HEIGHT ;
 	cacheBarWidth = _BARRES_WIDTH;
+	cacheBarHeight = _BARRES_HEIGHT ;
 	cacheBarColor = createjs.Graphics.getRGB(102,102,51);
 
 	cacheBar = new createjs.Shape();
@@ -969,13 +960,13 @@ function setPlateau()
 	contPictoBarres = new createjs.Container();
 	contPictoBarres.x = lifeBarContainer.x - 40;
 	contPictoBarres.y = lifeBarContainer.y - 10;
-	contPictoBarres.height = 8*ESPACE_BARRES_Y + 40;
 	contPictoBarres.width = 32;
+	contPictoBarres.height = 8*ESPACE_BARRES_Y + 40;
 	stage.addChild(contPictoBarres);
-	shapePictoBarres = new createjs.Shape();
+	/*shapePictoBarres = new createjs.Shape();
 	stage.addChild(shapePictoBarres);
 	shapePictoBarres.graphics.setStrokeStyle(2).beginStroke("#00FF00").drawRect(
-			contPictoBarres.x-2, contPictoBarres.y-2, contPictoBarres.width+2, contPictoBarres.height+2);
+			contPictoBarres.x-2, contPictoBarres.y-2, contPictoBarres.width+2, contPictoBarres.height+2);*/
 
 	imgVie = new createjs.Bitmap("public/pictos/ptsVie.png");
 	imgVie.y=-2;
@@ -1017,13 +1008,13 @@ function setPlateau()
 	contPictoCase = new createjs.Container();
 	contPictoCase.x = 50;
 	contPictoCase.y = 45;
-	contPictoCase.height = 3*ESPACE_BARRES_Y + 40;
 	contPictoCase.width = 32;
+	contPictoCase.height = 3*ESPACE_BARRES_Y + 40;
 	stage.addChild(contPictoCase);
-	shapePictoCase = new createjs.Shape();
+	/*shapePictoCase = new createjs.Shape();
 	stage.addChild(shapePictoCase);
 	shapePictoCase.graphics.setStrokeStyle(2).beginStroke("#00FF00").drawRect(
-			contPictoCase.x-2, contPictoCase.y-2, contPictoCase.width+2, contPictoCase.height+2);
+			contPictoCase.x-2, contPictoCase.y-2, contPictoCase.width+2, contPictoCase.height+2);*/
 
 	imgAllies = new createjs.Bitmap("public/pictos/nbrAllie.png");
 	imgAllies.y=-2;
@@ -1064,6 +1055,14 @@ function setPlateau()
 	// ******************************************
 	// ********* Déclaration des labels *********
 	// ******************************************
+
+	// Placement label ItemCase
+	var _labelItemCaseX = contTousItems.x + _CONT_INV_CASE.x + 180;
+	var _labelItemCaseY = contTousItems.y + _CONT_INV_CASE.y - 20;
+
+	// Placement label Description Item
+	var _labelDescriptionItemX = contTousItems.x + _CONT_INV_CASE.x-5;
+	var _labelDescriptionItemY = contTousItems.y + _CONT_INV_CASE.y + 40;
 
 	// Label nombre nouveaux messages
 	labelNombreNouvMsg = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
@@ -1211,13 +1210,12 @@ function setPlateau()
 	labelLancementServeur = stage.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelLancementServeur.lineHeight = _LineHeight;
 	labelLancementServeur.textBaseline = _TextBaseline;
-	labelLancementServeur.x = 5;
-	labelLancementServeur.y = 100;
+	labelLancementServeur.x = 950;
+	labelLancementServeur.y =600;
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
-	
 	var Up = stage.addChild(new createjs.Bitmap("public/Boutons/Up.png"));
 	Up.x= _contMapX + _contMapW/2 - Up.image.width/2;
 	Up.y = _contMapY;
@@ -1265,8 +1263,8 @@ function setPlateau()
 	// ******************************************
 
 	Btn_PAGE_ITEM_PERSORight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	Btn_PAGE_ITEM_PERSORight.x= _contItemPersoX + _contItemPersoW;
-	Btn_PAGE_ITEM_PERSORight.y= _contItemPersoY + 5;
+	Btn_PAGE_ITEM_PERSORight.x= contInvPerso.x + contInvPerso.width;
+	Btn_PAGE_ITEM_PERSORight.y= contInvPerso.y + 5;
 	Btn_PAGE_ITEM_PERSORight.visible=false;
 	Btn_PAGE_ITEM_PERSORight.addEventListener('click', function(event) {
 		_PAGE_ITEM_PERSO++;
@@ -1280,8 +1278,8 @@ function setPlateau()
 	});
 
 	Btn_PAGE_ITEM_PERSOLeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
-	Btn_PAGE_ITEM_PERSOLeft.x= _contItemPersoX - 30;
-	Btn_PAGE_ITEM_PERSOLeft.y= _contItemPersoY + 5;
+	Btn_PAGE_ITEM_PERSOLeft.x= contInvPerso.x - 30;
+	Btn_PAGE_ITEM_PERSOLeft.y= contInvPerso.y + 5;
 	Btn_PAGE_ITEM_PERSOLeft.visible=false;
 	Btn_PAGE_ITEM_PERSOLeft.addEventListener('click', function(event) {
 		_PAGE_ITEM_PERSO--;
@@ -1296,8 +1294,8 @@ function setPlateau()
 	
 
 	Btn_PAGE_ITEM_CASERight = stage.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	Btn_PAGE_ITEM_CASERight.x= _contItemCaseX  + _contItemCaseW;
-	Btn_PAGE_ITEM_CASERight.y= _contItemCaseY + 5;
+	Btn_PAGE_ITEM_CASERight.x= _CONT_INV_CASE.x  + _CONT_INV_CASE.width;
+	Btn_PAGE_ITEM_CASERight.y= _CONT_INV_CASE.y + 5;
 	Btn_PAGE_ITEM_CASERight.visible=false;
 	Btn_PAGE_ITEM_CASERight.addEventListener('click', function(event) {
 		_PAGE_ITEM_CASE++;
@@ -1311,8 +1309,8 @@ function setPlateau()
 	});
 
 	Btn_PAGE_ITEM_CASELeft = stage.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
-	Btn_PAGE_ITEM_CASELeft.x= _contItemCaseX - 30;
-	Btn_PAGE_ITEM_CASELeft.y= _contItemCaseY + 5;
+	Btn_PAGE_ITEM_CASELeft.x= _CONT_INV_CASE.x - 30;
+	Btn_PAGE_ITEM_CASELeft.y= _CONT_INV_CASE.y + 5;
 	Btn_PAGE_ITEM_CASELeft.visible=false;
 	Btn_PAGE_ITEM_CASELeft.addEventListener('click', function(event) {
 		_PAGE_ITEM_CASE--;
@@ -1351,10 +1349,10 @@ function message()
 	var nbMsgAffiches=10;
 
 	contMessage = new createjs.Container();
-	contMessage.x = canvas.width/2 - 746/2;
-	contMessage.y = canvas.height/2 - 420/2;
-	contMessage.height = 420;
-	contMessage.width = 746;
+	contMessage.x = _contMapX;
+	contMessage.y = _contMapY;
+	contMessage.width = _contMapW;
+	contMessage.height = _contMapH;
 	stage.addChild(contMessage);
 	shapeMessage = new createjs.Shape();
 	stage.addChild(shapeMessage);
@@ -1362,6 +1360,8 @@ function message()
 			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);
 
 	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
+	background_message.scaleX=0.840;
+	background_message.scaleY=0.750
 	contMessage.addChild(background_message);
 
 	labelMessage = contMessage.addChild(new createjs.Text("", _labelMessage, ColorLabel));
@@ -1372,8 +1372,8 @@ function message()
 
 
 	var BtnValideMsg = new createjs.Bitmap("public/Boutons/Ok.png");
-	BtnValideMsg.x=600;
-	BtnValideMsg.y=365;
+	BtnValideMsg.x=450;
+	BtnValideMsg.y=240;
 	contMessage.addChild(BtnValideMsg);
 	BtnValideMsg.addEventListener('click', function(event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
@@ -1520,39 +1520,28 @@ function liste()
 	socket.emit('INFO_CASE_ENNEMIS_CS');
 
 	contListe = new createjs.Container();
-	contListe.x = canvas.width/2 - 746/2;
-	contListe.y = canvas.height/2 - 420/2;
-	contListe.height = 420;
-	contListe.width = 746;
+	contListe.x = _contMapX;
+	contListe.y = _contMapY;
+	contListe.width = _contMapW;
+	contListe.height = _contMapH;
 	stage.addChild(contListe);
 	shape6 = new createjs.Shape();
 	stage.addChild(shape6);
-	shape6.graphics.setStrokeStyle(4).beginStroke("#999900").drawRect(
+	shape6.graphics.setStrokeStyle(2).beginStroke("#999900").drawRect(
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
 
 	var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=1;
+	background_liste.scaleX=0.840;
+	background_liste.scaleY=0.750;
 	contListe.addChild(background_liste);
 
 	labelAlliesListe = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
 	labelAlliesListe.lineHeight = _LineHeight;
 	labelAlliesListe.textBaseline = _TextBaseline;
 	labelAlliesListe.x = 20;
-	labelAlliesListe.y = 5;
+	labelAlliesListe.y = 6;
 	labelAlliesListe.text="Liste des Alliés :";
-
-	labelEnnemisListe = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelEnnemisListe.lineHeight = _LineHeight;
-	labelEnnemisListe.textBaseline = _TextBaseline;
-	labelEnnemisListe.x = 20;
-	labelEnnemisListe.y = 145;
-	labelEnnemisListe.text="Liste des Ennemis :";
-
-	labelDescribePerso = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
-	labelDescribePerso.lineHeight = _LineHeight;
-	labelDescribePerso.textBaseline = _TextBaseline;
-	labelDescribePerso.x = labelAlliesListe.y + 20;
-	labelDescribePerso.y = 280;
 
 	//Conteneur des ALLIES
 	contListeAllies = new createjs.Container();
@@ -1561,27 +1550,40 @@ function liste()
 	contListeAllies.y = labelAlliesListe.y + 20;
 	contListeAllies.height = 70;
 	contListe.addChild(contListeAllies);
-	shape7 = new createjs.Shape();
+	/*shape7 = new createjs.Shape();
 	contListe.addChild(shape7);
 	shape7.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
-			contListeAllies.x-4, contListeAllies.y-4, contListeAllies.width+4, contListeAllies.height+4);
+			contListeAllies.x+7, contListeAllies.y, contListeAllies.width-14, contListeAllies.height);*/
+
+	labelEnnemisListe = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelEnnemisListe.lineHeight = _LineHeight;
+	labelEnnemisListe.textBaseline = _TextBaseline;
+	labelEnnemisListe.x = 20;
+	labelEnnemisListe.y = contListeAllies.y + contListeAllies.height + 6;
+	labelEnnemisListe.text="Liste des Ennemis :";
 
 	//Conteneur des ENNEMIS
 	contListeEnnemis = new createjs.Container();
 	contListeEnnemis.width = 10*64;
 	contListeEnnemis.x = contListe.width/2 - contListeEnnemis.width/2;
-	contListeEnnemis.y = 160;
+	contListeEnnemis.y = contListeAllies.y + contListeAllies.height + 20;
 	contListeEnnemis.height = 70;
 	contListe.addChild(contListeEnnemis);
-	shape8 = new createjs.Shape();
+	/*shape8 = new createjs.Shape();
 	contListe.addChild(shape8);
 	shape8.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
-			contListeEnnemis.x-4, contListeEnnemis.y-4, contListeEnnemis.width+4, contListeEnnemis.height+4);
+			contListeEnnemis.x+7, contListeEnnemis.y, contListeEnnemis.width-14, contListeEnnemis.height);*/
+
+	labelDescribePerso = contListe.addChild(new createjs.Text("", _labelPolice, ColorLabel));
+	labelDescribePerso.lineHeight = _LineHeight;
+	labelDescribePerso.textBaseline = _TextBaseline;
+	labelDescribePerso.x = labelAlliesListe.x;
+	labelDescribePerso.y = contListeEnnemis.y + contListeEnnemis.height +30;
 
 	// Bouton ANNULER
 	BtnCancelListe = new createjs.Bitmap("public/Boutons/Retour.png");
-	BtnCancelListe.x=600;
-	BtnCancelListe.y=365;
+	BtnCancelListe.x=450;
+	BtnCancelListe.y=240;
 	contListe.addChild(BtnCancelListe);
 	BtnCancelListe.addEventListener('click', function (event) {
 		_SELECTED_PERSO=-1;
@@ -2060,7 +2062,6 @@ function setBtnAttaquer(x,y)
 		contListe.addChild(BtnAttaquerListe);
 		BtnAttaquerListe.cursor="not-allowed";
 	}
-
 }
 
 function setContPerso()
@@ -2915,7 +2916,7 @@ function majInventaireCase(currentCase)
 			imgItem.addEventListener('mouseover', function(event) 
 			{
 				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
-				afficherTooltip(_CONT_INV_CASE.x + event.target.x, _CONT_INV_CASE.y + event.target.y, currentItem);
+				afficherTooltip(contTousItems.x + _CONT_INV_CASE.x + event.target.x, contTousItems.y + _CONT_INV_CASE.y + event.target.y, currentItem);
 				//var descriptionItem=currentItem.description;
 				//labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 				//afficherDescItem(descriptionItem);
@@ -3302,8 +3303,9 @@ function majMessages(currentPerso)
 		_listeMessages=currentPerso.listeMsgAtt;
 		// inverse la liste des messages
 		_listeMessages.reverse();
+		labelDernierMessage.text=_listeMessages[0];
 		// Raccourcissement du dernier message
-		if(_listeMessages[0].length<longDernierMsg)
+		/*if(_listeMessages[0].length<longDernierMsg)
 		{
 			var dernierMsg=_listeMessages[0].substring(0,_listeMessages[0].length-1);
 			labelDernierMessage.text="";
@@ -3314,7 +3316,7 @@ function majMessages(currentPerso)
 			var dernierMsg=_listeMessages[0].substring(0,longDernierMsg);
 			labelDernierMessage.text="";
 			labelDernierMessage.text=dernierMsg+"...";
-		}
+		}*/
 	}
 	else
 	{
