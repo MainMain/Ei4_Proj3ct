@@ -304,6 +304,9 @@ shapeBtnsInvPerso, shapeBtnsInvCase, shapeZoneMessage;
 var Btn_PAGE_PERSO_ALLIESRight, Btn_PAGE_PERSO_ALLIESLeft, Btn_PAGE_PERSO_ENNRight, Btn_PAGE_PERSO_ENNLeft,
 Btn_PAGE_MESSAGESDown, Btn_PAGE_MESSAGESUp, BtnCancelListe;
 
+var TAB_CONT_ITEMS=new Array;
+var TAB_SHAPE_ITEMS=new Array;
+
 /**
  * IMPORTANT : PERMET DE LANCER LE CANVAS !!
  */
@@ -540,7 +543,7 @@ function initialize()
 	                {src:"public/spritesheets/nourriture/713.png", id:"713"},
 	                {src:"public/pictos/nbrAllie.png", id:"imgAllies"},
 	                {src:"public/pictos/nbrEnnemis.png", id:"imgEnnemis"},
-	                {src:"public/pictos/nbrZombies.png", id:"imgZombies"},
+	                {src:"public/pictos/nbrZombies_plusPetit.png", id:"imgZombies"},
 	                {src:"public/pictos/ptsVie.png", id:"imgVie"},
 	                {src:"public/pictos/ptsFaim.png", id:"imgFaim"},
 	                {src:"public/pictos/ptsAction.png", id:"imgAction"},
@@ -700,6 +703,35 @@ function setPlateau()
 	// ** creation des conteneurs               *
 	// ******************************************
 
+	// - ZONE ITEMS-
+	contTousItems = new createjs.Container();
+	contTousItems.x = _CANVAS_LARGEUR - (_contMapX);
+	contTousItems.y = 0;
+	contTousItems.width = _CANVAS_LARGEUR - (_contMapX+_contMapW);
+	contTousItems.height = _contMapH;
+	stage.addChild(contTousItems);
+	/*shapeTousItems = new createjs.Shape();
+	stage.addChild(shapeTousItems);
+	shapeTousItems.graphics.setStrokeStyle(2).beginStroke("#FF0000").drawRect(
+			contTousItems.x, contTousItems.y, contTousItems.width, contTousItems.height);*/
+
+
+	// CONTENEUR DES ITEMS
+	for(var i=0; i<6; i++)
+	{
+		TAB_CONT_ITEMS[i]=new createjs.Container();
+		TAB_CONT_ITEMS[i].x = 5;
+		TAB_CONT_ITEMS[i].y = 5+i*35;
+		TAB_CONT_ITEMS[i].width = 32*5;
+		TAB_CONT_ITEMS[i].height = 32;
+		contTousItems.addChild(TAB_CONT_ITEMS[i]);
+
+		TAB_SHAPE_ITEMS[i] = new createjs.Shape();
+		contTousItems.addChild(TAB_SHAPE_ITEMS[i]);
+		TAB_SHAPE_ITEMS[i].graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+				TAB_CONT_ITEMS[i].x, TAB_CONT_ITEMS[i].y, TAB_CONT_ITEMS[i].width, TAB_CONT_ITEMS[i].height);
+	}
+
 	// - ZONE CONTENEUR MESSAGE -
 	contZoneMessage = new createjs.Container();
 	contZoneMessage.x = 0;
@@ -730,18 +762,6 @@ function setPlateau()
 	labelDescriptionCase.x = labelAction.x;
 	labelDescriptionCase.y = 2*_EspaceLabelY;
 
-	// - ZONE ITEMS-
-	contTousItems = new createjs.Container();
-	contTousItems.x = _CANVAS_LARGEUR - (_contMapX);
-	contTousItems.y = 0;
-	contTousItems.width = _CANVAS_LARGEUR - (_contMapX+_contMapW);
-	contTousItems.height = _contMapH;
-	stage.addChild(contTousItems);
-	/*shapeTousItems = new createjs.Shape();
-	stage.addChild(shapeTousItems);
-	shapeTousItems.graphics.setStrokeStyle(2).beginStroke("#FF0000").drawRect(
-			contTousItems.x, contTousItems.y, contTousItems.width, contTousItems.height);*/
-
 	//------------------Inventaire Case -------------------------------------------------------
 
 	//------------------Inventaire perso -------------------------------------------------------
@@ -751,10 +771,10 @@ function setPlateau()
 	contInvPerso.width = 330;
 	contInvPerso.height = 40;
 	contTousItems.addChild(contInvPerso);
-	shape1 = new createjs.Shape();
+	/*shape1 = new createjs.Shape();
 	contTousItems.addChild(shape1);
 	shape1.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			contInvPerso.x-4, contInvPerso.y-4, contInvPerso.width+4, contInvPerso.height+4);
+			contInvPerso.x-4, contInvPerso.y-4, contInvPerso.width+4, contInvPerso.height+4);*/
 
 	_CONT_INV_CASE = new createjs.Container();
 	_CONT_INV_CASE.x = contInvPerso.x;
@@ -762,10 +782,10 @@ function setPlateau()
 	_CONT_INV_CASE.width = contInvPerso.width;
 	_CONT_INV_CASE.height = contInvPerso.height;
 	contTousItems.addChild(_CONT_INV_CASE);
-	shape = new createjs.Shape();
+	/*shape = new createjs.Shape();
 	contTousItems.addChild(shape);
 	shape.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_CONT_INV_CASE.x-4, _CONT_INV_CASE.y-4, _CONT_INV_CASE.width+4, _CONT_INV_CASE.height+4);
+			_CONT_INV_CASE.x-4, _CONT_INV_CASE.y-4, _CONT_INV_CASE.width+4, _CONT_INV_CASE.height+4);*/
 
 	contArme = new createjs.Container();
 	contArme.x = _contArmeX;
@@ -2871,7 +2891,7 @@ function majInventairePerso(currentPerso)
 				imgItem.y = 4;
 				
 				//imgItem.
-				contInvPerso.addChild(imgItem);
+				TAB_CONT_ITEMS[0].addChild(imgItem);
 				
 				// position de l'item dans le conteneur
 				iPositionItemInConteneur++;
@@ -2895,6 +2915,10 @@ function majInventairePerso(currentPerso)
 function majInventaireCase(currentCase)
 {
 	// CLear de la liste des items de case
+	for(var i=3; i<6; i++)
+	{
+		TAB_CONT_ITEMS[i].removeAllChildren();
+	}
 	_CONT_INV_CASE.removeAllChildren();
 		// tableau qui contient toutes les listes d'objets
 	var TabListe=new Array();
@@ -3937,13 +3961,13 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
 			 codeAction = 3;
 			if(DegatsG!=0)
 			{
-				msgAction +=("\n- " + DegatsG + " points de vie !");
+				msgAction +=("- " + DegatsG + " points de vie !");
 			}
 			_SELECTED_ITEM_CASE=-1;
 			socket.emit('INFO_PERSONNAGE_CS');
 			break;
 		case -6:
-			afficherMessageRetour("Ramassage d'ODD \nimpossible ici !");
+			afficherMessageRetour("Ramassage d'ODD impossible ici !");
 			 codeAction = 0;
 			_SELECTED_ITEM_CASE=-1;
 			// ramassage ok
@@ -3952,7 +3976,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
 			 codeAction = 0;
 			if(DegatsG!=0)
 			{
-				labelAction.text +=("\n- "+ DegatsG + " points \nde vie !");//\n"+ RestG + " Zombies restants");
+				labelAction.text +=("- "+ DegatsG + " points de vie !");//\n"+ RestG + " Zombies restants");
 			}
 			_SELECTED_ITEM_CASE=-1;
 			socket.emit('INFO_PERSONNAGE_CS');
@@ -3966,7 +3990,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
 		{
 		// erreur
 		case -3:
-			afficherMessageRetour("Déséquipez avant \nde déposer !");
+			afficherMessageRetour("Déséquipez avant de déposer !");
 			 codeAction = 0;
 			_SELECTED_ITEM_PERSO=-1;
 			break;
@@ -3976,7 +4000,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
 			_SELECTED_ITEM_PERSO=-1;
 			break;
 		case -2:
-			afficherMessageRetour("L'item n'est plus\n dans le sac !");
+			afficherMessageRetour("L'item n'est plus dans le sac !");
 			 codeAction = 0;
 			_SELECTED_ITEM_PERSO=-1;
 			break;
@@ -3986,7 +4010,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG)
  			codeAction = 0;
 			if(DegatsG!=0)
 			{
-				labelAction.text +=("\n- "+ DegatsG + " points \nde vie !");//\n"+ RestG + " Zombies restants");
+				labelAction.text +=("- "+ DegatsG + " points de vie !");//\n"+ RestG + " Zombies restants");
 			}
 			_SELECTED_ITEM_PERSO=-1;
 			socket.emit('INFO_CASE_CS');
@@ -4143,10 +4167,10 @@ socket.on('PERSONNAGE_USE_SC', function(id_item, codeRetour)
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -1:
-		labelAction.text=("L'item n'est plus \ndans le sac !");
+		labelAction.text=("L'item n'est plus dans le sac !");
 		break;
 	case -2:
-		labelAction.text=("L'item n'est pas \nconsommable !");
+		labelAction.text=("L'item n'est pas consommable !");
 		break;
 	}
 });
@@ -4174,17 +4198,17 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoul
 	switch(reponse)
 	{
 	case 1: 
-		afficherMessageRetour("Changement de \nmode ok !");
+		afficherMessageRetour("Changement de mode ok !");
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case 0 : 
-		afficherMessageRetour("Changement de \nmode raté !\nErreur interne");
+		afficherMessageRetour("Changement de mode raté ! Erreur interne");
 		break;
 	case -4 : 
-		afficherMessageRetour("Changement de \nmode mode raté !\nDéjà dans ce mode !");
+		afficherMessageRetour("Changement de mode mode raté ! Déjà dans ce mode !");
 		break;
 	case -5: 
-		afficherMessageRetour("Changement de \nmode raté !");
+		afficherMessageRetour("Changement de mode raté !");
 		// s'il a eu des degats, on maj le perso
 		if(degatsInfliges != 0)
 		{
@@ -4198,20 +4222,20 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoul
 
 		/*if(degatsInfliges!=0)
 		{
-			labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
+			labelAction.text +=("Mais blessé (" + degatsInfliges + ")"); 
 		}*/
 
 		/*if(nbrGoulesA==1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
+			labelAction.text +=("par " + nbrGoulesA + " zombie !");
 		}
 		else if(nbrGoulesA>1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
+			labelAction.text +=("par " + nbrGoulesA + " zombies !");
 		}*/
 		break;
 	case -10:
-		afficherMessageRetour("Changement de \nmode raté !\nPoints d'action \ninsuffisants !");
+		afficherMessageRetour("Changement de mode raté ! Points d'action insuffisants !");
 		break;
 	}
 	//stage.update();
@@ -4244,36 +4268,36 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 	switch(reponse)
 	{
 	case  1 : 
-		afficherMessageRetour("Fouille rapide \nréussie !\nObjet découvert :\n" + item.nom);
+		afficherMessageRetour("Fouille rapide réussie ! Objet découvert : " + item.nom);
 		
 		if (ajouteAuSac == 0)
 		{
-			labelAction.text += "\nAjouté à la case !";
+			labelAction.text += " ajouté à la case ! ";
 			socket.emit('INFO_CASE_CS');
 		}
 		else if (ajouteAuSac == 1)
 		{
-			labelAction.text += "\nAjouté au sac !";
+			labelAction.text += " ajouté au sac ! ";
 			socket.emit('INFO_PERSONNAGE_CS');
 		}
 
 		if(nbrEnnemisDecouverts==1)
 		{
-			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemi \ndécouvert !");
+			labelAction.text +=(nbrEnnemisDecouverts + " Ennemi découvert ! ");
 			socket.emit('INFO_CASE_CS');
 		}
 		else if(nbrEnnemisDecouverts>1)
 		{
-			labelAction.text +=("\n" + nbrEnnemisDecouverts + " Ennemis \ndécouverts !");
+			labelAction.text +=(nbrEnnemisDecouverts + " Ennemis découverts ! ");
 			socket.emit('INFO_CASE_CS');
 		}
 
 		if(degatsInfliges!=0)
 		{
-			labelAction.text +=("\nMais blessé (" + degatsInfliges + ")"); 
+			labelAction.text +=("Mais blessé (" + degatsInfliges + ")"); 
 			if(nbrGoulesA==1)
 			{
-				//labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
+				//labelAction.text +=(" par " + nbrGoulesA + " zombie !");
 			}
 			else if(nbrGoulesA>1)
 			{
@@ -4293,7 +4317,7 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		afficherMessageRetour("Fouille rapide ratée");
 		if(degatsInfliges!=0)
 		{
-			labelAction.text +=("\nEt blessé (" + degatsInfliges + ")"); 
+			labelAction.text +=(" et blessé (" + degatsInfliges + ")"); 
 		}
 		if(nbrGoulesA==1)
 		{
@@ -4306,7 +4330,7 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -10 :
-		afficherMessageRetour("Points d'action \ninsuffisants !");
+		afficherMessageRetour("Points d'action insuffisants !");
 		break;
 	}
 	//stage.update();
@@ -4341,35 +4365,35 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 		labelAction.text=("Attaque réussie !");
 		if(degatsI!=0)
 		{
-			labelAction.text+=("\nL'ennemi a perdu :\n" + degatsI + " points de vies");
+			labelAction.text+=("L'ennemi a perdu : " + degatsI + "points de vies");
 		}
 		if(degatsRecusE!=0)
 		{
-			labelAction.text+=("\nL'ennemi a riposté :\n-" + degatsRecusE + " points de vies");
+			labelAction.text+=("L'ennemi a riposté : -" + degatsRecusE + " points de vies");
 			socket.emit('INFO_PERSONNAGE_CS');
 		}
 		break;
 	case -1:
-		labelAction.text=("L'ennemi n'est \nplus ici !");
+		labelAction.text=("L'ennemi n'est plus ici !");
 		break;
 	case -5:
 		labelAction.text=("Attaque ratée !");
 		if(degatsInfliges!=0)
 		{
-			labelAction.text +=("\nEt blessé (" + degatsRecusG + ")"); 
+			labelAction.text +=(" Et blessé (" + degatsRecusG + ")"); 
 		}
 		if(nbrGoulesA==1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " zombie !");
+			labelAction.text +=(" par " + nbrGoulesA + " zombie !");
 		}
 		else if(nbrGoulesA>1)
 		{
-			labelAction.text +=("\npar " + nbrGoulesA + " zombies !");
+			labelAction.text +=(" par " + nbrGoulesA + " zombies !");
 		}
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -10:
-		labelAction.text=("Points d'action \ninsuffisants");
+		labelAction.text=("Points d'action insuffisants");
 		break;
 	}
 	//stage.update();
