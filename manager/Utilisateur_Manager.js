@@ -1,6 +1,8 @@
 // includes
 var oUtilisateur = require('../model/object/Utilisateur');
 var oUtilisateur_BD = require('../persistance/Utilisateur_BD');
+
+
 var EventLog    = require('../model/EventLog');
 
 //inclusion des règles

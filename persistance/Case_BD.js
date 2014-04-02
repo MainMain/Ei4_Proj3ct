@@ -211,10 +211,11 @@ Case_BD.Initialiser = function(callBack)
 						
 						// création de la liste des items
 						var listeItems = new Array();
-						for (var i = 6; i < infosCase.length; i++)
+						for (var i = 6; i < infosCase.length-1; i++)
 						{
-							listeItems.push(oItem_BD.GetItemById(infosCase[7]));
+							listeItems.push(oItem_BD.GetItemById(infosCase[i]));	
 						}
+						
 						newCase.listeItem	= listeItems;
 						
 						newCase.save();
