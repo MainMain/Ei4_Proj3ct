@@ -1110,7 +1110,7 @@ Personnage_Manager.nouvelleJournee = function()
 		// si le perso appartient a la session en cours
 		if (oUtilisateur_Manager.getIdSession(idUser) == oSession_Manager.getIdSessionEnCours())
 		{
-			EventLog.log("PERSONNAGE_MANAGER : Nouvelle journée pour le perso de " +oUtilisateur_Manager.getPseudo(idUser) );
+			EventLog.log(">>>PERSONNAGE_MANAGER : Nouvelle journée pour le perso de " +oUtilisateur_Manager.getPseudo(idUser) );
 			// regain de pts de vie
 			this.listePersonnages[idUser].nvlleJournee();
 			
@@ -1122,6 +1122,7 @@ Personnage_Manager.nouvelleJournee = function()
 			// ALORS -> attaque de la nuit
 			if (!this.listePersonnages[idUser].estMort() && this.listePersonnages[idUser].mode != 2 && !( idCase == GameRules.idZoneSure_1() || idCase == GameRules.idZoneSure_2() || idCase == GameRules.idZoneSure_3()))
 			{
+				EventLog.log(">>>PERSONNAGE_MANAGER : Attaque de la nuit sur le perso de " + oUtilisateur_Manager.getPseudo(idUser));
 				// infliger les dégats de goules 
 				resultatGoules 			= oCase_Manager.AttaqueDeGoules(idCase, this.GetNbrAllies(idUser));
 				nbrGoules				= resultatGoules.nbrGoulesA;
@@ -1144,7 +1145,7 @@ Personnage_Manager.nouvelleJournee = function()
 			}
 			else
 			{
-				this.AddMessage(idUser, "Grâce à votre cachette, vous aez survécu à l'attaque de la nuit ! " );
+				this.AddMessage(idUser, "Grâce à votre cachette, vous avez échappé à l'attaque de la nuit !");
 			}
 		}
 	}

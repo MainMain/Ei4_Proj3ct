@@ -67,9 +67,6 @@
 		<script type="text/javascript" src="../src/preloadjs/LoadQueue.js"></script>
 		<script type="text/javascript" src="../src/preloadjs/TagLoader.js"></script>
 		<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
-		<script type="text/javascript" src="/view/Button.js"></script>
-		<script type="text/javascript" src="/view/ButtonMove.js"></script>
-		<script type="text/javascript" src="/view/ButtonPad.js"></script>
 		<script type="text/javascript" src="/view/js/HeureLocale.js"></script>
 		<script type="text/javascript" src="/view/canvas.js"></script>
 
@@ -430,6 +427,13 @@
 				<!-- *************** SCRIPTS ******************** -->
 				<script>
 					window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')
+					
+					createjs.Ticker.setInterval(1000);
+					createjs.Ticker.addEventListener("tick", function()
+					{
+						var canvas = document.getElementById("myCanvas");
+					});
+					
 					/*********** EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 					var socket = io.connect('http://localhost:25536');
 

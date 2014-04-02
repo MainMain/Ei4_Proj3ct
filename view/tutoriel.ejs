@@ -85,7 +85,7 @@
 			</nav>
 			<!-- #main-navigation -->
 
-			<div id="content" role="main" class="span12">
+			<div id="content" role="main" class="span12" align="justify">
 
 				<h1 class="entry-title" align=center> Tutoriel </h1>
 				
@@ -209,10 +209,11 @@
 					</p>
 				<hr>
 				<h1>Bon courage !</h1>
-            			<h3 align=center>Tu as désormais toutes les clés en main pour survivre et mener ton équipe à la victoire !</h3>
-					</p>
+            			<h3 align="center">Tu as désormais toutes les clés en main pour survivre et mener ton équipe à la victoire !</h3>
+            			
 					<!-- #Règles -->
 			</div>
+			<div align="center"><img align="center" src ="public/images/you.jpg" /></div>
 			<!-- #content -->
 
 		</div>
@@ -235,7 +236,7 @@
 
 		<script>
 			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:443');
+			var socket = io.connect('http://localhost:25536');
 			
 			$( document ).ready(function()
 			{
