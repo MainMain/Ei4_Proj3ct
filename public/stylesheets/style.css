@@ -322,48 +322,6 @@ dd {
   margin: 0 0 0 40px;
 }
 /* =============================================================================
-   Quotes
-   ========================================================================== */
-blockquote {
-  border-left: 5px solid #049cdb;
-  margin: 40px 0;
-  padding: 5px 0 5px 20px;
-  position: relative;
-  /* Right-aligned blockquote */
-
-}
-blockquote p {
-  font-size: 16px;
-  font-weight: 300;
-  margin-top: 0;
-}
-blockquote small {
-  display: block;
-  color: #999999;
-}
-blockquote small:before {
-  content: '\2014 \00A0';
-}
-blockquote.alignright {
-  border-right: 5px solid #049cdb;
-  border-left: 0;
-  float: right;
-  padding-right: 20px;
-  padding-left: 0;
-}
-blockquote.alignright p,
-blockquote.alignright small {
-  text-align: right;
-}
-q {
-  quotes: none;
-}
-q:before,
-q:after {
-  content: "";
-  content: none;
-}
-/* =============================================================================
    Code
    ========================================================================== */
 /**
@@ -1619,6 +1577,10 @@ textarea {
   #footer {
     box-shadow: inset 0 2px 3px rgba(204, 204, 204, 0.6);
   }
+  canvas {
+	width : 20%; 
+  }
+ 
 }
 /**
  * Turn the layout into one column
@@ -1635,7 +1597,7 @@ textarea {
     padding: 20px;
   }
   #main {
-    background: #ffffff;
+    background: #ababab;
   }
   #content,
   #sidebar {
@@ -1662,6 +1624,11 @@ textarea {
   }
   #footer .sep {
     visibility: hidden;
+  }
+ canvas{
+	width : 100%; 
+	margin-left: 10%;
+	border:1px;
   }
 }
 @media only screen and (max-width: 480px) {
