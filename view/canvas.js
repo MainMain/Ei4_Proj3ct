@@ -12,6 +12,18 @@
 // Variables pour le canvas
 var canvas, stage, _CANVAS_LARGEUR, _CANVAS_HAUTEUR;
 
+// variables picto
+var imgVie;
+var imgFaim;
+var imgAction;
+var imgMouvement;
+var imgSac;
+var imgAttaque;
+var imgDefense;
+var imgFouille;
+var imgCache;
+
+
 // Variables pour les images
 var background, backgroundPreload, map, person, imgPerso;
 
@@ -763,6 +775,22 @@ function setPlateau()
 		stage.addChild(shape3);
 		shape3.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
 				_contArmureX-4, _contArmureY-4, _contArmureW+4, _contArmureH+4);
+
+// conteneur pour les pts d'attaque
+	_CONT_PTS_ATTAQUE = new createjs.Container();
+	_CONT_PTS_ATTAQUE.x = 203; 
+	_CONT_PTS_ATTAQUE.y = 520; 
+	_CONT_PTS_ATTAQUE.width = 200;
+	_CONT_PTS_ATTAQUE.height = 20;
+	stage.addChild(_CONT_PTS_ATTAQUE)
+
+	// conteneur pour les pts de défense
+	_CONT_PTS_DEFENSE = new createjs.Container();
+	_CONT_PTS_DEFENSE.x = 203; 
+	_CONT_PTS_DEFENSE.y = 546; 
+	_CONT_PTS_DEFENSE.width = 200;
+	_CONT_PTS_DEFENSE.height = 20;
+	stage.addChild(_CONT_PTS_DEFENSE)
 
 	// - CONTENEUR MAP -
 		contMap = new createjs.Container();
@@ -3084,7 +3112,7 @@ function majConteneurItemCase(tab)
 			imgItem.addEventListener('mouseover', function(event) 
 			{
 				var currentItem = tab[page][event.target.name];
-				afficherTooltip(contTousItems.x + TAB_CONT_ITEMS[numCont].x + event.target.x, contTousItems.y + TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
+				afficherTooltipItem(contTousItems.x + TAB_CONT_ITEMS[numCont].x + event.target.x, contTousItems.y + TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
 				//var descriptionItem=currentItem.description;
 				//labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 				//afficherDescItem(descriptionItem);
@@ -3092,12 +3120,12 @@ function majConteneurItemCase(tab)
 
 			imgItem.addEventListener('mouseout', function(event)
 			{
-				supprimerTooltip();
+				supprimerTooltipItem();
 			},false);
 			
 			imgItem.addEventListener('touchend', function(event)
 			{
-				supprimerTooltip();
+				supprimerTooltipItem();
 			},false);
 
 			imgItem.addEventListener("click", function(event)
@@ -3127,7 +3155,7 @@ function majConteneurItemCase(tab)
 			{
 				// event "sourie sur item"
 				var currentItem = tab[page][event.target.name];
-				afficherTooltip(TAB_CONT_ITEMS[numCont].x + event.target.x, TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
+				afficherTooltipItem(TAB_CONT_ITEMS[numCont].x + event.target.x, TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
 
 				// event "click sur item"
 				var currentItem = tab[page][event.target.name];
@@ -3208,7 +3236,7 @@ function majConteneurItemPerso(tab)
 			imgItem.addEventListener('mouseover', function(event) 
 			{
 				var currentItem = tab[page][event.target.name];
-				afficherTooltip(contTousItems.x + TAB_CONT_ITEMS[numCont].x + event.target.x, contTousItems.y + TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
+				afficherTooltipItem(contTousItems.x + TAB_CONT_ITEMS[numCont].x + event.target.x, contTousItems.y + TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
 				//var descriptionItem=currentItem.description;
 				//labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
 				//afficherDescItem(descriptionItem);
@@ -3216,12 +3244,12 @@ function majConteneurItemPerso(tab)
 
 			imgItem.addEventListener('mouseout', function(event)
 			{
-				supprimerTooltip();
+				supprimerTooltipItem();
 			},false);
 			
 			imgItem.addEventListener('touchend', function(event)
 			{
-				supprimerTooltip();
+				supprimerTooltipItem();
 			},false);
 
 			imgItem.addEventListener("click", function(event)
@@ -3251,7 +3279,7 @@ function majConteneurItemPerso(tab)
 			{
 				// event "sourie sur item"
 				var currentItem = tab[page][event.target.name];
-				afficherTooltip(TAB_CONT_ITEMS[numCont].x + event.target.x, TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
+				afficherTooltipItem(TAB_CONT_ITEMS[numCont].x + event.target.x, TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
 
 				// event "click sur item"
 				var currentItem = tab[page][event.target.name];
@@ -3699,6 +3727,274 @@ function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
 	_LAST_NOMBRE_ZOMBIES = nbrZombies;
 }
 
+function majEventsPictoPerso(currentPerso)
+{
+	var x,y,txt;
+	x = contPictoBarres.x;
+	/// VIE ////
+	imgVie.addEventListener('mouseover', function(event) 		
+	{ 
+		y= contPictoBarres.y + imgVie.y;
+		txt = "Vie : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgVie.addEventListener('mouseout', function(event)  		{ supprimerTooltipItem(); });
+	imgVie.addEventListener('touchstart', function(event)				
+	{ 
+		y = contPictoBarres.y + imgVie.y;
+		txt = "Vie : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgVie.addEventListener('touchend', function(event)  		{ supprimerTooltipItem(); });
+
+
+	/// FAIM ////
+	imgFaim.addEventListener('mouseover', function(event) 				
+	{ 
+		y = contPictoBarres.y + imgFaim.y;
+		txt = "Faim : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgFaim.addEventListener('mouseout', function(event)  		{ supprimerTooltipItem(); });
+	imgFaim.addEventListener('touchstart', function(event)				
+	{ 
+		y = contPictoBarres.y + imgVie.y;
+		txt = "Faim : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgFaim.addEventListener('touchend', function(event)   		{ supprimerTooltipItem(); });
+
+
+	/// ACTION ////
+	imgAction.addEventListener('mouseover', function(event) 			
+	{ 
+		y = contPictoBarres.y + imgAction.y;
+		txt = "Action : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgAction.addEventListener('mouseout', function(event)  	{ supprimerTooltipItem(); });
+	imgAction.addEventListener('touchstart', function(event)			
+	{ 
+		y = contPictoBarres.y + imgAction.y;
+		txt = "Action : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgAction.addEventListener('touchend', function(event)  	{ supprimerTooltipItem(); });
+
+
+	/// MOUVEMENT ////
+	imgMouvement.addEventListener('mouseover', function(event)  		
+	{ 
+		y = contPictoBarres.y + imgMouvement.y;
+		txt = "Mouvement : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgMouvement.addEventListener('mouseout', function(event)  	{ supprimerTooltipItem(); });
+	imgMouvement.addEventListener('touchstart', function(event) 		
+	{ 
+		y = contPictoBarres.y + imgMouvement.y;
+		txt = "Mouvement : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgMouvement.addEventListener('touchend', function(event)   { supprimerTooltipItem(); });
+
+
+	/// SAC ////
+	imgSac.addEventListener('mouseover', function(event) 				
+	{ 
+		y = contPictoBarres.y + imgSac.y;
+		txt = "Poids du sac : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgSac.addEventListener('mouseout', function(event)  		{ supprimerTooltipItem(); });
+	imgSac.addEventListener('touchstart', function(event)				
+	{ 
+		y = contPictoBarres.y + imgSac.y;
+		txt = "Poids du sac : " + currentPerso.ptSante+"/"+currentPerso.ptSanteMax;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgSac.addEventListener('touchend', function(event)   		{ supprimerTooltipItem(); });
+
+
+	/// ATTAQUE ////
+	var ptsAttaque;
+	if(currentPerso.armeEquipee != null)
+	{
+		ptsAttaque = currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
+	}
+	else
+	{
+		ptsAttaque = currentPerso.multiPtsAttaque ;
+	}
+
+	imgAttaque.addEventListener('mouseover', function(event) 			
+	{ 
+		y = contPictoBarres.y + imgAttaque.y;
+		txt = "Attaque : " + ptsAttaque;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgAttaque.addEventListener('mouseout', function(event)  	{ supprimerTooltipItem(); });
+	imgAttaque.addEventListener('touchstart', function(event)			
+	{ 
+		y = contPictoBarres.y + imgAttaque.y;
+		txt = "Attaque : " + ptsAttaque;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgAttaque.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
+
+
+	/// DEFENSE ////
+	var ptsDefense;
+	if(currentPerso.armureEquipee != null)
+	{
+		ptsDefense = currentPerso.multiPtsDefense * currentPerso.armureEquipee.valeur ;
+	}
+	else
+	{
+		ptsDefense = currentPerso.multiPtsDefense;
+	}
+
+	imgDefense.addEventListener('mouseover', function(event) 			
+	{ 
+		y = contPictoBarres.y + imgDefense.y;
+		txt = "Défense : " + ptsDefense;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgDefense.addEventListener('mouseout', function(event)  	{ supprimerTooltipItem(); });
+	imgDefense.addEventListener('touchstart', function(event)			
+	{ 
+		y = contPictoBarres.y + imgDefense.y;
+		txt = "Défense : " + ptsDefense;
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgDefense.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
+}
+
+function majEventsPictoProbas(pourcentFouille, pourcentCache)
+{
+		var x,y,txt;
+	x = contPictoBarres.x;
+
+		/// FOUILLE ////
+	imgFouille.addEventListener('mouseover', function(event) 			
+	{ 
+		y = contPictoBarres.y + imgFouille.y;
+		txt = "Découverte item : " + pourcentFouille +" %";
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgFouille.addEventListener('mouseout', function(event)  	{ supprimerTooltipItem(); });
+	imgFouille.addEventListener('touchstart', function(event)			
+	{ 
+		y = contPictoBarres.y + imgFouille.y;
+		txt = "Découverte item  : " + pourcentFouille +" %";
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgFouille.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
+
+	/// CACHE ////
+	imgCache.addEventListener('mouseover', function(event) 				
+	{ 
+		y = contPictoBarres.y + imgCache.y;
+		txt = "Cache : " + pourcentCache +" %";
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgCache.addEventListener('mouseout', function(event)  		{ supprimerTooltipItem(); });
+	imgCache.addEventListener('touchstart', function(event)				
+	{ 
+		y = contPictoBarres.y + imgCache.y;
+		txt = "Cache : " + pourcentCache +" %";
+		afficherTooltipItem(x, y, txt, false); 
+	});
+	imgCache.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
+
+
+}
+function majPtsAttaqueDefense(currentPerso)
+{
+	var ptsAttaque = 75;
+	var ptsDefense = 21;
+	var espaceEntreImages = 50;
+	var maxImages = 14;
+	var diviseur = 2;
+	if(currentPerso.armeEquipee != null)
+	{
+		ptsAttaque = currentPerso.multiPtsAttaque * currentPerso.armeEquipee.valeur ;
+	}
+	else
+	{
+		ptsAttaque = currentPerso.multiPtsAttaque ;
+	}
+
+	if(currentPerso.armureEquipee != null)
+	{
+		ptsDefense = currentPerso.multiPtsDefense * currentPerso.armureEquipee.valeur ;
+	}
+	else
+	{
+		ptsDefense = currentPerso.multiPtsDefense;
+	}
+
+	var i;
+	var pt = parseInt(ptsAttaque / diviseur);
+	var circle;
+	var imgInserees = 0;
+	var position = 0;
+	var couleur = "#FF0000";
+	// boucle pts attaque
+	for (i = 0; i < pt; i++)
+	{
+		// config de la couleur du cercle
+		if 		(imgInserees < maxImages)		couleur = "#00FF00"
+		else if (imgInserees < maxImages * 2 )  couleur = "#FFFF00"
+		else if (imgInserees < maxImages * 3 )  couleur = "#FFFFFF"
+		else 									couleur = "#FF0000"
+
+		// config du cercle
+	 	circle = new createjs.Shape();
+	 	 circle.graphics.beginFill(couleur).drawCircle(0, 0, 4);
+		circle.x = position*15;
+		circle.y = 0;
+		_CONT_PTS_ATTAQUE.addChild(circle);
+
+		position++;
+		imgInserees++;
+
+		// max d'images dans le conteneur : 14
+		if (imgInserees % maxImages == 0)
+		{
+			position = 0;
+		}
+	}
+	pt = parseInt(ptsDefense / diviseur);
+	imgInserees = 0;
+	position = 0;
+	// boucle pts defense
+	for (i = 0; i < pt; i++)
+	{
+		// config de la couleur du cercle
+		if 		(imgInserees < maxImages)		couleur = "#00FF00"
+		else if (imgInserees < maxImages * 2 )  couleur = "#FFFF00"
+		else if (imgInserees < maxImages * 3 )  couleur = "#FFFFFF"
+		else 									couleur = "#FF0000"
+
+		// config du cercle
+	 	circle = new createjs.Shape();
+	 	 circle.graphics.beginFill(couleur).drawCircle(0, 0, 4);
+		circle.x = position*15;
+		circle.y = 0;
+		_CONT_PTS_DEFENSE.addChild(circle);
+
+		position++;
+		imgInserees++;
+
+		// max d'images dans le conteneur : 14
+		if (imgInserees % maxImages == 0)
+		{
+			position = 0;
+		}
+	}
+}
+
 /*
  *
  * ACTIONS SUR L'INTERFACE
@@ -3768,41 +4064,56 @@ function defineCadreMap(couleur)
 	}
 }
 
-function afficherTooltip(x, y, obj)
+function afficherTooltipItem(x, y, obj, item)
 {
-	y += 40;
+	var hauteur = 0;
+	
+	// si c'est une description d'item
+	if (item)
+	{
+		y += 40;
+		hauteur = 55;
+		// défini les caractéristiques de l'objet
+		var ligne0 = obj.nom;
+		var ligne1 = "V : "+obj.valeur+" - P : " + obj.poids;
+		var ligne2 = obj.description;
+	
+		_LABEL_DESCRIPTION.text = ligne0 +"\n" +ligne1 +"\n" + ligne2;
+
+		// défini la taille du conteneur
+		 _TAILLE_TOOLTIP = (Math.max(ligne1.length,ligne2.length, ligne0.length)) * 7 + 10;
+
+		// config couleur fond conteneur
+		var coul;
+		switch (obj.type) 
+		{
+			case 1 : coul = createjs.Graphics.getRGB(150,0,0, 0.8); break;
+			case 2 : coul = createjs.Graphics.getRGB(0,150,0, 0.8); break;
+			case 3 : coul = createjs.Graphics.getRGB(0,0,150, 0.8); break;
+			case 4 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
+			case 5 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
+			case 6 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
+			case 7 : coul = createjs.Graphics.getRGB(0,150,150, 0.8); break;
+		}
+	}
+	else
+	{
+		y -= 20;
+		x -= 90;
+		hauteur = 20;
+		coul = createjs.Graphics.getRGB(0,0,0);
+		_LABEL_DESCRIPTION.text = obj;
+		_TAILLE_TOOLTIP = obj.length*8;
+	}
 
 	// conteneur
 	_CONTENEUR_TOOLTIP		= new createjs.Container();
 	_CONTENEUR_TOOLTIP.x 	= x;
 	_CONTENEUR_TOOLTIP.y 	= y;
-	
-	// défini les caractéristiques de l'objet
-	var ligne0 = obj.nom;
-	var ligne1 = "V : "+obj.valeur+" - P : " + obj.poids;
-	var ligne2 = obj.description;
-	
-	_LABEL_DESCRIPTION.text = ligne0 +"\n" +ligne1 +"\n" + ligne2;
-
-	// défini la taille du conteneur
-	 _TAILLE_TOOLTIP = (Math.max(ligne1.length,ligne2.length, ligne0.length)) * 7 + 10;
-
-	// config couleur fond conteneur
-	var coul;
-	switch (obj.type) 
-	{
-		case 1 : coul = createjs.Graphics.getRGB(150,0,0, 0.8); break;
-		case 2 : coul = createjs.Graphics.getRGB(0,150,0, 0.8); break;
-		case 3 : coul = createjs.Graphics.getRGB(0,0,150, 0.8); break;
-		case 4 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
-		case 5 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
-		case 6 : coul = createjs.Graphics.getRGB(150,150,0, 0.8); break;
-		case 7 : coul = createjs.Graphics.getRGB(0,150,150, 0.8); break;
-	}
 
 	// dessine le fond du conteneur
  	_FOND_TOOLTIP = new createjs.Shape();
-	_FOND_TOOLTIP.graphics.beginFill(coul).drawRect(0, 0, _TAILLE_TOOLTIP, 55).endFill();
+	_FOND_TOOLTIP.graphics.beginFill(coul).drawRect(0, 0, _TAILLE_TOOLTIP, hauteur).endFill();
 
 	// test si ca dépasse pas du canvas
 	if(_CONTENEUR_TOOLTIP.x + _TAILLE_TOOLTIP > _CANVAS_LARGEUR)
@@ -3818,7 +4129,7 @@ function afficherTooltip(x, y, obj)
 	stage.addChild(_CONTENEUR_TOOLTIP);
 }
 
-function supprimerTooltip()
+function supprimerTooltipItem()
 {
 	stage.removeChild(_CONTENEUR_TOOLTIP);
 }
@@ -4278,6 +4589,8 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		ProbCache=(currentCase.probaCache * _PERSO_PROBA_CACHE);
 		ProbFouille=(currentCase.probaObjet * _PERSO_PROBA_FOUILLE);
 
+		majEventsPictoProbas(ProbFouille, ProbCache);
+
 		labelCaseEnCours.text=(/*"Case en cours :\n" + */currentCase.nom /*+ ""*/);
 		/*_LABEL_NB_ALLIES.text=("Alliés dans la salle  : " + nbrAllies + "");
 		_LABEL_NB_ENNEMIS.text=("Ennemis dans la salle : " + nbrEnnemis + "");
@@ -4351,6 +4664,9 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso)
 	/// ... les mesages en attente
 	majMessages(currentPerso);
 		
+		/// branche 
+	majEventsPictoPerso(currentPerso);
+
 	// si il est mort, on lui affiche l'écran de mort
 	if(currentPerso.ptSante<=0 && currentPerso.listeMsgAtt.length > 0)
 	{
