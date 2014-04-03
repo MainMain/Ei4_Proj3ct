@@ -45,9 +45,10 @@ var _boolColorAction=false;
 var _colorLabelAction;
 
 // Variables pour la navigation entre les pages items/persos/messages
-var _PAGE_ITEM_PERSO=0;
 var _PAGE_ITEM_PERSO_DEAD=0;
-var _PAGE_ITEM_CASE=0;
+var _PAGE_ITEM_PERSO_EQUIP=0;
+var _PAGE_ITEM_PERSO_CONSO=0;
+var _PAGE_ITEM_PERSO_ODD=0;
 var _PAGE_ITEM_CASE_EQUIP=0;
 var _PAGE_ITEM_CASE_CONSO=0;
 var _PAGE_ITEM_CASE_ODD=0;
@@ -62,7 +63,8 @@ var _PAGE_MESSAGES=0;
 
 // Variables correspondant aux flèches des pages
 var Btn_PAGE_ITEM_PERSORight, Btn_PAGE_ITEM_PERSOLeft, Btn_PAGE_ITEM_CASE_EQUIPRight, Btn_PAGE_ITEM_CASE_EQUIPLeft, Btn_PAGE_ITEM_CASE_CONSORight, Btn_PAGE_ITEM_CASE_CONSOLeft,
-Btn_PAGE_ITEM_CASE_ODDRight, Btn_PAGE_ITEM_CASE_ODDLeft, Btn_PAGE_ITEM_PERSO_DEADRight, Btn_PAGE_ITEM_PERSO_DEADLeft;
+Btn_PAGE_ITEM_CASE_ODDRight, Btn_PAGE_ITEM_CASE_ODDLeft, Btn_PAGE_ITEM_PERSO_EQUIPRight, Btn_PAGE_ITEM_PERSO_EQUIPLeft, Btn_PAGE_ITEM_PERSO_CONSORight, Btn_PAGE_ITEM_PERSO_CONSOLeft,
+Btn_PAGE_ITEM_PERSO_ODDRight, Btn_PAGE_ITEM_PERSO_ODDLeft,Btn_PAGE_ITEM_PERSO_DEADRight, Btn_PAGE_ITEM_PERSO_DEADLeft;
 
 //******************************************
 //*  Réglages mise en forme (partie Design)*
@@ -75,6 +77,7 @@ var _POLICE_LABEL	="15px Frail";
 var _POLICE_MESSAGES="13px Frail";
 var _POLICE_TITRE_1	= "20px Frail"; //"30px BadGrunge";
 var _POLICE_TITRE_2	= "15px Frail"; //"23px BadGrunge";
+var _POLICE_TITRE_3	= "12px Frail"; //"23px BadGrunge";
 
 // label.lineHeight
 var _LineHeight = 15;
@@ -120,34 +123,6 @@ var _labelArmureY = _labelArmeY;
 // Placement label ItemPerso
 var _labelItemPersoX = _labelArmeX;
 var _labelItemPersoY = _labelArmureY 	+ _EspaceLabelY + 15;
-
-//------------------- Zone 1 : 1/2 barres perso -----------------------------------------------------
-
-// Placement label Points de vie
-var _labelPtsVX = 200;
-var _labelPtsVY = _labelArmeY;
-
-// Placement label Points de faim
-var _labelPtsFX = _labelPtsVX;
-var _labelPtsFY = _labelPtsVY + _EspaceLabelY;
-
-// Placement label Points d'Attaque
-var _labelPtsAtqX = _labelPtsVX;
-var _labelPtsAtqY = _labelPtsFY + _EspaceLabelY;
-
-// Placement label Points de Défense
-var _labelPtsDefX = _labelPtsAtqX +_EspaceLabelX;
-var _labelPtsDefY = _labelPtsAtqY;
-
-//------------------ Zone 2 : 2/2 barres perso -------------------------------------------------------
-
-// Placement label Points d'action
-var _labelPtsAX = _labelPtsVX + _EspaceLabelX;
-var _labelPtsAY = _labelPtsVY;
-
-// Placement label Points de mouvements
-var _labelPtsMX = _labelPtsAX;
-var _labelPtsMY = _labelPtsAY + _EspaceLabelY;
 
 //------------------ Zone 9 : Infos Case ------------------------------------------------------
 
@@ -235,16 +210,8 @@ var _contMapX = 1100/2 - _contMapW/2;
 var _contMapY = 0;
 //var _contMapY = 620/2 - 420/2;
 
-//Placement Conteneur des informations de la case
-var _contInfoCaseX = 175;
-var _contInfoCaseY = 530;
-var _contInfoCaseW = 750-_contInfoCaseX;
-var _contInfoCaseH = _CANVAS_HAUTEUR-530;
 
-/**
- * DECLARATION DES LABELS, CONTENEURS, CONTOURS ET BOUTONS
- */
-
+// - DECLARATION DES LABELS, CONTENEURS, CONTOURS ET BOUTONS -
 
 var _LABEL_DEGATS 	= new createjs.Text("", _LABEL_POLICE, _COULEUR_LABELS);
 var _LABEL_ATTAQUE_ZOMBIE;
@@ -280,11 +247,9 @@ var _BLINK_CPT;
 
 //-------------- Déclaration des labels----------------------------------------------
 
-var labelAction, labelObjetCase, labelInventaire, labelDescriptionItem,
-labelPtsMove, labelPtsAction, labelPtsVie, labelPoidsSac, labelPtsAtq, labelPtsDef,
+var labelAction, labelInventaire, labelDescriptionItem,
 labelBonusArme, labelBonusArmure, labelCaseEnCours, _LABEL_NB_ALLIES, _LABEL_NB_ENNEMIS,
-_LABEL_NB_GOULES, labelProbaCache, labelProbaFouille, labelPourcentLoad,
-labelChoixMode, labelBtnsListes, labelBtnsInvPerso, labelBtnsInvCase, labelPtsFaim, 
+_LABEL_NB_GOULES, labelProbaCache, labelProbaFouille, labelPourcentLoad, 
 labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, 
 labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescriptionCase,
 labelLancementServeur;
@@ -293,7 +258,7 @@ labelLancementServeur;
 //-------------- Déclaration des conteneurs----------------------------------------------
 
 var contArme, contArmure, contMap, contPerso, contBtnModes,
-contBtnsListes, contDead, contInfoCase, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
+contBtnsListes, contDead, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
 contListeAllies, contListeEnnemis, contZoneMessage, contMessage;
 
 //-------------- Déclaration des contours----------------------------------------------
@@ -321,6 +286,8 @@ onload = initialize;
  */
 
 var lifeBarContainer;
+
+// Première Fonction appelée 
 function initialize() 
 {
 	// ************************************************
@@ -331,12 +298,7 @@ function initialize()
 	canvas = document.getElementById("myCanvas");
 	
 	//Création du stage (la scène) + recupération de sa taille
-	stage = new createjs.Stage(canvas);
-/*	createjs.Ticker.addListener("tick", function()
-	{
-		alert("tick");
-	});*/
-	
+	stage = new createjs.Stage(canvas);	
 	// tailles
 	_CANVAS_LARGEUR = stage.canvas.width;
 	_CANVAS_HAUTEUR = stage.canvas.height;
@@ -344,7 +306,7 @@ function initialize()
 	// autoriser le mouse over / out events
 	stage.enableMouseOver(20);
 
-	// enable touch interactions if supported on the current device:
+	// autorise le tactile si l'appareil utilisé le supporte
 	if(createjs.Touch.isSupported())
 	{
 		createjs.Touch.enable(stage);
@@ -360,6 +322,7 @@ function initialize()
 	// *******************************************
 	// * Mise en place de la barre de chargement * 
 	// *******************************************
+	// Variable au format JSON qui permet de définir tous les élements à charger
 	var manifest = [
 	                {src:"public/Background_liste.jpg", id:"idBackgroundListe"},   
 	                {src:"public/Background_1.png", id:"idBackground_1"}, 
@@ -559,53 +522,65 @@ function initialize()
 	                {src:"public/pictos/probaCache.png", id:"imgCache"}
 	                ];
 
-	// application du background Preload
+	// Application de l'image de fond pendant le chargement
 	backgroundPreload = new createjs.Bitmap("public/Background_1.png");
 	backgroundPreload.image.onload = setImg(backgroundPreload, 0, 0);
 	backgroundPreload.cursor="wait";
 
+	// Création d'un label affichant un message pendant le chargement
 	loadProgressLabel = stage.addChild(new createjs.Text("","70px Infected","#850000"));
 	loadProgressLabel.lineWidth = 800;
 	loadProgressLabel.textAlign = "center";
-	//Centrer le label en x
-	//loadProgressLabel.x = canvas.width/2;
+	//Centrer le label horizontalement
 	loadProgressLabel.x = canvas.width/2;
 	loadProgressLabel.y = canvas.height/2 - 80;
 	
+	// Création d'un second label affichant le pourcentage du chargement
 	labelPourcentLoad= stage.addChild(new createjs.Text("","70px Consolas","#850000"));
 	labelPourcentLoad.x=loadProgressLabel.x +20;
 	labelPourcentLoad.y=loadProgressLabel.y+190;
 
+	// Création d'un conteneur pour placer la barre de chargement
 	loadingBarContainer = new createjs.Container();
+	// Pointeur d'attente lorsque la souris est sur la barre
 	loadingBarContainer.cursor="wait";
 
+	// Définition des caractéristiques de la barre
 	loadingBarHeight = 80;
 	loadingBarWidth = 500;
 	LoadingBarColor = createjs.Graphics.getRGB(85,0,0);
 
+	// Création de la barre de chargement en elle même
 	loadingBar = new createjs.Shape();
+	// Son remplissage 'ici à 0'
 	loadingBar.graphics.beginFill(LoadingBarColor).drawRect(0, 0, 1, loadingBarHeight).endFill();
 
+	// Création du contour de la barre de chargement
 	frame = new createjs.Shape();
 	padding = 3;
+	// Dessin du contour de la barre
 	frame.graphics.setStrokeStyle(1).beginStroke(LoadingBarColor).drawRect(-padding/2, -padding/2, loadingBarWidth+padding, loadingBarHeight+padding);
 
+	// Ajout de la barre de chargement et de son contour dans le conteneur
 	loadingBarContainer.addChild(loadingBar, frame);
-	// Centrer la barre de chargement
-	//loadingBarContainer.x = Math.round(canvas.width/2 - loadingBarWidth/2);
+	// Centrer la barre de chargement (grâce à son conteneur)
 	loadingBarContainer.x=canvas.width/2 - loadingBarWidth/2;
 	loadingBarContainer.y = canvas.height/2 ;
+	// Ajout du conteneur de la barre de chargement au stage du canvas
 	stage.addChild(loadingBarContainer);
 
+	// Création de la file d'attente du chargement
 	preload = new createjs.LoadQueue(false);
+	// Ajout de deux événements
+	// Lorsque le chargement est terminé
 	preload.addEventListener("complete", handleComplete);
+	// Lorsque le chargement est en progression
 	preload.addEventListener("progress", handleProgress);
 
+	// On charge la pile avec la variable au format JSON
 	preload.loadManifest(manifest);
-	//stage.update();
 
-
-	// Rafraichissement
+	// Rafraichissement toutes les 20 ms
 	createjs.Ticker.setInterval(20);
 	createjs.Ticker.addEventListener("tick", function()
 	{
@@ -626,37 +601,47 @@ function initialize()
 	});
 }
 
+// Pendant le chargement du canvas
 function handleProgress() 
 {
+	// Remplissage de la barre de chargement
 	loadingBar.scaleX = preload.progress * loadingBarWidth;
-
-	progresPrecentage = Math.round(preload.progress*100);
-	loadProgressLabel.text =("Loading Apocalypse\n\n\n\n" + progresPrecentage);
+	
+	// Calcul du pourcentage de progression
+	var progresPercentage = Math.round(preload.progress*100);
+	// Affichage du pourcentage
+	loadProgressLabel.text =("Loading Apocalypse\n\n\n\n" + progresPercentage);
 	labelPourcentLoad.text=" %";
-
-	//stage.update();
 }
 
+// Une fois le chargement du canvas terminé
 function handleComplete() 
 {
+	// Suppression du label de chargement
 	stage.removeChild(labelPourcentLoad);
+	// Changement du pointeur de la souris
 	backgroundPreload.cursor="pointer";
 	loadingBarContainer.cursor="pointer";
-
+	//Affichage d'un nouveau texte
 	loadProgressLabel.text = "Click to Survive";
-	//stage.update();
 
+	// Ajout des événements pour démarrer le jeu
 	canvas.addEventListener("click", handleClick);
 	canvas.addEventListener("touchstart", handleClick);
 }
 
+// Click de l'utilisateur après le chargement
 function handleClick() {
+	// Suppression des outils utilisés pour le chargement
 	stage.removeChild(loadProgressLabel, loadingBarContainer, backgroundPreload);
+	// Suppression des événements sur le canvas
 	canvas.removeEventListener("click", handleClick);
 	canvas.removeEventListener("touchstart", handleClick);
+	//Lancement de la connexion
 	start();
 }
 
+// Lancement de la connexion
 function start()
 {
 	// Lancement du jeu si connexion ok
@@ -666,682 +651,704 @@ function start()
 		}
 }
 
+// Mise en place du plateau de jeu
 function setPlateau()
 {
 	// application du background
 	var background = new createjs.Bitmap("public/Background_11.png");
 	
 	background.image.onload = setImg(background, 0, 0);
-	
-	// Affichage des labels de titres
 
-	var _labelTitreSac			= new createjs.Text("SAC", _POLICE_TITRE_1, _COULEUR_TITRE);
-	var _labelTitreMode			= new createjs.Text("MODE", _POLICE_TITRE_1, _COULEUR_TITRE);
-	var _labelTitreCase			= new createjs.Text("CASE", _POLICE_TITRE_1, _COULEUR_TITRE);
-	var _labelTitreInventaire   = new createjs.Text("INVENTAIRE", _POLICE_TITRE_2, _COULEUR_TITRE_2);
-	var _labelTitreObjetsCase   = new createjs.Text("OBJETS DE LA CASE", _POLICE_TITRE_2, _COULEUR_TITRE_2);
-	var _labelTitreForces   = new createjs.Text("FORCES EN PRESENCE", _POLICE_TITRE_2, _COULEUR_TITRE_2);
+	// ***************************************************
+	// ** Mise en place des différentes zones du canvas **
+	// ***************************************************
 
-	_labelTitreSac.x 		= 690;
-	_labelTitreSac.y 		= 392;
-	_labelTitreMode.x 		= 527;
-	_labelTitreMode.y 		= 392;
-	_labelTitreCase.x 		= 910;
-	_labelTitreCase.y 		= 392;
+	// - ZONE POUR L'AFFICHAGE DES ITEMS -
+		contTousItems = new createjs.Container();
+		contTousItems.x = _CANVAS_LARGEUR - (_contMapX);
+		contTousItems.y = 0;
+		contTousItems.width = _CANVAS_LARGEUR - (_contMapX+_contMapW);
+		contTousItems.height = _contMapH;
+		stage.addChild(contTousItems);
 
-	_labelTitreInventaire.x = 870;
-	_labelTitreInventaire.y = 10;
-	_labelTitreObjetsCase.x = 870;
-	_labelTitreObjetsCase.y = 120;
+		var TailleConteneursItems=5*32
 
-	_labelTitreForces.x = 5;
-	_labelTitreForces.y = 45;
+		// CONTENEUR DES ITEMS
+		for(var i=0; i<6; i++)
+		{
+			if(i==0)
+			{
+				TAB_CONT_ITEMS[i]=new createjs.Container();
+				TAB_CONT_ITEMS[i].width = TailleConteneursItems;
+				TAB_CONT_ITEMS[i].height = 32;
+				TAB_CONT_ITEMS[i].x = (contTousItems.width /2) - (TAB_CONT_ITEMS[i].width / 2);
+				TAB_CONT_ITEMS[i].y = 32;
+				contTousItems.addChild(TAB_CONT_ITEMS[i]);
+			}
+			else if(i==3)
+			{
+				TAB_CONT_ITEMS[i]=new createjs.Container();
+				TAB_CONT_ITEMS[i].width = TailleConteneursItems;
+				TAB_CONT_ITEMS[i].height = 32;
+				TAB_CONT_ITEMS[i].x = (contTousItems.width /2) - (TAB_CONT_ITEMS[i].width / 2);
+				TAB_CONT_ITEMS[i].y = 65+TAB_CONT_ITEMS[i-1].y;
+				contTousItems.addChild(TAB_CONT_ITEMS[i]);
+			}
+			else
+			{
+				TAB_CONT_ITEMS[i]=new createjs.Container();
+				TAB_CONT_ITEMS[i].width = TailleConteneursItems;
+				TAB_CONT_ITEMS[i].height = 32;
+				TAB_CONT_ITEMS[i].x = (contTousItems.width /2) - (TAB_CONT_ITEMS[i].width / 2);
+				TAB_CONT_ITEMS[i].y = 46+TAB_CONT_ITEMS[i-1].y;
+				
+				contTousItems.addChild(TAB_CONT_ITEMS[i]);
+			}
 
-	stage.addChild(_labelTitreSac);
-	stage.addChild(_labelTitreMode);
-	stage.addChild(_labelTitreCase);
-	stage.addChild(_labelTitreInventaire);
-	stage.addChild(_labelTitreObjetsCase);
-	stage.addChild(_labelTitreForces);
-	// *****************************************
-	// ** creation des conteneurs               *
-	// ******************************************
+			/*TAB_SHAPE_ITEMS[i] = new createjs.Shape();
+			contTousItems.addChild(TAB_SHAPE_ITEMS[i]);
+			TAB_SHAPE_ITEMS[i].graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+					TAB_CONT_ITEMS[i].x, TAB_CONT_ITEMS[i].y, TAB_CONT_ITEMS[i].width, TAB_CONT_ITEMS[i].height);*/
+		}
 
-	// - ZONE ITEMS-
-	contTousItems = new createjs.Container();
-	contTousItems.x = _CANVAS_LARGEUR - (_contMapX);
-	contTousItems.y = 0;
-	contTousItems.width = _CANVAS_LARGEUR - (_contMapX+_contMapW);
-	contTousItems.height = _contMapH;
-	stage.addChild(contTousItems);
-	/*shapeTousItems = new createjs.Shape();
-	stage.addChild(shapeTousItems);
-	shapeTousItems.graphics.setStrokeStyle(2).beginStroke("#FF0000").drawRect(
-			contTousItems.x, contTousItems.y, contTousItems.width, contTousItems.height);*/
+	// - ZONE MESSAGES (retour, description case, dernier message) -
+		contZoneMessage = new createjs.Container();
+		contZoneMessage.x = 0;
+		contZoneMessage.y = _contMapH+2;
+		contZoneMessage.width = _CANVAS_LARGEUR;
+		contZoneMessage.height = 60;
+		stage.addChild(contZoneMessage);
+		shapeZoneMessage = new createjs.Shape();
+		stage.addChild(shapeZoneMessage);
+		shapeZoneMessage.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
+				contZoneMessage.x-2, contZoneMessage.y-2, contZoneMessage.width+2, contZoneMessage.height+2);
 
+		// Label des messages de retour
+		labelAction = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _colorLabelAction));
+		labelAction.x = 5;
 
-	// CONTENEUR DES ITEMS
-	for(var i=0; i<6; i++)
-	{
-		TAB_CONT_ITEMS[i]=new createjs.Container();
-		TAB_CONT_ITEMS[i].x = 32;
-		TAB_CONT_ITEMS[i].y = 32+i*35;
-		TAB_CONT_ITEMS[i].width = 32*5;
-		TAB_CONT_ITEMS[i].height = 32;
-		contTousItems.addChild(TAB_CONT_ITEMS[i]);
+		// Label dernier message
+		labelDernierMessage = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		/*labelDernierMessage.lineHeight = _LineHeight;
+		labelDernierMessage.textBaseline = _TextBaseline;*/
+		labelDernierMessage.x = labelAction.x;
+		labelDernierMessage.y = _EspaceLabelY;
 
-		TAB_SHAPE_ITEMS[i] = new createjs.Shape();
-		contTousItems.addChild(TAB_SHAPE_ITEMS[i]);
-		TAB_SHAPE_ITEMS[i].graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-				TAB_CONT_ITEMS[i].x, TAB_CONT_ITEMS[i].y, TAB_CONT_ITEMS[i].width, TAB_CONT_ITEMS[i].height);
-	}
+		// Label description case
+		labelDescriptionCase = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		/*labelDescriptionCase.lineHeight = _LineHeight;
+		labelDescriptionCase.textBaseline = _TextBaseline;*/
+		labelDescriptionCase.x = labelAction.x;
+		labelDescriptionCase.y = 2*_EspaceLabelY;
 
-	// - ZONE CONTENEUR MESSAGE -
-	contZoneMessage = new createjs.Container();
-	contZoneMessage.x = 0;
-	contZoneMessage.y = _contMapH+2;
-	contZoneMessage.width = _CANVAS_LARGEUR;
-	contZoneMessage.height = 60;
-	stage.addChild(contZoneMessage);
-	shapeZoneMessage = new createjs.Shape();
-	stage.addChild(shapeZoneMessage);
-	shapeZoneMessage.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
-			contZoneMessage.x-2, contZoneMessage.y-2, contZoneMessage.width+2, contZoneMessage.height+2);
+	// - CONTENEURS DES ITEMS EQUIPES -
+		contArme = new createjs.Container();
+		contArme.x = _contArmeX;
+		contArme.y = _contArmeY;
+		contArme.width = _contArmeW;
+		contArme.height = _contArmeH;
+		stage.addChild(contArme);
+		shape2 = new createjs.Shape();
+		stage.addChild(shape2);
+		shape2.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+				_contArmeX-4, _contArmeY-4, _contArmeW+4, _contArmeH+4);
 
-	// Label des messages de retour
-	labelAction = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _colorLabelAction));
-	labelAction.x = 5;
+		contArmure = new createjs.Container();
+		contArmure.x = _contArmureX;
+		contArmure.y = _contArmureY;
+		contArmure.width = _contArmureW;
+		contArmure.height = _contArmureH;
+		stage.addChild(contArmure);
+		shape3 = new createjs.Shape();
+		stage.addChild(shape3);
+		shape3.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
+				_contArmureX-4, _contArmureY-4, _contArmureW+4, _contArmureH+4);
 
-	// Label dernier message
-	labelDernierMessage = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	/*labelDernierMessage.lineHeight = _LineHeight;
-	labelDernierMessage.textBaseline = _TextBaseline;*/
-	labelDernierMessage.x = labelAction.x;
-	labelDernierMessage.y = _EspaceLabelY;
+	// - CONTENEUR MAP -
+		contMap = new createjs.Container();
+		contMap.x = _contMapX;
+		contMap.y = _contMapY;
+		contMap.width = _contMapW;
+		contMap.height = _contMapH;
+		stage.addChild(contMap);
+		//contMap.cache(_contMapX, _contMapY, _contMapW, _contMapH);7
 
-	// Label description case
-	labelDescriptionCase = contZoneMessage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	/*labelDescriptionCase.lineHeight = _LineHeight;
-	labelDescriptionCase.textBaseline = _TextBaseline;*/
-	labelDescriptionCase.x = labelAction.x;
-	labelDescriptionCase.y = 2*_EspaceLabelY;
+	// - CONTENEURS BOUTONS AFFICHER PAGE -
+		contBtnsListes = new createjs.Container();
+		contBtnsListes.x = _contBtnsListesX;
+		contBtnsListes.y = _contBtnsListesY;
+		contBtnsListes.width = _contBtnsListesW;
+		contBtnsListes.height = _contBtnsListesH;
+		stage.addChild(contBtnsListes);
 
-	// - ZONE DES ITEMS EQUIPES -
+	// - CONTENEUR BOUTONS ACTION -
+		contBoutons = new createjs.Container();
+		contBoutons.x = 450;
+		contBoutons.y = 380;
+		contBoutons.width = _CANVAS_LARGEUR - contBoutons.x;
+		contBoutons.height = _CANVAS_HAUTEUR - contBoutons.y;
+		stage.addChild(contBoutons);
+		shapeBoutons = new createjs.Shape();
+		stage.addChild(shapeBoutons);
+		shapeBoutons.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
+				contBoutons.x-2, contBoutons.y-2, contBoutons.width+2, contBoutons.height+2);
 
-	contArme = new createjs.Container();
-	contArme.x = _contArmeX;
-	contArme.y = _contArmeY;
-	contArme.width = _contArmeW;
-	contArme.height = _contArmeH;
-	stage.addChild(contArme);
-	shape2 = new createjs.Shape();
-	stage.addChild(shape2);
-	shape2.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contArmeX-4, _contArmeY-4, _contArmeW+4, _contArmeH+4);
+	// - CONTENEUR BOUTONS MODE -
+		contBtnModes = new createjs.Container();
+		contBtnModes.x = 20;
+		contBtnModes.y = 40;
+		contBtnModes.width = 140;
+		contBtnModes.height = 3*_espaceBoutonY;
+		contBoutons.addChild(contBtnModes);
 
-	contArmure = new createjs.Container();
-	contArmure.x = _contArmureX;
-	contArmure.y = _contArmureY;
-	contArmure.width = _contArmureW;
-	contArmure.height = _contArmureH;
-	stage.addChild(contArmure);
-	shape3 = new createjs.Shape();
-	stage.addChild(shape3);
-	shape3.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-			_contArmureX-4, _contArmureY-4, _contArmureW+4, _contArmureH+4);
+	// - CONTENEUR BOUTONS INVENTAIRE PERSONNAGE -
+		contBtnsInvPerso = new createjs.Container();
+		contBtnsInvPerso.x = contBtnModes.x+_espaceBoutonX;
+		contBtnsInvPerso.y = contBtnModes.y;
+		contBtnsInvPerso.width = contBtnModes.width;
+		contBtnsInvPerso.height = 3*_espaceBoutonY;
+		contBoutons.addChild(contBtnsInvPerso);
 
-	// - ZONE MAP -
-	contMap = new createjs.Container();
-	contMap.x = _contMapX;
-	contMap.y = _contMapY;
-	contMap.width = _contMapW;
-	contMap.height = _contMapH;
-	stage.addChild(contMap);
-	//contMap.cache(_contMapX, _contMapY, _contMapW, _contMapH);7
+	// - CONTENEURs BOUNTONS INVENTAIRE CASE -
+		contBtnsInvCase = new createjs.Container();
+		contBtnsInvCase.x = contBtnModes.x+2*_espaceBoutonX;
+		contBtnsInvCase.y = contBtnModes.y;
+		contBtnsInvCase.width = contBtnModes.width;
+		contBtnsInvCase.height = 2*_espaceBoutonY;
+		contBoutons.addChild(contBtnsInvCase);
 
-	//------------------------- Zone 8 : Btns Listes---------------------------------------
-	contBtnsListes = new createjs.Container();
-	contBtnsListes.x = _contBtnsListesX;
-	contBtnsListes.y = _contBtnsListesY;
-	contBtnsListes.width = _contBtnsListesW;
-	contBtnsListes.height = _contBtnsListesH;
-	stage.addChild(contBtnsListes);
-
-	// - ZONE BOUTONS -
-	contBoutons = new createjs.Container();
-	contBoutons.x = 450;
-	contBoutons.y = 380;
-	contBoutons.width = _CANVAS_LARGEUR - contBoutons.x;
-	contBoutons.height = _CANVAS_HAUTEUR - contBoutons.y;
-	stage.addChild(contBoutons);
-	shapeBoutons = new createjs.Shape();
-	stage.addChild(shapeBoutons);
-	shapeBoutons.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
-			contBoutons.x-2, contBoutons.y-2, contBoutons.width+2, contBoutons.height+2);
-
-	//------------------------- Placement Conteneur des Boutons perso -----------------------------------------------
-	contBtnModes = new createjs.Container();
-	contBtnModes.x = 20;
-	contBtnModes.y = 40;
-	contBtnModes.width = 140;
-	contBtnModes.height = 3*_espaceBoutonY;
-	contBoutons.addChild(contBtnModes);
-
-	//------------------------- Zone 5 : Btns Inv Perso ---------------------------------------
-	contBtnsInvPerso = new createjs.Container();
-	contBtnsInvPerso.x = contBtnModes.x+_espaceBoutonX;
-	contBtnsInvPerso.y = contBtnModes.y;
-	contBtnsInvPerso.width = contBtnModes.width;
-	contBtnsInvPerso.height = 3*_espaceBoutonY;
-	contBoutons.addChild(contBtnsInvPerso);
-
-	//------------------------- Zone 6 : Btns Inv Case ---------------------------------------
-	contBtnsInvCase = new createjs.Container();
-	contBtnsInvCase.x = contBtnModes.x+2*_espaceBoutonX;
-	contBtnsInvCase.y = contBtnModes.y;
-	contBtnsInvCase.width = contBtnModes.width;
-	contBtnsInvCase.height = 2*_espaceBoutonY;
-	contBoutons.addChild(contBtnsInvCase);
-
-	contBtnsInvCaseBis = new createjs.Container();
-	contBtnsInvCaseBis.x = contBtnModes.x+3*_espaceBoutonX;
-	contBtnsInvCaseBis.y = contBtnModes.y;
-	contBtnsInvCaseBis.width = contBtnModes.width;
-	contBtnsInvCaseBis.height = 2*_espaceBoutonY;
-	contBoutons.addChild(contBtnsInvCaseBis);
-	
-	contInfoCase = new createjs.Container();
-	contInfoCase.x = _contInfoCaseX;
-	contInfoCase.y = _contInfoCaseY;
-	contInfoCase.width = _contInfoCaseW;
-	contInfoCase.height = _contInfoCaseH;
-	stage.addChild(contInfoCase);
-	shapeInfoCase = new createjs.Shape();
-	stage.addChild(shapeInfoCase);
-	shapeInfoCase.graphics.setStrokeStyle(_BARRES_FRAMES_STROKE).beginStroke("#99FF00").drawRect(
-			_contInfoCaseX-4, _contInfoCaseY-4, _contInfoCaseW+5, _contInfoCaseH+5);
+		contBtnsInvCaseBis = new createjs.Container();
+		contBtnsInvCaseBis.x = contBtnModes.x+3*_espaceBoutonX;
+		contBtnsInvCaseBis.y = contBtnModes.y;
+		contBtnsInvCaseBis.width = contBtnModes.width;
+		contBtnsInvCaseBis.height = 2*_espaceBoutonY;
+		contBoutons.addChild(contBtnsInvCaseBis);
 
 	// ******************************************
 	// ** Création des barres du perso 			*
 	// ******************************************
 
-	//------------------- Zone 1 -----------------------------------------------------
-	// Barre de vie
-	lifeBarContainer = new createjs.Container();
+	// - ZONE DES BARRES D'ETAT DU PERSONNAGE - 
+		// Barre de vie
+			lifeBarContainer = new createjs.Container();
 
-	lifeBarHeight = _BARRES_HEIGHT ;
-	lifeBarWidth = _BARRES_WIDTH;
-	lifeBarColor = createjs.Graphics.getRGB(0,255,0);
+			lifeBarHeight = _BARRES_HEIGHT ;
+			lifeBarWidth = _BARRES_WIDTH;
+			lifeBarColor = createjs.Graphics.getRGB(0,255,0);
 
-	lifeBar = new createjs.Shape();
-	lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 1, lifeBarHeight).endFill();
-	
-	lifeBarContainer.addChild(lifeBar);
-	lifeBarContainer.x = 200;
-	lifeBarContainer.y = 390;
-	stage.addChild(lifeBarContainer);
+			lifeBar = new createjs.Shape();
+			lifeBar.graphics.beginFill(lifeBarColor).drawRect(0, 0, 1, lifeBarHeight).endFill();
+			
+			lifeBarContainer.addChild(lifeBar);
+			lifeBarContainer.x = 200;
+			lifeBarContainer.y = 390;
+			stage.addChild(lifeBarContainer);
 
-	// Barre de Faim
+		// Barre de Faim
+			faimBarContainer = new createjs.Container();
 
-	faimBarContainer = new createjs.Container();
+			faimBarWidth = _BARRES_WIDTH;
+			faimBarHeight = _BARRES_HEIGHT ;
+			faimBarColor = createjs.Graphics.getRGB(99,0,66);
 
-	faimBarWidth = _BARRES_WIDTH;
-	faimBarHeight = _BARRES_HEIGHT ;
-	faimBarColor = createjs.Graphics.getRGB(99,0,66);
+			faimBar = new createjs.Shape();
+			faimBar.graphics.beginFill(faimBarColor).drawRect(0, 0, 1, faimBarHeight).endFill();
 
-	faimBar = new createjs.Shape();
-	faimBar.graphics.beginFill(faimBarColor).drawRect(0, 0, 1, faimBarHeight).endFill();
+			faimBarContainer.addChild(faimBar);
+			faimBarContainer.x = lifeBarContainer.x;
+			faimBarContainer.y = lifeBarContainer.y + ESPACE_BARRES_Y;
+			stage.addChild(faimBarContainer);
 
-	faimBarContainer.addChild(faimBar);
-	faimBarContainer.x = lifeBarContainer.x;
-	faimBarContainer.y = lifeBarContainer.y + ESPACE_BARRES_Y;
-	stage.addChild(faimBarContainer);
+		// Barre d'action
+			actionBarContainer = new createjs.Container();
 
-	//------------------- Zone 2 -----------------------------------------------------
-	// Barre d'action
+			actionBarWidth = _BARRES_WIDTH;
+			actionBarHeight = _BARRES_HEIGHT ;
+			actionBarColor = createjs.Graphics.getRGB(255,0,0);
 
-	actionBarContainer = new createjs.Container();
+			actionBar = new createjs.Shape();
+			actionBar.graphics.beginFill(actionBarColor).drawRect(0, 0, 1, actionBarHeight).endFill();
 
-	actionBarWidth = _BARRES_WIDTH;
-	actionBarHeight = _BARRES_HEIGHT ;
-	actionBarColor = createjs.Graphics.getRGB(255,0,0);
+			actionBarContainer.addChild(actionBar);
+			actionBarContainer.x = lifeBarContainer.x;
+			actionBarContainer.y = lifeBarContainer.y + 2*ESPACE_BARRES_Y;
+			stage.addChild(actionBarContainer);
 
-	actionBar = new createjs.Shape();
-	actionBar.graphics.beginFill(actionBarColor).drawRect(0, 0, 1, actionBarHeight).endFill();
+		// Barre de mouvement
+			moveBarContainer = new createjs.Container();
 
-	actionBarContainer.addChild(actionBar);
-	actionBarContainer.x = lifeBarContainer.x;
-	actionBarContainer.y = lifeBarContainer.y + 2*ESPACE_BARRES_Y;
-	stage.addChild(actionBarContainer);
+			moveBarWidth = _BARRES_WIDTH;
+			moveBarHeight = _BARRES_HEIGHT ;
+			moveBarColor = createjs.Graphics.getRGB(0,51,255);
 
-	// Barre de mouvement
+			moveBar = new createjs.Shape();
+			moveBar.graphics.beginFill(moveBarColor).drawRect(0, 0, 1, moveBarHeight).endFill();
 
-	moveBarContainer = new createjs.Container();
+			moveBarContainer.addChild(moveBar);
+			moveBarContainer.x = lifeBarContainer.x;
+			moveBarContainer.y = lifeBarContainer.y + 3*ESPACE_BARRES_Y;
+			stage.addChild(moveBarContainer);
 
-	moveBarWidth = _BARRES_WIDTH;
-	moveBarHeight = _BARRES_HEIGHT ;
-	moveBarColor = createjs.Graphics.getRGB(0,51,255);
+		// Barre de Poids du Sac
+			sacBarContainer = new createjs.Container();
 
-	moveBar = new createjs.Shape();
-	moveBar.graphics.beginFill(moveBarColor).drawRect(0, 0, 1, moveBarHeight).endFill();
+			sacBarWidth = _BARRES_WIDTH;
+			sacBarHeight = _BARRES_HEIGHT ;
+			sacBarColor = createjs.Graphics.getRGB(204,153,0);
 
-	moveBarContainer.addChild(moveBar);
-	moveBarContainer.x = lifeBarContainer.x;
-	moveBarContainer.y = lifeBarContainer.y + 3*ESPACE_BARRES_Y;
-	stage.addChild(moveBarContainer);
+			sacBar = new createjs.Shape();
+			sacBar.graphics.beginFill(sacBarColor).drawRect(0, 0, 1, sacBarHeight).endFill();
 
-	// Barre de Poids du Sac
+			sacBarContainer.addChild(sacBar);
+			sacBarContainer.x = lifeBarContainer.x;
+			sacBarContainer.y = lifeBarContainer.y + 4*ESPACE_BARRES_Y;
+			stage.addChild(sacBarContainer);
 
-	sacBarContainer = new createjs.Container();
+		// Barre de proba Fouille
+			fouilleBarContainer = new createjs.Container();
 
-	sacBarWidth = _BARRES_WIDTH;
-	sacBarHeight = _BARRES_HEIGHT ;
-	sacBarColor = createjs.Graphics.getRGB(204,153,0);
+			fouilleBarWidth = _BARRES_WIDTH;
+			fouilleBarHeight = _BARRES_HEIGHT ;
+			fouilleBarColor = createjs.Graphics.getRGB(255,153,0);
 
-	sacBar = new createjs.Shape();
-	sacBar.graphics.beginFill(sacBarColor).drawRect(0, 0, 1, sacBarHeight).endFill();
+			fouilleBar = new createjs.Shape();
+			fouilleBar.graphics.beginFill(fouilleBarColor).drawRect(0, 0, 1, fouilleBarHeight).endFill();
 
-	sacBarContainer.addChild(sacBar);
-	sacBarContainer.x = lifeBarContainer.x;
-	sacBarContainer.y = lifeBarContainer.y + 4*ESPACE_BARRES_Y;
-	stage.addChild(sacBarContainer);
+			fouilleBarContainer.addChild(fouilleBar);
+			fouilleBarContainer.x = lifeBarContainer.x;
+			fouilleBarContainer.y = lifeBarContainer.y + 7*ESPACE_BARRES_Y;
+			stage.addChild(fouilleBarContainer);
 
-	// Barre de proba Fouille
+		// Barre de proba Cache
+			cacheBarContainer = new createjs.Container();
 
-	fouilleBarContainer = new createjs.Container();
+			cacheBarWidth = _BARRES_WIDTH;
+			cacheBarHeight = _BARRES_HEIGHT ;
+			cacheBarColor = createjs.Graphics.getRGB(102,102,51);
 
-	fouilleBarWidth = _BARRES_WIDTH;
-	fouilleBarHeight = _BARRES_HEIGHT ;
-	fouilleBarColor = createjs.Graphics.getRGB(255,153,0);
+			cacheBar = new createjs.Shape();
+			cacheBar.graphics.beginFill(cacheBarColor).drawRect(0, 0, 1, cacheBarHeight).endFill();
 
-	fouilleBar = new createjs.Shape();
-	fouilleBar.graphics.beginFill(fouilleBarColor).drawRect(0, 0, 1, fouilleBarHeight).endFill();
+			cacheBarContainer.addChild(cacheBar);
+			cacheBarContainer.x = lifeBarContainer.x;
+			cacheBarContainer.y = lifeBarContainer.y + 8*ESPACE_BARRES_Y;
+			stage.addChild(cacheBarContainer);
 
-	fouilleBarContainer.addChild(fouilleBar);
-	fouilleBarContainer.x = lifeBarContainer.x;
-	fouilleBarContainer.y = lifeBarContainer.y + 7*ESPACE_BARRES_Y;
-	stage.addChild(fouilleBarContainer);
+		_CONTENEUR_BARRES_INITIALISES = true;
 
-	// Barre de proba Cache
+	// - ZONE PICTOGRAMMES BARRES DU PERSO -
+		contPictoBarres = new createjs.Container();
+		contPictoBarres.x = lifeBarContainer.x - 40;
+		contPictoBarres.y = lifeBarContainer.y - 10;
+		contPictoBarres.width = 32;
+		contPictoBarres.height = 8*ESPACE_BARRES_Y + 40;
+		stage.addChild(contPictoBarres);
 
-	cacheBarContainer = new createjs.Container();
+		imgVie = new createjs.Bitmap("public/pictos/ptsVie.png");
+		imgVie.y=-2;
+		contPictoBarres.addChild(imgVie);
 
-	cacheBarWidth = _BARRES_WIDTH;
-	cacheBarHeight = _BARRES_HEIGHT ;
-	cacheBarColor = createjs.Graphics.getRGB(102,102,51);
+		imgFaim = new createjs.Bitmap("public/pictos/ptsFaim.png");
+		imgFaim.y=25;
+		contPictoBarres.addChild(imgFaim);
 
-	cacheBar = new createjs.Shape();
-	cacheBar.graphics.beginFill(cacheBarColor).drawRect(0, 0, 1, cacheBarHeight).endFill();
+		imgAction = new createjs.Bitmap("public/pictos/ptsAction.png");
+		imgAction.y=25*2;
+		contPictoBarres.addChild(imgAction);
 
-	cacheBarContainer.addChild(cacheBar);
-	cacheBarContainer.x = lifeBarContainer.x;
-	cacheBarContainer.y = lifeBarContainer.y + 8*ESPACE_BARRES_Y;
-	stage.addChild(cacheBarContainer);
+		imgMouvement = new createjs.Bitmap("public/pictos/ptsMouvement.png");
+		imgMouvement.y=25*3;
+		contPictoBarres.addChild(imgMouvement);
 
-	_CONTENEUR_BARRES_INITIALISES = true;
+		imgSac = new createjs.Bitmap("public/pictos/poidsSac.png");
+		imgSac.y=25*4;
+		contPictoBarres.addChild(imgSac);
 
-	// - ZONE PICTOGRAMMES BARRES DU PERSO-
-	contPictoBarres = new createjs.Container();
-	contPictoBarres.x = lifeBarContainer.x - 40;
-	contPictoBarres.y = lifeBarContainer.y - 10;
-	contPictoBarres.width = 32;
-	contPictoBarres.height = 8*ESPACE_BARRES_Y + 40;
-	stage.addChild(contPictoBarres);
+		imgAttaque = new createjs.Bitmap("public/pictos/ptsAttaque.png");
+		imgAttaque.y=25*5;
+		contPictoBarres.addChild(imgAttaque);
 
-	imgVie = new createjs.Bitmap("public/pictos/ptsVie.png");
-	imgVie.y=-2;
-	contPictoBarres.addChild(imgVie);
+		imgDefense = new createjs.Bitmap("public/pictos/ptsDef.png");
+		imgDefense.y=25*6;
+		contPictoBarres.addChild(imgDefense);
 
-	imgFaim = new createjs.Bitmap("public/pictos/ptsFaim.png");
-	imgFaim.y=25;
-	contPictoBarres.addChild(imgFaim);
+		imgFouille = new createjs.Bitmap("public/pictos/probaFouille.png");
+		imgFouille.y=25*7;
+		contPictoBarres.addChild(imgFouille);
 
-	imgAction = new createjs.Bitmap("public/pictos/ptsAction.png");
-	imgAction.y=25*2;
-	contPictoBarres.addChild(imgAction);
+		imgCache = new createjs.Bitmap("public/pictos/probaCache.png");
+		imgCache.y=25*8;
+		contPictoBarres.addChild(imgCache);
 
-	imgMouvement = new createjs.Bitmap("public/pictos/ptsMouvement.png");
-	imgMouvement.y=25*3;
-	contPictoBarres.addChild(imgMouvement);
+	// - ZONE PICTOGRAMMES INFO CASE -
+		contPictoCase = new createjs.Container();
+		contPictoCase.x = 10; // avt : 50
+		contPictoCase.y = 65; // avt : 45
+		contPictoCase.width = 32;
+		contPictoCase.height = 3*ESPACE_BARRES_Y + 40;
+		stage.addChild(contPictoCase);
 
-	imgSac = new createjs.Bitmap("public/pictos/poidsSac.png");
-	imgSac.y=25*4;
-	contPictoBarres.addChild(imgSac);
+		imgAllies = new createjs.Bitmap("public/pictos/nbrAllie.png");
+		imgAllies.y=-2;
+		contPictoCase.addChild(imgAllies);
 
-	imgAttaque = new createjs.Bitmap("public/pictos/ptsAttaque.png");
-	imgAttaque.y=25*5;
-	contPictoBarres.addChild(imgAttaque);
+		imgEnnemis = new createjs.Bitmap("public/pictos/nbrEnnemis.png");
+		imgEnnemis.y=32;
+		contPictoCase.addChild(imgEnnemis);
 
-	imgDefense = new createjs.Bitmap("public/pictos/ptsDef.png");
-	imgDefense.y=25*6;
-	contPictoBarres.addChild(imgDefense);
-
-	imgFouille = new createjs.Bitmap("public/pictos/probaFouille.png");
-	imgFouille.y=25*7;
-	contPictoBarres.addChild(imgFouille);
-
-	imgCache = new createjs.Bitmap("public/pictos/probaCache.png");
-	imgCache.y=25*8;
-	contPictoBarres.addChild(imgCache);
-
-	// - ZONE PICTOGRAMMES INFO CASE-
-	contPictoCase = new createjs.Container();
-	contPictoCase.x = 10; // avt : 50
-	contPictoCase.y = 65; // avt : 45
-	contPictoCase.width = 32;
-	contPictoCase.height = 3*ESPACE_BARRES_Y + 40;
-	stage.addChild(contPictoCase);
-
-	imgAllies = new createjs.Bitmap("public/pictos/nbrAllie.png");
-	imgAllies.y=-2;
-	contPictoCase.addChild(imgAllies);
-
-	imgEnnemis = new createjs.Bitmap("public/pictos/nbrEnnemis.png");
-	imgEnnemis.y=32;
-	contPictoCase.addChild(imgEnnemis);
-
-	imgZombies = new createjs.Bitmap("public/pictos/nbrZombies_plusPetit.png");
-	imgZombies.x=2; // avt : -2
-	imgZombies.y=33*2+4;
-	contPictoCase.addChild(imgZombies);
-
-	_LABEL_NB_ALLIES = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	_LABEL_NB_ALLIES.x = contPictoCase.x + 40 ;
-	_LABEL_NB_ALLIES.y = contPictoCase.y + 5;
-	_LABEL_NB_ALLIES.text="0";
-
-	_LABEL_NB_ENNEMIS = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	_LABEL_NB_ENNEMIS.x = _LABEL_NB_ALLIES.x;
-	_LABEL_NB_ENNEMIS.y = _LABEL_NB_ALLIES.y+35;
-	_LABEL_NB_ENNEMIS.text="0";
-
-	_LABEL_NB_GOULES = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
-	_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23; // avt : y*32*2+10
-	_LABEL_NB_GOULES.text="0";
+		imgZombies = new createjs.Bitmap("public/pictos/nbrZombies_plusPetit.png");
+		imgZombies.x=2; // avt : -2
+		imgZombies.y=33*2+4;
+		contPictoCase.addChild(imgZombies);
 
 	// ******************************************
 	// ********* Déclaration des labels *********
 	// ******************************************
 
-	// Placement label ItemCase
-	var _labelItemCaseX = contTousItems.x + TAB_CONT_ITEMS[3].x + 180;
-	var _labelItemCaseY = contTousItems.y + TAB_CONT_ITEMS[3].y - 20;
+		// Placement label ItemCase
+		var _labelItemCaseX = contTousItems.x + TAB_CONT_ITEMS[3].x + 180;
+		var _labelItemCaseY = contTousItems.y + TAB_CONT_ITEMS[3].y - 20;
 
-	// Placement label Description Item
-	var _labelDescriptionItemX = contTousItems.x + TAB_CONT_ITEMS[3].x-5;
-	var _labelDescriptionItemY = contTousItems.y + TAB_CONT_ITEMS[3].y + 40;
+		// Placement label Description Item
+		var _labelDescriptionItemX = contTousItems.x + TAB_CONT_ITEMS[3].x-5;
+		var _labelDescriptionItemY = contTousItems.y + TAB_CONT_ITEMS[3].y + 40;
 
-	// Label nombre nouveaux messages
-	labelNombreNouvMsg = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelNombreNouvMsg.lineHeight = _LineHeight;
-	labelNombreNouvMsg.textBaseline = _TextBaseline;
-	labelNombreNouvMsg.x = _labelNombreNouvMsgX;
-	labelNombreNouvMsg.y = _labelNombreNouvMsgY;
+		// Label nombre nouveaux messages
+		labelNombreNouvMsg = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		labelNombreNouvMsg.lineHeight = _LineHeight;
+		labelNombreNouvMsg.textBaseline = _TextBaseline;
+		labelNombreNouvMsg.x = _labelNombreNouvMsgX;
+		labelNombreNouvMsg.y = _labelNombreNouvMsgY;
 
-	// Label nom case en cours
-	labelCaseEnCours = stage.addChild(new createjs.Text("", _POLICE_TITRE_1, _COULEUR_TITRE));
-	labelCaseEnCours.lineHeight = _LineHeight;
-	labelCaseEnCours.textBaseline = _TextBaseline;
-	labelCaseEnCours.x = 5;
-	labelCaseEnCours.y = 5;
+		// Label nom case en cours
+		labelCaseEnCours = stage.addChild(new createjs.Text("", _POLICE_TITRE_1, _COULEUR_TITRE));
+		labelCaseEnCours.lineHeight = _LineHeight;
+		labelCaseEnCours.textBaseline = _TextBaseline;
+		labelCaseEnCours.x = 5;
+		labelCaseEnCours.y = 5;
 
-	// Label presentation objet dans la case
-	labelObjetCase = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelObjetCase.lineHeight = _LineHeight;
-	labelObjetCase.textBaseline = _TextBaseline;
-	labelObjetCase.x = _labelItemCaseX;
-	labelObjetCase.y = _labelItemCaseY;
+		labelDescriptionItem = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		labelDescriptionItem.lineHeight = _LineHeight;
+		labelDescriptionItem.textBaseline = _TextBaseline;
+		labelDescriptionItem.x = _labelDescriptionItemX;
+		labelDescriptionItem.y = _labelDescriptionItemY;
 
-	labelDescriptionItem = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelDescriptionItem.lineHeight = _LineHeight;
-	labelDescriptionItem.textBaseline = _TextBaseline;
-	labelDescriptionItem.x = _labelDescriptionItemX;
-	labelDescriptionItem.y = _labelDescriptionItemY;
+		labelInventaire = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		labelInventaire.lineHeight = _LineHeight;
+		labelInventaire.textBaseline = _TextBaseline;
+		labelInventaire.x = _labelItemPersoX;
+		labelInventaire.y = _labelItemPersoY;
 
-	labelInventaire = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelInventaire.lineHeight = _LineHeight;
-	labelInventaire.textBaseline = _TextBaseline;
-	labelInventaire.x = _labelItemPersoX;
-	labelInventaire.y = _labelItemPersoY;
+		//---------------------------------------
 
-	//------------------- Zone 1 -----------------------------------------------------
+		labelBonusArme = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELSBonus));
+		labelBonusArme.lineHeight = _LineHeight;
+		labelBonusArme.textBaseline = _TextBaseline;
+		labelBonusArme.x = contArme.x + 35 ;
+		labelBonusArme.y = contArme.y + 2;
 
-	labelPtsVie = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelPtsVie.lineHeight = _LineHeight;
-	labelPtsVie.textBaseline = _TextBaseline;
-	labelPtsVie.x = _labelPtsVX;
-	labelPtsVie.y = _labelPtsVY;
+		labelBonusArmure = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELSBonus));
+		labelBonusArmure.lineHeight = _LineHeight;
+		labelBonusArmure.textBaseline = _TextBaseline;
+		labelBonusArmure.x = contArmure.x + 35;
+		labelBonusArmure.y = contArmure.y + 2;
 
-	labelPtsFaim = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelPtsFaim.lineHeight = _LineHeight;
-	labelPtsFaim.textBaseline = _TextBaseline;
-	labelPtsFaim.x = _labelPtsFX;
-	labelPtsFaim.y = _labelPtsFY;
+		labelProbaCache = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		labelProbaCache.lineHeight = _LineHeight;
+		labelProbaCache.textBaseline = _TextBaseline;
+		labelProbaCache.x = _labelProbaCacheX;
+		labelProbaCache.y = _labelProbaCacheY;
 
-	//------------------- Zone 2 -----------------------------------------------------
+		labelProbaFouille = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		labelProbaFouille.lineHeight = _LineHeight;
+		labelProbaFouille.textBaseline = _TextBaseline;
+		labelProbaFouille.x = _labelProbaFouilleX;
+		labelProbaFouille.y = _labelProbaFouilleY;
 
-	labelPtsAction = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelPtsAction.lineHeight = _LineHeight;
-	labelPtsAction.textBaseline = _TextBaseline;
-	labelPtsAction.x = _labelPtsAX;
-	labelPtsAction.y = _labelPtsAY;
+		//----------------------- Zone 14 : labels de retour-------------------------
 
-	labelPtsMove = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelPtsMove.lineHeight = _LineHeight;
-	labelPtsMove.textBaseline = _TextBaseline;
-	labelPtsMove.x = _labelPtsMX;
-	labelPtsMove.y = _labelPtsMY;
+		labelLancementServeur = stage.addChild(new createjs.Text("", _LABEL_POLICE, _COULEUR_LABELS));
+		labelLancementServeur.lineHeight = _LineHeight;
+		labelLancementServeur.textBaseline = _TextBaseline;
+		labelLancementServeur.x =880;
+		labelLancementServeur.y =600;
 
-	//---------------------------------------
+	// Affichage des labels forces en présence
+		_LABEL_NB_ALLIES = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		_LABEL_NB_ALLIES.x = contPictoCase.x + 40 ;
+		_LABEL_NB_ALLIES.y = contPictoCase.y + 5;
+		_LABEL_NB_ALLIES.text="0";
 
-	labelPtsAtq = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelPtsAtq.lineHeight = _LineHeight;
-	labelPtsAtq.textBaseline = _TextBaseline;
-	labelPtsAtq.x = _labelPtsAtqX;
-	labelPtsAtq.y = _labelPtsAtqY;
+		_LABEL_NB_ENNEMIS = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		_LABEL_NB_ENNEMIS.x = _LABEL_NB_ALLIES.x;
+		_LABEL_NB_ENNEMIS.y = _LABEL_NB_ALLIES.y+35;
+		_LABEL_NB_ENNEMIS.text="0";
 
-	labelPtsDef = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelPtsDef.lineHeight = _LineHeight;
-	labelPtsDef.textBaseline = _TextBaseline;
-	labelPtsDef.x = _labelPtsDefX;
-	labelPtsDef.y = _labelPtsDefY;
+		_LABEL_NB_GOULES = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+		_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
+		_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23; // avt : y*32*2+10
+		_LABEL_NB_GOULES.text="0";
 
-	labelBonusArme = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELSBonus));
-	labelBonusArme.lineHeight = _LineHeight;
-	labelBonusArme.textBaseline = _TextBaseline;
-	labelBonusArme.x = _labelPtsAtqX + 170 ;
-	labelBonusArme.y = _labelPtsAtqY;
+	// Affichage des labels de titres
+		var _labelTitreMode			 = contBoutons.addChild(new createjs.Text("MODES", _POLICE_TITRE_1, _COULEUR_TITRE));
+		var _labelTitreSac			 = contBoutons.addChild(new createjs.Text("SAC", _POLICE_TITRE_1, _COULEUR_TITRE));
+		var _labelTitreCase			 = contBoutons.addChild(new createjs.Text("CASE", _POLICE_TITRE_1, _COULEUR_TITRE));
+		
+		var _labelTitreInventaire    = contTousItems.addChild(new createjs.Text("O B J E T S  D A N S  L E  S A C", _POLICE_TITRE_2, _COULEUR_TITRE_2));
+		var _labelTitreInventaireE   = contTousItems.addChild(new createjs.Text("E Q U I P A B L E S", _POLICE_TITRE_3, _COULEUR_TITRE_2));
+		var _labelTitreInventaireC   = contTousItems.addChild(new createjs.Text("C O N S O M M A B L E S", _POLICE_TITRE_3, _COULEUR_TITRE_2));
+		var _labelTitreInventaireD   = contTousItems.addChild(new createjs.Text("P R E C I E U X", _POLICE_TITRE_3, _COULEUR_TITRE_2));
+		
+		var _labelTitreObjetsCase    = contTousItems.addChild(new createjs.Text("O B J E T S  D A N S  L A  C A S E", _POLICE_TITRE_2, _COULEUR_TITRE_2));
+		var _labelTitreObjetsCaseE   = contTousItems.addChild(new createjs.Text("E Q U I P A B L E S", _POLICE_TITRE_3, _COULEUR_TITRE_2));
+		var _labelTitreObjetsCaseC   = contTousItems.addChild(new createjs.Text("C O N S O M M A B L E S", _POLICE_TITRE_3, _COULEUR_TITRE_2));
+		var _labelTitreObjetsCaseD   = contTousItems.addChild(new createjs.Text("P R E C I E U X", _POLICE_TITRE_3, _COULEUR_TITRE_2));
+		
+		var _labelTitreForces   	 = stage.addChild(new createjs.Text("FORCES EN PRESENCE", _POLICE_TITRE_2, _COULEUR_TITRE_2));
 
-	labelBonusArmure = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELSBonus));
-	labelBonusArmure.lineHeight = _LineHeight;
-	labelBonusArmure.textBaseline = _TextBaseline;
-	labelBonusArmure.x = _labelPtsDefX + 170;
-	labelBonusArmure.y = _labelPtsDefY;
+		_labelTitreMode.x 		= contBtnModes.x + 45;
+		_labelTitreMode.y 		= contBtnModes.y - 30;
+		_labelTitreSac.x 		= contBtnsInvPerso.x + 55;
+		_labelTitreSac.y 		= contBtnsInvPerso.y - 30;
+		_labelTitreCase.x 		= contBtnsInvCase.x + 125;
+		_labelTitreCase.y 		= contBtnsInvCase.y - 30;
 
-	labelProbaCache = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelProbaCache.lineHeight = _LineHeight;
-	labelProbaCache.textBaseline = _TextBaseline;
-	labelProbaCache.x = _labelProbaCacheX;
-	labelProbaCache.y = _labelProbaCacheY;
+		_labelTitreInventaire.x  = 5;
+		_labelTitreInventaire.y  = 0;
+		_labelTitreInventaireE.x = TAB_CONT_ITEMS[0].x + 30;
+		_labelTitreInventaireE.y = TAB_CONT_ITEMS[0].y - 15;
+		_labelTitreInventaireC.x = TAB_CONT_ITEMS[1].x + 10;
+		_labelTitreInventaireC.y = TAB_CONT_ITEMS[1].y - 15;
+		_labelTitreInventaireD.x = TAB_CONT_ITEMS[2].x + 40;
+		_labelTitreInventaireD.y = TAB_CONT_ITEMS[2].y - 15;
 
-	labelProbaFouille = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelProbaFouille.lineHeight = _LineHeight;
-	labelProbaFouille.textBaseline = _TextBaseline;
-	labelProbaFouille.x = _labelProbaFouilleX;
-	labelProbaFouille.y = _labelProbaFouilleY;
+		_labelTitreObjetsCase.x  = _labelTitreInventaire.x;
+		_labelTitreObjetsCase.y  = TAB_CONT_ITEMS[3].y - 30;
+		_labelTitreObjetsCaseE.x = TAB_CONT_ITEMS[3].x +30;
+		_labelTitreObjetsCaseE.y = TAB_CONT_ITEMS[3].y - 15;
+		_labelTitreObjetsCaseC.x = TAB_CONT_ITEMS[4].x + 10;
+		_labelTitreObjetsCaseC.y = TAB_CONT_ITEMS[4].y - 15;
+		_labelTitreObjetsCaseD.x = TAB_CONT_ITEMS[5].x + 40;
+		_labelTitreObjetsCaseD.y = TAB_CONT_ITEMS[5].y - 15;
 
-	//----------------------- Zone 14 : labels de retour-------------------------
-
-	labelLancementServeur = stage.addChild(new createjs.Text("", _LABEL_POLICE, _COULEUR_LABELS));
-	labelLancementServeur.lineHeight = _LineHeight;
-	labelLancementServeur.textBaseline = _TextBaseline;
-	labelLancementServeur.x =880;
-	labelLancementServeur.y =600;
+		_labelTitreForces.x = 5;
+		_labelTitreForces.y = 45;
 
 	// ******************************************
 	// ** Création des boutons de déplacement ***
 	// ******************************************
-	var Up = stage.addChild(new createjs.Bitmap("public/Boutons/Up.png"));
-	Up.x= _contMapX + _contMapW/2 - Up.image.width/2;
-	Up.y = _contMapY;
-	Up.addEventListener('click', function(event) {
-		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
-	});
-	Up.addEventListener('touchstart', function(event) {
-		socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
-	});
+		var Up = stage.addChild(new createjs.Bitmap("public/Boutons/Up.png"));
+		Up.x= _contMapX + _contMapW/2 - Up.image.width/2;
+		Up.y = _contMapY;
+		Up.addEventListener('click', function(event) {
+			socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
+		});
+		Up.addEventListener('touchstart', function(event) {
+			socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
+		});
 
-	var Down = stage.addChild(new createjs.Bitmap("public/Boutons/Down.png"));
-	Down.x = _contMapX+ _contMapW/2 - Down.image.width/2;
-	Down.y = _contMapY + _contMapH - _centrageBpMap;
-	Down.addEventListener('click', function(event) {
-		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
-	});
-	Down.addEventListener('touchstart', function(event) {
-		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
-	});
+		var Down = stage.addChild(new createjs.Bitmap("public/Boutons/Down.png"));
+		Down.x = _contMapX+ _contMapW/2 - Down.image.width/2;
+		Down.y = _contMapY + _contMapH - _centrageBpMap;
+		Down.addEventListener('click', function(event) {
+			socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
+		});
+		Down.addEventListener('touchstart', function(event) {
+			socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
+		});
 
-	var Left = stage.addChild(new createjs.Bitmap("public/Boutons/Left.png"));
-	Left.x = _contMapX;
-	Left.y = _contMapY + _contMapH/2 - Left.image.height/2;
-	Left.addEventListener('click', function(event) {
-		socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
-	});
-	Down.addEventListener('touchstart', function(event) {
-		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
-	});
+		var Left = stage.addChild(new createjs.Bitmap("public/Boutons/Left.png"));
+		Left.x = _contMapX;
+		Left.y = _contMapY + _contMapH/2 - Left.image.height/2;
+		Left.addEventListener('click', function(event) {
+			socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
+		});
+		Down.addEventListener('touchstart', function(event) {
+			socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
+		});
 
-	var Right = stage.addChild(new createjs.Bitmap("public/Boutons/Right.png"));
-	Right.x = _contMapX + _contMapW - _centrageBpMap;
-	Right.y = _contMapY + _contMapH/2 - Right.image.height/2;
-	Right.addEventListener('click', function(event) {
-		socket.emit('MOVE_PERSONNAGE_CS', 'EST');
-	});
-	Down.addEventListener('touchstart', function(event) {
-		socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
-	});
+		var Right = stage.addChild(new createjs.Bitmap("public/Boutons/Right.png"));
+		Right.x = _contMapX + _contMapW - _centrageBpMap;
+		Right.y = _contMapY + _contMapH/2 - Right.image.height/2;
+		Right.addEventListener('click', function(event) {
+			socket.emit('MOVE_PERSONNAGE_CS', 'EST');
+		});
+		Down.addEventListener('touchstart', function(event) {
+			socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
+		});
 
-	Up.cursor=Down.cursor=Left.cursor=Right.cursor="pointer";
+		Up.cursor=Down.cursor=Left.cursor=Right.cursor="pointer";
 
-	// ******************************************
-	// ************ Boutons d'action ************
-	// ******************************************
+	// ********************************************************
+	// ** Création des boutons Flèches pour les pages items ***
+	// ********************************************************
+		
+		Btn_PAGE_ITEM_CASE_EQUIPRight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+		Btn_PAGE_ITEM_CASE_EQUIPRight.x= TAB_CONT_ITEMS[3].x  + TAB_CONT_ITEMS[3].width;
+		Btn_PAGE_ITEM_CASE_EQUIPRight.y= TAB_CONT_ITEMS[3].y + 5;
+		Btn_PAGE_ITEM_CASE_EQUIPRight.visible=false;
+		Btn_PAGE_ITEM_CASE_EQUIPRight.addEventListener('click', function(event) {
+			_PAGE_ITEM_CASE_EQUIP++;
+			socket.emit('INFO_CASE_CS');
+		});
+		Btn_PAGE_ITEM_CASE_EQUIPRight.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_CASE_EQUIP++;
+			socket.emit('INFO_CASE_CS');
+		});
 
-	Btn_PAGE_ITEM_PERSORight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	Btn_PAGE_ITEM_PERSORight.x= TAB_CONT_ITEMS[0].x + TAB_CONT_ITEMS[0].width;
-	Btn_PAGE_ITEM_PERSORight.y= TAB_CONT_ITEMS[0].y + 5;
-	Btn_PAGE_ITEM_PERSORight.visible=false;
-	Btn_PAGE_ITEM_PERSORight.addEventListener('click', function(event) {
-		_PAGE_ITEM_PERSO++;
-		pressBtnEquip=false;
-		socket.emit('INFO_PERSONNAGE_CS');
-	});
-	Btn_PAGE_ITEM_PERSORight.addEventListener('touchstart', function(event) {
-		_PAGE_ITEM_PERSO++;
-		pressBtnEquip=false;
-		socket.emit('INFO_PERSONNAGE_CS');
-	});
+		Btn_PAGE_ITEM_CASE_EQUIPLeft = contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+		Btn_PAGE_ITEM_CASE_EQUIPLeft.x= TAB_CONT_ITEMS[3].x - 30;
+		Btn_PAGE_ITEM_CASE_EQUIPLeft.y= TAB_CONT_ITEMS[3].y + 5;
+		Btn_PAGE_ITEM_CASE_EQUIPLeft.visible=false;
+		Btn_PAGE_ITEM_CASE_EQUIPLeft.addEventListener('click', function(event) {
+			_PAGE_ITEM_CASE_EQUIP--;
+			socket.emit('INFO_CASE_CS');
+		});
+		Btn_PAGE_ITEM_CASE_EQUIPLeft.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_CASE_EQUIP--;
+			socket.emit('INFO_CASE_CS');
+		});
 
-	Btn_PAGE_ITEM_PERSOLeft = contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
-	Btn_PAGE_ITEM_PERSOLeft.x= TAB_CONT_ITEMS[0].x - 30;
-	Btn_PAGE_ITEM_PERSOLeft.y= TAB_CONT_ITEMS[0].y + 5;
-	Btn_PAGE_ITEM_PERSOLeft.visible=false;
-	Btn_PAGE_ITEM_PERSOLeft.addEventListener('click', function(event) {
-		_PAGE_ITEM_PERSO--;
-		pressBtnEquip=false;
-		socket.emit('INFO_PERSONNAGE_CS');
-	});
-	Btn_PAGE_ITEM_PERSOLeft.addEventListener('touchstart', function(event) {
-		_PAGE_ITEM_PERSO--;
-		pressBtnEquip=false;
-		socket.emit('INFO_PERSONNAGE_CS');
-	});
-	
+		Btn_PAGE_ITEM_CASE_CONSORight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+		Btn_PAGE_ITEM_CASE_CONSORight.x= TAB_CONT_ITEMS[4].x  + TAB_CONT_ITEMS[4].width;
+		Btn_PAGE_ITEM_CASE_CONSORight.y= TAB_CONT_ITEMS[4].y + 5;
+		Btn_PAGE_ITEM_CASE_CONSORight.visible=false;
+		Btn_PAGE_ITEM_CASE_CONSORight.addEventListener('click', function(event) {
+			_PAGE_ITEM_CASE_CONSO++;
+			socket.emit('INFO_CASE_CS');
 
-	Btn_PAGE_ITEM_CASE_EQUIPRight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	Btn_PAGE_ITEM_CASE_EQUIPRight.x= TAB_CONT_ITEMS[3].x  + TAB_CONT_ITEMS[3].width;
-	Btn_PAGE_ITEM_CASE_EQUIPRight.y= TAB_CONT_ITEMS[3].y + 5;
-	Btn_PAGE_ITEM_CASE_EQUIPRight.visible=false;
-	Btn_PAGE_ITEM_CASE_EQUIPRight.addEventListener('click', function(event) {
-		_PAGE_ITEM_CASE_EQUIP++;
-		socket.emit('INFO_CASE_CS');
-	});
-	Btn_PAGE_ITEM_CASE_EQUIPRight.addEventListener('touchstart', function(event) {
-		_PAGE_ITEM_CASE_EQUIP++;
-		socket.emit('INFO_CASE_CS');
-	});
+		});
+		Btn_PAGE_ITEM_CASE_CONSORight.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_CASE_CONSO++;
+			socket.emit('INFO_CASE_CS');
 
-	Btn_PAGE_ITEM_CASE_EQUIPLeft = contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
-	Btn_PAGE_ITEM_CASE_EQUIPLeft.x= TAB_CONT_ITEMS[3].x - 30;
-	Btn_PAGE_ITEM_CASE_EQUIPLeft.y= TAB_CONT_ITEMS[3].y + 5;
-	Btn_PAGE_ITEM_CASE_EQUIPLeft.visible=false;
-	Btn_PAGE_ITEM_CASE_EQUIPLeft.addEventListener('click', function(event) {
-		_PAGE_ITEM_CASE_EQUIP--;
-		socket.emit('INFO_CASE_CS');
-	});
-	Btn_PAGE_ITEM_CASE_EQUIPLeft.addEventListener('touchstart', function(event) {
-		_PAGE_ITEM_CASE_EQUIP--;
-		socket.emit('INFO_CASE_CS');
-	});
+		});
 
-	Btn_PAGE_ITEM_CASE_CONSORight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	Btn_PAGE_ITEM_CASE_CONSORight.x= TAB_CONT_ITEMS[4].x  + TAB_CONT_ITEMS[4].width;
-	Btn_PAGE_ITEM_CASE_CONSORight.y= TAB_CONT_ITEMS[4].y + 5;
-	Btn_PAGE_ITEM_CASE_CONSORight.visible=false;
-	Btn_PAGE_ITEM_CASE_CONSORight.addEventListener('click', function(event) {
-		_PAGE_ITEM_CASE_CONSO++;
-		socket.emit('INFO_CASE_CS');
+		Btn_PAGE_ITEM_CASE_CONSOLeft= contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+		Btn_PAGE_ITEM_CASE_CONSOLeft.x= TAB_CONT_ITEMS[4].x - 30;
+		Btn_PAGE_ITEM_CASE_CONSOLeft.y= TAB_CONT_ITEMS[4].y + 5;
+		Btn_PAGE_ITEM_CASE_CONSOLeft.visible=false;
+		Btn_PAGE_ITEM_CASE_CONSOLeft.addEventListener('click', function(event) {
+			_PAGE_ITEM_CASE_CONSO--;
+			socket.emit('INFO_CASE_CS');
+		});
+		Btn_PAGE_ITEM_CASE_CONSOLeft.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_CASE_CONSO--;
+			socket.emit('INFO_CASE_CS');
+		});
 
-	});
-	Btn_PAGE_ITEM_CASE_CONSORight.addEventListener('touchstart', function(event) {
-		_PAGE_ITEM_CASE_CONSO++;
-		socket.emit('INFO_CASE_CS');
+		Btn_PAGE_ITEM_CASE_ODDRight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+		Btn_PAGE_ITEM_CASE_ODDRight.x= TAB_CONT_ITEMS[5].x  + TAB_CONT_ITEMS[5].width;
+		Btn_PAGE_ITEM_CASE_ODDRight.y= TAB_CONT_ITEMS[5].y + 5;
+		Btn_PAGE_ITEM_CASE_ODDRight.visible=false;
+		Btn_PAGE_ITEM_CASE_ODDRight.addEventListener('click', function(event) {
+			_PAGE_ITEM_CASE_ODD++;
+			socket.emit('INFO_CASE_CS');
 
-	});
+		});
+		Btn_PAGE_ITEM_CASE_ODDRight.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_CASE_ODD++;
+			socket.emit('INFO_CASE_CS');
 
-	Btn_PAGE_ITEM_CASE_CONSOLeft= contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
-	Btn_PAGE_ITEM_CASE_CONSOLeft.x= TAB_CONT_ITEMS[4].x - 30;
-	Btn_PAGE_ITEM_CASE_CONSOLeft.y= TAB_CONT_ITEMS[4].y + 5;
-	Btn_PAGE_ITEM_CASE_CONSOLeft.visible=false;
-	Btn_PAGE_ITEM_CASE_CONSOLeft.addEventListener('click', function(event) {
-		_PAGE_ITEM_CASE_CONSO--;
-		socket.emit('INFO_CASE_CS');
-	});
-	Btn_PAGE_ITEM_CASE_CONSOLeft.addEventListener('touchstart', function(event) {
-		_PAGE_ITEM_CASE_CONSO--;
-		socket.emit('INFO_CASE_CS');
-	});
+		});
 
-	Btn_PAGE_ITEM_CASE_ODDRight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
-	Btn_PAGE_ITEM_CASE_ODDRight.x= TAB_CONT_ITEMS[5].x  + TAB_CONT_ITEMS[3].width;
-	Btn_PAGE_ITEM_CASE_ODDRight.y= TAB_CONT_ITEMS[5].y + 5;
-	Btn_PAGE_ITEM_CASE_ODDRight.visible=false;
-	Btn_PAGE_ITEM_CASE_ODDRight.addEventListener('click', function(event) {
-		_PAGE_ITEM_CASE_ODD++;
-		socket.emit('INFO_CASE_CS');
+		Btn_PAGE_ITEM_CASE_ODDLeft= contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+		Btn_PAGE_ITEM_CASE_ODDLeft.x= TAB_CONT_ITEMS[5].x - 30;
+		Btn_PAGE_ITEM_CASE_ODDLeft.y= TAB_CONT_ITEMS[5].y + 5;
+		Btn_PAGE_ITEM_CASE_ODDLeft.visible=false;
+		Btn_PAGE_ITEM_CASE_ODDLeft.addEventListener('click', function(event) {
+			_PAGE_ITEM_CASE_ODD--;
+			socket.emit('INFO_CASE_CS');
+		});
+		Btn_PAGE_ITEM_CASE_ODDLeft.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_CASE_ODD--;
+			socket.emit('INFO_CASE_CS');
+		});
 
-	});
-	Btn_PAGE_ITEM_CASE_ODDRight.addEventListener('touchstart', function(event) {
-		_PAGE_ITEM_CASE_ODD++;
-		socket.emit('INFO_CASE_CS');
+		Btn_PAGE_ITEM_PERSO_EQUIPRight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+		Btn_PAGE_ITEM_PERSO_EQUIPRight.x= TAB_CONT_ITEMS[0].x  + TAB_CONT_ITEMS[0].width;
+		Btn_PAGE_ITEM_PERSO_EQUIPRight.y= TAB_CONT_ITEMS[0].y + 5;
+		Btn_PAGE_ITEM_PERSO_EQUIPRight.visible=false;
+		Btn_PAGE_ITEM_PERSO_EQUIPRight.addEventListener('click', function(event) {
+			_PAGE_ITEM_PERSO_EQUIP++;
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
+		Btn_PAGE_ITEM_PERSO_EQUIPRight.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_PERSO_EQUIP++;
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
 
-	});
+		Btn_PAGE_ITEM_PERSO_EQUIPLeft = contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+		Btn_PAGE_ITEM_PERSO_EQUIPLeft.x= TAB_CONT_ITEMS[0].x - 30;
+		Btn_PAGE_ITEM_PERSO_EQUIPLeft.y= TAB_CONT_ITEMS[0].y + 5;
+		Btn_PAGE_ITEM_PERSO_EQUIPLeft.visible=false;
+		Btn_PAGE_ITEM_PERSO_EQUIPLeft.addEventListener('click', function(event) {
+			_PAGE_ITEM_PERSO_EQUIP--;
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
+		Btn_PAGE_ITEM_PERSO_EQUIPLeft.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_PERSO_EQUIP--;
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
 
-	Btn_PAGE_ITEM_CASE_ODDLeft= contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
-	Btn_PAGE_ITEM_CASE_ODDLeft.x= TAB_CONT_ITEMS[5].x - 30;
-	Btn_PAGE_ITEM_CASE_ODDLeft.y= TAB_CONT_ITEMS[5].y + 5;
-	Btn_PAGE_ITEM_CASE_ODDLeft.visible=false;
-	Btn_PAGE_ITEM_CASE_ODDLeft.addEventListener('click', function(event) {
-		_PAGE_ITEM_CASE_ODD--;
-		socket.emit('INFO_CASE_CS');
-	});
-	Btn_PAGE_ITEM_CASE_ODDLeft.addEventListener('touchstart', function(event) {
-		_PAGE_ITEM_CASE_ODD--;
-		socket.emit('INFO_CASE_CS');
-	});
+		Btn_PAGE_ITEM_PERSO_CONSORight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+		Btn_PAGE_ITEM_PERSO_CONSORight.x= TAB_CONT_ITEMS[1].x  + TAB_CONT_ITEMS[1].width;
+		Btn_PAGE_ITEM_PERSO_CONSORight.y= TAB_CONT_ITEMS[1].y + 5;
+		Btn_PAGE_ITEM_PERSO_CONSORight.visible=false;
+		Btn_PAGE_ITEM_PERSO_CONSORight.addEventListener('click', function(event) {
+			_PAGE_ITEM_PERSO_CONSO++;
+			socket.emit('INFO_PERSONNAGE_CS');
 
-	Btn_PAGE_ITEM_PERSORight.cursor=Btn_PAGE_ITEM_PERSOLeft.cursor=Btn_PAGE_ITEM_CASE_EQUIPRight.cursor=Btn_PAGE_ITEM_CASE_EQUIPLeft.cursor=Btn_PAGE_ITEM_CASE_CONSORight.cursor=Btn_PAGE_ITEM_CASE_CONSOLeft.cursor=Btn_PAGE_ITEM_CASE_ODDRight.cursor=Btn_PAGE_ITEM_CASE_ODDLeft.cursor="pointer";
+		});
+		Btn_PAGE_ITEM_PERSO_CONSORight.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_PERSO_CONSO++;
+			socket.emit('INFO_PERSONNAGE_CS');
+
+		});
+
+		Btn_PAGE_ITEM_PERSO_CONSOLeft= contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+		Btn_PAGE_ITEM_PERSO_CONSOLeft.x= TAB_CONT_ITEMS[1].x - 30;
+		Btn_PAGE_ITEM_PERSO_CONSOLeft.y= TAB_CONT_ITEMS[1].y + 5;
+		Btn_PAGE_ITEM_PERSO_CONSOLeft.visible=false;
+		Btn_PAGE_ITEM_PERSO_CONSOLeft.addEventListener('click', function(event) {
+			_PAGE_ITEM_PERSO_CONSO--;
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
+		Btn_PAGE_ITEM_PERSO_CONSOLeft.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_PERSO_CONSO--;
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
+
+		Btn_PAGE_ITEM_PERSO_ODDRight = contTousItems.addChild(new createjs.Bitmap("public/Boutons/RArrow.png"));
+		Btn_PAGE_ITEM_PERSO_ODDRight.x= TAB_CONT_ITEMS[2].x  + TAB_CONT_ITEMS[2].width;
+		Btn_PAGE_ITEM_PERSO_ODDRight.y= TAB_CONT_ITEMS[2].y + 5;
+		Btn_PAGE_ITEM_PERSO_ODDRight.visible=false;
+		Btn_PAGE_ITEM_PERSO_ODDRight.addEventListener('click', function(event) {
+			_PAGE_ITEM_PERSO_ODD++;
+			socket.emit('INFO_PERSONNAGE_CS');
+
+		});
+		Btn_PAGE_ITEM_PERSO_ODDRight.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_PERSO_ODD++;
+			socket.emit('INFO_PERSONNAGE_CS');
+
+		});
+
+		Btn_PAGE_ITEM_PERSO_ODDLeft= contTousItems.addChild(new createjs.Bitmap("public/Boutons/LArrow.png"));
+		Btn_PAGE_ITEM_PERSO_ODDLeft.x= TAB_CONT_ITEMS[2].x - 30;
+		Btn_PAGE_ITEM_PERSO_ODDLeft.y= TAB_CONT_ITEMS[2].y + 5;
+		Btn_PAGE_ITEM_PERSO_ODDLeft.visible=false;
+		Btn_PAGE_ITEM_PERSO_ODDLeft.addEventListener('click', function(event) {
+			_PAGE_ITEM_PERSO_ODD--;
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
+		Btn_PAGE_ITEM_PERSO_ODDLeft.addEventListener('touchstart', function(event) {
+			_PAGE_ITEM_PERSO_ODD--;
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
+
+		Btn_PAGE_ITEM_CASE_EQUIPRight.cursor=Btn_PAGE_ITEM_CASE_EQUIPLeft.cursor=Btn_PAGE_ITEM_CASE_CONSORight.cursor=Btn_PAGE_ITEM_CASE_CONSOLeft.cursor=Btn_PAGE_ITEM_CASE_ODDRight.cursor=Btn_PAGE_ITEM_CASE_ODDLeft.cursor="pointer";
+		Btn_PAGE_ITEM_PERSO_EQUIPRight.cursor=Btn_PAGE_ITEM_PERSO_EQUIPLeft.cursor=Btn_PAGE_ITEM_PERSO_CONSORight.cursor=Btn_PAGE_ITEM_PERSO_CONSOLeft.cursor=Btn_PAGE_ITEM_PERSO_ODDRight.cursor=Btn_PAGE_ITEM_PERSO_ODDLeft.cursor="pointer";
 
 	// ******************************************
 	// *********** INITIALISATION ***************
@@ -1350,7 +1357,7 @@ function setPlateau()
 	game();
 }
 
-
+// Lancement du jeu
 function game() 
 {
 	// Couleur autour de la carte
@@ -1359,12 +1366,22 @@ function game()
 	shape4.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
 			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
 	
-	//_espaceBoutonYInitialisation des informations
+	// Initialisation des informations
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
 }
 
-function message()
+/* Pour les fonctions suivantes :
+	//// page... 		: Afficher une page sur le canvas
+	//// afficher...	: Affichage non permanent (avec temporisation)
+	//// maj... 		: Mise à jour d'une information ou d'un objet graphique
+	//// set...			: Positionne un Objet graphique
+	//// define...		: Définit une valeur
+	//// animation...	: Animation graphique d'un élément
+*/
+
+// Page des messages recus
+function pageMessages()
 {
 	var nbMsgAffiches=10;
 
@@ -1453,12 +1470,11 @@ function message()
 		}
 	}
 
-	setBtnMessage(TabListe, Taille);
+	majBtnMessage(TabListe, Taille);
 	afficherMessage(TabListe);
-
-	//stage.update();
 }
 
+// Fonction permettant de bien afficher les messages
 function afficherMessage(TabListeMessage)
 {
 	var longLigneMax=117; //88
@@ -1484,10 +1500,10 @@ function afficherMessage(TabListeMessage)
 		}
 	}
 	catch(e){}
-	//stage.update();
 }
 
-function afficherDescCase(desc)
+// Afficher la description de la case en cours
+function majDesCase(desc)
 {
 	var longLigneMax=69;
 	try 
@@ -1508,9 +1524,9 @@ function afficherDescCase(desc)
 		}
 	}
 	catch(e){}
-	//stage.update();
 }
 
+// Afficher la description de l'item courant
 function afficherDescItem(desc)
 {
 	var longLigneMax=42	;
@@ -1531,10 +1547,10 @@ function afficherDescItem(desc)
 		}
 	}
 	catch(e){}
-	//stage.update();
 }
 
-function liste()
+// Afficher la page des personnages dans la case
+function pagePersonnages()
 {
 	socket.emit('INFO_CASE_ALLIES_CS');
 	socket.emit('INFO_CASE_ENNEMIS_CS');
@@ -1672,15 +1688,14 @@ function liste()
 		socket.emit('INFO_CASE_ENNEMIS_CS');
 	});
 
-	setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
+	majBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
 
 	BtnCancelListe.cursor="pointer";
 	Btn_PAGE_PERSO_ALLIESRight.cursor=Btn_PAGE_PERSO_ALLIESLeft.cursor=Btn_PAGE_PERSO_ENNRight.cursor=Btn_PAGE_PERSO_ENNLeft.cursor="pointer";
-
-	//stage.update();
 }
 
-function attaqueNuit()
+// Afficher la page qui prévient de l'attaque de nuit
+function pageAttaqueDeNuit()
 {
 	stage.removeAllChildren();
 	
@@ -1717,7 +1732,8 @@ function attaqueNuit()
 	BtnVivant.cursor="pointer";
 }
 
-function dead(currentPerso) 
+// Afficher la page lorsque le joueur est mort
+function pageMortPersonnage(currentPerso) 
 {
 	_ECRAN_MORT = true;
 	stage.removeAllChildren();
@@ -1945,7 +1961,6 @@ function dead(currentPerso)
 				// position de l'item dans le conteneur
 				iPositionItemInConteneur++;
 			}
-			//stage.update();
 		}
 		catch(e){
 			//alert("Page inexistante");
@@ -1957,7 +1972,7 @@ function dead(currentPerso)
 	}
 }
 
-function setBtnMessage(TabListeMessage, Taille)
+function majBtnMessage(TabListeMessage, Taille)
 {
 	Btn_PAGE_MESSAGESDown = new createjs.Bitmap("public/Boutons/Down.png");
 	Btn_PAGE_MESSAGESDown.x= 746/2 - Btn_PAGE_MESSAGESDown.image.width/2;
@@ -1965,12 +1980,12 @@ function setBtnMessage(TabListeMessage, Taille)
 	contMessage.addChild(Btn_PAGE_MESSAGESDown);
 	Btn_PAGE_MESSAGESDown.addEventListener('click', function(event) {
 		_PAGE_MESSAGES++;
-		setbtnMessageVisible(Taille);
+		majBtnMessageVisible(Taille);
 		afficherMessage(TabListeMessage);
 	});
 	Btn_PAGE_MESSAGESDown.addEventListener('touchstart', function(event) {
 		_PAGE_MESSAGES++;
-		setbtnMessageVisible(Taille);
+		majBtnMessageVisible(Taille);
 		afficherMessage(TabListeMessage);
 	});
 
@@ -1980,12 +1995,12 @@ function setBtnMessage(TabListeMessage, Taille)
 	contMessage.addChild(Btn_PAGE_MESSAGESUp);
 	Btn_PAGE_MESSAGESUp.addEventListener('click', function(event) {
 		_PAGE_MESSAGES--;
-		setbtnMessageVisible(Taille);
+		majBtnMessageVisible(Taille);
 		afficherMessage(TabListeMessage);
 	});
 	Btn_PAGE_MESSAGESUp.addEventListener('touchstart', function(event) {
 		_PAGE_MESSAGES--;
-		setbtnMessageVisible(Taille);
+		majBtnMessageVisible(Taille);
 		afficherMessage(TabListeMessage);
 	});
 
@@ -2016,7 +2031,7 @@ function setBtnMessage(TabListeMessage, Taille)
 	Btn_PAGE_MESSAGESUp.cursor=Btn_PAGE_MESSAGESDown.cursor="pointer";
 }
 
-function setbtnMessageVisible(Taille)
+function majBtnMessageVisible(Taille)
 {
 	if(_PAGE_MESSAGES>Taille-1)
 	{
@@ -2052,7 +2067,7 @@ function setbtnMessageVisible(Taille)
 	}
 }
 
-function setBtnAttaquer(x,y)
+function majBtnAttaquer(x,y)
 {
 	if (_SELECTED_PERSO != -1)
 	{
@@ -2069,7 +2084,7 @@ function setBtnAttaquer(x,y)
 			{
 				socket.emit('ACTION_ATTAQUE_CS', _SELECTED_PERSO);
 				_SELECTED_PERSO = -1;
-				liste();
+				pagePersonnages();
 			}
 		});
 		BtnAttaquerListe.addEventListener('touchstart', function(event) {
@@ -2080,7 +2095,7 @@ function setBtnAttaquer(x,y)
 			{
 				socket.emit('ACTION_ATTAQUE_CS', _SELECTED_PERSO);
 				_SELECTED_PERSO = -1;
-				liste();
+				pagePersonnages();
 			}
 		});
 		BtnAttaquerListe.cursor="pointer";
@@ -2096,7 +2111,7 @@ function setBtnAttaquer(x,y)
 	}
 }
 
-function setContPerso()
+function majBtnsItemPerso()
 {
 	if(_SELECTED_ITEM_PERSO!=-1 && _SELECTED_ITEM_PERSOType>= 4 && _SELECTED_ITEM_PERSOType <=7)
 	{
@@ -2253,7 +2268,7 @@ function setContPerso()
 	}
 }
 
-function setContEquipement()
+function majContEquipement()
 {
 	if(_SELECTED_ITEM_EQUIP!=-1)
 	{
@@ -2331,11 +2346,9 @@ function majBtnsItemCase()
 
 		BtnRamasseObjet.cursor="not-allowed";
 	}
-
-	//stage.update();
 }
 
-function setBtnJoueurs(nbJoueurs)
+function majBtnJoueurs(nbJoueurs)
 {
 	if(nbJoueurs>0)
 	{
@@ -2344,11 +2357,11 @@ function setBtnJoueurs(nbJoueurs)
 		contBtnsListes.addChild(BtnJoueurs);
 		BtnJoueurs.addEventListener('click', function(event) 
 		{
-			liste();
+			pagePersonnages();
 		});	
 		BtnJoueurs.addEventListener('touchstart', function(event) 
 		{
-			liste();
+			pagePersonnages();
 		});	
 		BtnJoueurs.cursor="pointer";
 	}
@@ -2362,7 +2375,7 @@ function setBtnJoueurs(nbJoueurs)
 	}
 }
 
-function setBtnGoules(nbrGoules)
+function majBtnGoules(nbrGoules)
 {
 	if(nbrGoules>0)
 	{
@@ -2421,7 +2434,6 @@ function setImg(img, X, Y)
 	stage.addChild(img);	
 	img.x = X;
 	img.y = Y;
-	////stage.update();
 }
 
 function setColorMsgRetour()
@@ -2497,7 +2509,6 @@ function majInventairePerso(currentPerso)
 	//labelPtsAtq.text=("Points d'attaque :  " + PointsAttaque + "");
 	//labelPtsDef.text=("Points de défense : " + PointsDefense + "");	
 	
-	
 	// ********* AFFICHAGE DE LA LISTE DES OBJETS *********/
 	var PoidsSac=0;
 	var armeDejaEquip=false;
@@ -2506,11 +2517,37 @@ function majInventairePerso(currentPerso)
 	// tableau qui contient toutes les listes d'objets
 	var TabListe = new Array();
 
+	// tableaux selon le type des objets
+	var TabPersoEquip=new Array();
+	var TabPersoConso=new Array();
+	var TabPersoOdd=new Array();
+
+	var TabPersoEquipAvecPage=new Array();
+	var TabPersoConsoAvecPage=new Array();
+	var TabPersoOddAvecPage=new Array();
+
+	var nbPagesPersoEquip;
+	var nbPagesPersoConso;
+	var nbPagesPersoOdd;
+
+	var TailleEquipFin;
+	var TailleConsoFin;
+	var TailleOddFin;
+
+	// Valeur pour découper les listes d'items
+	var decoup=5;
+
 	//// REINITIALISATION DES CONTENEURS
-	TAB_CONT_ITEMS[0].removeAllChildren();
+	for(var i=0; i<3; i++)
+	{
+		TAB_CONT_ITEMS[i].removeAllChildren();
+	}
 	contArmure.removeAllChildren();
 	contArme.removeAllChildren();
-	
+
+	var iPositionItemInConteneur=0;
+
+	// Retirer de la liste des items du perso les items équipés
 	//// SUPPRESSION DE L'ARME EQUIPEE ET L'ARMURE EQUIPEE DE LA LISTE DES OBJETS
 	var indexArmeEquip = -1;
 	var indexArmureEquip = -1;
@@ -2546,7 +2583,7 @@ function majInventairePerso(currentPerso)
 		}
 
 	
-	//// AFFICHAGE DE L'ARME ET ENLEVAGE DE LA LISTE
+	//// AFFICHAGE DE L'ARME
 	if (currentPerso.armeEquipee != null)
 	{
 		var imgItemArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
@@ -2560,7 +2597,7 @@ function majInventairePerso(currentPerso)
 		{
 			var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 					afficherSelecteurItem(event.target.x, 0);
-					_SELECTED_ITEM_CASE=currentItem.id;
+					_SELECTED_ITEM_PEROS=currentItem.id;
 			/*if (SelectEquipement!=null)
 			{
 				contArme.removeChild(SelectEquipement);
@@ -2570,7 +2607,7 @@ function majInventairePerso(currentPerso)
 			SelectEquipement.x	=-5;
 			SelectEquipement.y	=-4;
 			_SELECTED_ITEM_EQUIP 	= currentPerso.armeEquipee.id;*/
-			setContEquipement();
+			majContEquipement();
 		});
 		contArme.addEventListener("touchstart", function (event) 
 		{
@@ -2587,7 +2624,7 @@ function majInventairePerso(currentPerso)
 			SelectEquipement.x	=-5;
 			SelectEquipement.y	=-4;
 			_SELECTED_ITEM_EQUIP 	= currentPerso.armeEquipee.id;
-			setContEquipement();
+			majContEquipement();
 			
 		});
 
@@ -2597,21 +2634,18 @@ function majInventairePerso(currentPerso)
 			var descriptionItem		=currentPerso.armeEquipee.description;
 			labelDescriptionItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
 			afficherDescItem(descriptionItem);
-			//stage.update();
 		},false);
 
 		// évenement quand la souris s'en va
 		contArme.addEventListener('mouseout', function(event)
 		{
 			labelDescriptionItem.text="";
-			//stage.update();
 		},false);
 		
 		// évenement quand la souris s'en va
 		contArme.addEventListener('touchend', function(event)
 		{
 			labelDescriptionItem.text="";
-			//stage.update();
 		},false);
 		
 		// retrait de l'arme de la liste des objets
@@ -2631,7 +2665,7 @@ function majInventairePerso(currentPerso)
 			{
 				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
 					afficherSelecteurItem(event.target.x, 0);
-					_SELECTED_ITEM_CASE=currentItem.id;
+					_SELECTED_ITEM_PERSO=currentItem.id;
 			/*if (SelectEquipement!=null)
 			{
 				contArme.removeChild(SelectEquipement);
@@ -2641,7 +2675,7 @@ function majInventairePerso(currentPerso)
 			SelectEquipement.x=-5;
 			SelectEquipement.y=-4;
 			_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;*/
-			setContEquipement();
+			majContEquipement();
 		});
 		contArmure.addEventListener("touchstart", function (event) 
 				{
@@ -2659,9 +2693,7 @@ function majInventairePerso(currentPerso)
 				SelectEquipement.x=-5;
 				SelectEquipement.y=-4;
 				_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;
-				setContEquipement();
-				
-				//stage.update();
+				majContEquipement();
 			});
 
 		contArmure.addEventListener('mouseover', function(event) 
@@ -2669,198 +2701,85 @@ function majInventairePerso(currentPerso)
 			var descriptionItem=currentPerso.armureEquipee.description;
 			labelDescriptionItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
 			afficherDescItem(descriptionItem);
-			//stage.update();
 		},false);
 
 		contArmure.addEventListener('mouseout', function(event)
 			{
 			labelDescriptionItem.text="";
-			//stage.update();
 		},false);
 		
 		contArmure.addEventListener('touchend', function(event)
 				{
 				labelDescriptionItem.text="";
-				//stage.update();
 			},false);
 		
-		// retrait de l'arme de la liste des objets
-		
+		// retrait de l'arme de la liste des objets	
 	}
-	
-	var Taille 						= Math.ceil(currentPerso.sacADos.length / 10);
-	var TailleFinListe 				= (currentPerso.sacADos.length % 10);
-	var iPositionItemInConteneur	= 0;
-	
-	for (var j=0; j<Taille; j++)
-	{
-		var NewListe=new Array();
 
-		if(j==Taille-1 && TailleFinListe!=0)
+	// Parcourir la liste des items de la case
+	// Rangement des items selon leur type dans des listes typées
+	for (var j=0; j<currentPerso.sacADos.length; j++)
+	{
+		// mise de l'item dans une variable
+		var item = currentPerso.sacADos[j];
+		// Ranger l'item selon son type
+		if(item.type==1 || item.type==2)
 		{
-			//Boucle des items liste incomplète
-			for (var i=j*10; i<j*10+TailleFinListe; i++)
-			{
-					// mise de l'item dans une variable
-					var item = currentPerso.sacADos[i];
-					
-					// Calcul du poids du sac
-					//PoidsSac+=item.poids;
-					
-					// ajout de l'item à la nouvelle liste
-					NewListe.push(item);
-			}
-			
-			// ajout de la nouvelle liste au tableau de listes
-			TabListe.push(NewListe);  
+			TabPersoEquip.push(item);
+		}
+		else if(item.type==3)
+		{
+			TabPersoOdd.push(item);
 		}
 		else
 		{
-			//Boucle normale : creation nouvelle liste de 10 items max
-			for (var i=j*10; i<(j*10+10); i++)
-			{
-				// mise de l'item dans une variable
-				var item = currentPerso.sacADos[i];
-				// Calcul du poids du sac
-				//PoidsSac+=item.poids;
-				// mise de l'item dans une variable
-				NewListe.push(item);
-			}
-			TabListe.push(NewListe);
+			TabPersoConso.push(item);
 		}
 	}
 
-	if(_PAGE_ITEM_PERSO>Taille-1)	_PAGE_ITEM_PERSO = Taille-1;
-	else if (_PAGE_ITEM_PERSO<0)	_PAGE_ITEM_PERSO = 0;
+	// Calcul du nombre de pages nécessaires
+	nbPagesPersoEquip 	= Math.ceil(TabPersoEquip.length / decoup);
+	nbPagesPersoConso 	= Math.ceil(TabPersoConso.length / decoup);
+	nbPagesPersoOdd   	= Math.ceil(TabPersoOdd.length / decoup);
+	// Calcul de la taille des dernières pages
+	TailleEquipFin 		= (TabPersoEquip.length % decoup);
+	TailleConsoFin 		= (TabPersoConso.length % decoup);
+	TailleOddFin   		= (TabPersoOdd.length % decoup);
 
-	if(_PAGE_ITEM_PERSO==Taille-1)	Btn_PAGE_ITEM_PERSORight.visible = false;
-	else						Btn_PAGE_ITEM_PERSORight.visible = true;
+	majFlechesItemsPerso(nbPagesPersoEquip, nbPagesPersoConso, nbPagesPersoOdd);
 
-	if(_PAGE_ITEM_PERSO==0)		Btn_PAGE_ITEM_PERSOLeft.visible = false;
-	else						Btn_PAGE_ITEM_PERSOLeft.visible = true;
-
-	if(Taille ==0)
+	// VERIFIER QUE LES LISTES CONTIENNENT BIEN DES ITEMS !
+	if(TabPersoEquip.length!=0)
 	{
-		Btn_PAGE_ITEM_PERSOLeft.visible=false;
-		Btn_PAGE_ITEM_PERSORight.visible=false;
+		// Découpage des listes
+		decouperListesItems(TabPersoEquip, TabPersoEquipAvecPage, nbPagesPersoEquip, TailleEquipFin, decoup);
+		majConteneurItemPerso(TabPersoEquipAvecPage);
 	}
 
+	if(TabPersoConso.length!=0)
+	{
+		// Découpage des listes
+		decouperListesItems(TabPersoConso, TabPersoConsoAvecPage, nbPagesPersoConso, TailleConsoFin, decoup);
+		majConteneurItemPerso(TabPersoConsoAvecPage);
+	}
+
+	if(TabPersoOdd.length!=0)
+	{
+		// Découpage des listes
+		decouperListesItems(TabPersoOdd, TabPersoOddAvecPage, nbPagesPersoOdd, TailleOddFin, decoup);
+		majConteneurItemPerso(TabPersoOddAvecPage);
+	}
+
+
+	//------------------------------------------------------------
+
 	// Appel de fonction pour créer les boutons liés au Perso
-	setContPerso();
+	majBtnsItemPerso();
 
 	var Select;
 	var SelectEquipement;
 	
-	// instructions à essayer
-	try 
-	{
-		// affichage des objets du sac
-		for (var i = 0; i < TabListe[_PAGE_ITEM_PERSO].length ; i++) 
-		{
-			// récupèration de l'item courant
-			var Obj=TabListe[_PAGE_ITEM_PERSO][i];
-			
-			//alert("iPositionItemInConteneur : " + iPositionItemInConteneur);
-
-			// ici, on fait en sorte de ne pas afficher l'arme/armure équipe dans l'inventaire, seulement UNE fois
-			//if (currentPerso.armeEquipee != null && Obj.id == currentPerso.armeEquipee.id && armeDejaEquip==false /*&& pressBtnEquipArme==true*/) 
-			//{
-			//	armeDejaEquip = true;
-			//}
-			//else if (currentPerso.armureEquipee != null && Obj.id == currentPerso.armureEquipee.id && armureDejaEquip==false /*&& pressBtnEquipArmure==true*/) 
-			//{
-			//	armureDejaEquip = true;
-			//}
-			//else
-			//{
-				var imgItem 	= new createjs.Bitmap(Obj.imageName);
-				imgItem.name 	= i;
-				imgItem.cursor  = "pointer";
-
-				// Ajout de l'évenement a l'image
-				// ajout d'un texte quand l'user passera la souris dessus
-				imgItem.addEventListener('mouseover', function(event) 
-				{
-					var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
-					var descriptionItem=currentItem.description;
-					labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
-					afficherDescItem(descriptionItem);
-				},false);
-
-				imgItem.addEventListener('mouseout', function(event)
-				{
-					labelDescriptionItem.text="";
-				},false);
-				
-				imgItem.addEventListener('touchend', function(event)
-						{
-							labelDescriptionItem.text="";
-						},false);
-
-
-				imgItem.addEventListener("click", function(event)
-				{
-					var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
-					afficherSelecteurItem(event.target.x, 0);
-					_SELECTED_ITEM_PERSO=currentItem.id;
-					_SELECTED_ITEM_PERSOType=currentItem.type;
-					/*
-					if (Select!=null)
-					{
-						TAB_CONT_ITEMS[0].removeChild(Select);
-					}
-					var num=event.target.x;
-					var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
-					_SELECTED_ITEM_PERSO=currentItem.id;
-					_SELECTED_ITEM_PERSOType=currentItem.type;
-					Select = TAB_CONT_ITEMS[0].addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-					Select.x=(num);
-					Select.y=0;
-					*/
-					// Appel de fonction pour créer les boutons liés au Perso
-					setContPerso();
-				});
-				imgItem.addEventListener("touchstart", function(event)
-						{
-							var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
-							var descriptionItem=currentItem.description;
-							labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
-							afficherDescItem(descriptionItem);
-					
-							if (Select!=null)
-							{
-								TAB_CONT_ITEMS[0].removeChild(Select);
-							}
-							var num=event.target.x;
-							var currentItem = TabListe[_PAGE_ITEM_PERSO][event.target.name];
-							_SELECTED_ITEM_PERSO=currentItem.id;
-							_SELECTED_ITEM_PERSOType=currentItem.type;
-							Select = TAB_CONT_ITEMS[0].addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-							Select.x=(num);
-							Select.y=0;
-							// Appel de fonction pour créer les boutons liés au Perso
-							setContPerso();
-							
-							//stage.update();
-						});
-				
-				imgItem.x = (iPositionItemInConteneur * _spaceItem);
-				imgItem.y = 4;
-				
-				//imgItem.
-				TAB_CONT_ITEMS[0].addChild(imgItem);
-				
-				// position de l'item dans le conteneur
-				iPositionItemInConteneur++;
-			//}
-		}
-	}
-	catch(e)
-	{
-		//alert("Erreur bêta-test : Merci de reporter l'erreur suivante : " + e);
-	}
-	
-	setContEquipement();
+	majContEquipement();
 
 	labelInventaire.text="";
 	labelInventaire.text=(PoidsSac + "/" + currentPerso.poidsMax);
@@ -2936,39 +2855,27 @@ function majInventaireCase(currentCase)
 	TailleConsoFin =(TabCaseConso.length % decoup);
 	TailleOddFin   =(TabCaseOdd.length % decoup);
 
-	majFlechesItems(nbPagesCaseEquip, nbPagesCaseConso, nbPagesCaseOdd);
+	majFlechesItemsCase(nbPagesCaseEquip, nbPagesCaseConso, nbPagesCaseOdd);
 
 	// VERIFIER QUE LES LISTES CONTIENNENT BIEN DES ITEMS !
 	if(TabCaseEquip.length!=0)
 	{
 		// Découpage des listes
 		decouperListesItems(TabCaseEquip, TabCaseEquipAvecPage, nbPagesCaseEquip, TailleEquipFin, decoup);
+		majConteneurItemCase(TabCaseEquipAvecPage);
 	}
 
 	if(TabCaseConso.length!=0)
 	{
 		// Découpage des listes
 		decouperListesItems(TabCaseConso, TabCaseConsoAvecPage, nbPagesCaseConso, TailleConsoFin, decoup);
+		majConteneurItemCase(TabCaseConsoAvecPage);
 	}
 
 	if(TabCaseOdd.length!=0)
 	{
 		// Découpage des listes
 		decouperListesItems(TabCaseOdd, TabCaseOddAvecPage, nbPagesCaseOdd, TailleOddFin, decoup);
-	}
-
-	if(TabCaseEquip.length!=0)
-	{
-		majConteneurItemCase(TabCaseEquipAvecPage);
-	}
-
-	if(TabCaseConso.length!=0)
-	{
-		majConteneurItemCase(TabCaseConsoAvecPage);
-	}
-
-	if(TabCaseOdd.length!=0)
-	{
 		majConteneurItemCase(TabCaseOddAvecPage);
 	}
 }
@@ -2988,7 +2895,8 @@ function decouperListesItems(tabOrigine, tabFinal, nbrPages, tailleFin, decoup)
 		{
 			//alert("DERNIERE PAGE - valeur de i : " + i );
 			//Boucle des items liste incomplète, pour la derniere page
-			for (var j=i*decoup; j<i*decoup+tailleFin; j++)
+			var limiteDaffichage = i*decoup;
+			for (var j=limiteDaffichage; j<(limiteDaffichage+tailleFin); j++)
 			{
 				// mise de l'item dans une variable
 				var item = tabOrigine[j];
@@ -3007,7 +2915,7 @@ function decouperListesItems(tabOrigine, tabFinal, nbrPages, tailleFin, decoup)
 
 			// Pour 0...4
 			var limiteDaffichage = i*decoup;
-			for (var j=limiteDaffichage; j<((limiteDaffichage)+(decoup)); j++)
+			for (var j=limiteDaffichage; j<(limiteDaffichage+(decoup)); j++)
 			{
 				//alert("position de l'item dans la liste :" + j);
 				
@@ -3024,7 +2932,7 @@ function decouperListesItems(tabOrigine, tabFinal, nbrPages, tailleFin, decoup)
 	//alert("tab : " + tab[0][0].id);
 }
 
-function majFlechesItems(nbPagesCaseEquip, nbPagesCaseConso, nbPagesCaseOdd)
+function majFlechesItemsCase(nbPagesCaseEquip, nbPagesCaseConso, nbPagesCaseOdd)
 {
 	// Affichage des boutons du conteneur case Equipement
 	if(_PAGE_ITEM_CASE_EQUIP>nbPagesCaseEquip-1) 	_PAGE_ITEM_CASE_EQUIP=nbPagesCaseEquip-1;
@@ -3075,30 +2983,61 @@ function majFlechesItems(nbPagesCaseEquip, nbPagesCaseConso, nbPagesCaseOdd)
 	}
 }
 
+function majFlechesItemsPerso(nbPagesPersoEquip, nbPagesPersoConso, nbPagesPersoOdd)
+{
+	// Affichage des boutons du conteneur perso Equipement
+	if(_PAGE_ITEM_PERSO_EQUIP>nbPagesPersoEquip-1) 	_PAGE_ITEM_PERSO_EQUIP=nbPagesPersoEquip-1;
+	else if (_PAGE_ITEM_PERSO_EQUIP<=0) 			_PAGE_ITEM_PERSO_EQUIP=0;
+		
+	if(_PAGE_ITEM_PERSO_EQUIP==nbPagesPersoEquip-1) 	Btn_PAGE_ITEM_PERSO_EQUIPRight.visible=false;
+	else 											Btn_PAGE_ITEM_PERSO_EQUIPRight.visible=true;
+		
+	if(_PAGE_ITEM_PERSO_EQUIP==0) 					Btn_PAGE_ITEM_PERSO_EQUIPLeft.visible=false;
+	else 											Btn_PAGE_ITEM_PERSO_EQUIPLeft.visible=true;
+		
+	if(nbPagesPersoEquip ==0)
+	{
+		Btn_PAGE_ITEM_PERSO_EQUIPLeft.visible=false;
+		Btn_PAGE_ITEM_PERSO_EQUIPRight.visible=false;
+	}
+
+	// Affichage des boutons du conteneur perso Equipement
+	if(_PAGE_ITEM_PERSO_CONSO>nbPagesPersoConso-1) 	_PAGE_ITEM_PERSO_CONSO=nbPagesPersoConso-1;
+	else if (_PAGE_ITEM_PERSO_CONSO<=0) 			_PAGE_ITEM_PERSO_CONSO=0;
+		
+	if(_PAGE_ITEM_PERSO_CONSO==nbPagesPersoConso-1) Btn_PAGE_ITEM_PERSO_CONSORight.visible=false;
+	else 											Btn_PAGE_ITEM_PERSO_CONSORight.visible=true;
+		
+	if(_PAGE_ITEM_PERSO_CONSO==0) 					Btn_PAGE_ITEM_PERSO_CONSOLeft.visible=false;
+	else 											Btn_PAGE_ITEM_PERSO_CONSOLeft.visible=true;
+		
+	if(nbPagesPersoConso ==0)
+	{
+		Btn_PAGE_ITEM_PERSO_CONSOLeft.visible=false;
+		Btn_PAGE_ITEM_PERSO_CONSORight.visible=false;
+	}
+
+	// Affichage des boutons du conteneur perso Equipement
+	if(_PAGE_ITEM_PERSO_ODD>nbPagesPersoOdd-1) 	_PAGE_ITEM_PERSO_ODD=nbPagesPersoOdd-1;
+	else if (_PAGE_ITEM_PERSO_ODD<=0) 			_PAGE_ITEM_PERSO_ODD=0;
+		
+	if(_PAGE_ITEM_PERSO_ODD==nbPagesPersoOdd-1) 	Btn_PAGE_ITEM_PERSO_ODDRight.visible=false;
+	else 											Btn_PAGE_ITEM_PERSO_ODDRight.visible=true;
+		
+	if(_PAGE_ITEM_PERSO_ODD==0) 					Btn_PAGE_ITEM_PERSO_ODDLeft.visible=false;
+	else 											Btn_PAGE_ITEM_PERSO_ODDLeft.visible=true;
+		
+	if(nbPagesPersoOdd ==0)
+	{
+		Btn_PAGE_ITEM_PERSO_ODDLeft.visible=false;
+		Btn_PAGE_ITEM_PERSO_ODDRight.visible=false;
+	}
+}
+
 function majConteneurItemCase(tab)
 {
-	/*if(typeof tab === "undefined")
-	{
-		alert("1");
-	}
-	else if(typeof tab[0] === "undefined")
-	{
-		alert("2");
-	}
-	else if(typeof tab[0][0] === "undefined")
-	{
-		alert("3");
-	}
-
-	else
-	{
-		alert("4");
-	}
-	//alert(tab[0][0].id);*/
-
 	var page;
 	var numCont;
-	//alert(tab[1][1].id);
 	// Détermination des variables globales à utliser selon le type
 	// 1er index : PAGE -> TABLEAU D'ITEM
 	// 2eme index : ITEM
@@ -3135,7 +3074,6 @@ function majConteneurItemCase(tab)
 			imgItem.name 	= i;
 			imgItem.cursor 	= "pointer";
 			imgItem.x 		= (iPositionItemInConteneur * _spaceItem);
-			imgItem.y 		= 4;
 			TAB_CONT_ITEMS[numCont].addChild(imgItem);
 
 			// incrémente la position de l'item dans le conteneur
@@ -3220,8 +3158,131 @@ function majConteneurItemCase(tab)
 	catch(e){
 		//alert("Page inexistante");
 	}
+}
 
+function majConteneurItemPerso(tab)
+{
+	var page;
+	var numCont;
+	
+	if(tab[0][0].type==1 || tab[0][0].type==2)
+	{
+		page=_PAGE_ITEM_PERSO_EQUIP;
+		numCont=0;
 
+	}
+	else if(tab[0][0].type==3)
+	{
+		page=_PAGE_ITEM_PERSO_ODD;
+		numCont=2;
+	}
+	else
+	{
+		page=_PAGE_ITEM_PERSO_CONSO;
+		numCont=1;
+	}
+
+	var iPositionItemInConteneur=0;
+
+	// Affichage des items dans le conteneur
+	try 
+	{
+		// Parcours de la liste des items typés
+		for (var i = 0; i < tab[page].length ; i++) 
+		{
+			// Création de l'item courant
+			var currentItem = tab[page][i];
+			
+			// Ajout de l'image à l'ihm
+			var imgItem 	= new createjs.Bitmap(currentItem.imageName);
+			imgItem.name 	= i;
+			imgItem.cursor 	= "pointer";
+			imgItem.x 		= (iPositionItemInConteneur * _spaceItem);
+			TAB_CONT_ITEMS[numCont].addChild(imgItem);
+
+			// incrémente la position de l'item dans le conteneur
+			iPositionItemInConteneur++;
+
+			// Ajout des évenements à l'image
+			// ajout d'un texte quand l'user passera la souris dessus
+			imgItem.addEventListener('mouseover', function(event) 
+			{
+				var currentItem = tab[page][event.target.name];
+				afficherTooltip(contTousItems.x + TAB_CONT_ITEMS[numCont].x + event.target.x, contTousItems.y + TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
+				//var descriptionItem=currentItem.description;
+				//labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+				//afficherDescItem(descriptionItem);
+			},false);
+
+			imgItem.addEventListener('mouseout', function(event)
+			{
+				supprimerTooltip();
+			},false);
+			
+			imgItem.addEventListener('touchend', function(event)
+			{
+				supprimerTooltip();
+			},false);
+
+			imgItem.addEventListener("click", function(event)
+			{
+				var currentItem = tab[page][event.target.name];
+				afficherSelecteurItem(event.target.x, 0);
+				_SELECTED_ITEM_PERSO=currentItem.id;
+				_SELECTED_ITEM_PERSOType=currentItem.type;
+				// maj des boutons
+				majBtnsItemPerso();
+
+				/*if (Select!=null)
+				{
+					TAB_CONT_ITEMS[numCont].removeChild(Select);
+				}
+				var num=event.target.x;
+				var currentItem = tab[_PAGE_ITEM_CASE][event.target.name];
+				_SELECTED_ITEM_PERSO=currentItem.id;
+				Select = TAB_CONT_ITEMS[3].addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+				Select.x=(num);
+				Select.y=0;
+				*/
+				
+			});
+				
+			imgItem.addEventListener("touchstart", function(event)
+			{
+				// event "sourie sur item"
+				var currentItem = tab[page][event.target.name];
+				afficherTooltip(TAB_CONT_ITEMS[numCont].x + event.target.x, TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem);
+
+				// event "click sur item"
+				var currentItem = tab[page][event.target.name];
+				afficherSelecteurItem(event.target.x, 0);
+				_SELECTED_ITEM_PERSO=currentItem.id;
+				_SELECTED_ITEM_PERSOType=currentItem.type;
+
+				// maj des boutons
+				majBtnsItemPerso();
+				/*
+				var currentItem = tab[page][event.target.name];
+				var descriptionItem=currentItem.description;
+				labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
+				afficherDescItem(descriptionItem);
+				if (Select!=null)
+				{
+					TAB_CONT_ITEMS[3].removeChild(Select);
+				}
+				var num=event.target.x;
+				var currentItem = tab[page][event.target.name];
+				_SELECTED_ITEM_PERSO=currentItem.id;
+				Select = TAB_CONT_ITEMS[numCont].addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+				Select.x=(num);
+				Select.y=0;
+				*/
+			});
+		}
+	}
+	catch(e){
+		//alert("Page inexistante");
+	}
 }
 
 function majBarreVie(ptsVie, ptsVieMax)
@@ -3562,7 +3623,7 @@ function majMessages(currentPerso)
 		BtnMessages.addEventListener('click', function(event) {
 			if(_listeMessages != null)
 			{
-				message();
+				pageMessages();
 			}
 			else
 			{
@@ -3572,7 +3633,7 @@ function majMessages(currentPerso)
 		BtnMessages.addEventListener('touchstart', function(event) {
 			if(_listeMessages != null)
 			{
-				message();
+				pageMessages();
 			}
 			else
 			{
@@ -3665,16 +3726,13 @@ function afficherMessageRetour(msg, type)
 	labelAction.x 				= 5;
 	labelAction.y 				= 0;
 	labelAction.text 			= msg;
-	
 
-	//stage.update();
 	/// AFFICHAGE PENDANT JUSTE 5 SECONDES
 	clearInterval(_ID_INTER_MSG_RETOUR);
 	_ID_INTER_MSG_RETOUR = setTimeout(function() 
 	{
 		// vide le conteneur
 		contZoneMessage.removeChild(labelAction);
-		//stage.update();
 	}, 5000);	
 }
 
@@ -4206,8 +4264,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 	}
 	var nbJoueurs=nbrAllies+nbrEnnemis;
 
-	setBtnJoueurs(nbJoueurs);
-	setBtnGoules(currentCase.nbrGoules);
+	majBtnJoueurs(nbJoueurs);
+	majBtnGoules(currentCase.nbrGoules);
+	majBtnsItemCase();
 
 	if (currentCase == "ERREUR_CASE")
 	{
@@ -4227,7 +4286,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		labelProbaFouille.text=("Proba de Trouver item :       " + ProbFouille + " %");*/
 
 		var descriptionCase=currentCase.description;
-		afficherDescCase(descriptionCase);
+		majDesCase(descriptionCase);
 
 		if(ProbCache>100)
 		{
@@ -4264,7 +4323,6 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		// mise a jour des forces en présence
 
 	}
-	//stage.update();
 });
 
 /************************************************************************************************************
@@ -4296,7 +4354,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso)
 	// si il est mort, on lui affiche l'écran de mort
 	if(currentPerso.ptSante<=0 && currentPerso.listeMsgAtt.length > 0)
 	{
-		dead(currentPerso);
+		pageMortPersonnage(currentPerso);
 	}
 });
 
@@ -4392,7 +4450,6 @@ socket.on('PERSONNAGE_MODE_SC', function (mode, reponse, degatsInfliges, nbrGoul
 		afficherMessageRetour("Changement de mode raté ! Points d'action insuffisants !");
 		break;
 	}
-	//stage.update();
 });
 
 /******************************************************************************************************************
@@ -4487,7 +4544,6 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		afficherMessageRetour("Points d'action insuffisants !");
 		break;
 	}
-	//stage.update();
 });
 
 /******************************************************************************************************************
@@ -4550,7 +4606,6 @@ socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, dega
 		labelAction.text=("Points d'action insuffisants");
 		break;
 	}
-	//stage.update();
 });
 
 /******************************************************************************************************************
@@ -4793,13 +4848,11 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 					labelDescribePerso.text += "\nPas d'armure équipée";
 
 				}
-				//stage.update();
 			},false);
 
 			imgPersoAllie.addEventListener('mouseout', function(event){
 				labelDescribePerso.text="";
 				labelPseudo.text="";
-				//stage.update();
 			},false);
 
 			contListeAllies.addChild(imgPersoAllie);
@@ -5085,17 +5138,14 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				{
 					labelDescribePerso.text += "\nPas d'armure équipée";
 				}
-				//stage.update();
 					},false);
 
 			imgPersoEnnemi.addEventListener('mouseout', function(event){
 				labelDescribePerso.text="";
-				//stage.update();
 			},false);
 			
 			imgPersoEnnemi.addEventListener('touchend', function(event){
 				labelDescribePerso.text="";
-				//stage.update();
 			},false);
 
 
@@ -5110,8 +5160,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				Select.y=0;
 				var currentPerso = TabListe[_PAGE_PERSO_ENN][event.target.name];
 				_SELECTED_PERSO=currentPerso.id;
-				setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
-				//stage.update();
+				majBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
 			});
 			imgPersoEnnemi.addEventListener("touchstart", function(event){
 				
@@ -5229,17 +5278,13 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				Select.y=0;
 				var currentPerso = TabListe[_PAGE_PERSO_ENN][event.target.name];
 				_SELECTED_PERSO=currentPerso.id;
-				setBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
-				//stage.update();
+				majBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
 			});
 
 			contListeEnnemis.addChild(imgPersoEnnemi);
 
 			// position de l'item dans le conteneur
 			iPositionPersoInConteneur++;
-
-			// Update l'ihm
-			//stage.update();
 		}
 	}
 	catch(e){}
@@ -5250,7 +5295,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 socket.on('ATTAQUE_NUIT_SC', function ()
 {
 	_ECRAN_ATTAQUE_NUIT = true;
-	attaqueNuit();
+	pageAttaqueDeNuit();
 });
 
 socket.on('GET_DATE_SC', function (dateLancementSrv)
