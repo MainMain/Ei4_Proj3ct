@@ -554,8 +554,8 @@ function initialize()
 	imgLogo = new createjs.Bitmap("public/images/LOGO.png");
 	imgLogo.scaleX=1.5;
 	imgLogo.scaleY=1.5;
-	var positionLogoX = _CANVAS_LARGEUR/2 - (imgLogo.image.width*imgLogo.scaleX)/2;
-	var positionLogoY = _CANVAS_HAUTEUR/2 - (imgLogo.image.height*imgLogo.scaleY)/2 - 150;
+	var positionLogoX = _CANVAS_LARGEUR/2 - (450)/2;
+	var positionLogoY = _CANVAS_HAUTEUR/2 - (450)/2 - 150;
 	imgLogo.image.onload = setImg(imgLogo, positionLogoX, positionLogoY);
 	imgLogo.cursor="wait";
 
