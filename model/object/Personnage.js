@@ -651,6 +651,8 @@ var Personnage = (function() {
 			this.ptDeplacement = this.ptDeplacementMax;
 			this.ptAction = this.ptActionMax;
 			
+			// si mode fouille -> passe en défense (évite les fouilles éternelles)
+			if (this.mode == 1) this.mode = 3;
 			// check max sante
 			if (this.ptSante > this.ptSanteMax) this.ptSante = this.ptSanteMax;
 			

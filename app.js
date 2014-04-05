@@ -1127,7 +1127,7 @@ io.sockets.on('connection', function (socket)
 		reponse = oPersonnage_Manager.ramasserDeposer(idUser, type, currentItem);
 		
 		// répond au client
-		socket.emit('INV_CASE_SC', type, reponse.reponseAction, id_item, reponse.degatSubis, reponse.nbrGoulesA);
+		socket.emit('INV_CASE_SC', type, reponse.reponseAction, id_item, reponse.degatSubis, reponse.nbrGoulesA,  oItem_Manager.GetItem(id_item));
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
 		ActualiserAllInCase();
@@ -1228,7 +1228,7 @@ io.sockets.on('connection', function (socket)
 		var reponse = oPersonnage_Manager.Utiliser(idUser, id_item);
 		
 		// renvoi au client
-		socket.emit('PERSONNAGE_USE_SC', id_item, reponse);
+		socket.emit('PERSONNAGE_USE_SC', id_item, reponse, oItem_Manager.GetItem(id_item));
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
 		//ActualiserAllInCase();

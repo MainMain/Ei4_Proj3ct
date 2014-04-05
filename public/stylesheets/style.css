@@ -24,6 +24,11 @@
 @font-face {  font-family: "Broken15";  src: url('../font/BROKEN15.ttf'); }
 @font-face {  font-family: "Crushed";  src: url('../font/CRUSHED.ttf'); }
 @font-face {  font-family: "Frail";  src: url('../font/FrailBedazzled.ttf'); }
+@font-face {  font-family: "BulletInYourHead";  src: url('../font/BulletInYourHead.ttf'); }
+@font-face {  font-family: "DownCome";  src: url('../font/DownCome.ttf'); }
+@font-face {  font-family: "Fstein";  src: url('../font/Fstein.ttf'); }
+@font-face {  font-family: "Taigatru";  src: url('../font/Taigatru.ttf'); }
+@font-face {  font-family: "ModelWorker";  src: url('../font/ModelWorker.ttf'); }
 .clearfix {
   *zoom: 1;
 }
