@@ -69,6 +69,10 @@ var _PAGE_ITEM_CASE_ODD=0;
 var _PAGE_PERSO_ENN=0;
 var _PAGE_PERSO_ALLIES=0;
 var _PAGE_MESSAGES=0;
+var _PAGE_JOUEURS=false;
+var _PAGE_LISTE_MESSAGES=false;
+
+var POIDS_DU_SAC=0;
 
 // Variables pour l'affichage des items équipés une fois
 
@@ -264,14 +268,14 @@ var _BLINK_CPT;
 var labelAction, labelInventaire, labelDescriptionItem,
 labelBonusArme, labelBonusArmure, labelCaseEnCours, _LABEL_NB_ALLIES, _LABEL_NB_ENNEMIS,
 _LABEL_NB_GOULES, labelProbaCache, labelProbaFouille, labelPourcentLoad, 
-labelAlliesListe, labelEnnemisListe, labelDescribePerso, labelMessage, 
+labelAlliesListe, labelEnnemisListe, labelMessage, 
 labelDernierMessage, labelNombreNouvMsg, labelFichePerso, labelDescriptionCase,
 labelLancementServeur;
 
 
 //-------------- Déclaration des conteneurs----------------------------------------------
 
-var _CONT_ARME, contArmure, contMap, contPerso, contBtnModes,
+var contArme, contArmure, contMap, contPerso, contBtnModes,
 contBtnsListes, contDead, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
 contListeAllies, contListeEnnemis, contZoneMessage, contMessage;
 
@@ -338,6 +342,7 @@ function initialize()
 	// *******************************************
 	// Variable au format JSON qui permet de définir tous les élements à charger
 	var manifest = [
+					{src:"public/images/LOGO.png", id:"idLogo"}, 
 	                {src:"public/Background_liste.jpg", id:"idBackgroundListe"},   
 	                {src:"public/Background_1.png", id:"idBackground_1"}, 
 	                {src:"public/Background_11.png", id:"idBackground_11"},  
@@ -534,7 +539,10 @@ function initialize()
 	                {src:"public/pictos/ptsDef.png", id:"imgDefense"},
 	                {src:"public/pictos/probaFouille.png", id:"imgFouille"},
 	                {src:"public/pictos/probaCache.png", id:"imgCache"},
-	                {src:"public/pictos/nbrNvMsgs.png", id:"imgMsg"}
+	                {src:"public/pictos/nbrNvMsgs.png", id:"imgMsg"},
+	                {src:"public/pictos/pseudo.png", id:"imgPseudo"},
+	                {src:"public/pictos/competence.png", id:"imgCompetence"},
+	                {src:"public/pictos/mode.png", id:"imgMode"}
 	                ];
 
 	// Application de l'image de fond pendant le chargement
@@ -542,13 +550,22 @@ function initialize()
 	backgroundPreload.image.onload = setImg(backgroundPreload, 0, 0);
 	backgroundPreload.cursor="wait";
 
+
+	imgLogo = new createjs.Bitmap("public/images/LOGO.png");
+	imgLogo.scaleX=1.5;
+	imgLogo.scaleY=1.5;
+	var positionLogoX = _CANVAS_LARGEUR/2 - (imgLogo.image.width*imgLogo.scaleX)/2;
+	var positionLogoY = _CANVAS_HAUTEUR/2 - (imgLogo.image.height*imgLogo.scaleY)/2 - 150;
+	imgLogo.image.onload = setImg(imgLogo, positionLogoX, positionLogoY);
+	imgLogo.cursor="wait";
+
 	// Création d'un label affichant un message pendant le chargement
 	loadProgressLabel = stage.addChild(new createjs.Text("","70px Infected","#850000"));
 	loadProgressLabel.lineWidth = 800;
 	loadProgressLabel.textAlign = "center";
 	//Centrer le label horizontalement
 	loadProgressLabel.x = canvas.width/2;
-	loadProgressLabel.y = canvas.height/2 - 80;
+	loadProgressLabel.y = canvas.height/2 + 40;
 	
 	// Création d'un second label affichant le pourcentage du chargement
 	labelPourcentLoad= stage.addChild(new createjs.Text("","70px Consolas","#850000"));
@@ -572,6 +589,7 @@ function initialize()
 
 	// Création du contour de la barre de chargement
 	frame = new createjs.Shape();
+	frameBarColor = createjs.Graphics.getRGB(0,0,0);
 	padding = 3;
 	// Dessin du contour de la barre
 	frame.graphics.setStrokeStyle(1).beginStroke(LoadingBarColor).drawRect(-padding/2, -padding/2, loadingBarWidth+padding, loadingBarHeight+padding);
@@ -580,7 +598,8 @@ function initialize()
 	loadingBarContainer.addChild(loadingBar, frame);
 	// Centrer la barre de chargement (grâce à son conteneur)
 	loadingBarContainer.x=canvas.width/2 - loadingBarWidth/2;
-	loadingBarContainer.y = canvas.height/2 ;
+	// La placer sous le label de chargement
+	loadingBarContainer.y = loadProgressLabel.y + 80;
 	// Ajout du conteneur de la barre de chargement au stage du canvas
 	stage.addChild(loadingBarContainer);
 
@@ -757,16 +776,16 @@ function setPlateau()
 		labelDescriptionCase.y = 2*_EspaceLabelY;
 
 	// - CONTENEURS DES ITEMS EQUIPES -
-		_CONT_ARME = new createjs.Container();
-		_CONT_ARME.x = __CONT_ARMEX;
-		_CONT_ARME.y = __CONT_ARMEY;
-		_CONT_ARME.width = __CONT_ARMEW;
-		_CONT_ARME.height = __CONT_ARMEH;
-		stage.addChild(_CONT_ARME);
+		contArme = new createjs.Container();
+		contArme.x = __CONT_ARMEX;
+		contArme.y = __CONT_ARMEY;
+		contArme.width = __CONT_ARMEW;
+		contArme.height = __CONT_ARMEH;
+		stage.addChild(contArme);
 		shape2 = new createjs.Shape();
 		stage.addChild(shape2);
 		shape2.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-				__CONT_ARMEX-4, __CONT_ARMEY-4, __CONT_ARMEW+4, __CONT_ARMEH+4);
+				__CONT_ARMEX, __CONT_ARMEY, __CONT_ARMEW, __CONT_ARMEH);
 
 		contArmure = new createjs.Container();
 		contArmure.x = _contArmureX;
@@ -777,7 +796,7 @@ function setPlateau()
 		shape3 = new createjs.Shape();
 		stage.addChild(shape3);
 		shape3.graphics.setStrokeStyle(0.2).beginStroke("#ffffff").drawRect(
-				_contArmureX-4, _contArmureY-4, _contArmureW+4, _contArmureH+4);
+				_contArmureX, _contArmureY, _contArmureW, _contArmureH);
 
 // conteneur pour les pts d'attaque
 	_CONT_PTS_ATTAQUE = new createjs.Container();
@@ -1080,8 +1099,8 @@ function setPlateau()
 		labelBonusArme = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELSBonus));
 		labelBonusArme.lineHeight = _LineHeight;
 		labelBonusArme.textBaseline = _TextBaseline;
-		labelBonusArme.x = _CONT_ARME.x - 8;
-		labelBonusArme.y = _CONT_ARME.y + 33;
+		labelBonusArme.x = contArme.x - 8;
+		labelBonusArme.y = contArme.y + 33;
 
 		labelBonusArmure = stage.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELSBonus));
 		labelBonusArmure.lineHeight = _LineHeight;
@@ -1420,6 +1439,7 @@ function game()
 function pageMessages()
 {
 	var nbMsgAffiches=10;
+	var coul=createjs.Graphics.getRGB(0,0,0, 0.5);
 
 	contMessage = new createjs.Container();
 	contMessage.x = _contMapX;
@@ -1446,18 +1466,30 @@ function pageMessages()
 
 	var BtnValideMsg = new createjs.Bitmap("public/Boutons/Ok.png");
 	BtnValideMsg.x=450;
-	BtnValideMsg.y=240;
+	BtnValideMsg.y=260;
 	contMessage.addChild(BtnValideMsg);
 	BtnValideMsg.addEventListener('click', function(event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contMessage);
+		_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
 		game();
 	});
 	BtnValideMsg.addEventListener('touchstart', function(event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
 		stage.removeChild(contMessage);
+		_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
 		game();
 	});
+
+	var epaisseur=45;
+
+	barreMessageUp = new createjs.Shape();
+	contMessage.addChild(barreMessageUp);
+	barreMessageUp.graphics.beginFill(coul).drawRect(0, 0, contMessage.width, epaisseur).endFill();
+
+	barreMessageDown = new createjs.Shape();
+	contMessage.addChild(barreMessageDown);
+	barreMessageDown.graphics.beginFill(coul).drawRect(0, contMessage.height-epaisseur*2.5, contMessage.width, epaisseur).endFill();
 
 
 	BtnValideMsg.cursor="pointer";
@@ -1646,28 +1678,6 @@ function pagePersonnages()
 	shape8.graphics.setStrokeStyle(1).beginStroke("#ffffff").drawRect(
 			contListeEnnemis.x+7, contListeEnnemis.y, contListeEnnemis.width-14, contListeEnnemis.height);*/
 
-	labelDescribePerso = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelDescribePerso.lineHeight = _LineHeight;
-	labelDescribePerso.textBaseline = _TextBaseline;
-	labelDescribePerso.x = labelAlliesListe.x;
-	labelDescribePerso.y = contListeEnnemis.y + contListeEnnemis.height +30;
-
-	// Bouton ANNULER
-	BtnCancelListe = new createjs.Bitmap("public/Boutons/Retour.png");
-	BtnCancelListe.x=450;
-	BtnCancelListe.y=240;
-	contListe.addChild(BtnCancelListe);
-	BtnCancelListe.addEventListener('click', function (event) {
-		_SELECTED_PERSO=-1;
-		stage.removeChild(contListe);
-		game();
-	});
-	BtnCancelListe.addEventListener('touchstart', function (event) {
-		_SELECTED_PERSO=-1;
-		stage.removeChild(contListe);
-		game();
-	});
-
 	Btn_PAGE_PERSO_ALLIESRight = new createjs.Bitmap("public/Boutons/Right.png");
 	Btn_PAGE_PERSO_ALLIESRight.x= contListeAllies.x + contListeAllies.width;
 	Btn_PAGE_PERSO_ALLIESRight.y= contListeAllies.y + 8;
@@ -1722,6 +1732,24 @@ function pagePersonnages()
 	Btn_PAGE_PERSO_ENNLeft.addEventListener('touchstart', function(event) {
 		_PAGE_PERSO_ENNemis--;
 		socket.emit('INFO_CASE_ENNEMIS_CS');
+	});
+
+	// Bouton ANNULER
+	BtnCancelListe = new createjs.Bitmap("public/Boutons/Retour.png");
+	BtnCancelListe.x=450;
+	BtnCancelListe.y=260;
+	contListe.addChild(BtnCancelListe);
+	BtnCancelListe.addEventListener('click', function (event) {
+		_SELECTED_PERSO=-1;
+		stage.removeChild(contListe);
+		_PAGE_JOUEURS=!_PAGE_JOUEURS;
+		game();
+	});
+	BtnCancelListe.addEventListener('touchstart', function (event) {
+		_SELECTED_PERSO=-1;
+		stage.removeChild(contListe);
+		_PAGE_JOUEURS=!_PAGE_JOUEURS;
+		game();
 	});
 
 	majBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
@@ -2011,8 +2039,8 @@ function pageMortPersonnage(currentPerso)
 function majBtnMessage(TabListeMessage, Taille)
 {
 	Btn_PAGE_MESSAGESDown = new createjs.Bitmap("public/Boutons/Down.png");
-	Btn_PAGE_MESSAGESDown.x= 746/2 - Btn_PAGE_MESSAGESDown.image.width/2;
-	Btn_PAGE_MESSAGESDown.y= 365;
+	Btn_PAGE_MESSAGESDown.x= contMessage.width/2 - Btn_PAGE_MESSAGESDown.image.width/2;
+	Btn_PAGE_MESSAGESDown.y= contMessage.height/2 + 45;
 	contMessage.addChild(Btn_PAGE_MESSAGESDown);
 	Btn_PAGE_MESSAGESDown.addEventListener('click', function(event) {
 		_PAGE_MESSAGES++;
@@ -2026,8 +2054,8 @@ function majBtnMessage(TabListeMessage, Taille)
 	});
 
 	Btn_PAGE_MESSAGESUp = new createjs.Bitmap("public/Boutons/Up.png");
-	Btn_PAGE_MESSAGESUp.x=746/2 - Btn_PAGE_MESSAGESUp.image.width/2;
-	Btn_PAGE_MESSAGESUp.y= 5;
+	Btn_PAGE_MESSAGESUp.x= contMessage.width/2 - Btn_PAGE_MESSAGESUp.image.width/2;
+	Btn_PAGE_MESSAGESUp.y=2;
 	contMessage.addChild(Btn_PAGE_MESSAGESUp);
 	Btn_PAGE_MESSAGESUp.addEventListener('click', function(event) {
 		_PAGE_MESSAGES--;
@@ -2393,11 +2421,33 @@ function majBtnJoueurs(nbJoueurs)
 		contBtnsListes.addChild(BtnJoueurs);
 		BtnJoueurs.addEventListener('click', function(event) 
 		{
-			pagePersonnages();
+			if(_PAGE_JOUEURS==false)
+			{
+				_PAGE_JOUEURS=!_PAGE_JOUEURS;
+				pagePersonnages();
+			}
+			else
+			{
+				_SELECTED_PERSO=-1;
+				stage.removeChild(contListe);
+				_PAGE_JOUEURS=!_PAGE_JOUEURS;
+				game();
+			}
 		});	
 		BtnJoueurs.addEventListener('touchstart', function(event) 
 		{
-			pagePersonnages();
+			if(_PAGE_JOUEURS==false)
+			{
+				_PAGE_JOUEURS=!_PAGE_JOUEURS;
+				pagePersonnages();
+			}
+			else
+			{
+				_SELECTED_PERSO=-1;
+				stage.removeChild(contListe);
+				_PAGE_JOUEURS=!_PAGE_JOUEURS;
+				game();
+			}
 		});	
 		BtnJoueurs.cursor="pointer";
 	}
@@ -2546,7 +2596,7 @@ function majInventairePerso(currentPerso)
 	//labelPtsDef.text=("Points de défense : " + PointsDefense + "");	
 	
 	// ********* AFFICHAGE DE LA LISTE DES OBJETS *********/
-	var PoidsSac=0;
+	POIDS_DU_SAC=0;
 	var armeDejaEquip=false;
 	var armureDejaEquip=false;
 	
@@ -2579,7 +2629,7 @@ function majInventairePerso(currentPerso)
 		TAB_CONT_ITEMS[i].removeAllChildren();
 	}
 	contArmure.removeAllChildren();
-	_CONT_ARME.removeAllChildren();
+	contArme.removeAllChildren();
 
 	var iPositionItemInConteneur=0;
 
@@ -2598,13 +2648,13 @@ function majInventairePerso(currentPerso)
 		{
 			indexArmeEquip = i;
 			// Calcul du poinds du sac
-			PoidsSac += currentPerso.sacADos[i].poids;
+			POIDS_DU_SAC += currentPerso.sacADos[i].poids;
 		}
 		else if (currentPerso.armureEquipee != null && currentPerso.sacADos[i].id == currentPerso.armureEquipee.id)
 		{
 			indexArmureEquip = i;
 			// Calcul du poinds du sac
-			PoidsSac += currentPerso.sacADos[i].poids;
+			POIDS_DU_SAC += currentPerso.sacADos[i].poids;
 		}
 	}
 	
@@ -2629,52 +2679,54 @@ function majInventairePerso(currentPerso)
 		imgItemArme.cursor = "pointer";
 
 		// Dessin de l'arme équipée
-		_CONT_ARME.addChild(imgItemArme);
+		contArme.addChild(imgItemArme);
 
 		// évenement click
-		_CONT_ARME.addEventListener("click", function (event) 
+		imgItemArme.addEventListener("click", function (event) 
 		{
-			var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
-					afficherSelecteurItem(event.target.x, 0);
-					_SELECTED_ITEM_PEROS=currentItem.id;
+			//var currentItem = event.target.name;
+			afficherSelecteurItemEquip(event.target.x, 0, 1);
+			_SELECTED_ITEM_EQUIP=currentPerso.armeEquipee.id;
 			majContEquipement();
 		});
-		_CONT_ARME.addEventListener("touchstart", function (event) 
+		imgItemArme.addEventListener("touchstart", function (event) 
 		{
-			var descriptionItem		=currentPerso.armeEquipee.description;
-			labelDescriptionItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
-			afficherDescItem(descriptionItem);
+			afficherTooltipItem(contArme.x, contArmure.y, currentPerso.armeEquipee, true);
 			
-			if (SelectEquipement!=null)
+			/*if (SelectEquipement!=null)
 			{
-				_CONT_ARME.removeChild(SelectEquipement);
+				contArme.removeChild(SelectEquipement);
 				contArmure.removeChild(SelectEquipement);
 			}
-			SelectEquipement 	= _CONT_ARME.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+			SelectEquipement 	= contArme.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 			SelectEquipement.x	=-5;
-			SelectEquipement.y	=-4;
+			SelectEquipement.y	=-4;*/
 			_SELECTED_ITEM_EQUIP 	= currentPerso.armeEquipee.id;
 			majContEquipement();
 			
 		});
 		// évenement quand la souris passe dessus
-		_CONT_ARME.addEventListener('mouseover', function(event) 
+		imgItemArme.addEventListener('mouseover', function(event) 
 		{
-			var descriptionItem		=currentPerso.armeEquipee.description;
+			afficherTooltipItem(contArme.x, contArme.y, currentPerso.armeEquipee, true);
+			//var currentItem = event.target.name;
+			//afficherTooltipItem(contArmure.x + event.target.x, contArmure.y + event.target.y, currentItem, true);
+
+			/*var descriptionItem		=currentPerso.armeEquipee.description;
 			labelDescriptionItem.text	=(currentPerso.armeEquipee.nom + " (+" + currentPerso.armeEquipee.valeur + ") " + "Poids : " + currentPerso.armeEquipee.poids + "\n");
-			afficherDescItem(descriptionItem);
+			afficherDescItem(descriptionItem);*/
 		},false);
 
 		// évenement quand la souris s'en va
-		_CONT_ARME.addEventListener('mouseout', function(event)
+		imgItemArme.addEventListener('mouseout', function(event)
 		{
-			labelDescriptionItem.text="";
+			supprimerTooltipItem();
 		},false);
 		
 		// évenement quand la souris s'en va
-		_CONT_ARME.addEventListener('touchend', function(event)
+		imgItemArme.addEventListener('touchend', function(event)
 		{
-			labelDescriptionItem.text="";
+			supprimerTooltipItem();
 		},false);
 		
 		// retrait de l'arme de la liste des objets
@@ -2690,59 +2742,56 @@ function majInventairePerso(currentPerso)
 		contArmure.addChild(imgItemArmure);
 
 		// Ajout des évenements
-		contArmure.addEventListener("click", function (event) 
-			{
-				var currentItem = TabListe[_PAGE_ITEM_CASE][event.target.name];
-					afficherSelecteurItem(event.target.x, 0);
-					_SELECTED_ITEM_PERSO=currentItem.id;
+		imgItemArmure.addEventListener("click", function (event) 
+		{
+			afficherSelecteurItemEquip(event.target.x, 0, 2);
 			/*if (SelectEquipement!=null)
 			{
-				_CONT_ARME.removeChild(SelectEquipement);
+				contArme.removeChild(SelectEquipement);
 				contArmure.removeChild(SelectEquipement);
 			}
 			SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
 			SelectEquipement.x=-5;
-			SelectEquipement.y=-4;
-			_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;*/
+			SelectEquipement.y=-4;*/
+			_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;
 			majContEquipement();
 		});
-		contArmure.addEventListener("touchstart", function (event) 
+		imgItemArmure.addEventListener("touchstart", function (event) 
 		{
-			
-			var descriptionItem=currentPerso.armureEquipee.description;
+			afficherTooltipItem(contArmure.x, contArmure.y, currentPerso.armureEquipee, true);
+			/*var descriptionItem=currentPerso.armureEquipee.description;
 			labelDescriptionItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
-			afficherDescItem(descriptionItem);
+			afficherDescItem(descriptionItem);*/
 			
-				if (SelectEquipement!=null)
-				{
-					_CONT_ARME.removeChild(SelectEquipement);
-					contArmure.removeChild(SelectEquipement);
-				}
-				SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-				SelectEquipement.x=-5;
-				SelectEquipement.y=-4;
-				_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;
-				majContEquipement();
+			/*if (SelectEquipement!=null)
+			{
+				contArme.removeChild(SelectEquipement);
+				contArmure.removeChild(SelectEquipement);
+			}
+			SelectEquipement = contArmure.addChild(new createjs.Bitmap("public/Boutons/Select.png"));
+			SelectEquipement.x=-5;
+			SelectEquipement.y=-4;*/
+			_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;
+			majContEquipement();
 		});
 
-		contArmure.addEventListener('mouseover', function(event) 
-			{
-			var descriptionItem=currentPerso.armureEquipee.description;
+		imgItemArmure.addEventListener('mouseover', function(event) 
+		{
+			afficherTooltipItem(contArmure.x, contArmure.y, currentPerso.armureEquipee, true);
+			/*var descriptionItem=currentPerso.armureEquipee.description;
 			labelDescriptionItem.text=(currentPerso.armureEquipee.nom + " (+" + currentPerso.armureEquipee.valeur + ") " + "Poids : " + currentPerso.armureEquipee.poids + "\n");
-			afficherDescItem(descriptionItem);
+			afficherDescItem(descriptionItem);*/
 		},false);
 
-		contArmure.addEventListener('mouseout', function(event)
-			{
-			labelDescriptionItem.text="";
+		imgItemArmure.addEventListener('mouseout', function(event)
+		{
+			supprimerTooltipItem();
 		},false);
 		
-		contArmure.addEventListener('touchend', function(event)
-				{
-				labelDescriptionItem.text="";
+		imgItemArmure.addEventListener('touchend', function(event)
+		{
+			supprimerTooltipItem();
 		},false);
-		
-		// retrait de l'arme de la liste des objets	
 	}
 
 	// Parcourir la liste des items de la case
@@ -2752,7 +2801,7 @@ function majInventairePerso(currentPerso)
 		// mise de l'item dans une variable
 		var item = currentPerso.sacADos[j];
 		// ajout du poids
-		PoidsSac += item.poids;
+		POIDS_DU_SAC += item.poids;
 		// Ranger l'item selon son type
 		if(item.type==1 || item.type==2)
 		{
@@ -2813,7 +2862,7 @@ function majInventairePerso(currentPerso)
 	majContEquipement();
 
 	// Affichage barre poids du sac
-	sacBar.scaleX = (PoidsSac/currentPerso.poidsMax) * sacBarWidth;
+	sacBar.scaleX = (POIDS_DU_SAC/currentPerso.poidsMax) * sacBarWidth;
 }
 
 function majInventaireCase(currentCase)
@@ -3131,7 +3180,7 @@ function majConteneurItemCase(tab)
 			imgItem.addEventListener("click", function(event)
 			{
 				var currentItem = tab[page][event.target.name];
-				afficherSelecteurItem(event.target.x, 0);
+				afficherSelecteurItemCase(event.target.x, 0, currentItem.type);
 				_SELECTED_ITEM_CASE=currentItem.id;
 
 				// maj des boutons
@@ -3159,7 +3208,7 @@ function majConteneurItemCase(tab)
 
 				// event "click sur item"
 				var currentItem = tab[page][event.target.name];
-				afficherSelecteurItem(event.target.x, 0);
+				afficherSelecteurItemCase(event.target.x, 0, currentItem.type);
 				_SELECTED_ITEM_CASE=currentItem.id;
 
 				// maj des boutons
@@ -3255,7 +3304,7 @@ function majConteneurItemPerso(tab)
 			imgItem.addEventListener("click", function(event)
 			{
 				var currentItem = tab[page][event.target.name];
-				afficherSelecteurItem(event.target.x, 0);
+				afficherSelecteurItemPerso(event.target.x, 0, currentItem.type);
 				_SELECTED_ITEM_PERSO=currentItem.id;
 				_SELECTED_ITEM_PERSOType=currentItem.type;
 				// maj des boutons
@@ -3283,7 +3332,7 @@ function majConteneurItemPerso(tab)
 
 				// event "click sur item"
 				var currentItem = tab[page][event.target.name];
-				afficherSelecteurItem(event.target.x, 0);
+				afficherSelecteurItemPerso(event.target.x, 0, currentItem.type);
 				_SELECTED_ITEM_PERSO=currentItem.id;
 				_SELECTED_ITEM_PERSOType=currentItem.type;
 
@@ -3649,23 +3698,33 @@ function majMessages(currentPerso)
 		BtnMessages.y=_espaceBoutonY;
 		contBtnsListes.addChild(BtnMessages);
 		BtnMessages.addEventListener('click', function(event) {
-			if(_listeMessages != null)
+			if(_listeMessages != null && _PAGE_LISTE_MESSAGES==false)
 			{
-				pageMessages();
+				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
+				pageMessages();	
 			}
-			else
+			else if(_PAGE_LISTE_MESSAGES==true)
 			{
-				//alert("Pas de nouveaux messages");
+				socket.emit('ACCUSE_LECTURE_MSG_CS');
+				stage.removeChild(contMessage);
+				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
+				game();
+
 			}
 		});
 		BtnMessages.addEventListener('touchstart', function(event) {
-			if(_listeMessages != null)
+			if(_listeMessages != null && _PAGE_LISTE_MESSAGES==false)
 			{
+				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
 				pageMessages();
 			}
-			else
+			else if(_PAGE_LISTE_MESSAGES==true)
 			{
-				//alert("Pas de nouveaux messages");
+				socket.emit('ACCUSE_LECTURE_MSG_CS');
+				stage.removeChild(contMessage);
+				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
+				game();
+				
 			}
 		});
 		BtnMessages.cursor="pointer";
@@ -3678,23 +3737,29 @@ function majMessages(currentPerso)
 		BtnMessages.y=_espaceBoutonY;
 		contBtnsListes.addChild(BtnMessages);
 		BtnMessages.addEventListener('click', function(event) {
-			if(_listeMessages != null)
+			if(_listeMessages != null && _PAGE_LISTE_MESSAGES==false)
 			{
-				message(_listeMessages);
+				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
+				pageMessages();
 			}
-			else
+			else if(_PAGE_LISTE_MESSAGES==true)
 			{
-				//alert("Pas de nouveaux messages");
+				stage.removeChild(contMessage);
+				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
+				game();
 			}
 		});
 		BtnMessages.addEventListener('touchstart', function(event) {
 			if(_listeMessages != null)
 			{
-				message(_listeMessages);
+				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
+				pageMessages();
 			}
-			else
+			else if(_PAGE_LISTE_MESSAGES==true)
 			{
-				//alert("Pas de nouveaux messages");
+				stage.removeChild(contMessage);
+				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
+				game();
 			}
 		});
 		
@@ -3824,7 +3889,7 @@ function majEventsPictoPerso(currentPerso)
 	imgSac.addEventListener('mouseover', function(event) 				
 	{ 
 		y = contPictoBarres.y + imgSac.y;
-		txt = "Poids du sac : " + currentPerso.ptSante+"/"+currentPerso.poidsMax;
+		txt = "Poids du sac : " + POIDS_DU_SAC+"/"+currentPerso.poidsMax;
 		afficherTooltipItem(x, y, txt, false); 
 	});
 	imgSac.addEventListener('mouseout', function(event)  		{ supprimerTooltipItem(); });
@@ -3893,7 +3958,7 @@ function majEventsPictoPerso(currentPerso)
 
 function majEventsPictoProbas(pourcentFouille, pourcentCache)
 {
-		var x,y,txt;
+	var x,y,txt;
 	x = contPictoBarres.x;
 
 		/// FOUILLE ////
@@ -3927,9 +3992,8 @@ function majEventsPictoProbas(pourcentFouille, pourcentCache)
 		afficherTooltipItem(x, y, txt, false); 
 	});
 	imgCache.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
-
-
 }
+
 function majPtsAttaqueDefense(currentPerso)
 {
 	var ptsAttaque = 75;
@@ -4042,7 +4106,6 @@ function majImageMap(currentCase, idSousCase)
 	// Placement de la map
 	map.x = 0;
 	contMap.addChild(map);
-
 }
 
 function changeModeAffichage()
@@ -4203,10 +4266,25 @@ function supprimerTooltipItem()
 	stage.removeChild(_CONTENEUR_TOOLTIP);
 }
 
-function afficherSelecteurItem(x, y, taille)
+function afficherSelecteurItemPerso(x, y, typeItem)
 {
+	// Détermine dans quel conteneur se trouve l'item selectionné
+	var numContPerso;
+	if(typeItem==1 || typeItem==2)
+	{
+		numContPerso=0;
+
+	}
+	else if(typeItem==3)
+	{
+		numContPerso=2;
+	}
+	else
+	{
+		numContPerso=1;
+	}
 	// supprime l'ancien fond
-	supprimerSelecteurItem();
+	supprimerSelecteurItem(numContPerso);
 
 	// affichage fond
 	_IMG_ITEM_SELECTED = new createjs.Shape();
@@ -4214,15 +4292,78 @@ function afficherSelecteurItem(x, y, taille)
 	_IMG_ITEM_SELECTED.x = x+5;
 	_IMG_ITEM_SELECTED.y = y+25;
 
-	Select   = TAB_CONT_ITEMS[3].addChild(_IMG_ITEM_SELECTED);
+	Select   = TAB_CONT_ITEMS[numContPerso].addChild(_IMG_ITEM_SELECTED);
 	//Select.x = x;
 	//Select.y = 0;
 }
 
-function supprimerSelecteurItem()
+function afficherSelecteurItemCase(x, y, typeItem)
+{
+	// Détermine dans quel conteneur se trouve l'item selectionné
+	var numContCase;
+	if(typeItem==1 || typeItem==2)
+	{
+		numContCase=3;
+
+	}
+	else if(typeItem==3)
+	{
+		numContCase=5;
+	}
+	else
+	{
+		numContCase=4;
+	}
+
+	// supprime l'ancien fond
+	supprimerSelecteurItem(numContCase);
+
+	// affichage fond
+	_IMG_ITEM_SELECTED = new createjs.Shape();
+	_IMG_ITEM_SELECTED.graphics.beginFill(createjs.Graphics.getRGB(255,0,0, 0.5)).drawRect(0, 0, 10, 10).endFill();
+	_IMG_ITEM_SELECTED.x = x+5;
+	_IMG_ITEM_SELECTED.y = y+25;
+
+	Select   = TAB_CONT_ITEMS[numContCase].addChild(_IMG_ITEM_SELECTED);
+	//Select.x = x;
+	//Select.y = 0;
+}
+
+function afficherSelecteurItemEquip(x, y, typeItem)
+{
+	
+	// Détermine dans quel conteneur se trouve l'item selectionné
+	var numContPerso;
+	if(typeItem==1)
+	{
+		contArme.removeChild(_IMG_ITEM_SELECTED);
+		// affichage fond
+		_IMG_ITEM_SELECTED = new createjs.Shape();
+		_IMG_ITEM_SELECTED.graphics.beginFill(createjs.Graphics.getRGB(255,0,0, 0.5)).drawRect(0, 0, 10, 10).endFill();
+		_IMG_ITEM_SELECTED.x = x+5;
+		_IMG_ITEM_SELECTED.y = y+25;
+
+		Select   = contArme.addChild(_IMG_ITEM_SELECTED);
+	}
+	else if(typeItem==2)
+	{
+		contArmure.removeChild(_IMG_ITEM_SELECTED);
+		// affichage fond
+		_IMG_ITEM_SELECTED = new createjs.Shape();
+		_IMG_ITEM_SELECTED.graphics.beginFill(createjs.Graphics.getRGB(255,0,0, 0.5)).drawRect(0, 0, 10, 10).endFill();
+		_IMG_ITEM_SELECTED.x = x+5;
+		_IMG_ITEM_SELECTED.y = y+25;
+
+		Select   = contArmure.addChild(_IMG_ITEM_SELECTED);
+	}
+	//Select.x = x;
+	//Select.y = 0;
+}
+
+function supprimerSelecteurItem(numero)
 {
 	// supprime l'ancien fond
-	TAB_CONT_ITEMS[3].removeChild(_IMG_ITEM_SELECTED);
+	TAB_CONT_ITEMS[numero].removeChild(_IMG_ITEM_SELECTED);
 }
 
 function afficherFichePersoDetaillee()
@@ -4478,7 +4619,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour, currentP
 		{
 			// Si déquipe arme
 			// efface l'arme
-			_CONT_ARME.removeAllChildren();
+			contArme.removeAllChildren();
 			msgAction = ("Vous venez de ranger de votre arme dans votre sac.");
 			codeAction = 2;
 			// on ne rafraichit que l'affichage de l'inventaire
@@ -5044,12 +5185,6 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 	var i=0;
 	var iPositionPersoInConteneur=0;
 
-	var labelPseudo = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelPseudo.lineHeight = _LineHeight;
-	labelPseudo.textBaseline = _TextBaseline;
-	labelPseudo.x = labelDescribePerso.x;
-	labelPseudo.y = labelDescribePerso.y - 20;
-
 	contListeAllies.removeAllChildren();
 
 	listePersoAllies = new Array();
@@ -5085,7 +5220,6 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 			//Boucle normale : creation nouvelle liste de 10 items max
 			for (var i=j*10; i<(j*10+10); i++)
 			{
-
 				// mise de l'item dans une variable
 				var perso = listeAllies[i];
 
@@ -5096,38 +5230,39 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		}
 	}
 
-	if(_PAGE_PERSO_ALLIES>Taille-1)
-	{
-		_PAGE_PERSO_ALLIES=Taille-1;
-	}
-	else if (_PAGE_PERSO_ALLIES<0)
-	{
-		_PAGE_PERSO_ALLIES=0;
-	}
+	//Gestion de l'affichage des boutons
+		if(_PAGE_PERSO_ALLIES>Taille-1)
+		{
+			_PAGE_PERSO_ALLIES=Taille-1;
+		}
+		else if (_PAGE_PERSO_ALLIES<0)
+		{
+			_PAGE_PERSO_ALLIES=0;
+		}
 
-	if(_PAGE_PERSO_ALLIES==Taille-1)
-	{
-		Btn_PAGE_PERSO_ALLIESRight.visible=false;
-	}
-	else
-	{
-		Btn_PAGE_PERSO_ALLIESRight.visible=true;
-	}
+		if(_PAGE_PERSO_ALLIES==Taille-1)
+		{
+			Btn_PAGE_PERSO_ALLIESRight.visible=false;
+		}
+		else
+		{
+			Btn_PAGE_PERSO_ALLIESRight.visible=true;
+		}
 
-	if(_PAGE_PERSO_ALLIES==0)
-	{
-		Btn_PAGE_PERSO_ALLIESLeft.visible=false;
-	}
-	else
-	{
-		Btn_PAGE_PERSO_ALLIESLeft.visible=true;
-	}
+		if(_PAGE_PERSO_ALLIES==0)
+		{
+			Btn_PAGE_PERSO_ALLIESLeft.visible=false;
+		}
+		else
+		{
+			Btn_PAGE_PERSO_ALLIESLeft.visible=true;
+		}
 
-	if(Taille ==0)
-	{
-		Btn_PAGE_PERSO_ALLIESLeft.visible=false;
-		Btn_PAGE_PERSO_ALLIESRight.visible=false;
-	}
+		if(Taille ==0)
+		{
+			Btn_PAGE_PERSO_ALLIESLeft.visible=false;
+			Btn_PAGE_PERSO_ALLIESRight.visible=false;
+		}
 
 	try 
 	{
@@ -5136,87 +5271,76 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		{
 			var persoA=TabListe[_PAGE_PERSO_ALLIES][i];
 
-			var ModePerso;
-			var DescriptionSac;
-			var PourcentVie;
-			var DescriptionVie;
-			var PourcentSac;
+			var modePerso;
 
 			listePersoAllies.push(persoA);
 
 			if(persoA.competence=="brute")
 			{
-				imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
-				imgPersoAllie.x = iPositionPersoInConteneur * _spacePerso;
-				imgPersoAllie.cursor= "normal";
+				if(persoA.ptSante<=0)
+				{
+					imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Brute64gris.png");
+				}
+				else
+				{
+					imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Brute64.png");
+				}
 			}
 			else if(persoA.competence=="chercheur")
 			{
-				imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
-				imgPersoAllie.x = iPositionPersoInConteneur * _spacePerso;
-				imgPersoAllie.cursor= "normal";
+				if(persoA.ptSante<=0)
+				{
+					imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Chercheur64gris.png");
+				}
+				else
+				{
+					imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Chercheur64.png");
+				}
 			}
 			else if(persoA.competence=="explorateur")
 			{
-				imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
-				imgPersoAllie.x = iPositionPersoInConteneur * _spacePerso;
-				imgPersoAllie.cursor= "normal";
+				if(persoA.ptSante<=0)
+				{
+					imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Explorateur64gris.png");
+				}
+				else
+				{
+					imgPersoAllie = new createjs.Bitmap("public/spritesheets/persos/Explorateur64.png");
+				}
 			}
-
+			imgPersoAllie.x = iPositionPersoInConteneur * _spacePerso;
+			imgPersoAllie.cursor= "normal";
 			imgPersoAllie.name = i;
 
+			// MOUSE OVER
 			// Ajout de l'évenement a l'image
 			// ajout d'un texte quand l'user passera la souris dessus
 			imgPersoAllie.addEventListener('mouseover', function(event) {
 				var currentPerso = TabListe[_PAGE_PERSO_ALLIES][event.target.name];
 				// Texte de description du Mode
-				ModePerso="";
+				modePerso="";
 				switch(currentPerso.mode)
 				{
 				case 0:
-					ModePerso="Normal";
+					modePerso="Normal";
 					break;
 				case 1:
-					ModePerso="Fouille";
+					modePerso="Fouille";
 					break;
 				case 2:
-					ModePerso="Caché";
+					modePerso="Caché";
 					break;
 				case 3:
-					ModePerso="Défense";
+					modePerso="Défense";
 					break;
 				}
 
-				labelPseudo.text=currentPerso.listeMsgAtt;
-
-				labelDescribePerso.text = ("Competence : " + currentPerso.competence + 
-						"\nMode : " + ModePerso + 
-						"\nSanté : " + currentPerso.ptSante + " / " + currentPerso.ptSanteMax +
-						"\nSac rempli à : " + currentPerso.sacADos + " %");
-
-				if(currentPerso.armeEquipee!=null)
-				{
-					labelDescribePerso.text += "\nArme équipée : " + currentPerso.armeEquipee.nom + " " + currentPerso.armeEquipee.valeur;
-				}
-				else
-				{
-					labelDescribePerso.text += "\nPas d'arme équipée";
-				}
-
-				if(currentPerso.armureEquipee!=null)
-				{
-					labelDescribePerso.text += "\nArmure équipée : " + currentPerso.armureEquipee.nom + " " + currentPerso.armureEquipee.valeur;
-				}
-				else
-				{
-					labelDescribePerso.text += "\nPas d'armure équipée";
-
-				}
+			// Appel de la fonction pour afficher le tooltip
+			afficherTooltipPersoListe(event.target.x, event.target.y, currentPerso, modePerso, 1);
 			},false);
 
 			imgPersoAllie.addEventListener('mouseout', function(event){
-				labelDescribePerso.text="";
-				labelPseudo.text="";
+				supprimerTooltipPersoListe();
 			},false);
 
 			contListeAllies.addChild(imgPersoAllie);
@@ -5231,6 +5355,187 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 	}
 	socket.emit('INFO_PERSONNAGE_CS');
 });
+
+function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, DescriptionVie, DescriptionSac)
+{
+	var hauteur = 0;
+	var coul;
+	var largeur = 0;
+
+	y += 50;
+	x += 50;
+
+	// Déclaration des pictogrammes
+	var imgPseudo = new createjs.Bitmap("public/pictos/pseudo.png");
+	imgPseudo.x=5;
+	imgPseudo.y=5;
+
+	var imgCompetence = new createjs.Bitmap("public/pictos/competence.png");
+	imgCompetence.x=imgPseudo.x;
+	imgCompetence.y=imgPseudo.y+30;
+
+	var imgMode = new createjs.Bitmap("public/pictos/mode.png");
+	imgMode.x=imgPseudo.x;
+	imgMode.y=imgPseudo.y+30*2;
+
+	var imgSante = new createjs.Bitmap("public/pictos/ptsVie.png");
+	imgSante.x=imgPseudo.x;
+	imgSante.y=imgPseudo.y+30*3;
+
+	var imgSac = new createjs.Bitmap("public/pictos/poidsSac.png");
+	imgSac.x=imgPseudo.x;
+	imgSac.y=imgPseudo.y+30*4;
+
+	// Déclaration du label de description
+	var labelDescribePerso = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+	labelDescribePerso.x = 40;
+	labelDescribePerso.y = imgPseudo.y + 10;
+	
+	// si c'est une description d'allié
+	if (allie)
+	{
+		hauteur = 7*32;
+		// défini les caractéristiques du personnage
+		// Option 1
+		var ligne0 = "Pseudo : " + currentPerso.listeMsgAtt;
+		var ligne1 = "Compétence : " + currentPerso.competence;
+		var ligne2 = "Mode : " + modePerso;
+		var ligne3 = "Santé : " + currentPerso.ptSante + " / " + currentPerso.ptSanteMax;
+		var ligne4 = "Sac rempli à : " + currentPerso.sacADos + " %";
+
+		// Option 2
+		/*var ligne0 = currentPerso.listeMsgAtt;
+		var ligne1 = currentPerso.competence;
+		var ligne2 = modePerso;
+		var ligne3 = currentPerso.ptSante + " / " + currentPerso.ptSanteMax;
+		var ligne4 = currentPerso.sacADos + " %";*/
+		
+		// On regarde si le personnage est équipé
+		if(currentPerso.armeEquipee!=null)
+		{
+			var ligne5 = currentPerso.armeEquipee.nom + " - Valeur : " + currentPerso.armeEquipee.valeur;
+			var imgArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
+			imgArme.x=imgPseudo.x;
+			imgArme.y=imgPseudo.y+32*5;
+			contDescriptionPerso.addChild(imgArme);
+		}
+		else
+		{
+			var ligne5 = "Pas d'arme équipée";
+		}
+
+		if(currentPerso.armureEquipee!=null)
+		{
+			var ligne6 = currentPerso.armureEquipee.nom + " - Valeur : " + currentPerso.armureEquipee.valeur;
+			var imgArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
+			imgArmure.x=imgPseudo.x;
+			imgArmure.y=imgPseudo.y+32*6;
+			contDescriptionPerso.addChild(imgArmure);
+		}
+		else
+		{
+			var ligne6 = "Pas d'armure équipée";
+		}
+		
+		// Construction du label avec toutes les lignes
+		labelDescribePerso.text = ligne0 +"\n\n" +ligne1 +"\n\n" + ligne2 + "\n\n" + ligne3 + "\n\n" +ligne4 +"\n\n" + ligne5 + "\n\n" + ligne6;
+
+		// calcul de la largeur du conteneur
+		largeur = (Math.max(ligne1.length,ligne2.length, ligne0.length, ligne3.length, ligne4.length, ligne5.length, ligne6.length)) *7 + 80;
+
+		// définition de la couleur de fond
+		coul = createjs.Graphics.getRGB(0,0,150, 0.8);
+	}
+	else
+	{
+		hauteur = 6*32;
+		// défini les caractéristiques du personnage
+		// Option 1
+		var ligne1 = "Compétence : " + currentPerso.competence;
+		var ligne2 = "Mode : " + modePerso;
+		var ligne3 = DescriptionVie;
+		var ligne4 = DescriptionSac;
+
+		// Option 2
+		/*var ligne1 = currentPerso.competence;
+		var ligne2 = modePerso;
+		var ligne3 = DescriptionVie;
+		var ligne4 = DescriptionSac;*/
+		
+		// On regarde si le personnage est équipé
+		if(currentPerso.armeEquipee!=null)
+		{
+			var ligne5 = currentPerso.armeEquipee.nom;
+			var imgArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
+			imgArme.x=imgPseudo.x;
+			imgArme.y=imgPseudo.y+32*5;
+			contDescriptionPerso.addChild(imgArme);
+		}
+		else
+		{
+			var ligne5 = "Pas d'arme équipée";
+		}
+
+		if(currentPerso.armureEquipee!=null)
+		{
+			var ligne6 = currentPerso.armureEquipee.nom;
+			var imgArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
+			imgArmure.x=imgPseudo.x;
+			imgArmure.y=imgPseudo.y+32*6;
+			contDescriptionPerso.addChild(imgArmure);
+		}
+		else
+		{
+			var ligne6 = "Pas d'armure équipée";
+		}
+		
+		// Construction du label avec toutes les lignes
+		labelDescribePerso.text = ligne0 +"\n\n" +ligne1 +"\n\n" + ligne2 + "\n\n" + ligne3 + "\n\n" +ligne4 +"\n\n" + ligne5 + "\n\n" + ligne6;
+
+		// calcul de la largeur du conteneur
+		largeur = (Math.max(ligne1.length,ligne2.length, ligne0.length, ligne3.length, ligne4.length, ligne5.length, ligne6.length)) *7 + 80;
+
+		// définition de la couleur de fond
+		coul = createjs.Graphics.getRGB(150,0,0, 0.8);
+	}
+
+	// conteneur
+	contDescriptionPerso = new createjs.Container();
+	contDescriptionPerso.x = x;
+	contDescriptionPerso.y = y;
+	contDescriptionPerso.width = 32;
+	contDescriptionPerso.height = hauteur;
+	contListe.addChild(contDescriptionPerso);
+
+	// dessine le fond du conteneur
+ 	fondConteneurDescriptionPerso = new createjs.Shape();
+	fondConteneurDescriptionPerso.graphics.beginFill(coul).drawRect(0, 0, largeur, hauteur).endFill();
+
+	// test si ca dépasse pas du canvas
+	if(contDescriptionPerso.x + largeur > _CANVAS_LARGEUR)
+	{
+		contDescriptionPerso.x = _CANVAS_LARGEUR - largeur - 7;
+	} 
+
+	// ajout du fond et label au conteneur
+	contDescriptionPerso.addChild(fondConteneurDescriptionPerso);
+	contDescriptionPerso.addChild(labelDescribePerso);
+
+	// Ajout des images dans le conteneur
+	contDescriptionPerso.addChild(imgPseudo);
+	contDescriptionPerso.addChild(imgCompetence);
+	contDescriptionPerso.addChild(imgMode);
+	contDescriptionPerso.addChild(imgSante);
+	contDescriptionPerso.addChild(imgSac);
+
+	// ajout du conteneur au stage
+	contListe.addChild(contDescriptionPerso);
+}
+
+function supprimerTooltipPersoListe()
+{
+	contListe.removeChild(contDescriptionPerso);
+}
 
 /******************************************************************************************************************
  * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
@@ -5333,7 +5638,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 		{
 			var persoE=TabListe[_PAGE_PERSO_ENN][i];
 
-			var ModePerso;
+			var modePerso;
 			var DescriptionSac;
 			var PourcentVie;
 			var DescriptionVie;
@@ -5390,7 +5695,6 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 					imgPersoEnnemi.y = 2 ; 
 					imgPersoEnnemi.cursor= "pointer";
 				}
-
 			}
 
 			imgPersoEnnemi.name = i;
@@ -5398,7 +5702,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 			// Ajout de l'évenement a l'image
 			// ajout d'un texte quand l'user passera la souris dessus
 			imgPersoEnnemi.addEventListener('mouseover', function(event)
-					{
+			{
 				var currentPerso = TabListe[_PAGE_PERSO_ENN][event.target.name];
 
 				// Calcul du pourcentage de vie
@@ -5465,22 +5769,22 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				// Texte de description du Mode
 				switch(currentPerso.mode)
 				{
-				case 0: ModePerso="";
-				ModePerso="Normal";
+				case 0: modePerso="";
+				modePerso="Normal";
 				break;
-				case 1: ModePerso="";
-				ModePerso="Fouille";
+				case 1: modePerso="";
+				modePerso="Fouille";
 				break;
-				case 2: ModePerso="";
-				ModePerso="Caché";
+				case 2: modePerso="";
+				modePerso="Caché";
 				break;
-				case 3: ModePerso="";
-				ModePerso="Défense";
+				case 3: modePerso="";
+				modePerso="Défense";
 				break;
 				}
 
-				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
+				/*labelDescribePerso.text=("Competence : "+currentPerso.competence+
+						"\nMode : "+modePerso+
 						"\n"+DescriptionVie+
 						"\n"+DescriptionSac);
 
@@ -5501,8 +5805,12 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				else
 				{
 					labelDescribePerso.text += "\nPas d'armure équipée";
-				}
-					},false);
+				}*/
+
+				// Appel de la fonction pour afficher le tooltip
+				afficherTooltipPersoListe(event.target.x, event.target.y, currentPerso, modePerso, 0, DescriptionVie, DescriptionSac);
+
+			},false);
 
 			imgPersoEnnemi.addEventListener('mouseout', function(event){
 				labelDescribePerso.text="";
@@ -5594,22 +5902,22 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn)
 				// Texte de description du Mode
 				switch(currentPerso.mode)
 				{
-				case 0: ModePerso="";
-				ModePerso="Normal";
+				case 0: modePerso="";
+				modePerso="Normal";
 				break;
-				case 1: ModePerso="";
-				ModePerso="Fouille";
+				case 1: modePerso="";
+				modePerso="Fouille";
 				break;
-				case 2: ModePerso="";
-				ModePerso="Caché";
+				case 2: modePerso="";
+				modePerso="Caché";
 				break;
-				case 3: ModePerso="";
-				ModePerso="Défense";
+				case 3: modePerso="";
+				modePerso="Défense";
 				break;
 				}
 
 				labelDescribePerso.text=("Competence : "+currentPerso.competence+
-						"\nMode : "+ModePerso+
+						"\nMode : "+modePerso+
 						"\n"+DescriptionVie+
 						"\n"+DescriptionSac);
 
