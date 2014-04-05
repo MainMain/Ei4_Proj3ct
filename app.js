@@ -1613,7 +1613,18 @@ io.sockets.on('connection', function (socket)
 		//try
 		//{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, false);
-    	socket.emit('INFO_CASE_ALLIES_SC', liste.Allies);
+    	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
+    	{
+    		socket.emit('INFO_CASE_ALLIES_SC', liste.AGI);
+    	}
+    	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
+    	{
+    		socket.emit('INFO_CASE_ALLIES_SC', liste.INNO);
+    	}
+    	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
+    	{
+    		socket.emit('INFO_CASE_ALLIES_SC', liste.QSF);
+    	}
     	//}
     	//catch(err)
     	//{
@@ -1645,39 +1656,20 @@ io.sockets.on('connection', function (socket)
 		//try
 		//{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
-    	socket.emit('INFO_CASE_ENNEMIS_SC', liste.Ennemis);
-    	//}
-    	//catch(err)
-    	//{
-    	//	EventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
-    	//}
-    });
-    /*
-     * 
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-    /******************************************************************************************************************
-	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
-	 * 
-	 * return liste des ennemis (tableau associatif) [idUtilisateur, personnageEnnemi]
-	 * erreur : liste vide si aucun ennemis dans la case
-	 */ 
-    socket.on('INFO_CASE_PERSOS_CS', function ()
-	{
-		EventLog.log("******************* INFO_CASE_ENNEMIS_CS - EMETTEUR : " + pseudoUser +" ***********************");
-		
-		// Sécurité contre les sockets non identifiées
-		if (!SocketIdentified()) return;
-		
-		//try
-		//{
-    	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
-    	socket.emit('INFO_CASE_PERSOS_SC', liste.AGI, liste.QSF, liste.INNO);
+		console.log(" 1 = " + liste.AGI.length + " 2 = " + liste.INNO.length +" 3 = " + liste.QSF.length);
+
+    	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
+    	{
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.QSF, liste.INNO);
+    	}
+    	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
+    	{
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.QSF);
+    	}
+    	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
+    	{
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.INNO);
+    	}
     	//}
     	//catch(err)
     	//{
