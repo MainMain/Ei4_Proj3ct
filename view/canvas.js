@@ -4056,7 +4056,7 @@ function changeModeAffichage()
 	}
 	else
 	{
-		
+
 	}
 }
 
@@ -4437,12 +4437,14 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour, currentP
 			msgAction = ("Vous êtes désormais équipé de l'arme \"" + currentItem.nom + "\".");
 			codeAction = 1;
 			majInventairePerso(currentPerso);
+			majPtsAttaqueDefense(currentPerso);
 			break;
 
 		case 2:
 			msgAction = ("Vous êtes désormais équipé de l'armure \"" + currentItem.nom + "\".");
 			codeAction = 1;
 			majInventairePerso(currentPerso);
+			majPtsAttaqueDefense(currentPerso);
 			break;
 
 		case -1:
@@ -4481,6 +4483,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour, currentP
 			codeAction = 2;
 			// on ne rafraichit que l'affichage de l'inventaire
 			majInventairePerso(currentPerso);
+			majPtsAttaqueDefense(currentPerso);
 			_SELECTED_ITEM_EQUIP=-1;
 		}
 		// Si déquipe armure
@@ -4493,6 +4496,7 @@ socket.on('INV_PERSONNAGE_SC', function (type, currentItem, codeRetour, currentP
 			codeAction = 2;
 			// on ne rafraichit que l'affichage de l'inventaire
 			majInventairePerso(currentPerso);
+			majPtsAttaqueDefense(currentPerso);
 		}
 	}
 	// affichage du message pour informer l'utilisateur
@@ -4710,6 +4714,8 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso)
 	/// ... les mesages en attente
 	majMessages(currentPerso);
 		
+	/// ... les pts attaque et def
+	majPtsAttaqueDefense(currentPerso);
 		/// branche 
 	majEventsPictoPerso(currentPerso);
 
