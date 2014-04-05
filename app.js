@@ -14,6 +14,19 @@ var server      = http.createServer(app);
 var EventLog    = require('./model/EventLog');
 var oScheduleEvent 	 = require('node-schedule');
 
+var oNodeMailer = require("nodemailer");
+
+// create reusable transport method (opens pool of SMTP connections)
+var smtpTransport = oNodeMailer.createTransport("SMTP",{
+    service: "Yahoo",
+    auth: {
+        user: "zombistia@yahoo.fr",
+        pass: "aBFJ_14&"
+    }
+});
+
+////////////** TEST MAIL
+/*
 // pour envoyer les mails
 var key = "11332178-c46b-41e6-9099-a8ac60d7f4b3";
 var postmark = require("postmark")(key);
@@ -37,7 +50,7 @@ postmark.send(
     console.log("Email sent to: %s", to);
 });
 // FIN TEST MAIL
-
+*/
 // require objets
 var oCarte		= require('./model/object/Carte');
 var GameRules	= require('./model/GameRules');
@@ -474,6 +487,21 @@ app.get('/chat-general', restrict, function fonctionIndex(req, res)
 	res.render('chat', options);
 });
 
+app.get('/confirmerCompte/:idInscription', function fonctionIndex(req, res)
+{
+	oUtilisateur_Manager.confirmerCompte(req.param('idInscription'), function(reponse)
+	{
+		console.log("DEBUG : reponse = " + reponse);
+		var options = 
+		{ 
+			// 1 : ok, -1 : compte inexistant, -2 : compte déja confirmé, -3 : erreur maj user
+			"reponse": reponse,
+			"sessionID" : req.session.idUser 
+		};
+
+		res.render('confirmerCompte', options);
+	});
+});
 app.post("/", function (req, res)
 {
 	var b = req.body;
@@ -554,13 +582,13 @@ app.put('/', function (req, res)
 	var testsOk = false;
 	// regex test email
 	var regTestMailAngers = /.@etud.univ-angers.fr/;
-	
+
 	// test si c'est en bonne forme
 	//if
 	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regTestMailAngers.test(b.email) );
 	if		(b.username.length < 4 && b.username.length > 10)		optionAccueil.InfoInscription = "Login_nonConforme";
 	else if (b.password.length < 6) 			optionAccueil.InfoInscription = "Pass_nonConforme";
-	else if (!regTestMailAngers.test(b.email)) 	optionAccueil.InfoInscription = "Mail_nonConforme";
+	//else if (!regTestMailAngers.test(b.email)) 	optionAccueil.InfoInscription = "Mail_nonConforme";
 	else
 	{
 		// si ok
@@ -572,7 +600,7 @@ app.put('/', function (req, res)
 	
 });
 	
-callbackInscription = function(reponseInscription, req, res)
+callbackInscription = function(reponseInscription, req, res, idInscription)
 {
 	var b = req.body;
 	if (reponseInscription == -1)
@@ -593,6 +621,30 @@ callbackInscription = function(reponseInscription, req, res)
 	}
 	else
 	{
+		// ENVOI D'UN MAIL DE CONFIRMATION
+		var mailOptions = 
+		{
+   			from: "Staff Zomb'IstiA <zombistia@yahoo.fr>", // sender address
+    		to: b.email, // list of receivers
+    		subject: "Bienvenue sur Zomb'IstiA !", // Subject line
+    		//text: "Hello world ✔", // plaintext body
+    		html: "Bienvenue " + b.username + " ! <br><br>" // html body
+    			+ "Votre inscription a été prise en compte. Pour la confirmer, merci de cliquer sur "
+    			+ " le lien suivant : <a href=\"http://localhost:25536/confirmerCompte/" + idInscription+"\">Confirmer mon compte </a>"
+    			+ "<br>On se revoit donc... En enfer."
+    			+ "<br><br><br>L'équipe de Zomb'Istia"
+		}
+
+		// send mail with defined transport object
+		smtpTransport.sendMail(mailOptions, function(error, response){
+   		if(error)
+   		{
+       	 	EventLog.log(error);
+    	}else{
+        	EventLog.log("Message sent: " + response.message);
+    	}
+	});
+
 		optionAccueil.usernameInscription = b.username;
 		
 		oUtilisateur_Manager.LoadUser(reponseInscription);

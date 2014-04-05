@@ -191,22 +191,43 @@ Utilisateur_Manager.Save = function()
 	}
 },
 
-Utilisateur_Manager.confirmerCompte = function(idUser)
+Utilisateur_Manager.confirmerCompte = function(idInscription, callbackConfirmerCompte)
 {
-	// modifie l'état de l'objet en mémoire
-	this.listeUtilisateurs[idUser].confirmerCompte();
-	
-	// enregistre en BD -> Evite de reconfirmer si le serveur crash avant la prochaine save globale
-	oUtilisateur_BD.SetUtilisateur(this.listeUtilisateurs[idUser], function(reponse)
+	console.log("DEBUG : idInscription = " + idInscription);
+	var context = this;
+	// recherche de l'idUser
+	oUtilisateur_BD.GetUtilisateurByIdInscription(idInscription, function(reponse, idUser)
 	{
-		if (reponse == -1)
+		// si aucun user est trouvé
+		if (reponse < 0)
 		{
-			EventLog.error("/!\ UTILISATEUR_MANAGER : erreur ecriture de l'user pour la confirmation du compte !" + idUser);
-		}
-		else
+			callbackConfirmerCompte(-1);
+			return;
+		} 
+
+		// compte déja confirmé
+		if (context.listeUtilisateurs[idUser].getCompteConfirme() == true)
 		{
-			EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " en BD OK : Compte confirmé !");
+			callbackConfirmerCompte(-2);
+			return;
 		}
+		// modifie l'état de l'objet en mémoire
+		context.listeUtilisateurs[idUser].confirmerCompte();
+	
+		// enregistre en BD -> Evite de reconfirmer si le serveur crash avant la prochaine save globale
+		oUtilisateur_BD.SetUtilisateur(context.listeUtilisateurs[idUser], function(reponse)
+		{
+			if (reponse == -1)
+			{
+				EventLog.error("/!\ UTILISATEUR_MANAGER : erreur ecriture de l'user pour la confirmation du compte !" + idUser);
+				callbackConfirmerCompte(-3);
+			}
+			else
+			{
+				EventLog.log("UTILISATEUR_MANAGER : MAJ de l'user " + idUser + " en BD OK : Compte confirmé !");
+				callbackConfirmerCompte(1);
+			}
+		});
 	});
 },
 

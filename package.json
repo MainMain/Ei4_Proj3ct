@@ -11,7 +11,8 @@
     "socket.io": "latest",
     "postmark ": "latest",
     "postmark": "~0.2.0",
-    "node-schedule" : "0.1.13"
+    "node-schedule" : "0.1.13",
+    "nodemailer" : "0.6.1"
   },
   "engines": {
     "node": "0.8.x",
