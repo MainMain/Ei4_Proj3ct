@@ -12,6 +12,7 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 var EventLog    = require('./model/EventLog');
+var oScheduleEvent 	 = require('node-schedule');
 
 // pour envoyer les mails
 var key = "11332178-c46b-41e6-9099-a8ac60d7f4b3";
@@ -53,6 +54,15 @@ var oUtilisateur_Manager = require('./manager/Utilisateur_Manager');
 var oScore_Manager       = require('./manager/Score_Manager');
 var oSession_Manager	 = require('./manager/Session_Manager');
 
+
+// ** TEST SCHEDULE
+var rule = new oScheduleEvent.RecurrenceRule();
+rule.hour = GameRules.heure_attaque();
+rule.minute = GameRules.minute_attaque();
+
+var eventAttaque = oScheduleEvent.scheduleJob(rule, SauvegardeGlobale);
+
+
 /*
  * *************************** 2 - CHARGEMENT EN MEMOIRE DES DONNES ***************************
  */
@@ -63,7 +73,7 @@ var dateLancement = new Date();
 var dateLancementSrv = dateLancement;
 var heureDerniereAttaque = dateLancement;
 
-EventLog.log(dateLancementSrv.toString());
+EventLog.log("Lancement du serveur - " + dateLancementSrv.toString());
 
 //Tableau des utilisateur en ligne
 var usersOnline = new Array();
@@ -483,7 +493,7 @@ getDonnesPageJeu = function(idUser, userName)
 		"bilanScores" 		: oScore_Manager.getBilanScoreSession(idUser, oUtilisateur_Manager.getIdSession(idUser)),
 		"bilanScores_last" 	: -1,
 		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
-		"heureAttaque" 		: new Date(Date.parse(heureDerniereAttaque)+GameRules.dureeCycle()).toLocaleTimeString(),
+		"heureAttaque" 		: new Date(0, 0, 0, GameRules.heure_attaque(), GameRules.minute_attaque(), 0, 0),
 		"dureeCycle" 		: GameRules.dureeCycle() / (1000*3600)
 	};
 		
@@ -543,12 +553,12 @@ app.put('/', function (req, res)
 	var b = req.body;
 	var testsOk = false;
 	// regex test email
-	var regTestMailAngers = /.@univ-angers.fr/;
+	var regTestMailAngers = /.@etud.univ-angers.fr/;
 	
 	// test si c'est en bonne forme
 	//if
 	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regTestMailAngers.test(b.email) );
-	if		(b.username.length < 4) 			optionAccueil.InfoInscription = "Login_nonConforme";
+	if		(b.username.length < 4 && b.username.length > 10)		optionAccueil.InfoInscription = "Login_nonConforme";
 	else if (b.password.length < 6) 			optionAccueil.InfoInscription = "Pass_nonConforme";
 	else if (!regTestMailAngers.test(b.email)) 	optionAccueil.InfoInscription = "Mail_nonConforme";
 	else
@@ -1802,7 +1812,7 @@ function SauvegardeGlobale()
    	var date = new Date();
    	
    	EventLog.log("[ ! ] Nouvelle journée ! Date: " + date);
-	// regain des pts move et action
+	// attaque sur les joueurs et regain des pts move et action
 	oPersonnage_Manager.nouvelleJournee();
 	// rajout des goules
 	oCase_Manager.nouvelleJournee();
@@ -1830,13 +1840,13 @@ function SauvegardeGlobale()
 		}
 	}
 }
-setInterval(function() 
+/*setInterval(function() 
 { 
 	SauvegardeGlobale();
 	heureDerniereAttaque = new Date();
 	
 }, GameRules.dureeCycle()); // (1000) millisec * 60 sec * 60 min
-
+*/
 
 
 // server.listen(8080);

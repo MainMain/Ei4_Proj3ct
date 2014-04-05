@@ -24,6 +24,7 @@ var imgFouille;
 var imgCache;
 
 
+var _MODE_SIMPLE = true;
 // Variables pour les images
 var background, backgroundPreload, map, person, imgPerso;
 
@@ -4042,6 +4043,21 @@ function majImageMap(currentCase, idSousCase)
 	map.x = 0;
 	contMap.addChild(map);
 
+}
+
+function changeModeAffichage()
+{
+	//changement de mode
+	_MODE_SIMPLE = ! _MODE_SIMPLE;
+	
+	if (_MODE_SIMPLE)
+	{
+
+	}
+	else
+	{
+		
+	}
 }
 
 /*
