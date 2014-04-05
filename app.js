@@ -1652,6 +1652,39 @@ io.sockets.on('connection', function (socket)
     	//	EventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
     	//}
     });
+    /*
+     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+    /******************************************************************************************************************
+	 * RECEPTION D'UNE DEMANDE POUR RENVOYER LA LISTE DES ENNEMIS DANS LA CASE
+	 * 
+	 * return liste des ennemis (tableau associatif) [idUtilisateur, personnageEnnemi]
+	 * erreur : liste vide si aucun ennemis dans la case
+	 */ 
+    socket.on('INFO_CASE_PERSOS_CS', function ()
+	{
+		EventLog.log("******************* INFO_CASE_ENNEMIS_CS - EMETTEUR : " + pseudoUser +" ***********************");
+		
+		// Sécurité contre les sockets non identifiées
+		if (!SocketIdentified()) return;
+		
+		//try
+		//{
+    	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
+    	socket.emit('INFO_CASE_PERSOS_SC', liste.AGI, liste.QSF, liste.INNO);
+    	//}
+    	//catch(err)
+    	//{
+    	//	EventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
+    	//}
+    });
+
     /*  
      *
      *

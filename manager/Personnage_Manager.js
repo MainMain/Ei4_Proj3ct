@@ -933,6 +933,37 @@ Personnage_Manager.GetPersonnagesDansSalle = function(idCase)
 
 Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 {
+	var a = { "AGI"	: new Array(), "QSF" : new Array(), "INNO" : new Array()};
+	for(var i in this.listePersonnages)
+	{
+		if(this.GetIdCase(idUser) == this.GetIdCase(i))
+		{
+			if(oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
+			{
+				if(i != idUser)
+				{
+					a.AGI.push(this.getPersonnageToDisplay(i));
+				}
+			}
+			else if(oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
+			{
+				if(i != idUser)
+				{
+					a.QSF.push(this.getPersonnageToDisplay(i));
+				}
+			}
+			else if(oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
+			{
+				if(i != idUser)
+				{
+					a.INNO.push(this.getPersonnageToDisplay(i));
+				}
+			}
+		}
+	}
+	return a;
+
+	/*
 	var a = { "Allies"	: new Array(),  "Ennemis" : new Array()};
 	for(var i in this.listePersonnages)
 	{
@@ -952,6 +983,7 @@ Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 		}
 	}
 	return a;
+	*/
 }, 
 
 Personnage_Manager.IsItemEquipee = function(idUser,  item)
