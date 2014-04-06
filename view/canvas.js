@@ -1447,10 +1447,10 @@ function pageMessages()
 	contMessage.width = _contMapW;
 	contMessage.height = _contMapH;
 	stage.addChild(contMessage);
-	shapeMessage = new createjs.Shape();
+	/*shapeMessage = new createjs.Shape();
 	stage.addChild(shapeMessage);
-	shapeMessage.graphics.setStrokeStyle(4).beginStroke("#006600").drawRect(
-			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);
+	shapeMessage.graphics.setStrokeStyle(2).beginStroke("#006600").drawRect(
+			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);*/
 
 	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
 	background_message.scaleX=0.840;
@@ -1629,10 +1629,10 @@ function pagePersonnages()
 	contListe.width = _contMapW;
 	contListe.height = _contMapH;
 	stage.addChild(contListe);
-	shape6 = new createjs.Shape();
+	/*shape6 = new createjs.Shape();
 	stage.addChild(shape6);
 	shape6.graphics.setStrokeStyle(2).beginStroke("#999900").drawRect(
-			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);
+			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);*/
 
 	var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=1;
@@ -4227,15 +4227,14 @@ function afficherTooltipItem(x, y, obj, item)
 	{
 		y -= 20;
 		x -= 90;
-		hauteur = 20;
+		hauteur = 25;
 		_LABEL_DESCRIPTION.text = obj;
 		
 		// défini la taille du conteneur
-		_TAILLE_TOOLTIP = obj.length*8;
+		_TAILLE_TOOLTIP = obj.length*6.5;
 
 		// config couleur fond conteneur
-		coul = createjs.Graphics.getRGB(0,0,0);
-	
+		coul = createjs.Graphics.getRGB(0,0,0, 0.95);
 	}
 
 	// conteneur
