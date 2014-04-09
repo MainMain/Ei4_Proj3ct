@@ -72,6 +72,7 @@ var _PAGE_PERSO_ALLIES=0;
 var _PAGE_MESSAGES=0;
 var _PAGE_JOUEURS=false;
 var _PAGE_LISTE_MESSAGES=false;
+var _START=false;
 
 var POIDS_DU_SAC=0;
 
@@ -244,7 +245,7 @@ var _LABEL_MODIF_NBR_ZOMBIE;
 ////////////// VARIABLES POUR LES TOOLTIPS ///////////////
 var _LABEL_POLICE="italic 12px Fstein";
 var _CONTENEUR_TOOLTIP				;
-var _LABEL_DESCRIPTION 				= new createjs.Text("", _LABEL_POLICE, _COULEUR_LABELS);
+var _LABEL_DESCRIPTION 				= new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS);
 var _TAILLE_TOOLTIP					;
 var _FOND_TOOLTIP 					;
 _LABEL_DESCRIPTION.lineHeight 		= _LineHeight;
@@ -253,6 +254,8 @@ _LABEL_DESCRIPTION.x 				= 5;
 _LABEL_DESCRIPTION.y 				= 5;
 
 var _IMG_ITEM_SELECTED;
+
+var _COLOR_LISTES="#dddddd";
 
 ////////////// VARIABLES POUR LES INTERVALS ///////////////
 var _ID_INTER_BLINK;
@@ -284,7 +287,7 @@ contListeAllies, contListeEnnemis1, contListeEnnemis2, contZoneMessage, contMess
 
 //-------------- Déclaration des contours----------------------------------------------
 
-var shape, shape1, shape2, shape3, shape4, shape6, shape7, shape8, shapeMode,
+var shape, shape1, shape2, shape3, shapeMap, shape6, shape7, shape8, shapeMode,
 shapeLabelsAction, shapeMessage, shapeDead, shapeInfoCase,
 shapeBtnsListes, shapeBtnsInvPerso, shapeBtnsInvCase, shapeBtnsInvCaseBis, shapeBtnsListes, 
 shapeBtnsInvPerso, shapeBtnsInvCase, shapeZoneMessage;
@@ -296,6 +299,8 @@ Btn_PAGE_MESSAGESDown, Btn_PAGE_MESSAGESUp, BtnCancelListe;
 
 var TAB_CONT_ITEMS=new Array;
 var TAB_SHAPE_ITEMS=new Array;
+
+var _TAILLE_IMAGE_FLECHE=42;
 
 /**
  * IMPORTANT : PERMET DE LANCER LE CANVAS !!
@@ -548,7 +553,6 @@ function initialize()
 	                {src:"public/pictos/competence.png", id:"imgCompetence"},
 	                {src:"public/images/attaqueNuit.jpg", id:"imgAttNuit"},
 	                {src:"public/images/liste_joueurs.jpg", id:"imgListeJoueur"},
-	                {src:"public/pictos/mode.png", id:"imgMode"}
 	                {src:"public/pictos/mode.png", id:"imgMode"},
 	                {src:"/public/font/Fstein.ttf", id:"policeFstein"}
 	                ];
@@ -660,7 +664,7 @@ function handleProgress()
 function handleComplete() 
 {
 	// Suppression du label de chargement
-	//stage.removeChild(labelPourcentLoad);
+	stage.removeChild(labelPourcentLoad);
 	// Changement du pointeur de la souris
 	backgroundPreload.cursor="pointer";
 	loadingBarContainer.cursor="pointer";
@@ -674,7 +678,7 @@ function handleComplete()
 // Click de l'utilisateur après le chargement
 function handleClick() {
 	// Suppression des outils utilisés pour le chargement
-	stage.removeChild(loadProgressLabel, loadingBarContainer, backgroundPreload, labelPourcentLoad);
+	stage.removeAllChildren();
 	// Suppression des événements sur le canvas
 	canvas.removeEventListener("click", handleClick);
 	canvas.removeEventListener("touchstart", handleClick);
@@ -828,7 +832,12 @@ function setPlateau()
 		contMap.width = _contMapW;
 		contMap.height = _contMapH;
 		stage.addChild(contMap);
-		//contMap.cache(_contMapX, _contMapY, _contMapW, _contMapH);7
+		// Couleur autour de la carte
+		shapeMap = new createjs.Shape();
+		stage.addChild(shapeMap);
+		shapeMap.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
+			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
+		//contMap.cache(_contMapX, _contMapY, _contMapW, _contMapH);
 
 	// - CONTENEURS BOUTONS AFFICHER PAGE -
 		contBtnsListes = new createjs.Container();
@@ -1200,7 +1209,7 @@ function setPlateau()
 	// ** Création des boutons de déplacement ***
 	// ******************************************
 		var Up = stage.addChild(new createjs.Bitmap("public/Boutons/Up.png"));
-		Up.x= _contMapX + _contMapW/2 - Up.image.width/2;
+		Up.x= _contMapX + _contMapW/2 - _TAILLE_IMAGE_FLECHE/2;
 		Up.y = 0;
 		Up.addEventListener('click', function(event) {
 			socket.emit('MOVE_PERSONNAGE_CS', 'NORD');
@@ -1210,8 +1219,8 @@ function setPlateau()
 		});
 
 		var Down = stage.addChild(new createjs.Bitmap("public/Boutons/Down.png"));
-		Down.x = _contMapX+ _contMapW/2 - Down.image.width/2;
-		Down.y = _contMapY + _contMapH - Down.image.height;
+		Down.x = _contMapX+ _contMapW/2 - _TAILLE_IMAGE_FLECHE/2;
+		Down.y = _contMapY + _contMapH - _TAILLE_IMAGE_FLECHE;
 		Down.addEventListener('click', function(event) {
 			socket.emit('MOVE_PERSONNAGE_CS', 'SUD');
 		});
@@ -1221,7 +1230,7 @@ function setPlateau()
 
 		var Left = stage.addChild(new createjs.Bitmap("public/Boutons/Left.png"));
 		Left.x = _contMapX;
-		Left.y = _contMapY + _contMapH/2 - Left.image.height/2;
+		Left.y = _contMapY + _contMapH/2 - _TAILLE_IMAGE_FLECHE/2;
 		Left.addEventListener('click', function(event) {
 			socket.emit('MOVE_PERSONNAGE_CS', 'OUEST');
 		});
@@ -1230,8 +1239,8 @@ function setPlateau()
 		});
 
 		var Right = stage.addChild(new createjs.Bitmap("public/Boutons/Right.png"));
-		Right.x = _contMapX + _contMapW - Right.image.width;
-		Right.y = _contMapY + _contMapH/2 - Right.image.height/2;
+		Right.x = _contMapX + _contMapW - _TAILLE_IMAGE_FLECHE;
+		Right.y = _contMapY + _contMapH/2 - _TAILLE_IMAGE_FLECHE/2;
 		Right.addEventListener('click', function(event) {
 			socket.emit('MOVE_PERSONNAGE_CS', 'EST');
 		});
@@ -1421,13 +1430,7 @@ function setPlateau()
 
 // Lancement du jeu
 function game() 
-{
-	// Couleur autour de la carte
-	shape4 = new createjs.Shape();
-	stage.addChild(shape4);
-	shape4.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
-			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
-	
+{	
 	// Initialisation des informations
 	socket.emit('INFO_PERSONNAGE_CS');
 	socket.emit('INFO_CASE_CS');
@@ -1445,7 +1448,13 @@ function game()
 // Page des messages recus
 function pageMessages()
 {
-	var nbMsgAffiches=20;
+	// Si la page de la liste de messages a déjà été ouverte, on supprime tout son contenu, afin de ne pas réécrire dessus.
+	if(contMessage!=null)
+	{
+		contMessage.removeAllChildren();
+	}
+
+	var nbMsgAffiches=14;
 	var coul=createjs.Graphics.getRGB(0,0,0, 0.5);
 
 	contMessage = new createjs.Container();
@@ -1619,13 +1628,40 @@ function afficherDescItem(desc)
 	catch(e){}
 }
 
+// Afficher la description de l'item courant
+function afficherNomCase(desc)
+{
+	var longLigneMax=20;
+	var tailleDesc = desc.length;
+	try 
+	{
+		// instructions à essayer
+		for (var i = 0; i < desc.length; i+=longLigneMax) 
+		{
+			tailleDesc-=longLigneMax;
+			var message=desc.substring(i,i+longLigneMax);
+			if((tailleDesc<=0 && i>longLigneMax) || desc.length<longLigneMax)
+			{
+				labelCaseEnCours.text+=message;
+			}
+			else
+			{
+				labelCaseEnCours.text+=message + "-\n";
+			}
+			
+		}
+	}
+	catch(e){}
+}
+
 // Afficher la page des personnages dans la case
 function pagePersonnages()
 {
-	socket.emit('INFO_CASE_ALLIES_CS');
-	socket.emit('INFO_CASE_ENNEMIS_CS');
-
-	var nbrPersos=8;
+	// Si la page de la liste des joueurs a déjà été ouverte, on supprime tout son contenu
+	if(contListe!=null)
+	{
+		contListe.removeAllChildren();
+	}
 
 	contListe = new createjs.Container();
 	contListe.x = _contMapX;
@@ -1633,6 +1669,13 @@ function pagePersonnages()
 	contListe.width = _contMapW;
 	contListe.height = _contMapH;
 	stage.addChild(contListe);
+
+	socket.emit('INFO_CASE_ALLIES_CS');
+	socket.emit('INFO_CASE_ENNEMIS_CS');
+
+	var nbrPersos=8;
+
+	
 	/*shape6 = new createjs.Shape();
 	stage.addChild(shape6);
 	shape6.graphics.setStrokeStyle(2).beginStroke("#999900").drawRect(
@@ -1642,7 +1685,7 @@ function pagePersonnages()
 	background_liste.alpha=1;
 	contListe.addChild(background_liste);
 
-	labelAlliesListe = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+	labelAlliesListe = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COLOR_LISTES));
 	labelAlliesListe.lineHeight = _LineHeight;
 	labelAlliesListe.textBaseline = _TextBaseline;
 	labelAlliesListe.x = 20;
@@ -1661,7 +1704,7 @@ function pagePersonnages()
 	shape7.graphics.setStrokeStyle(1).beginStroke("#ff0000").drawRect(
 			contListeAllies.x, contListeAllies.y, contListeAllies.width, contListeAllies.height);*/
 
-	labelEnnemisListe1 = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+	labelEnnemisListe1 = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COLOR_LISTES));
 	labelEnnemisListe1.lineHeight = _LineHeight;
 	labelEnnemisListe1.textBaseline = _TextBaseline;
 	labelEnnemisListe1.x = 20;
@@ -1679,7 +1722,7 @@ function pagePersonnages()
 	shape8.graphics.setStrokeStyle(1).beginStroke("#00ff00").drawRect(
 			contListeEnnemis1.x, contListeEnnemis1.y, contListeEnnemis1.width, contListeEnnemis1.height);*/
 
-	labelEnnemisListe2 = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
+	labelEnnemisListe2 = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COLOR_LISTES));
 	labelEnnemisListe2.lineHeight = _LineHeight;
 	labelEnnemisListe2.textBaseline = _TextBaseline;
 	labelEnnemisListe2.x = 20;
@@ -1801,7 +1844,7 @@ function pagePersonnages()
 
 	majBtnAttaquer(_contMapW - 134, _contMapH -45);
 
-	BtnCancelListe.cursor="pointer";
+	//BtnCancelListe.cursor="pointer";
 	Btn_PAGE_PERSO_ALLIESRight.cursor=Btn_PAGE_PERSO_ALLIESLeft.cursor="pointer";
 	Btn_PAGE_PERSO_ENN_1_Right.cursor=Btn_PAGE_PERSO_ENN_1_Left.cursor="pointer";
 	Btn_PAGE_PERSO_ENN_2_Right.cursor=Btn_PAGE_PERSO_ENN_2_Left.cursor="pointer";
@@ -1810,6 +1853,7 @@ function pagePersonnages()
 // Afficher la page qui prévient de l'attaque de nuit
 function pageAttaqueDeNuit()
 {
+	// On vide le canvas
 	stage.removeAllChildren();
 	
 	contNuit 		= new createjs.Container();
@@ -1849,6 +1893,8 @@ function pageAttaqueDeNuit()
 function pageMortPersonnage(currentPerso) 
 {
 	_ECRAN_MORT = true;
+	_START=false;
+	//On vide le canvas
 	stage.removeAllChildren();
 
 	contDead = new createjs.Container();
@@ -2087,9 +2133,11 @@ function pageMortPersonnage(currentPerso)
 
 function majBtnMessage(TabListeMessage, Taille)
 {
+
+	// Création des boutons
 	Btn_PAGE_MESSAGESDown = new createjs.Bitmap("public/Boutons/Down.png");
-	Btn_PAGE_MESSAGESDown.x= contMessage.width/2 - Btn_PAGE_MESSAGESDown.image.width/2;
-	Btn_PAGE_MESSAGESDown.y= contMessage.height - Btn_PAGE_MESSAGESDown.image.height;
+	Btn_PAGE_MESSAGESDown.x= contMessage.width/2 - _TAILLE_IMAGE_FLECHE/2;
+	Btn_PAGE_MESSAGESDown.y= contMessage.height - _TAILLE_IMAGE_FLECHE;
 	contMessage.addChild(Btn_PAGE_MESSAGESDown);
 	Btn_PAGE_MESSAGESDown.addEventListener('click', function(event) {
 		_PAGE_MESSAGES++;
@@ -2103,7 +2151,7 @@ function majBtnMessage(TabListeMessage, Taille)
 	});
 
 	Btn_PAGE_MESSAGESUp = new createjs.Bitmap("public/Boutons/Up.png");
-	Btn_PAGE_MESSAGESUp.x= contMessage.width/2 - Btn_PAGE_MESSAGESUp.image.width/2;
+	Btn_PAGE_MESSAGESUp.x= contMessage.width/2 - _TAILLE_IMAGE_FLECHE/2;
 	Btn_PAGE_MESSAGESUp.y=0;
 	contMessage.addChild(Btn_PAGE_MESSAGESUp);
 	Btn_PAGE_MESSAGESUp.addEventListener('click', function(event) {
@@ -2226,6 +2274,8 @@ function majBtnAttaquer(x,y)
 
 function majBtnsItemPerso()
 {
+	contBtnsInvPerso.removeChild(BtnUtiliser, BtnEquiper);
+	contBtnsInvCase.removeChild(BtnDeposer);
 	if(_SELECTED_ITEM_PERSO!=-1 && _SELECTED_ITEM_PERSOType>= 4 && _SELECTED_ITEM_PERSOType <=7)
 	{
 		var BtnUtiliser = new createjs.Bitmap("public/Boutons/Consommer.png");
@@ -2381,8 +2431,9 @@ function majBtnsItemPerso()
 	}
 }
 
-function majContEquipement()
+function majBtnDesequiper()
 {
+	contBtnsInvPerso.removeChild(BtnDesequiper);
 	if(_SELECTED_ITEM_EQUIP!=-1)
 	{
 		var BtnDesequiper = new createjs.Bitmap("public/Boutons/Desequiper.png");
@@ -2420,8 +2471,9 @@ function majContEquipement()
 	}
 }
 
-function majBtnsItemCase()
+function majBtnRamasser()
 {
+	contBtnsInvCase.removeChild(BtnRamasseObjet);
 	if(_SELECTED_ITEM_CASE!=-1)
 	{
 		var BtnRamasseObjet = new createjs.Bitmap("public/Boutons/Ramasser.png");
@@ -2429,7 +2481,7 @@ function majBtnsItemCase()
 		contBtnsInvCase.addChild(BtnRamasseObjet);
 		BtnRamasseObjet.addEventListener('click', function (event) 
 		{
-			if (_SELECTED_ITEM_CASE == -1) 
+			if (_SELECTED_ITEM_CASE == -1)
 			{
 				//alert("Selectionner Item avant de Ramasser");
 			} else 
@@ -2440,8 +2492,7 @@ function majBtnsItemCase()
 		});
 		BtnRamasseObjet.addEventListener('touchstart', function (event) 
 		{
-			if (_SELECTED_ITEM_CASE == -1) 
-			{
+			if (_SELECTED_ITEM_CASE == -1)			{
 				//alert("Selectionner Item avant de Ramasser");
 			} else 
 			{
@@ -2463,6 +2514,7 @@ function majBtnsItemCase()
 
 function majBtnJoueurs(nbJoueurs)
 {
+	contBtnsListes.removeChild(BtnJoueurs);
 	if(nbJoueurs>0)
 	{
 		var BtnJoueurs = new createjs.Bitmap("public/Boutons/Joueurs.png");
@@ -2470,32 +2522,24 @@ function majBtnJoueurs(nbJoueurs)
 		contBtnsListes.addChild(BtnJoueurs);
 		BtnJoueurs.addEventListener('click', function(event) 
 		{
-			if(_PAGE_JOUEURS==false)
+			if(_PAGE_JOUEURS == false)
 			{
-				_PAGE_JOUEURS=!_PAGE_JOUEURS;
-				pagePersonnages();
+				afficherPageJoueurs();
 			}
 			else
 			{
-				_SELECTED_PERSO=-1;
-				stage.removeChild(contListe);
-				_PAGE_JOUEURS=!_PAGE_JOUEURS;
-				game();
+				supprimerPageJoueurs();
 			}
 		});	
 		BtnJoueurs.addEventListener('touchstart', function(event) 
 		{
-			if(_PAGE_JOUEURS==false)
+			if(_PAGE_JOUEURS == false)
 			{
-				_PAGE_JOUEURS=!_PAGE_JOUEURS;
-				pagePersonnages();
+				afficherPageJoueurs();
 			}
 			else
 			{
-				_SELECTED_PERSO=-1;
-				stage.removeChild(contListe);
-				_PAGE_JOUEURS=!_PAGE_JOUEURS;
-				game();
+				supprimerPageJoueurs();
 			}
 		});	
 		BtnJoueurs.cursor="pointer";
@@ -2510,8 +2554,126 @@ function majBtnJoueurs(nbJoueurs)
 	}
 }
 
+function majBoutonMessages(currentPerso)
+{
+	contBtnsListes.removeChild(BtnMessages);
+	// ********* AFFICHAGE DERNIER MESSAGE *********/
+	if(currentPerso.listeMsgAtt.length > 0)
+	{
+		_listeMessages=currentPerso.listeMsgAtt;
+		// inverse la liste des messages
+		_listeMessages.reverse();
+		labelDernierMessage.text=_listeMessages[0];
+	}
+	else
+	{
+		labelDernierMessage.text="";
+		_listeMessages=null;
+	}
+
+	if(_listeMessages!=null && currentPerso.nbrNvMsg >0)
+	{
+		labelNombreNouvMsg.text="";
+		labelNombreNouvMsg.text=(currentPerso.nbrNvMsg);
+
+		var BtnMessages = new createjs.Bitmap("public/Boutons/Messages.png");
+		BtnMessages.y=_espaceBoutonY;
+		contBtnsListes.addChild(BtnMessages);
+		BtnMessages.addEventListener('click', function(event) {
+			if(_PAGE_LISTE_MESSAGES == false)
+			{
+				afficherPageMessage();
+			}
+			else
+			{
+				socket.emit('ACCUSE_LECTURE_MSG_CS');
+				supprimerPageMessage();
+			}
+		});
+		BtnMessages.addEventListener('touchstart', function(event) {
+			if(_PAGE_LISTE_MESSAGES == false)
+			{
+				afficherPageMessage();
+			}
+			else
+			{
+				socket.emit('ACCUSE_LECTURE_MSG_CS');
+				supprimerPageMessage();
+			}
+		});
+		BtnMessages.cursor="pointer";
+	}
+	else if(_listeMessages!=null && currentPerso.nbrNvMsg ==0)
+	{
+		labelNombreNouvMsg.text="0";
+		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesVide.png");
+		BtnMessages.y=_espaceBoutonY;
+		contBtnsListes.addChild(BtnMessages);
+		BtnMessages.addEventListener('click', function(event) {
+			if(_PAGE_LISTE_MESSAGES == false)
+			{
+				afficherPageMessage();
+			}
+			else
+			{
+				supprimerPageMessage();
+			}
+		});
+		BtnMessages.addEventListener('touchstart', function(event) {
+			if(_PAGE_LISTE_MESSAGES == false)
+			{
+				afficherPageMessage();
+			}
+			else
+			{
+				supprimerPageMessage();
+			}
+		});
+		BtnMessages.cursor="pointer";
+	}
+	else
+	{
+		labelNombreNouvMsg.text="0";
+
+		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
+		BtnMessages.y=_espaceBoutonY;
+		contBtnsListes.addChild(BtnMessages);
+
+		BtnMessages.cursor="not-allowed";
+	}
+}
+
+function afficherPageMessage()
+{
+	supprimerPageJoueurs();
+	_PAGE_LISTE_MESSAGES=true;
+	pageMessages();	
+}
+
+function afficherPageJoueurs()
+{
+	supprimerPageMessage();
+	_PAGE_JOUEURS=true;
+	pagePersonnages();
+}
+
+function supprimerPageMessage()
+{
+	_PAGE_LISTE_MESSAGES=false;
+	stage.removeChild(contMessage);
+	//game();
+}
+
+function supprimerPageJoueurs()
+{
+	_PAGE_JOUEURS=false;
+	stage.removeChild(contListe);
+	//game();
+}
+
 function majBtnGoules(nbrGoules)
 {
+	contBtnsInvCaseBis.removeChild(BtnAtqGoules);
 	if(nbrGoules>0)
 	{
 		var BtnAtqGoules = new createjs.Bitmap("public/Boutons/Zombie.png");
@@ -2536,6 +2698,10 @@ function majBtnGoules(nbrGoules)
 
 function majBtnFouilleRapide(currentPerso)
 {
+	if(contBtnsInvCaseBis!=null)
+	{
+		contBtnsInvCaseBis.removeChild(BtnFouilleRapide);
+	}
 	if(currentPerso.ptAction >=3)
 	{
 		var BtnFouilleRapide = new createjs.Bitmap("public/Boutons/FouilleR.png");
@@ -2571,6 +2737,7 @@ function setImg(img, X, Y)
 	img.y = Y;
 }
 
+// FONCTION NON UTILISEE	
 function setColorMsgRetour()
 {
 	/*
@@ -2736,7 +2903,7 @@ function majInventairePerso(currentPerso)
 			//var currentItem = event.target.name;
 			afficherSelecteurItemEquip(event.target.x, 0, 1);
 			_SELECTED_ITEM_EQUIP=currentPerso.armeEquipee.id;
-			majContEquipement();
+			majBtnDesequiper();
 		});
 		imgItemArme.addEventListener("touchstart", function (event) 
 		{
@@ -2751,7 +2918,7 @@ function majInventairePerso(currentPerso)
 			SelectEquipement.x	=-5;
 			SelectEquipement.y	=-4;*/
 			_SELECTED_ITEM_EQUIP 	= currentPerso.armeEquipee.id;
-			majContEquipement();
+			majBtnDesequiper();
 			
 		});
 		// évenement quand la souris passe dessus
@@ -2803,7 +2970,7 @@ function majInventairePerso(currentPerso)
 			SelectEquipement.x=-5;
 			SelectEquipement.y=-4;*/
 			_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;
-			majContEquipement();
+			majBtnDesequiper();
 		});
 		imgItemArmure.addEventListener("touchstart", function (event) 
 		{
@@ -2821,7 +2988,7 @@ function majInventairePerso(currentPerso)
 			SelectEquipement.x=-5;
 			SelectEquipement.y=-4;*/
 			_SELECTED_ITEM_EQUIP = currentPerso.armureEquipee.id;
-			majContEquipement();
+			majBtnDesequiper();
 		});
 
 		imgItemArmure.addEventListener('mouseover', function(event) 
@@ -2908,7 +3075,7 @@ function majInventairePerso(currentPerso)
 	var Select;
 	var SelectEquipement;
 	
-	majContEquipement();
+	majBtnDesequiper();
 
 	// Affichage barre poids du sac
 	sacBar.scaleX = (POIDS_DU_SAC/currentPerso.poidsMax) * sacBarWidth;
@@ -3233,7 +3400,7 @@ function majConteneurItemCase(tab)
 				_SELECTED_ITEM_CASE=currentItem.id;
 
 				// maj des boutons
-				majBtnsItemCase();
+				majBtnRamasser();
 
 				/*if (Select!=null)
 				{
@@ -3261,7 +3428,7 @@ function majConteneurItemCase(tab)
 				_SELECTED_ITEM_CASE=currentItem.id;
 
 				// maj des boutons
-				majBtnsItemCase();
+				majBtnRamasser();
 				/*
 				var currentItem = tab[page][event.target.name];
 				var descriptionItem=currentItem.description;
@@ -3464,7 +3631,6 @@ function majBarreVie(ptsVie, ptsVieMax)
 
 function majFichePersoSimple(currentPerso)
 {
-
 	var classe;
 
 	// ********* AFFICHAGE IMAGE DU PERSO *********/
@@ -3538,17 +3704,17 @@ function majBarresPerso(currentPerso)
 function majBoutonsMode(currentPerso)
 {
 	// ********* AFFICHAGE DES BOUTONS DE MODE *********/
-	//stage.removeChild(BtnFouiller, BtnCacher, BtnDefendre);
 	contBtnModes.removeAllChildren();
 	switch(currentPerso.mode)
 	{
 	// mode oisif
-	case 0:
+	case 0 : //alert("case 0");
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
 		BtnFouiller.y=0;
 		contBtnModes.addChild(BtnFouiller);
 		BtnFouiller.addEventListener('click', function(event)
 		{
+			//alert("click");
 			socket.emit('PERSONNAGE_MODE_CS', 1);
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
@@ -3567,10 +3733,11 @@ function majBoutonsMode(currentPerso)
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 		BtnCacher.addEventListener('touchstart', function(event) 
-				{
-					socket.emit('PERSONNAGE_MODE_CS', 2);
-					socket.emit('INFO_PERSONNAGE_CS');
-				});	
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 2);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});	
+
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
 		contBtnModes.addChild(BtnDefendre);
@@ -3580,17 +3747,17 @@ function majBoutonsMode(currentPerso)
 			socket.emit('INFO_PERSONNAGE_CS');
 		});
 		BtnDefendre.addEventListener('touchstart', function(event) 
-				{
-					socket.emit('PERSONNAGE_MODE_CS', 3);
-					socket.emit('INFO_PERSONNAGE_CS');
-				});
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 3);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
 		BtnFouiller.cursor=BtnCacher.cursor=BtnDefendre.cursor="pointer";
 		labelBonusArme.text=("");
 		labelBonusArmure.text=("");
 		break;
 		
 	// mode fouille
-	case 1 :
+	case 1 : //alert("case 1 fouille");
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleGreen.png");
 		BtnFouiller.y=0;
 		contBtnModes.addChild(BtnFouiller);
@@ -3604,10 +3771,11 @@ function majBoutonsMode(currentPerso)
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 		BtnCacher.addEventListener('touchstart', function(event) 
-				{
-					socket.emit('PERSONNAGE_MODE_CS', 2);
-					socket.emit('INFO_PERSONNAGE_CS');
-				});	
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 2);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});	
+
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseRed.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
 		contBtnModes.addChild(BtnDefendre);
@@ -3617,10 +3785,10 @@ function majBoutonsMode(currentPerso)
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 		BtnDefendre.addEventListener('touchstart', function(event) 
-				{
-					socket.emit('PERSONNAGE_MODE_CS', 3);
-					socket.emit('INFO_PERSONNAGE_CS');
-				});	
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 3);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});	
 		BtnFouiller.cursor="not-allowed";
 		BtnCacher.cursor=BtnDefendre.cursor="pointer";
 		labelBonusArme.text=("");
@@ -3628,7 +3796,7 @@ function majBoutonsMode(currentPerso)
 		break;
 		
 	// mode caché
-	case 2 :  
+	case 2 : //alert("case 2 caché"); 
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
 		BtnFouiller.y=0;
 		contBtnModes.addChild(BtnFouiller);
@@ -3638,10 +3806,11 @@ function majBoutonsMode(currentPerso)
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 		BtnFouiller.addEventListener('touchstart', function(event) 
-				{
-					socket.emit('PERSONNAGE_MODE_CS', 1);
-					socket.emit('INFO_PERSONNAGE_CS');
-				});	
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 1);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});	
+
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheGreen.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
 		contBtnModes.addChild(BtnCacher);
@@ -3654,10 +3823,10 @@ function majBoutonsMode(currentPerso)
 			socket.emit('INFO_PERSONNAGE_CS');
 		});
 		BtnDefendre.addEventListener('touchstart', function(event) 
-				{
-					socket.emit('PERSONNAGE_MODE_CS', 3);
-					socket.emit('INFO_PERSONNAGE_CS');
-				});
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 3);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});
 		BtnCacher.cursor="not-allowed";
 		BtnFouiller.cursor=BtnDefendre.cursor="pointer";
 		labelBonusArme.text=("");
@@ -3665,7 +3834,7 @@ function majBoutonsMode(currentPerso)
 		break;
 
 	// mode défense
-	case 3 :  
+	case 3 : //alert("case 3 défense"); 
 		var BtnFouiller = new createjs.Bitmap("public/Boutons/FouilleRed.png");
 		BtnFouiller.y=0;
 		contBtnModes.addChild(BtnFouiller);
@@ -3675,10 +3844,11 @@ function majBoutonsMode(currentPerso)
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 		BtnFouiller.addEventListener('touchstart', function(event) 
-				{
-					socket.emit('PERSONNAGE_MODE_CS', 1);
-					socket.emit('INFO_PERSONNAGE_CS');
-				});	
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 1);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});	
+
 		var BtnCacher = new createjs.Bitmap("public/Boutons/CacheRed.png");
 		BtnCacher.y = BtnFouiller.y + _espaceBoutonY;
 		contBtnModes.addChild(BtnCacher);
@@ -3688,10 +3858,11 @@ function majBoutonsMode(currentPerso)
 			socket.emit('INFO_PERSONNAGE_CS');
 		});	
 		BtnCacher.addEventListener('touchstart', function(event) 
-				{
-					socket.emit('PERSONNAGE_MODE_CS', 2);
-					socket.emit('INFO_PERSONNAGE_CS');
-				});	
+		{
+			socket.emit('PERSONNAGE_MODE_CS', 2);
+			socket.emit('INFO_PERSONNAGE_CS');
+		});	
+
 		var BtnDefendre = new createjs.Bitmap("public/Boutons/DefenseGreen.png");
 		BtnDefendre.y = BtnCacher.y + _espaceBoutonY;
 		contBtnModes.addChild(BtnDefendre);
@@ -3704,125 +3875,6 @@ function majBoutonsMode(currentPerso)
 		labelBonusArme.text=("(x 1.75)");
 		labelBonusArmure.text=("(x 1.75)");
 		break;
-	}
-}
-
-function majMessages(currentPerso)
-{
-	// ********* AFFICHAGE MESSAGES *********/
-	var longDernierMsg=60;
-
-	if(currentPerso.listeMsgAtt.length > 0)
-	{
-		_listeMessages=currentPerso.listeMsgAtt;
-		// inverse la liste des messages
-		_listeMessages.reverse();
-		labelDernierMessage.text=_listeMessages[0];
-		// Raccourcissement du dernier message
-		/*if(_listeMessages[0].length<longDernierMsg)
-		{
-			var dernierMsg=_listeMessages[0].substring(0,_listeMessages[0].length-1);
-			labelDernierMessage.text="";
-			labelDernierMessage.text=dernierMsg;
-		}
-		else
-		{
-			var dernierMsg=_listeMessages[0].substring(0,longDernierMsg);
-			labelDernierMessage.text="";
-			labelDernierMessage.text=dernierMsg+"...";
-		}*/
-	}
-	else
-	{
-		labelDernierMessage.text="";
-		_listeMessages=null;
-	}
-
-	if(_listeMessages!=null && currentPerso.nbrNvMsg >0)
-	{
-		labelNombreNouvMsg.text="";
-		labelNombreNouvMsg.text=("( "+ currentPerso.nbrNvMsg + " )");
-
-		var BtnMessages = new createjs.Bitmap("public/Boutons/Messages.png");
-		BtnMessages.y=_espaceBoutonY;
-		contBtnsListes.addChild(BtnMessages);
-		BtnMessages.addEventListener('click', function(event) {
-			if(_listeMessages != null && _PAGE_LISTE_MESSAGES==false)
-			{
-				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
-				pageMessages();	
-			}
-			else if(_PAGE_LISTE_MESSAGES==true)
-			{
-				socket.emit('ACCUSE_LECTURE_MSG_CS');
-				stage.removeChild(contMessage);
-				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
-				game();
-
-			}
-		});
-		BtnMessages.addEventListener('touchstart', function(event) {
-			if(_listeMessages != null && _PAGE_LISTE_MESSAGES==false)
-			{
-				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
-				pageMessages();
-			}
-			else if(_PAGE_LISTE_MESSAGES==true)
-			{
-				socket.emit('ACCUSE_LECTURE_MSG_CS');
-				stage.removeChild(contMessage);
-				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
-				game();
-				
-			}
-		});
-		BtnMessages.cursor="pointer";
-	}
-	else if(_listeMessages!=null && currentPerso.nbrNvMsg ==0)
-	{
-		labelNombreNouvMsg.text="";
-
-		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesVide.png");
-		BtnMessages.y=_espaceBoutonY;
-		contBtnsListes.addChild(BtnMessages);
-		BtnMessages.addEventListener('click', function(event) {
-			if(_listeMessages != null && _PAGE_LISTE_MESSAGES==false)
-			{
-				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
-				pageMessages();
-			}
-			else if(_PAGE_LISTE_MESSAGES==true)
-			{
-				stage.removeChild(contMessage);
-				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
-				game();
-			}
-		});
-		BtnMessages.addEventListener('touchstart', function(event) {
-			if(_listeMessages != null)
-			{
-				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
-				pageMessages();
-			}
-			else if(_PAGE_LISTE_MESSAGES==true)
-			{
-				stage.removeChild(contMessage);
-				_PAGE_LISTE_MESSAGES=!_PAGE_LISTE_MESSAGES;
-				game();
-			}
-		});
-		
-		BtnMessages.cursor="pointer";
-	}
-	else
-	{
-		labelNombreNouvMsg.text="";
-
-		var BtnMessages = new createjs.Bitmap("public/Boutons/MessagesGris.png");
-		BtnMessages.y=_espaceBoutonY;
-		contBtnsListes.addChild(BtnMessages);
-
-		BtnMessages.cursor="not-allowed";
 	}
 }
 
@@ -4045,6 +4097,8 @@ function majEventsPictoProbas(pourcentFouille, pourcentCache)
 
 function majPtsAttaqueDefense(currentPerso)
 {
+	_CONT_PTS_ATTAQUE.removeAllChildren();
+	_CONT_PTS_DEFENSE.removeAllChildren();
 	var ptsAttaque = 75;
 	var ptsDefense = 21;
 	var espaceEntreImages = 50;
@@ -4085,7 +4139,7 @@ function majPtsAttaqueDefense(currentPerso)
 
 		// config du cercle
 	 	circle = new createjs.Shape();
-	 	 circle.graphics.beginFill(couleur).drawCircle(0, 0, 4);
+	 	circle.graphics.beginFill(couleur).drawCircle(0, 0, 4);
 		circle.x = position*15;
 		circle.y = 0;
 		_CONT_PTS_ATTAQUE.addChild(circle);
@@ -4142,8 +4196,12 @@ function majImageMap(currentCase, idSousCase)
 		currentCase.pathImg += ".jpg";
 	}
 
-	// suppresion de la map du canvas
+	if(contMap!=null)
+	{
+		// suppresion de la map du canvas
 	contMap.removeChild(map);
+	}
+	
 	
 	// chargement de l'image de la case
 	var map = new createjs.Bitmap(currentCase.pathImg);
@@ -4227,18 +4285,20 @@ function afficherBarreSante(ptsVie, ptsVieMax, couleurRouge)
 function defineCadreMap(couleur)
 {
 	if (couleur == "rouge")
-	{shape4.graphics.setStrokeStyle(2).beginStroke("#FF0000").drawRect(
+	{
+		shapeMap.graphics.setStrokeStyle(2).beginStroke("#FF0000").drawRect(
 			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
 	}
 	else
 	{
-		shape4.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
+		shapeMap.graphics.setStrokeStyle(2).beginStroke("#405050").drawRect(
 			_contMapX-2, _contMapY-2, _contMapW+2, _contMapH+2);
 	}
 }
 
 function afficherTooltipItem(x, y, obj, item)
 {
+	stage.removeChild(_CONTENEUR_TOOLTIP);
 	var hauteur = 0;
 	var coul;
 	// si c'est une description d'item
@@ -4248,7 +4308,7 @@ function afficherTooltipItem(x, y, obj, item)
 		hauteur = 55;
 		// défini les caractéristiques de l'objet
 		var ligne0 = obj.nom;
-		var ligne1 = "V : "+obj.valeur+" - P : " + obj.poids;
+		var ligne1 = "Valeur : "+obj.valeur+" - Poids : " + obj.poids;
 		var ligne2 = obj.description;
 	
 		_LABEL_DESCRIPTION.text = ligne0 +"\n" +ligne1 +"\n" + ligne2;
@@ -4822,6 +4882,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 		return;
 	}
 
+	// Le personnage a changé de case, l'objet ne doit plus être sélectionner
+	_SELECTED_ITEM_CASE=-1;
+
 	// Tri des items de la case
 	currentCase.listeItem.sort(function(item1,item2){return item1.id-item2.id;});
 
@@ -4839,7 +4902,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 	majBtnJoueurs(nbrAllies+nbrEnnemis);
 	
 	// ... reset les 'selecteds' des items
-	majBtnsItemCase();
+	majBtnRamasser();
 	
 	// ... l'inventaire de case
 	majInventaireCase(currentCase);
@@ -4861,7 +4924,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 	
 	// ... le tabel du nom de la case
 	labelCaseEnCours.text = "";
-	labelCaseEnCours.text = /*"Case en cours :\n" + */currentCase.nom /*+ ""*/;
+	afficherNomCase(currentCase.nom);
 
 	// ... la description de la case
 	//majDesCase(currentCase.description);
@@ -4875,6 +4938,7 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
  */
 socket.on('INFO_PERSONNAGE_SC', function(currentPerso) 
 {
+	//alert('INFO_PERSO');
 	// retien le goule max poru choix de la couleur du nombre de goules
 	_LAST_GOULES_MAX = currentPerso.goulesMax;
 
@@ -4884,7 +4948,12 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso)
 
 	// affiche...
 	/// ... la fiche du perso (relative a la competence)
-	majFichePersoSimple(currentPerso);
+	// à ne faire qu'une seule fois au démarage 
+	if(imgPerso==null || _START==false)
+	{
+		majFichePersoSimple(currentPerso);
+		_START=true;
+	}
 
 	// met a jour..
 	/// ... les barres du perso (vie, mouvement ...)
@@ -4897,7 +4966,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso)
 	majBoutonsMode(currentPerso);
 
 	/// ... les mesages en attente
-	majMessages(currentPerso);
+	majBoutonMessages(currentPerso);
 		
 	/// ... les pts attaque et def
 	majPtsAttaqueDefense(currentPerso);
@@ -5092,7 +5161,7 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
 		afficherMessageRetour("Points d'action insuffisants !");
 		break;
 	}
-	socket.emit('INFO_PERSONNAGE_CS');
+	//socket.emit('INFO_PERSONNAGE_CS');
 });
 
 /******************************************************************************************************************
@@ -5249,7 +5318,7 @@ socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 		majConteneurPersoListeAllies(TabListe, contListeAllies, _PAGE_PERSO_ALLIES);
 	}
 
-	socket.emit('INFO_PERSONNAGE_CS');
+	//socket.emit('INFO_PERSONNAGE_CS');
 });
 
 function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, DescriptionVie, DescriptionSac)
@@ -5257,40 +5326,52 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 	var hauteur = 0;
 	var coul;
 	var largeur = 0;
+	var espacementPictos = 15;
+	var miseAechelle = 0.75;
 
-	y += 50;
-	x += 50;
+	y += 90;
+	x += 90;
 
 	// Déclaration des pictogrammes
 	var imgPseudo = new createjs.Bitmap("public/pictos/pseudo.png");
 	imgPseudo.x=5;
-	imgPseudo.y=5;
+	imgPseudo.y=-5;
+	imgPseudo.scaleX=miseAechelle;
+	imgPseudo.scaleY=miseAechelle;
 
 	var imgCompetence = new createjs.Bitmap("public/pictos/competence.png");
 	imgCompetence.x=imgPseudo.x;
-	imgCompetence.y=imgPseudo.y+30;
+	imgCompetence.y=imgPseudo.y+espacementPictos;
+	imgCompetence.scaleX=miseAechelle;
+	imgCompetence.scaleY=miseAechelle;
 
 	var imgMode = new createjs.Bitmap("public/pictos/mode.png");
 	imgMode.x=imgPseudo.x;
-	imgMode.y=imgPseudo.y+30*2;
+	imgMode.y=imgPseudo.y+espacementPictos*2;
+	imgMode.scaleX=miseAechelle;
+	imgMode.scaleY=miseAechelle;
 
 	var imgSante = new createjs.Bitmap("public/pictos/ptsVie.png");
 	imgSante.x=imgPseudo.x;
-	imgSante.y=imgPseudo.y+30*3;
+	imgSante.y=imgPseudo.y+espacementPictos*3;
+	imgSante.scaleX=miseAechelle;
+	imgSante.scaleY=miseAechelle;
 
 	var imgSac = new createjs.Bitmap("public/pictos/poidsSac.png");
 	imgSac.x=imgPseudo.x;
-	imgSac.y=imgPseudo.y+30*4;
+	imgSac.y=imgPseudo.y+espacementPictos*4;
+	imgSac.scaleX=miseAechelle;
+	imgSac.scaleY=miseAechelle;
 
 	// Déclaration du label de description
 	var labelDescribePerso = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelDescribePerso.x = 40;
-	labelDescribePerso.y = imgPseudo.y + 10;
-	
+	labelDescribePerso.x = 35 ;
+	labelDescribePerso.y = imgPseudo.y + 5;
+
 	// si c'est une description d'allié
 	if (allie)
 	{
-		hauteur = 7*32;
+		hauteur = 7*espacementPictos;
 		// défini les caractéristiques du personnage
 		// Option 1
 		var ligne0 = "Pseudo : " + currentPerso.listeMsgAtt;
@@ -5312,7 +5393,9 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 			var ligne5 = currentPerso.armeEquipee.nom + " - Valeur : " + currentPerso.armeEquipee.valeur;
 			var imgArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
 			imgArme.x=imgPseudo.x;
-			imgArme.y=imgPseudo.y+32*5;
+			imgArme.y=imgPseudo.y+espacementPictos*5;
+			imgArme.scaleX=miseAechelle;
+			imgArme.scaleY=miseAechelle;
 			contDescriptionPerso.addChild(imgArme);
 		}
 		else
@@ -5325,7 +5408,9 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 			var ligne6 = currentPerso.armureEquipee.nom + " - Valeur : " + currentPerso.armureEquipee.valeur;
 			var imgArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
 			imgArmure.x=imgPseudo.x;
-			imgArmure.y=imgPseudo.y+32*6;
+			imgArmure.y=imgPseudo.y+espacementPictos*6;
+			imgArmure.scaleX=miseAechelle;
+			imgArmure.scaleY=miseAechelle;
 			contDescriptionPerso.addChild(imgArmure);
 		}
 		else
@@ -5334,13 +5419,13 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 		}
 		
 		// Construction du label avec toutes les lignes
-		labelDescribePerso.text = ligne0 +"\n\n" +ligne1 +"\n\n" + ligne2 + "\n\n" + ligne3 + "\n\n" +ligne4 +"\n\n" + ligne5 + "\n\n" + ligne6;
+		labelDescribePerso.text = ligne0 +"\n" +ligne1 +"\n" + ligne2 + "\n" + ligne3 + "\n" +ligne4 +"\n" 	+ ligne5 + "\n" + ligne6;
 
 		// calcul de la largeur du conteneur
 		largeur = (Math.max(ligne1.length,ligne2.length, ligne0.length, ligne3.length, ligne4.length, ligne5.length, ligne6.length)) *7 + 80;
 
 		// définition de la couleur de fond
-		coul = createjs.Graphics.getRGB(0,0,150, 0.8);
+		coul = createjs.Graphics.getRGB(0,0,250, 0.6);
 	}
 	// si c'est une description d'ennemi
 	else
@@ -5436,6 +5521,7 @@ function supprimerTooltipPersoListe()
 
 function majConteneurPersoListeAllies(tab, conteneur, pageEnCours)
 {
+	conteneur.removeAllChildren();
 	var imgPersoAllie;
 	var iPositionPersoInConteneur=0;
 	try 
@@ -5594,7 +5680,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn1, listeEnn2, equipe)
 		labelEnnemisListe2.text="Liste des Ennemis INNO :";
 	}
 
-	socket.emit('INFO_PERSONNAGE_CS');
+	//socket.emit('INFO_PERSONNAGE_CS');
 });
 
 function majFlechesListesPersoAllies(nbPages)
@@ -5706,6 +5792,7 @@ function majFlechesListesPersoEnnemis(nbPagesEquipe1, nbPagesEquipe2)
 
 function majConteneurPersoListeEnnemi(tab, conteneur, pageEnCours)
 {
+	//conteneur.removeAllChildren();
 	var imgPersoEnnemi;
 	try 
 	{
@@ -5771,8 +5858,9 @@ function majConteneurPersoListeEnnemi(tab, conteneur, pageEnCours)
 					imgPersoEnnemi.y = 2 ; 
 					imgPersoEnnemi.cursor= "pointer";
 				}
-			}
 
+			}
+			conteneur.addChild(imgPersoEnnemi);
 			imgPersoEnnemi.name = i;
 
 			// Ajout de l'évenement a l'image
@@ -5983,7 +6071,7 @@ function majConteneurPersoListeEnnemi(tab, conteneur, pageEnCours)
 				majBtnAttaquer(BtnCancelListe.x, BtnCancelListe.y);
 			});
 
-			conteneur.addChild(imgPersoEnnemi);
+			
 
 			// position de l'item dans le conteneur
 			iPositionPersoInConteneur++;
