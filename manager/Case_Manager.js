@@ -24,6 +24,7 @@ Case_Manager.Load = function()
 		var idCases = new Array();
 		context.listeCases = new Array();
 	
+		var nbrCasesChargees = 0;
 		// récupération des clés
 		idCases = oCase_BD.GetCasesId(function(idCases)
 		{
@@ -36,6 +37,7 @@ Case_Manager.Load = function()
 				// charge la case en mémoire par rapport à son id
 				oCase_BD.GetCaseById(id, function(idCase, reponse)
 				{
+					nbrCasesChargees++;
 					// gestion des erreurs
 					if(reponse == -1 || reponse == -2)
 					{
@@ -47,10 +49,24 @@ Case_Manager.Load = function()
 						EventLog.log("CASE_MANAGER  : Load() : Chargement en mémoire de la case [id="+reponse.id+";nom="+reponse.nom+"]");
 						context.listeCases[idCase] = reponse;
 					}
+					// si on a chargé toutes les cases
+					if (idCases.length == nbrCasesChargees)
+					{
+						if (creation)
+						{
+							EventLog.log("CASE_MANAGER : Nouvelles cases ajoutées -> Remplissage des cases");
+							context.RemplirCases();
+						}
+						/*else
+						{
+							oCase_BD.supprimerCases();
+						}*/
+					}
 				});
 			}
+			
 			// si les cases viennent d'être créées, on les remplies
-			if (creation) context.RemplirCases();
+
 		});
 	});
 },
@@ -304,4 +320,15 @@ Case_Manager.Save = function()
 	}
 },
 
+Case_Manager.reinitialiser = function()
+{
+	var context = this;
+	oCase_BD.supprimerCases(function()
+	{
+		// recharger en mémoire
+		context.Load();
+		// return à session_manager
+		//callback();
+	})
+}
 module.exports = Case_Manager;

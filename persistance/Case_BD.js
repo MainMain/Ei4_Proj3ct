@@ -95,18 +95,18 @@ Case_BD.SetCase = function(caseToSave, callSetCase)
  * 
  * @method Creation
  */
-Case_BD.Creation = function(caseToSave, callSetCase) {
+ 
+Case_BD.Creation = function(id, nom, description, probaObjet, probaCache, nbrGoules, listeItem, callSetCase) {
 	var CaseModel = mongoose.model('Case');
 	var newCase = new CaseModel();
 
-	newCase.id = caseToSave.id;
-	newCase.nom = caseToSave.nom;
-	newCase.description = caseToSave.description;
-	newCase.probaObjet = caseToSave.probaObjet;
-	newCase.probaCache = caseToSave.probaCache;
-	newCase.nbrGoules = caseToSave.nbrGoules;
-	newCase.listeItem = caseToSave.listeItem;
-	newCase.pathImg = caseToSave.pathImg;
+	newCase.id 			= id;
+	newCase.nom 		= nom;
+	newCase.description = description;
+	newCase.probaObjet 	= probaObjet;
+	newCase.probaCache 	= probaCache;
+	newCase.nbrGoules 	= nbrGoules;
+	newCase.listeItem 	= listeItem;
 
 	newCase.save(function(err) {
 		if (err) {
@@ -114,8 +114,8 @@ Case_BD.Creation = function(caseToSave, callSetCase) {
 			// enlève l'exception pour empecher que le serveur plante //throw err;
 			EventLog.log("CASE_BD : Creation() : ERREUR ");
 		}
-		EventLog.log("CASE_BD : Creation de case réussie ! " + newCase.nom);
-
+		EventLog.log("CASE_BD : Creation de case réussie : " + newCase.nom);
+		callSetCase(newCase.id);
 	});
 },
 
@@ -158,6 +158,18 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase)
 	});
 },
 
+Case_BD.supprimerCases = function(callback)
+{
+	EventLog.log("CASE_BD : Vidage table case... ");
+	var CaseModel = mongoose.model('Case');
+
+	CaseModel.remove({ }, function()
+		{
+			callback();
+		}).exec();
+
+	//callback();
+}
 /**
  * CREE UNE LISTE DE CASE
  * 
@@ -165,7 +177,10 @@ Case_BD.GetCaseById = function(idCase, callbackGetCase)
  */
 Case_BD.Initialiser = function(callBack) 
 {	
+	console.log("INIT");
 	var creation = false;
+	var context = this;
+	var nbrCasesEnr = 0;
 	// test si la table case est vide
 	this.GetCasesId(function(tabId)
 	{
@@ -177,9 +192,6 @@ Case_BD.Initialiser = function(callBack)
 			// lecture dans le fichier
 			EventLog.log("CASE_BD : Chargement des cases fichier -> base de données");
 			
-			// récupère le model de Item
-			CaseModel = mongoose.model('Case');
-
 			// ouerture du fichier en lecture
 			var file = fs.readFileSync('./persistance/caseListe.txt', "utf8");
 			
@@ -189,6 +201,12 @@ Case_BD.Initialiser = function(callBack)
 			// on supprime la premiere ligne 
 			tabLignes.splice(0, 1);
 			
+			// on récupère le nombre de lignes
+			var nbLines = tabLignes.length;
+			
+			// on récupère le dernier id de case pour savoir quand rappeller le callback
+			var lastIdCase = tabLignes[tabLignes.length-1].split("-")[0];
+
 			// pour chaque ligne
 			for(var i in tabLignes)
 			{
@@ -200,14 +218,13 @@ Case_BD.Initialiser = function(callBack)
 					
 					if(infosCase[0])
 					{
-						var newCase = new CaseModel();
 						
-						newCase.id			= infosCase[0];
-						newCase.nom			= infosCase[1];
-						newCase.description	= infosCase[2];
-						newCase.probaObjet	= infosCase[3];
-						newCase.probaCache	= infosCase[4];
-						newCase.nbrGoules	= infosCase[5];
+						var id			= infosCase[0];
+						var nom			= infosCase[1];
+						var description	= infosCase[2];
+						var probaObjet	= infosCase[3];
+						var probaCache	= infosCase[4];
+						var nbrGoules	= infosCase[5];
 						
 						// création de la liste des items
 						var listeItems = new Array();
@@ -216,17 +233,28 @@ Case_BD.Initialiser = function(callBack)
 							listeItems.push(oItem_BD.GetItemById(infosCase[i]));	
 						}
 						
-						newCase.listeItem	= listeItems;
+						context.Creation(id, nom, description, probaObjet, probaCache, nbrGoules, listeItems, function(idEnregistre)
+							// callback recu a chaque enregistrement
+							{
+								// si toutes les cases on été enregistrés, on repart dans le manager
+								// (= si la ligne suivante est une ligne vide)
+								if(idEnregistre == lastIdCase)
+								{
+									EventLog.log("CALLBACK nvlles cases crées ! ");
+									callBack(creation);
+								}
+							});
 						
-						newCase.save();
-						
-						EventLog.log("CASE_BD : Creation de la case [" + newCase.nom + "] en BD");
 					} // fin if(infosCase[0])
 				} // fin if(tabLignes != "")
 			} // fin for(var i in tabLignes)
 		} // fin if(tabId.length == 0)
-		EventLog.log("CALLBACK ! ");
-		callBack(creation);
+		else
+		{
+			EventLog.log("CALLBACK pas nvlles cases ! ");
+			callBack(creation);
+		}
+		
 	});
 },
 module.exports = Case_BD;
