@@ -402,64 +402,64 @@ function initialize()
 	                {src:"public/spritesheets/persos/Chercheur64gris.png", id:"idPersoChercheur64gris"},
 	                {src:"public/spritesheets/persos/Explorateur64gris.png", id:"idPersoExplorateur64gris"},
 	                {src:"public/spritesheets/persos/perso.gif", id:"idPerso"},
-	                {src:"public/map/1.png", id:"1"},
-	                {src:"public/map/2_a.png", id:"2_a"},
-	                {src:"public/map/2_b.png", id:"2_b"},
-	                {src:"public/map/3.png", id:"3"},
-	                {src:"public/map/4_a.png", id:"4_a"},
-	                {src:"public/map/4_b.png", id:"4_b"},
-	                {src:"public/map/4_c.png", id:"4_c"},
-	                {src:"public/map/4_d.png", id:"4_d"},
-	                {src:"public/map/5.png", id:"5"},
-	                {src:"public/map/6.png", id:"6"},
-	                {src:"public/map/7.png", id:"7"},
-	                {src:"public/map/8.png", id:"8"},
-	                {src:"public/map/9_a.png", id:"9_a"},
-	                {src:"public/map/9_b.png", id:"9_b"},
-	                {src:"public/map/9_c.png", id:"9_c"},
-	                {src:"public/map/9_d.png", id:"9_d"},
-	                {src:"public/map/10.png", id:"10"},
-	                {src:"public/map/11.png", id:"11"},
-	                {src:"public/map/12.png", id:"12"},
-	                {src:"public/map/13.png", id:"13"},
-	                {src:"public/map/14.png", id:"14"},
-	                {src:"public/map/15.png", id:"15"},
-	                {src:"public/map/16_a.png", id:"16_a"},
-	                {src:"public/map/16_b.png", id:"16_b"},
-	                {src:"public/map/16_c.png", id:"16_c"},
-	                {src:"public/map/17_a.png", id:"17_a"},
-	                {src:"public/map/17_b.png", id:"17_b"},
-	                {src:"public/map/17_c.png", id:"17_c"},
-	                {src:"public/map/18_a.png", id:"18_a"},
-	                {src:"public/map/18_b.png", id:"18_b"},
-	                {src:"public/map/19_a.png", id:"19_a"},
-	                {src:"public/map/19_b.png", id:"19_b"},
-	                {src:"public/map/19_c.png", id:"19_c"},
-	                {src:"public/map/20.png", id:"20"},
-	                {src:"public/map/21.png", id:"21"},
-	                {src:"public/map/22_a.png", id:"22_a"},
-	                {src:"public/map/22_b.png", id:"22_b"},
-	                {src:"public/map/23.png", id:"23"},
-	                {src:"public/map/24.png", id:"24"},
-	                {src:"public/map/25.png", id:"25"},
-	                {src:"public/map/26.png", id:"26"},
-	                {src:"public/map/27.png", id:"27"},
-	                {src:"public/map/28.png", id:"28"},
-	                {src:"public/map/29.png", id:"29"},
-	                {src:"public/map/30.png", id:"30"},
-	                {src:"public/map/31.png", id:"31"},
-	                {src:"public/map/32.png", id:"32"},
-	                {src:"public/map/33.png", id:"33"},
-	                {src:"public/map/34_a.png", id:"34_a"},
-	                {src:"public/map/34_b.png", id:"34_b"},
-	                {src:"public/map/35_a.png", id:"35_a"},
-	                {src:"public/map/35_b.png", id:"35_b"},
-	                {src:"public/map/35_c.png", id:"35_c"},
-	                {src:"public/map/36_a.png", id:"36_a"},
-	                {src:"public/map/36_b.png", id:"36_b"},
-	                {src:"public/map/37.png", id:"37"},
-	                {src:"public/map/38.png", id:"38"},
-	                {src:"public/map/39.png", id:"39"},
+	                {src:"public/map/1.jpg", id:"1"},
+	                {src:"public/map/2_a.jpg", id:"2_a"},
+	                {src:"public/map/2_b.jpg", id:"2_b"},
+	                {src:"public/map/3.jpg", id:"3"},
+	                {src:"public/map/4_a.jpg", id:"4_a"},
+	                {src:"public/map/4_b.jpg", id:"4_b"},
+	                {src:"public/map/4_c.jpg", id:"4_c"},
+	                {src:"public/map/4_d.jpg", id:"4_d"},
+	                {src:"public/map/5.jpg", id:"5"},
+	                {src:"public/map/6.jpg", id:"6"},
+	                {src:"public/map/7.jpg", id:"7"},
+	                {src:"public/map/8.jpg", id:"8"},
+	                {src:"public/map/9_a.jpg", id:"9_a"},
+	                {src:"public/map/9_b.jpg", id:"9_b"},
+	                {src:"public/map/9_c.jpg", id:"9_c"},
+	                {src:"public/map/9_d.jpg", id:"9_d"},
+	                {src:"public/map/10.jpg", id:"10"},
+	                {src:"public/map/11.jpg", id:"11"},
+	                {src:"public/map/12.jpg", id:"12"},
+	                {src:"public/map/13.jpg", id:"13"},
+	                {src:"public/map/14.jpg", id:"14"},
+	                {src:"public/map/15.jpg", id:"15"},
+	                {src:"public/map/16_a.jpg", id:"16_a"},
+	                {src:"public/map/16_b.jpg", id:"16_b"},
+	                {src:"public/map/16_c.jpg", id:"16_c"},
+	                {src:"public/map/17_a.jpg", id:"17_a"},
+	                {src:"public/map/17_b.jpg", id:"17_b"},
+	                {src:"public/map/17_c.jpg", id:"17_c"},
+	                {src:"public/map/18_a.jpg", id:"18_a"},
+	                {src:"public/map/18_b.jpg", id:"18_b"},
+	                {src:"public/map/19_a.jpg", id:"19_a"},
+	                {src:"public/map/19_b.jpg", id:"19_b"},
+	                {src:"public/map/19_c.jpg", id:"19_c"},
+	                {src:"public/map/20.jpg", id:"20"},
+	                {src:"public/map/21.jpg", id:"21"},
+	                {src:"public/map/22_a.jpg", id:"22_a"},
+	                {src:"public/map/22_b.jpg", id:"22_b"},
+	                {src:"public/map/23.jpg", id:"23"},
+	                {src:"public/map/24.jpg", id:"24"},
+	                {src:"public/map/25.jpg", id:"25"},
+	                {src:"public/map/26.jpg", id:"26"},
+	                {src:"public/map/27.jpg", id:"27"},
+	                {src:"public/map/28.jpg", id:"28"},
+	                {src:"public/map/29.jpg", id:"29"},
+	                {src:"public/map/30.jpg", id:"30"},
+	                {src:"public/map/31.jpg", id:"31"},
+	                {src:"public/map/32.jpg", id:"32"},
+	                {src:"public/map/33.jpg", id:"33"},
+	                {src:"public/map/34_a.jpg", id:"34_a"},
+	                {src:"public/map/34_b.jpg", id:"34_b"},
+	                {src:"public/map/35_a.jpg", id:"35_a"},
+	                {src:"public/map/35_b.jpg", id:"35_b"},
+	                {src:"public/map/35_c.jpg", id:"35_c"},
+	                {src:"public/map/36_a.jpg", id:"36_a"},
+	                {src:"public/map/36_b.jpg", id:"36_b"},
+	                {src:"public/map/37.jpg", id:"37"},
+	                {src:"public/map/38.jpg", id:"38"},
+	                {src:"public/map/39.jpg", id:"39"},
 	                {src:"public/spritesheets/arme/100.png", id:"100"},
 	                {src:"public/spritesheets/arme/101.png", id:"101"},
 	                {src:"public/spritesheets/arme/102.png", id:"102"},
@@ -553,28 +553,28 @@ function initialize()
 	backgroundPreload = new createjs.Bitmap("public/Background_1.png");
 	backgroundPreload.image.onload = setImg(backgroundPreload, 0, 0);
 	backgroundPreload.cursor="wait";
+	var colorChargement="#990000";
 
-
-	imgLogo = new createjs.Bitmap("public/images/LOGO3.png");
-	imgLogo.scaleX=1.5;
-	imgLogo.scaleY=1.5;
-	var positionLogoX = _CANVAS_LARGEUR/2 - (450)/2;
-	var positionLogoY = _CANVAS_HAUTEUR/2 - (450)/2 - 150;
+	imgLogo = new createjs.Bitmap("public/images/LOGO.png");
+	imgLogo.scaleX=1;
+	imgLogo.scaleY=1;
+	var positionLogoX = _CANVAS_LARGEUR - (450)/2 - 50;
+	var positionLogoY = - 40 ;
 	imgLogo.image.onload = setImg(imgLogo, positionLogoX, positionLogoY);
 	imgLogo.cursor="wait";
 
 	// Création d'un label affichant un message pendant le chargement
-	loadProgressLabel = stage.addChild(new createjs.Text("","70px Infected","#850000"));
+	loadProgressLabel = stage.addChild(new createjs.Text("","70px Fstein",colorChargement));
 	loadProgressLabel.lineWidth = 800;
 	loadProgressLabel.textAlign = "center";
 	//Centrer le label horizontalement
 	loadProgressLabel.x = canvas.width/2;
-	loadProgressLabel.y = canvas.height/2 + 40;
+	loadProgressLabel.y = canvas.height/2 - 80;
 	
 	// Création d'un second label affichant le pourcentage du chargement
-	labelPourcentLoad= stage.addChild(new createjs.Text("","70px Consolas","#850000"));
-	labelPourcentLoad.x=loadProgressLabel.x +20;
-	labelPourcentLoad.y=loadProgressLabel.y+190;
+	labelPourcentLoad= stage.addChild(new createjs.Text("","70px Fstein",colorChargement));
+	labelPourcentLoad.x=loadProgressLabel.x - 75;
+	labelPourcentLoad.y=loadProgressLabel.y+180;
 
 	// Création d'un conteneur pour placer la barre de chargement
 	loadingBarContainer = new createjs.Container();
@@ -583,8 +583,8 @@ function initialize()
 
 	// Définition des caractéristiques de la barre
 	loadingBarHeight = 80;
-	loadingBarWidth = 500;
-	LoadingBarColor = createjs.Graphics.getRGB(85,0,0);
+	loadingBarWidth = 700;
+	LoadingBarColor = createjs.Graphics.getRGB(95,0,0);
 
 	// Création de la barre de chargement en elle même
 	loadingBar = new createjs.Shape();
@@ -596,7 +596,7 @@ function initialize()
 	frameBarColor = createjs.Graphics.getRGB(0,0,0);
 	padding = 3;
 	// Dessin du contour de la barre
-	frame.graphics.setStrokeStyle(1).beginStroke(LoadingBarColor).drawRect(-padding/2, -padding/2, loadingBarWidth+padding, loadingBarHeight+padding);
+	frame.graphics.setStrokeStyle(1).beginStroke(colorChargement).drawRect(-padding/2, -padding/2, loadingBarWidth+padding, loadingBarHeight+padding);
 
 	// Ajout de la barre de chargement et de son contour dans le conteneur
 	loadingBarContainer.addChild(loadingBar, frame);
@@ -648,21 +648,20 @@ function handleProgress()
 	// Calcul du pourcentage de progression
 	var progresPercentage = Math.round(preload.progress*100);
 	// Affichage du pourcentage
-	loadProgressLabel.text =("Loading Apocalypse\n\n\n\n" + progresPercentage);
-	labelPourcentLoad.text=" %";
+	loadProgressLabel.text =("Loading Apocalypse");
+	labelPourcentLoad.text= progresPercentage + " %";
 }
 
 // Une fois le chargement du canvas terminé
 function handleComplete() 
 {
 	// Suppression du label de chargement
-	stage.removeChild(labelPourcentLoad);
+	//stage.removeChild(labelPourcentLoad);
 	// Changement du pointeur de la souris
 	backgroundPreload.cursor="pointer";
 	loadingBarContainer.cursor="pointer";
 	//Affichage d'un nouveau texte
 	loadProgressLabel.text = "Click to Survive";
-
 	// Ajout des événements pour démarrer le jeu
 	canvas.addEventListener("click", handleClick);
 	canvas.addEventListener("touchstart", handleClick);
@@ -671,7 +670,7 @@ function handleComplete()
 // Click de l'utilisateur après le chargement
 function handleClick() {
 	// Suppression des outils utilisés pour le chargement
-	stage.removeChild(loadProgressLabel, loadingBarContainer, backgroundPreload);
+	stage.removeChild(loadProgressLabel, loadingBarContainer, backgroundPreload, labelPourcentLoad);
 	// Suppression des événements sur le canvas
 	canvas.removeEventListener("click", handleClick);
 	canvas.removeEventListener("touchstart", handleClick);
@@ -1457,8 +1456,6 @@ function pageMessages()
 			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);*/
 
 	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
-	background_message.scaleX=0.840;
-	background_message.scaleY=0.750
 	contMessage.addChild(background_message);
 
 	labelMessage = contMessage.addChild(new createjs.Text("", _POLICE_MESSAGES, _COULEUR_LABELS));
@@ -1639,8 +1636,6 @@ function pagePersonnages()
 
 	var background_liste = new createjs.Bitmap("public/blood.jpg");
 	background_liste.alpha=1;
-	background_liste.scaleX=0.840;
-	background_liste.scaleY=0.750;
 	contListe.addChild(background_liste);
 
 	labelAlliesListe = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
@@ -4135,12 +4130,12 @@ function majImageMap(currentCase, idSousCase)
 	// modification du nom de l'image a afficher
 	if (idSousCase == -1)
 	{
-		currentCase.pathImg += ".png";
+		currentCase.pathImg += ".jpg";
 	}
 	else
 	{
 		currentCase.pathImg += "_"+idSousCase;
-		currentCase.pathImg += ".png";
+		currentCase.pathImg += ".jpg";
 	}
 
 	// suppresion de la map du canvas
@@ -4148,10 +4143,6 @@ function majImageMap(currentCase, idSousCase)
 	
 	// chargement de l'image de la case
 	var map = new createjs.Bitmap(currentCase.pathImg);
-
-	// redimensionnement de la map
-	map.scaleX=0.840;
-	map.scaleY=0.750;
 	
 	// Placement de la map
 	map.x = 0;
