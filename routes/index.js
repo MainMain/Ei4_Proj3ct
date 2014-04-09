@@ -17,6 +17,10 @@ exports.classement = function(req, res){
 	  res.render('classement', { title: 'Express' });
 };
 
+exports.confirmerCompte = function(req, res){
+	  res.render('confirmerCompte', { title: 'Express' });
+};
+
 
 exports.chatEquipe = function(req, res){
 	  res.render('chat-equipe', { title: 'Express' });

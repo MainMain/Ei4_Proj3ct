@@ -16,7 +16,19 @@
 
 @font-face { 	font-family: "Infected"; 	src: url('../font/Infected.eot'); }
 @font-face { 	font-family: "Infected"; 	src: url('../font/Infected.ttf'); }
-
+@font-face {  font-family: "Defused";  src: url('../font/defused.ttf'); }
+@font-face {  font-family: "28DaysLater";  src: url('../font/28_Days_Later.ttf'); }
+@font-face {  font-family: "BadGrunge";  src: url('../font/BAD_GRUNGE.ttf'); }
+@font-face {  font-family: "KillEmAll";  src: url('../font/Kill_Em_All.ttf'); }
+@font-face {  font-family: "BlackWidow";  src: url('../font/BlackWidow.ttf'); }
+@font-face {  font-family: "Broken15";  src: url('../font/BROKEN15.ttf'); }
+@font-face {  font-family: "Crushed";  src: url('../font/CRUSHED.ttf'); }
+@font-face {  font-family: "Frail";  src: url('../font/FrailBedazzled.ttf'); }
+@font-face {  font-family: "BulletInYourHead";  src: url('../font/BulletInYourHead.ttf'); }
+@font-face {  font-family: "DownCome";  src: url('../font/DownCome.ttf'); }
+@font-face {  font-family: "Fstein";  src: url('../font/Fstein.ttf'); }
+@font-face {  font-family: "Taigatru";  src: url('../font/Taigatru.ttf'); }
+@font-face {  font-family: "ModelWorker";  src: url('../font/ModelWorker.ttf'); }
 .clearfix {
   *zoom: 1;
 }
@@ -320,48 +332,6 @@ dt {
 }
 dd {
   margin: 0 0 0 40px;
-}
-/* =============================================================================
-   Quotes
-   ========================================================================== */
-blockquote {
-  border-left: 5px solid #049cdb;
-  margin: 40px 0;
-  padding: 5px 0 5px 20px;
-  position: relative;
-  /* Right-aligned blockquote */
-
-}
-blockquote p {
-  font-size: 16px;
-  font-weight: 300;
-  margin-top: 0;
-}
-blockquote small {
-  display: block;
-  color: #999999;
-}
-blockquote small:before {
-  content: '\2014 \00A0';
-}
-blockquote.alignright {
-  border-right: 5px solid #049cdb;
-  border-left: 0;
-  float: right;
-  padding-right: 20px;
-  padding-left: 0;
-}
-blockquote.alignright p,
-blockquote.alignright small {
-  text-align: right;
-}
-q {
-  quotes: none;
-}
-q:before,
-q:after {
-  content: "";
-  content: none;
 }
 /* =============================================================================
    Code
@@ -1618,6 +1588,10 @@ textarea {
   #footer {
     box-shadow: inset 0 2px 3px rgba(204, 204, 204, 0.6);
   }
+  canvas {
+	width : 20%; 
+  }
+ 
 }
 /**
  * Turn the layout into one column
@@ -1634,7 +1608,7 @@ textarea {
     padding: 20px;
   }
   #main {
-    background: #ffffff;
+    background: #ababab;
   }
   #content,
   #sidebar {
@@ -1661,6 +1635,11 @@ textarea {
   }
   #footer .sep {
     visibility: hidden;
+  }
+ canvas{
+	width : 100%; 
+	margin-left: 10%;
+	border:1px;
   }
 }
 @media only screen and (max-width: 480px) {

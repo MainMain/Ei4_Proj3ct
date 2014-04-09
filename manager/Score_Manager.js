@@ -52,6 +52,7 @@ Score_Manager.Load = function (idSession)
 					{
 						context.listeScores[iduser] = new Array();
 					}
+					if (context.listeScores[iduser][idsession]) EventLog.error("Doublon au chargement du score de " + oUtilisateur_Manager.getPseudo(iduser) + " pour la session : " + idsession );
 					context.listeScores[iduser][idsession] = score;
 					EventLog.log("SCORE_MANAGER : Load() : Chargement en mémoire du score de " + oUtilisateur_Manager.getPseudo(iduser) + " pour la session : " + idsession );
 				}

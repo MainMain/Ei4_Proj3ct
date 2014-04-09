@@ -191,6 +191,8 @@ Case_Manager.Fouille = function(idCase, probaObjetPerso)
 	var proba = Math.floor(Math.random() * 100);
 	// multiplie la proba de trouver un objet avec le multiplicateur du personnage
 	var probaObjetCase = this.listeCases[idCase].probaObjet * probaObjetPerso;
+	// limitateur de proba
+	if (probaObjetCase > 90) probaObjet = 90;
 
 	EventLog.log("CASE_MANAGER : Fouille() : proba = " + proba + " - probaObjetCase  => brut = " + this.listeCases[idCase].probaObjet + " - net = " + probaObjetCase);
 	if (proba < probaObjetCase)
