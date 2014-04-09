@@ -97,6 +97,13 @@ oDatabase.Initialiser();
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(28, 17);
 
+// Chargement des utilisateurs en mémoire
+oUtilisateur_Manager.Load();
+
+// Chargement de la liste des items en mémoire
+oItem_Manager.Load();
+
+
 //Chargement des sessions de jeu en mémoire
 oSession_Manager.Load(function(idSession)
 {
@@ -108,14 +115,10 @@ oSession_Manager.Load(function(idSession)
 	oPersonnage_Manager.Load(callbackFinFouille);
 });
 
-// Chargement des utilisateurs en mémoire
-oUtilisateur_Manager.Load();
-
-// Chargement de la liste des items en mémoire
-oItem_Manager.Load();
-
 // Chargement des cases en mémoire
 oCase_Manager.Load();
+
+
 
 
 function callbackFinFouille(idUser)
@@ -628,11 +631,14 @@ callbackInscription = function(reponseInscription, req, res, idInscription)
     		to: b.email, // list of receivers
     		subject: "Bienvenue sur Zomb'IstiA !", // Subject line
     		//text: "Hello world ✔", // plaintext body
-    		html: "Bienvenue " + b.username + " ! <br><br>" // html body
-    			+ "Votre inscription a été prise en compte. Pour la confirmer, merci de cliquer sur "
-    			+ " le lien suivant : <a href=\"http://localhost:25536/confirmerCompte/" + idInscription+"\">Confirmer mon compte </a>"
-    			+ "<br>On se revoit donc... En enfer."
-    			+ "<br><br><br>L'équipe de Zomb'Istia"
+    		html: "Bonjour " + b.username + "," // html body
+    			+ "<br>Votre inscription a été prise en compte. Pour la confirmer, veuillez cliquer sur le lien ci contre : "
+    			+ " <a href=\"http://localhost:25536/confirmerCompte/" + idInscription+"\">Confirmer mon compte </a>"
+    			+ "<br>Ensuite, nous t'invitons a lire le tutoriel afin de mieux comprendre les mécanismes du jeu. Une fois prêt, "
+    			+ "choisissez votre équipe, et lancez vous dans l'aventure !"
+    			+" <br>Préparez vous, vous n'en sorterez pas indemme..."
+    			+" <br><br>N'hésitez pas à nous contacter pour toutes question relative à votre compte ou au jeu en lui même."
+    			+ "<br>L'équipe de Zomb'Istia"
 		}
 
 		// send mail with defined transport object
