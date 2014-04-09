@@ -348,6 +348,7 @@ function initialize()
 	                {src:"public/Background_11.png", id:"idBackground_11"},  
 	                {src:"public/Background_Dead.png", id:"idBackground_Dead"},
 	                {src:"public/Background_Nuit.png", id:"idBackground_Nuit"},
+	                {src:"public/images/BackgroundMort.jpg", id:"idBackground_Dead2"},
 	                {src:"public/blood.jpg", id:"idBackground_blood"}, 
 	                {src:"public/Boutons/Historique.png", id:"idBtnHistorique"},
 	                {src:"public/Boutons/Attaquer.png", id:"idBtnAttaquer"},
@@ -542,6 +543,8 @@ function initialize()
 	                {src:"public/pictos/nbrNvMsgs.png", id:"imgMsg"},
 	                {src:"public/pictos/pseudo.png", id:"imgPseudo"},
 	                {src:"public/pictos/competence.png", id:"imgCompetence"},
+	                {src:"public/images/attaqueNuit.jpg", id:"imgAttNuit"},
+	                {src:"public/images/liste_joueurs.jpg", id:"imgListeJoueur"},
 	                {src:"public/pictos/mode.png", id:"imgMode"}
 	                ];
 
@@ -1453,8 +1456,8 @@ function pageMessages()
 			contMessage.x-2, contMessage.y-2, contMessage.width+2, contMessage.height+2);*/
 
 	var background_message = new createjs.Bitmap("public/Background_liste.jpg");
-	background_message.scaleX=0.840;
-	background_message.scaleY=0.750
+	//background_message.scaleX=0.840;
+	//background_message.scaleY=0.750
 	contMessage.addChild(background_message);
 
 	labelMessage = contMessage.addChild(new createjs.Text("", _POLICE_MESSAGES, _COULEUR_LABELS));
@@ -1634,10 +1637,10 @@ function pagePersonnages()
 	shape6.graphics.setStrokeStyle(2).beginStroke("#999900").drawRect(
 			contListe.x-2, contListe.y-2, contListe.width+2, contListe.height+2);*/
 
-	var background_liste = new createjs.Bitmap("public/blood.jpg");
+	var background_liste = new createjs.Bitmap("public/images/liste_joueurs.jpg");
 	background_liste.alpha=1;
-	background_liste.scaleX=0.840;
-	background_liste.scaleY=0.750;
+	//background_liste.scaleX=0.840;
+	//background_liste.scaleY=0.750;
 	contListe.addChild(background_liste);
 
 	labelAlliesListe = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
@@ -1776,7 +1779,7 @@ function pageAttaqueDeNuit()
 			contNuit.x, contNuit.y, contNuit.width, contNuit.height);
 	
 	// Application du background qui va recouvrir le canvas
-	var background_nuit = new createjs.Bitmap("public/Background_Nuit.png");
+	var background_nuit = new createjs.Bitmap("public/images/attaqueNuit.jpg");
 	contNuit.addChild(background_nuit);
 	
 	var BtnVivant = new createjs.Bitmap("public/Boutons/Vivant.png");
@@ -1814,7 +1817,7 @@ function pageMortPersonnage(currentPerso)
 			contDead.x, contDead.y, contDead.width, contDead.height);
 
 	// Application du background qui va recouvrir le canvas
-	var background_dead = new createjs.Bitmap("public/Background_Dead.png");
+	var background_dead = new createjs.Bitmap("public/images/BackgroundMort.jpg");
 	contDead.addChild(background_dead);
 
 	var causeDeLaMort;
