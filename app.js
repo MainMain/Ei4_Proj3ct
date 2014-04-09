@@ -1666,15 +1666,15 @@ io.sockets.on('connection', function (socket)
 
     	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
     	{
-    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.QSF, liste.INNO);
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.QSF, liste.INNO, 1);
     	}
     	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
     	{
-    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.QSF);
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.QSF, 2);
     	}
     	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
     	{
-    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.INNO);
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.INNO, 3);
     	}
     	//}
     	//catch(err)
