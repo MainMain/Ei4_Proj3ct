@@ -281,7 +281,7 @@ var labelEnnemisListe1, labelEnnemisListe2;
 
 //-------------- Déclaration des conteneurs----------------------------------------------
 
-var contArme, contArmure, contMap, contPerso, contBtnModes,
+var contArme, contArmure, contMap, contPerso, contBtnModes, contPictoCase,
 contBtnsListes, contDead, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
 contListeAllies, contListeEnnemis1, contListeEnnemis2, contZoneMessage, contMessage;
 
@@ -1054,23 +1054,27 @@ function setPlateau()
 		contPictoCase.height = 3*ESPACE_BARRES_Y + 40;
 		stage.addChild(contPictoCase);
 
-		imgAllies = new createjs.Bitmap("public/pictos/nbrAllie.png");
-		imgAllies.y=-2;
-		contPictoCase.addChild(imgAllies);
+		afficherPictosCase();
 
-		imgEnnemis = new createjs.Bitmap("public/pictos/nbrEnnemis.png");
-		imgEnnemis.y=32;
-		contPictoCase.addChild(imgEnnemis);
-
-		imgZombies = new createjs.Bitmap("public/pictos/nbrZombies_plusPetit.png");
-		imgZombies.x=2; // avt : -2
-		imgZombies.y=33*2+4;
-		contPictoCase.addChild(imgZombies);
-
+		/// NB NOUVEAUX MESSAGES ///
 		imgNvMsg = new createjs.Bitmap("public/pictos/nbrNvMsgs.png");
 		imgNvMsg.x=contPictoBarres.x - 5; // avt : -2
 		imgNvMsg.y= 248;
 		stage.addChild(imgNvMsg);
+		imgNvMsg.addEventListener('mouseover', function(event)
+		{
+			y = imgNvMsg.y;
+			txt = "Nombre de nouveaux messages";
+			afficherTooltipItem(x, y, txt, false); 
+		});
+		imgNvMsg.addEventListener('mouseout', function(event)  { supprimerTooltipItem(); });
+		imgNvMsg.addEventListener('touchstart', function(event)				
+		{ 
+			y = imgNvMsg.y;
+			txt = "Nombre de nouveaux messages";
+			afficherTooltipItem(x, y, txt, false);  
+		});
+		imgNvMsg.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
 
 	// ******************************************
 	// ********* Déclaration des labels *********
@@ -1579,6 +1583,69 @@ function afficherMessage(TabListeMessage)
 		}
 	}
 	catch(e){}
+}
+
+function afficherPictosCase()
+{
+	var y = contPictoCase.y ;
+	var x = contPictoCase.x + 100;
+	/// ALLIES ///
+		imgAllies = new createjs.Bitmap("public/pictos/nbrAllie.png");
+		imgAllies.y=0;
+		contPictoCase.addChild(imgAllies);
+		imgAllies.addEventListener('mouseover', function(event)
+		{
+			y = contPictoCase.y - imgAllies.y;
+			txt = "Nombre d'alliés dans la case";
+			afficherTooltipItem(x, y, txt, false); 
+		});
+		imgAllies.addEventListener('mouseout', function(event)  { supprimerTooltipItem(); });
+		imgAllies.addEventListener('touchstart', function(event)				
+		{ 
+			y = contPictoCase.y - imgAllies.y;
+			txt = "Nombre d'alliés dans la case";
+			afficherTooltipItem(x, y, txt, false);  
+		});
+		imgAllies.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
+		
+		/// ENNEMIS ///
+		imgEnnemis = new createjs.Bitmap("public/pictos/nbrEnnemis.png");
+		imgEnnemis.y=32;
+		contPictoCase.addChild(imgEnnemis);
+		imgEnnemis.addEventListener('mouseover', function(event)
+		{
+			y = contPictoCase.y + imgEnnemis.y;
+			txt = "Nombre d'ennemis dans la case";
+			afficherTooltipItem(x, y, txt, false); 
+		});
+		imgEnnemis.addEventListener('mouseout', function(event)  { supprimerTooltipItem(); });
+		imgEnnemis.addEventListener('touchstart', function(event)				
+		{ 
+			y = contPictoCase.y + imgEnnemis.y;
+			txt = "Nombre d'ennemis dans la case";
+			afficherTooltipItem(x, y, txt, false);  
+		});
+		imgEnnemis.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
+
+		/// ZOMBIES ///
+		imgZombies = new createjs.Bitmap("public/pictos/nbrZombies_plusPetit.png");
+		imgZombies.x=2; // avt : -2
+		imgZombies.y=33*2+4;
+		contPictoCase.addChild(imgZombies);
+		imgZombies.addEventListener('mouseover', function(event)
+		{
+			y = contPictoCase.y + imgZombies.y;
+			txt = "Nombre de zombies dans la case";
+			afficherTooltipItem(x, y, txt, false); 
+		});
+		imgZombies.addEventListener('mouseout', function(event)  { supprimerTooltipItem(); });
+		imgZombies.addEventListener('touchstart', function(event)				
+		{ 
+			y = contPictoCase.y + imgZombies.y;
+			txt = "Nombre de zombies dans la case";
+			afficherTooltipItem(x, y, txt, false);  
+		});
+		imgZombies.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
 }
 
 // Afficher la description de la case en cours
@@ -2661,7 +2728,7 @@ function supprimerPageMessage()
 {
 	_PAGE_LISTE_MESSAGES=false;
 	stage.removeChild(contMessage);
-	//game();
+	socket.emit('INFO_PERSONNAGE_CS');
 }
 
 function supprimerPageJoueurs()
@@ -3890,7 +3957,7 @@ function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
 		_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
 		_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23; // avt : y*32*2+10
 	}
-	else if (nbrZombies == 00)
+	else if (nbrZombies == 0)
 	{
 		_LABEL_NB_GOULES = new createjs.Text("", _POLICE_LABEL, "#00FF00");
 		_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
@@ -3908,10 +3975,25 @@ function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
 	// animation correspondante
 	animationModificationForces(nbrAllies, nbrEnnemis, nbrZombies)	
 
+	// si le panneau des joueurs dans la salle était ouvert, ET si il y a eu une modif sur le nombre de joueurs
+	if (
+		_PAGE_JOUEURS 
+		&& 
+		(_LAST_NOMBRE_ALLIES != -1 && _LAST_NOMBRE_ALLIES != nbrAllies 
+			|| 
+		_LAST_NOMBRE_ENNEMIS != -1 && _LAST_NOMBRE_ENNEMIS != nbrEnnemis)
+		)
+	{
+		//  on le ferme et rouvre
+		supprimerPageJoueurs();
+		afficherPageJoueurs();
+	}
 	// update variables 
 	_LAST_NOMBRE_ALLIES = nbrAllies;
 	_LAST_NOMBRE_ENNEMIS = nbrEnnemis;
 	_LAST_NOMBRE_ZOMBIES = nbrZombies;
+
+
 }
 
 function majEventsPictoPerso(currentPerso)
@@ -4336,7 +4418,7 @@ function afficherTooltipItem(x, y, obj, item)
 		_LABEL_DESCRIPTION.text = obj;
 		
 		// défini la taille du conteneur
-		_TAILLE_TOOLTIP = obj.length*6.5;
+		_TAILLE_TOOLTIP = obj.length*7 +15;
 
 		// config couleur fond conteneur
 		coul = createjs.Graphics.getRGB(66,0,33, 0.8);
@@ -5293,6 +5375,7 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoule
  */ 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 {
+	alert("longueur liste alliés : " + listeAllies.length);
 	var msgAction = "";
 	var codeAction = 0;
 	var decoup=8;
@@ -5623,6 +5706,8 @@ function majConteneurPersoListeAllies(tab, conteneur, pageEnCours)
  */ 
 socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn1, listeEnn2, equipe)
 {
+	alert("Equipe = " + " - longueur liste 1 : " + listeEnn1.length + " longueur liste 2 : " + listeEnn2.length);
+
 	var msgAction = "";
 	var codeAction = 0;
 	var decoup=8;
