@@ -10,55 +10,94 @@
 		</head>
 		<body >
 
-		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-			<div class="container-fluid">
-	        	<div class="navbar-header">
-	         		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-		            	<span class="sr-only">Toggle navigation</span>
-		            	<span class="icon-bar"></span>
-		            	<span class="icon-bar"></span>
-		            	<span class="icon-bar"></span>
-	          		</button>
-	          		<a class="navbar-brand" href="#">Notre beau logo</a>	
-	        	</div>
-	        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	          		<ul class="nav navbar-nav pull-right navb">
-	            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
-	            		<li class="navbar-text" >Prochaine attaque dans : 00:54:35 </li>
-	            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button></form>
-	          		</ul>
-	        	</div><!--/.nav-collapse -->
-	     	</div>
-	    </nav>
-	    <div class="container-fluid">
-	    	<div class="row">
-	    	<div class="col-md-2 sidebar" >
-	    		<ul class="nav nav-sidebar nav-pills nav-stacked ">
-	    			<li><a href="/">Accueil</a></li>
-	    		
-					<li class="divider"><hr/></li>
-	    			
-	    			<li ><a href="/regles">Règles</a></li>
-	    			<li><a href="/tutoriel">Tutoriel</a></li>
-	    		
-	    			<li class="divider"><hr/></li>
-	    			<li><a href="/jeu#les_scores">Plateau de jeu</a></li>
-	    			<li class="nav-sidebar active"><a href="/chat-general">Chats</a></li>
-	    		
-	    			<li class="divider"><hr/></li>
-	    			<li><a href="/classement">Classement</a></li>
-	    		</ul>
+			<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+				<div class="container-fluid">
+		        	<div class="navbar-header">
+		         		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			            	<span class="sr-only">Toggle navigation</span>
+			            	<span class="icon-bar"></span>
+			            	<span class="icon-bar"></span>
+			            	<span class="icon-bar"></span>
+		          		</button>
+		          		<a class="navbar-brand" href="#">Notre beau logo</a>	
+		        	</div>
+		        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		          		<ul class="nav navbar-nav pull-right navb">
+		            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
+		            		<li class="navbar-text" >Prochaine attaque dans : 00:54:35 </li>
+		            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button></form>
+		          		</ul>
+		        	</div><!--/.nav-collapse -->
+		     	</div>
+		    </nav>
+		    <div class="container-fluid">
+		    	<div class="row">
+			    	<div class="col-md-2 sidebar" >
+			    		<ul class="nav nav-sidebar nav-pills nav-stacked ">
+			    			<li><a href="/">Accueil</a></li>
+			    		
+							<li class="divider"><hr/></li>
+			    			
+			    			<li ><a href="/regles">Règles</a></li>
+			    			<li><a href="/tutoriel">Tutoriel</a></li>
+			    		
+			    			<li class="divider"><hr/></li>
+			    			<li><a href="/jeu#les_scores">Plateau de jeu</a></li>
+			    			<li class="nav-sidebar active"><a href="/chat-general">Chats</a></li>
+			    		
+			    			<li class="divider"><hr/></li>
+			    			<li><a href="/classement">Classement</a></li>
+			    		</ul>
 
-	    	</div>
+			    	</div>
 
-	    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
-	    		<div style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 4%;padding-right:2%;padding-top:2%;padding-bottom:2%;margin-bottom:1%;margin-top:1% ;border-radius:15px; ">
-	    		</div>
+			    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
+			    		<div style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 4%;padding-right:2%;padding-top:2%;padding-bottom:2%;margin-bottom:1%;margin-top:1% ;border-radius:15px; ">
+			    			<div class="row"><h1 align=center >Chat des joueurs</h1>
+			    			</div>
+			    			<div class="row">
+								<div class="col-md-8">
+									<h2 >Messages :</h2>
+									<div class="msgTextArea" id="msgs">
+										<textarea readonly id="msgs" rows="8" name="msgTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " > </textarea>
+									
+										<input class="col-md-9 col-sm-9 col-xs-9 " type="text" placeholder="Votre message" id="msgTextBox" style="margin-top:1px;"/>
+									
+										<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgSubmit"/>
+									</div>
+								</div>	
+								<div calss="col-md-2">
+										<h2 >Utilisateurs connectés :</h2>
+										<ul id="listUsers" style="color:#000000;">
+										</ul>
+									</div>
+								</div>
+							
+							<div class="row"><h1 align=center >Chat général</h1>
+			    			</div>
+			    			<div class="row">
+			    				<div class="col-md-8">
+									<h2 >Messages :</h2>
+									<div class="msgTextArea" id="msgs">
+										<textarea readonly id="msgs" rows="8" name="msgTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " > </textarea>
+									
+										<input class="col-md-9 col-sm-9 col-xs-9 " type="text" placeholder="Votre message" id="msgTextBox" style="margin-top:1px;"/>
+									
+										<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgSubmit"/>
+									</div>
+								</div>	
+								<div calss="col-md-2">
+										<h2 >Utilisateurs connectés :</h2>
+										<ul id="listUsers" style="color:#000000;">
+										</ul>
+								</div>
+							</div>
+							</div>
+						</div>	
+			    	</div>
+		    	</div>
 	    	</div>
-
-	    	</div>
-	    </div>
-	</body>
+		</body>
 	</html>
 	
 
