@@ -103,7 +103,6 @@ oUtilisateur_Manager.Load();
 // Chargement de la liste des items en mémoire
 oItem_Manager.Load();
 
-
 //Chargement des sessions de jeu en mémoire
 oSession_Manager.Load(function(idSession)
 {
@@ -131,7 +130,7 @@ function callbackFinFouille(idUser)
 }
 
 //////////////TEST SESSIONJEU
-var date = new Date(2016, 12, 1, 1, 1, 1, 1);
+//var date = new Date(2016, 12, 1, 1, 1, 1, 1);
 //oSession_Manager.demarrer(date);
 
 
