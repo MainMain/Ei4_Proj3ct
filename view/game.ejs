@@ -83,21 +83,20 @@
 	    	<div class="row">
 	    	<div class="col-md-2 sidebar" >
 	    		<ul class="nav nav-sidebar nav-pills nav-stacked ">
-	    			<li><a href="#">Accueil</a></li>
+	    			<li><a href="/">Accueil</a></li>
 	    		
 					<li class="divider"><hr/></li>
-	    		
-
 	    			
-	    			<li ><a href="#">Règles</a></li>
-	    			<li><a href="#">Tutoriel</a></li>
+
+	    			<li ><a href="/regles">Règles</a></li>
+	    			<li><a href="/tutoriel">Tutoriel</a></li>
 	    		
 	    			<li class="divider"><hr/></li>
-	    			<li class="nav-sidebar active"><a href="#">Plateau de jeu</a></li>
-	    			<li><a href="#">Chats</a></li>
+	    			<li class="nav-sidebar active"><a href="/jeu#les_scores">Plateau de jeu</a></li>
+	    			<li><a href="/chat-general">Chats</a></li>
 	    		
 	    			<li class="divider"><hr/></li>
-	    			<li><a href="#">Classement</a></li>
+	    			<li><a href="/classement">Classement</a></li>
 	    		</ul>
 
 	    	</div>
@@ -224,39 +223,39 @@
 								<h2>Scores provisoires</h2>
 								<table text-align:center>
 									<tr>
-										<td width="20%"><b>Type</b></td>
-										<td width="20%"><b>AGI <i>(<%= bilanScores["nbrAGI"]%> joueur(s))</i></b></td>
-										<td width="20%"><b>INNO <i>(<%= bilanScores["nbrINNO"]%> joueur(s))</i></b></b></td>
-										<td width="20%"><b>QSF <i>(<%= bilanScores["nbrQSF"]%> joueur(s))</i></b></b></td>
-										<td width="20%"><b>Vous</b></td>
+										<td width="20%"><b><p>Type</p></b></td>
+										<td width="20%"><b><p>AGI <i>(<%= bilanScores["nbrAGI"]%> joueur(s))</i></p></b></td>
+										<td width="20%"><b><p>INNO <i>(<%= bilanScores["nbrINNO"]%> joueur(s))</i></p></b></b></td>
+										<td width="20%"><b><p>QSF <i>(<%= bilanScores["nbrQSF"]%> joueur(s))</i></p></b></b></td>
+										<td width="20%"><b><p>Vous</p></b></td>
 									</tr>
 									<tr>
-										<td width="20%"><b>Défenses ramenées</b></td>
-										<td width="20%"><%= bilanScores["scoreAGI_odd"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["scoreINNO_odd"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["scoreQSF_odd"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["scoreODD"]%> point(s)</td>
+										<td width="20%"><b><p>Défenses ramenées</p></b></td>
+										<td width="20%"><p><%= bilanScores["scoreAGI_odd"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["scoreINNO_odd"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["scoreQSF_odd"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["scoreODD"]%> point(s)</p></td>
 									</tr>
 									<tr>
-										<td width="20%"><b>Combats à morts</b></td>
-										<td width="20%"><%= bilanScores["scoreAGI_meurtre"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["scoreINNO_meurtre"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["scoreQSF_meurtre"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["scoreMeurtre"]%> point(s)</td>
+										<td width="20%"><b><p>Combats à morts</p></b></td>
+										<td width="20%"><p><%= bilanScores["scoreAGI_meurtre"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["scoreINNO_meurtre"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["scoreQSF_meurtre"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["scoreMeurtre"]%> point(s)</p></td>
 									</tr>
 									<tr>
-										<td width="20%"><b><i> -> Assassinats</i></b></td>
-										<td width="20%"><i>(<%= bilanScores["AGI_meurtres"]%> meurtres)</i></td>
-										<td width="20%"><i>(<%= bilanScores["INNO_meurtres"]%> meurtres)</i></td>
-										<td width="20%"><i>(<%= bilanScores["QSF_meurtres"]%> meurtres)</i></td>
-										<td width="20%"><i>(<%= bilanScores["nbrMeurtres"]%> meurtres)</i></td>
+										<td width="20%"><b><p><i> -> Assassinats</i></p></b></td>
+										<td width="20%"><i><p>(<%= bilanScores["AGI_meurtres"]%> meurtres)</p></i></td>
+										<td width="20%"><i><p>(<%= bilanScores["INNO_meurtres"]%> meurtres)</p></i></td>
+										<td width="20%"><i><p>(<%= bilanScores["QSF_meurtres"]%> meurtres)</p></i></td>
+										<td width="20%"><i><p>(<%= bilanScores["nbrMeurtres"]%> meurtres)</p></i></td>
 									</tr>
 									<tr>
-										<td width="20%"><b><i> -> Pertes</i></b></td>
-										<td width="20%"><i><%= bilanScores["AGI_tués"]%> tués</i></td>
-										<td width="20%"><i><%= bilanScores["INNO_tués"]%> tués</i></td>
-										<td width="20%"><i><%= bilanScores["QSF_tués"]%> tués</i></td>
-										<td width="20%"><i><%= bilanScores["nbrFoisTue"]%> fois</i></td>
+										<td width="20%"><b><p><i> -> Pertes</i></p></b></td>
+										<td width="20%"><i><p><%= bilanScores["AGI_tués"]%> tués</p></i></td>
+										<td width="20%"><i><p><%= bilanScores["INNO_tués"]%> tués</p></i></td>
+										<td width="20%"><i><p><%= bilanScores["QSF_tués"]%> tués</p></i></td>
+										<td width="20%"><i><p><%= bilanScores["nbrFoisTue"]%> fois</p></i></td>
 									</tr>
 									<tr>
 										<td width="20%"><b>Zombies tués</b></td>

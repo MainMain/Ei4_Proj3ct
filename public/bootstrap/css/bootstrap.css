@@ -21,7 +21,7 @@ article span + div.displayable {
 article span:target + div.displayable {
   display: block;
 }
-<<<<<<< HEAD
+
      
 canvas{
   width: 100%;
@@ -29,13 +29,6 @@ canvas{
 
 }    
 
-=======
-        
-canvas
-{
-	width: 100%;
-}
->>>>>>> c81a5c3d9c99450fbff480b64177636f86b3983c
 
 
 aside,
@@ -798,18 +791,13 @@ pre code {
 }
 
 .container-canvas {
-<<<<<<< HEAD
+
   
   margin-left: auto;
   margin-bottom: 5px;
   width: 80%;
     }
-=======
-  margin-left: auto;
-  margin-bottom: 5px;
-  width: 80%;
-}
->>>>>>> c81a5c3d9c99450fbff480b64177636f86b3983c
+
 .row {
   margin-right: -15px;
   margin-left: -15px;
@@ -1133,10 +1121,7 @@ pre code {
   .col-sm-offset-0 {
     margin-left: 0;
   }
-<<<<<<< HEAD
 
-=======
->>>>>>> c81a5c3d9c99450fbff480b64177636f86b3983c
 }
 @media (min-width: 992px) {
   .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
