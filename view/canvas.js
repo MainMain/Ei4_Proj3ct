@@ -548,7 +548,7 @@ function initialize()
 	                {src:"public/pictos/competence.png", id:"imgCompetence"},
 	                {src:"public/images/attaqueNuit.jpg", id:"imgAttNuit"},
 	                {src:"public/images/liste_joueurs.jpg", id:"imgListeJoueur"},
-	                {src:"public/pictos/mode.png", id:"imgMode"}
+	                {src:"public/pictos/mode.png", id:"imgMode"},
 	                {src:"public/pictos/mode.png", id:"imgMode"},
 	                {src:"/public/font/Fstein.ttf", id:"policeFstein"}
 	                ];

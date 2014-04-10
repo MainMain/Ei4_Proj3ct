@@ -14,9 +14,13 @@
 	<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
 	<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
+
 	<script>
 		var createjs = window;
 		var socket = io.connect('http://localhost:25536');
+		socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
 	</script>
 	<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
 	<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
@@ -226,14 +230,6 @@
 			</div>
 		</div>
 
-
-
-
-
-
-
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-		<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
 		<script type="text/javascript">
 		/*var canvas = $('#myCanvas');
 		var c = $('#containerCanvas');
