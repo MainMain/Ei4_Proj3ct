@@ -7,8 +7,8 @@ function GameRules() {
 
 //********** ID DES ZONES SURES **********
 GameRules.idZoneSure_1 = function() 						{ return 1; },
-GameRules.idZoneSure_2 = function() 						{ return 14; },
-GameRules.idZoneSure_3 = function() 						{ return 10; },
+GameRules.idZoneSure_2 = function() 						{ return 1; }, //14
+GameRules.idZoneSure_3 = function() 						{ return 1; }, //10
 
 
 //********** COUT EN PA **********
@@ -74,6 +74,10 @@ GameRules.pt_actionMax_min = function()						{ return 3;},
 GameRules.pt_deplacementMax_min = function()				{ return 3;},
 // duree entre chaque attaque / save
 GameRules.dureeCycle = function()							{ return 1000 * 60 * 1000; },
+// heure de l'attaque
+GameRules.heure_attaque = function()						{ return 16; },
+// minutes de l'attaque
+GameRules.minute_attaque = function()						{ return 25; },
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },

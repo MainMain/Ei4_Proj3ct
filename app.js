@@ -12,7 +12,21 @@ var express     = require('express'),
 var app         = express();
 var server      = http.createServer(app);
 var EventLog    = require('./model/EventLog');
+var oScheduleEvent 	 = require('node-schedule');
 
+var oNodeMailer = require("nodemailer");
+
+// create reusable transport method (opens pool of SMTP connections)
+var smtpTransport = oNodeMailer.createTransport("SMTP",{
+    service: "Yahoo",
+    auth: {
+        user: "zombistia@yahoo.fr",
+        pass: "aBFJ_14&"
+    }
+});
+
+////////////** TEST MAIL
+/*
 // pour envoyer les mails
 var key = "11332178-c46b-41e6-9099-a8ac60d7f4b3";
 var postmark = require("postmark")(key);
@@ -36,7 +50,7 @@ postmark.send(
     console.log("Email sent to: %s", to);
 });
 // FIN TEST MAIL
-
+*/
 // require objets
 var oCarte		= require('./model/object/Carte');
 var GameRules	= require('./model/GameRules');
@@ -53,6 +67,15 @@ var oUtilisateur_Manager = require('./manager/Utilisateur_Manager');
 var oScore_Manager       = require('./manager/Score_Manager');
 var oSession_Manager	 = require('./manager/Session_Manager');
 
+
+// ** TEST SCHEDULE
+var rule = new oScheduleEvent.RecurrenceRule();
+rule.hour = GameRules.heure_attaque();
+rule.minute = GameRules.minute_attaque();
+
+var eventAttaque = oScheduleEvent.scheduleJob(rule, SauvegardeGlobale);
+
+
 /*
  * *************************** 2 - CHARGEMENT EN MEMOIRE DES DONNES ***************************
  */
@@ -63,7 +86,7 @@ var dateLancement = new Date();
 var dateLancementSrv = dateLancement;
 var heureDerniereAttaque = dateLancement;
 
-EventLog.log(dateLancementSrv.toString());
+EventLog.log("Lancement du serveur - " + dateLancementSrv.toString());
 
 //Tableau des utilisateur en ligne
 var usersOnline = new Array();
@@ -73,6 +96,12 @@ oDatabase.Initialiser();
 
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(28, 17);
+
+// Chargement des utilisateurs en mémoire
+oUtilisateur_Manager.Load();
+
+// Chargement de la liste des items en mémoire
+oItem_Manager.Load();
 
 //Chargement des sessions de jeu en mémoire
 oSession_Manager.Load(function(idSession)
@@ -85,14 +114,10 @@ oSession_Manager.Load(function(idSession)
 	oPersonnage_Manager.Load(callbackFinFouille);
 });
 
-// Chargement des utilisateurs en mémoire
-oUtilisateur_Manager.Load();
-
-// Chargement de la liste des items en mémoire
-oItem_Manager.Load();
-
 // Chargement des cases en mémoire
 oCase_Manager.Load();
+
+
 
 
 function callbackFinFouille(idUser)
@@ -105,7 +130,7 @@ function callbackFinFouille(idUser)
 }
 
 //////////////TEST SESSIONJEU
-var date = new Date(2016, 12, 1, 1, 1, 1, 1);
+//var date = new Date(2016, 12, 1, 1, 1, 1, 1);
 //oSession_Manager.demarrer(date);
 
 
@@ -185,11 +210,11 @@ function restrict(req, res, next)
 
 function restrictAdmin(req, res, next)
 {
-	if(	   req.session.username == "a" 
-		|| req.session.username == "Brendiche" 
-		|| req.session.username == "MainMain" 
-		|| req.session.username == "Flow" 
-		|| req.session.username == "BibiBibouch" 
+	if(	   req.session.username == "a"
+		|| req.session.username == "Brendiche"
+		|| req.session.username == "MainMain"
+		|| req.session.username == "Flow"
+		|| req.session.username == "BibiBibouch"
 		|| req.session.username == "papa")
 	{
 		next();
@@ -205,14 +230,14 @@ function restrictAdmin(req, res, next)
  * CONFIGURATION DES ROUTES
  */
 
-app.get('/', function fonctionIndex(req, res)
+app.get('/', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
 	
 	optionAccueil.username = s.username;
 	optionAccueil.sessionID = s.idUser;
 	
-	res.render('accueil', optionAccueil);
+	res.render('accueil-connecte', optionAccueil);
 	
 	optionAccueil.username = null;
 	optionAccueil.sessionID = null;
@@ -464,6 +489,21 @@ app.get('/chat-general', restrict, function fonctionIndex(req, res)
 	res.render('chat', options);
 });
 
+app.get('/confirmerCompte/:idInscription', function fonctionIndex(req, res)
+{
+	oUtilisateur_Manager.confirmerCompte(req.param('idInscription'), function(reponse)
+	{
+		console.log("DEBUG : reponse = " + reponse);
+		var options = 
+		{ 
+			// 1 : ok, -1 : compte inexistant, -2 : compte déja confirmé, -3 : erreur maj user
+			"reponse": reponse,
+			"sessionID" : req.session.idUser 
+		};
+
+		res.render('confirmerCompte', options);
+	});
+});
 app.post("/", function (req, res)
 {
 	var b = req.body;
@@ -483,12 +523,13 @@ getDonnesPageJeu = function(idUser, userName)
 		"bilanScores" 		: oScore_Manager.getBilanScoreSession(idUser, oUtilisateur_Manager.getIdSession(idUser)),
 		"bilanScores_last" 	: -1,
 		"sessionInfo" 		: oSession_Manager.getDatesSessionEnCours(),
-		"heureAttaque" 		: new Date(Date.parse(heureDerniereAttaque)+GameRules.dureeCycle()).toLocaleTimeString(),
+		"heureAttaque" 		: new Date(0, 0, 0, GameRules.heure_attaque(), GameRules.minute_attaque(), 0, 0),
 		"dureeCycle" 		: GameRules.dureeCycle() / (1000*3600)
 	};
 		
 	return options;
 },
+
 callbackConnexion = function(reponseConnexion, req, res)
 {
 	var b = req.body;
@@ -504,7 +545,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 		optionAccueil.username = s.username;
 		optionAccueil.sessionID = s.idUser;
 		
-		res.render("accueil", optionAccueil);
+		res.render("accueil-connecte", optionAccueil);
 		
 		optionAccueil.sessionID = null;
 		optionAccueil.username = null;
@@ -543,14 +584,14 @@ app.put('/', function (req, res)
 	var b = req.body;
 	var testsOk = false;
 	// regex test email
-	var regTestMailAngers = /.@univ-angers.fr/;
-	
+	var regTestMailAngers = /.@etud.univ-angers.fr/;
+
 	// test si c'est en bonne forme
 	//if
 	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regTestMailAngers.test(b.email) );
-	if		(b.username.length < 4) 			optionAccueil.InfoInscription = "Login_nonConforme";
+	if		(b.username.length < 4 && b.username.length > 10)		optionAccueil.InfoInscription = "Login_nonConforme";
 	else if (b.password.length < 6) 			optionAccueil.InfoInscription = "Pass_nonConforme";
-	else if (!regTestMailAngers.test(b.email)) 	optionAccueil.InfoInscription = "Mail_nonConforme";
+	//else if (!regTestMailAngers.test(b.email)) 	optionAccueil.InfoInscription = "Mail_nonConforme";
 	else
 	{
 		// si ok
@@ -562,7 +603,7 @@ app.put('/', function (req, res)
 	
 });
 	
-callbackInscription = function(reponseInscription, req, res)
+callbackInscription = function(reponseInscription, req, res, idInscription)
 {
 	var b = req.body;
 	if (reponseInscription == -1)
@@ -583,6 +624,33 @@ callbackInscription = function(reponseInscription, req, res)
 	}
 	else
 	{
+		// ENVOI D'UN MAIL DE CONFIRMATION
+		var mailOptions = 
+		{
+   			from: "Staff Zomb'IstiA <zombistia@yahoo.fr>", // sender address
+    		to: b.email, // list of receivers
+    		subject: "Bienvenue sur Zomb'IstiA !", // Subject line
+    		//text: "Hello world ✔", // plaintext body
+    		html: "Bonjour " + b.username + "," // html body
+    			+ "<br>Votre inscription a été prise en compte. Pour la confirmer, veuillez cliquer sur le lien ci contre : "
+    			+ " <a href=\"http://localhost:25536/confirmerCompte/" + idInscription+"\">Confirmer mon compte </a>"
+    			+ "<br>Ensuite, nous t'invitons a lire le tutoriel afin de mieux comprendre les mécanismes du jeu. Une fois prêt, "
+    			+ "choisissez votre équipe, et lancez vous dans l'aventure !"
+    			+" <br>Préparez vous, vous n'en sorterez pas indemme..."
+    			+" <br><br>N'hésitez pas à nous contacter pour toutes question relative à votre compte ou au jeu en lui même."
+    			+ "<br>L'équipe de Zomb'Istia"
+		}
+
+		// send mail with defined transport object
+		smtpTransport.sendMail(mailOptions, function(error, response){
+   		if(error)
+   		{
+       	 	EventLog.log(error);
+    	}else{
+        	EventLog.log("Message sent: " + response.message);
+    	}
+	});
+
 		optionAccueil.usernameInscription = b.username;
 		
 		oUtilisateur_Manager.LoadUser(reponseInscription);
@@ -1127,7 +1195,7 @@ io.sockets.on('connection', function (socket)
 		reponse = oPersonnage_Manager.ramasserDeposer(idUser, type, currentItem);
 		
 		// répond au client
-		socket.emit('INV_CASE_SC', type, reponse.reponseAction, id_item, reponse.degatSubis, reponse.nbrGoulesA);
+		socket.emit('INV_CASE_SC', type, reponse.reponseAction, id_item, reponse.degatSubis, reponse.nbrGoulesA,  oItem_Manager.GetItem(id_item));
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
 		ActualiserAllInCase();
@@ -1228,7 +1296,7 @@ io.sockets.on('connection', function (socket)
 		var reponse = oPersonnage_Manager.Utiliser(idUser, id_item);
 		
 		// renvoi au client
-		socket.emit('PERSONNAGE_USE_SC', id_item, reponse);
+		socket.emit('PERSONNAGE_USE_SC', id_item, reponse, oItem_Manager.GetItem(id_item));
 		
 		// actualiser l'ihm pour les perso de la meme case connectés
 		//ActualiserAllInCase();
@@ -1551,7 +1619,18 @@ io.sockets.on('connection', function (socket)
 		//try
 		//{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, false);
-    	socket.emit('INFO_CASE_ALLIES_SC', liste.Allies);
+    	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
+    	{
+    		socket.emit('INFO_CASE_ALLIES_SC', liste.AGI);
+    	}
+    	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
+    	{
+    		socket.emit('INFO_CASE_ALLIES_SC', liste.INNO);
+    	}
+    	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
+    	{
+    		socket.emit('INFO_CASE_ALLIES_SC', liste.QSF);
+    	}
     	//}
     	//catch(err)
     	//{
@@ -1583,13 +1662,27 @@ io.sockets.on('connection', function (socket)
 		//try
 		//{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
-    	socket.emit('INFO_CASE_ENNEMIS_SC', liste.Ennemis);
+		console.log(" 1 = " + liste.AGI.length + " 2 = " + liste.INNO.length +" 3 = " + liste.QSF.length);
+
+    	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
+    	{
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.QSF, liste.INNO, 1);
+    	}
+    	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
+    	{
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.QSF, 2);
+    	}
+    	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
+    	{
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.INNO, 3);
+    	}
     	//}
     	//catch(err)
     	//{
     	//	EventLog.error("/!\\ ERREUR : SERVEUR : INFO_CASE_ENNEMIS_CS : " + err);
     	//}
     });
+
     /*  
      *
      *
@@ -1802,7 +1895,7 @@ function SauvegardeGlobale()
    	var date = new Date();
    	
    	EventLog.log("[ ! ] Nouvelle journée ! Date: " + date);
-	// regain des pts move et action
+	// attaque sur les joueurs et regain des pts move et action
 	oPersonnage_Manager.nouvelleJournee();
 	// rajout des goules
 	oCase_Manager.nouvelleJournee();
@@ -1830,13 +1923,13 @@ function SauvegardeGlobale()
 		}
 	}
 }
-setInterval(function() 
+/*setInterval(function() 
 { 
 	SauvegardeGlobale();
 	heureDerniereAttaque = new Date();
 	
 }, GameRules.dureeCycle()); // (1000) millisec * 60 sec * 60 min
-
+*/
 
 
 // server.listen(8080);

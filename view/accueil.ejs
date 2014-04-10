@@ -8,7 +8,11 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<link href="../public/bootstrap/css/bootstrap-modal-bs3patch.css" rel="stylesheet">
-		<link href="../public/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+		<link href="../public/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+		
+
 		<link href="../public/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 		<link href="../public/bootstrap/css/bootstrap-modal.css" rel="stylesheet">
 
@@ -45,9 +49,11 @@
 
 	<body>
 		<div class="col-md-5">
-		<a class="navbar-brand" href="#">LOGO</a>
+
+		<a class="navbar-brand navbar-fixed-top" href="#">LOGO</a>
 		</div>
-		<nav class="navbar navbar-inverse col-md-7" role="navigation">
+		<nav style="border-bottom-left-radius: 50px" class="navbar navbar-inverse col-md-offset-5 col-md-7 navbar-fixed-top" role="navigation">
+
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -58,14 +64,18 @@
 					</button>
 				</div>
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-					<form class="navbar-form navbar-left" action="/" method="post">
+
+					<form class="navbar-form navbar-left" action="/" method="post" style="margin-left:5%;">
+
 						<div class="form-group">
 					 		<input name="username" type="text" class="form-control" placeholder="Login"/>
 					 		<input name="password" type="password" class="form-control" placeholder="Mot de passe"/>
 						</div>
 						<input name="submit" type="submit" value="Connexion" class="btn btn-success"/>
 					</form>
-					<a href="#responsive" data-toggle="modal" class="navbar-text navbar-right navbar-link" style="color:#0000FF; text-decoration:underline;">Rejoignez-nous</a>
+
+					<a href="#responsive" data-toggle="modal" class="navbar-text navbar-right navbar-link" style="color:#FF0000; text-decoration:underline;">Rejoignez-nous</a>
+
 				</div>
 			</div>
 		</nav>

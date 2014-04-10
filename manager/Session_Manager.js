@@ -109,8 +109,7 @@ Session_Manager.stopper = function()
 	this.dateFin = null;
 	
 	// 2: Réinitialiser les cases
-	// supprimer ttes les cases
-	// oCase_Manager.supprimerCases();
+	oCase_Manager.reinitialiser();
 },
 
 Session_Manager.definirDateFin = function(date)

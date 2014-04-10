@@ -40,6 +40,7 @@ database.Initialiser = function() {
 		numEquipe			: Number,
 		idSession			: Number,
 		compteConfirme		: Boolean,
+		idInscription		: String,
 	});
 	UtilisateurModel = mongoose.model('Utilisateur',UtilisateurSchema);		//creation de la classe utilisateur 
 	
@@ -69,6 +70,7 @@ database.Initialiser = function() {
 		dernierMvt 			: String,
 		listeMsgAtt 		: Array,
 		nbrNvMsg			: Number,
+		etage				: Number,
 	});
 	PersonnageModel = mongoose.model('Personnage',PersonnageSchema); 	
 	

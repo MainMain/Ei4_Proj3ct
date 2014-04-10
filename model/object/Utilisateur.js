@@ -19,6 +19,7 @@ var Utilisateur = (function() {
 	Utilisateur.idPersonnage;
 	Utilisateur.idSession;
 	Utilisateur.compteConfirme;
+	Utilisateur.idInscription;
 	
 	// --- METHODES DE CLASSE ---
 	Utilisateur.build = function() {return new Utilisateur();};
@@ -37,7 +38,7 @@ var Utilisateur = (function() {
 	}*/
 	
 	// Utilisé par la base de données
-	function Utilisateur(id, pseudo, email, numEquipe, idPersonnage, idSession, compteConfirme) {
+	function Utilisateur(id, pseudo, email, numEquipe, idPersonnage, idSession, compteConfirme, idInscription) {
 		// --- Attributs d'instance
 		this.id 					= id;
 		this.pseudo 				= pseudo;
@@ -46,6 +47,7 @@ var Utilisateur = (function() {
 		this.idPersonnage 			= idPersonnage;
 		this.idSession				= idSession;
 		this.compteConfirme			= compteConfirme;
+		this.idInscription			= idInscription;
 	}
 	
 
