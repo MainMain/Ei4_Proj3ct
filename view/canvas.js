@@ -281,7 +281,7 @@ var labelEnnemisListe1, labelEnnemisListe2;
 
 //-------------- Déclaration des conteneurs----------------------------------------------
 
-var contArme, contArmure, contMap, contPerso, contBtnModes,
+var contArme, contArmure, contMap, contPerso, contBtnModes, contPictoCase,
 contBtnsListes, contDead, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
 contListeAllies, contListeEnnemis1, contListeEnnemis2, contZoneMessage, contMessage;
 
@@ -1054,23 +1054,27 @@ function setPlateau()
 		contPictoCase.height = 3*ESPACE_BARRES_Y + 40;
 		stage.addChild(contPictoCase);
 
-		imgAllies = new createjs.Bitmap("public/pictos/nbrAllie.png");
-		imgAllies.y=-2;
-		contPictoCase.addChild(imgAllies);
+		afficherPictosCase();
 
-		imgEnnemis = new createjs.Bitmap("public/pictos/nbrEnnemis.png");
-		imgEnnemis.y=32;
-		contPictoCase.addChild(imgEnnemis);
-
-		imgZombies = new createjs.Bitmap("public/pictos/nbrZombies_plusPetit.png");
-		imgZombies.x=2; // avt : -2
-		imgZombies.y=33*2+4;
-		contPictoCase.addChild(imgZombies);
-
+		/// NB NOUVEAUX MESSAGES ///
 		imgNvMsg = new createjs.Bitmap("public/pictos/nbrNvMsgs.png");
 		imgNvMsg.x=contPictoBarres.x - 5; // avt : -2
 		imgNvMsg.y= 248;
 		stage.addChild(imgNvMsg);
+		imgNvMsg.addEventListener('mouseover', function(event)
+		{
+			y = imgNvMsg.y;
+			txt = "Nombre de nouveaux messages";
+			afficherTooltipItem(x, y, txt, false); 
+		});
+		imgNvMsg.addEventListener('mouseout', function(event)  { supprimerTooltipItem(); });
+		imgNvMsg.addEventListener('touchstart', function(event)				
+		{ 
+			y = imgNvMsg.y;
+			txt = "Nombre de nouveaux messages";
+			afficherTooltipItem(x, y, txt, false);  
+		});
+		imgNvMsg.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
 
 	// ******************************************
 	// ********* Déclaration des labels *********
@@ -1579,6 +1583,69 @@ function afficherMessage(TabListeMessage)
 		}
 	}
 	catch(e){}
+}
+
+function afficherPictosCase()
+{
+	var y = contPictoCase.y ;
+	var x = contPictoCase.x + 100;
+	/// ALLIES ///
+		imgAllies = new createjs.Bitmap("public/pictos/nbrAllie.png");
+		imgAllies.y=0;
+		contPictoCase.addChild(imgAllies);
+		imgAllies.addEventListener('mouseover', function(event)
+		{
+			y = contPictoCase.y - imgAllies.y;
+			txt = "Nombre d'alliés dans la case";
+			afficherTooltipItem(x, y, txt, false); 
+		});
+		imgAllies.addEventListener('mouseout', function(event)  { supprimerTooltipItem(); });
+		imgAllies.addEventListener('touchstart', function(event)				
+		{ 
+			y = contPictoCase.y - imgAllies.y;
+			txt = "Nombre d'alliés dans la case";
+			afficherTooltipItem(x, y, txt, false);  
+		});
+		imgAllies.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
+		
+		/// ENNEMIS ///
+		imgEnnemis = new createjs.Bitmap("public/pictos/nbrEnnemis.png");
+		imgEnnemis.y=32;
+		contPictoCase.addChild(imgEnnemis);
+		imgEnnemis.addEventListener('mouseover', function(event)
+		{
+			y = contPictoCase.y + imgEnnemis.y;
+			txt = "Nombre d'ennemis dans la case";
+			afficherTooltipItem(x, y, txt, false); 
+		});
+		imgEnnemis.addEventListener('mouseout', function(event)  { supprimerTooltipItem(); });
+		imgEnnemis.addEventListener('touchstart', function(event)				
+		{ 
+			y = contPictoCase.y + imgEnnemis.y;
+			txt = "Nombre d'ennemis dans la case";
+			afficherTooltipItem(x, y, txt, false);  
+		});
+		imgEnnemis.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
+
+		/// ZOMBIES ///
+		imgZombies = new createjs.Bitmap("public/pictos/nbrZombies_plusPetit.png");
+		imgZombies.x=2; // avt : -2
+		imgZombies.y=33*2+4;
+		contPictoCase.addChild(imgZombies);
+		imgZombies.addEventListener('mouseover', function(event)
+		{
+			y = contPictoCase.y + imgZombies.y;
+			txt = "Nombre de zombies dans la case";
+			afficherTooltipItem(x, y, txt, false); 
+		});
+		imgZombies.addEventListener('mouseout', function(event)  { supprimerTooltipItem(); });
+		imgZombies.addEventListener('touchstart', function(event)				
+		{ 
+			y = contPictoCase.y + imgZombies.y;
+			txt = "Nombre de zombies dans la case";
+			afficherTooltipItem(x, y, txt, false);  
+		});
+		imgZombies.addEventListener('touchend', function(event)   	{ supprimerTooltipItem(); });
 }
 
 // Afficher la description de la case en cours
@@ -2661,7 +2728,7 @@ function supprimerPageMessage()
 {
 	_PAGE_LISTE_MESSAGES=false;
 	stage.removeChild(contMessage);
-	//game();
+	socket.emit('INFO_PERSONNAGE_CS');
 }
 
 function supprimerPageJoueurs()
@@ -4351,7 +4418,7 @@ function afficherTooltipItem(x, y, obj, item)
 		_LABEL_DESCRIPTION.text = obj;
 		
 		// défini la taille du conteneur
-		_TAILLE_TOOLTIP = obj.length*6.5;
+		_TAILLE_TOOLTIP = obj.length*7 +15;
 
 		// config couleur fond conteneur
 		coul = createjs.Graphics.getRGB(66,0,33, 0.8);
