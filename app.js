@@ -1622,14 +1622,17 @@ io.sockets.on('connection', function (socket)
     	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
     	{
     		socket.emit('INFO_CASE_ALLIES_SC', liste.AGI);
+    		return;
     	}
     	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
     	{
     		socket.emit('INFO_CASE_ALLIES_SC', liste.INNO);
+    		return;
     	}
     	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
     	{
     		socket.emit('INFO_CASE_ALLIES_SC', liste.QSF);
+    		return;
     	}
     	//}
     	//catch(err)
@@ -1667,14 +1670,17 @@ io.sockets.on('connection', function (socket)
     	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
     	{
     		socket.emit('INFO_CASE_ENNEMIS_SC', liste.QSF, liste.INNO, 1);
+    		return;
     	}
     	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
     	{
     		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.QSF, 2);
+    		return;
     	}
     	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
     	{
     		socket.emit('INFO_CASE_ENNEMIS_SC', liste.AGI, liste.INNO, 3);
+    		return;
     	}
     	//}
     	//catch(err)

@@ -3890,7 +3890,7 @@ function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
 		_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
 		_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23; // avt : y*32*2+10
 	}
-	else if (nbrZombies == 00)
+	else if (nbrZombies == 0)
 	{
 		_LABEL_NB_GOULES = new createjs.Text("", _POLICE_LABEL, "#00FF00");
 		_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
@@ -3908,10 +3908,25 @@ function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
 	// animation correspondante
 	animationModificationForces(nbrAllies, nbrEnnemis, nbrZombies)	
 
+	// si le panneau des joueurs dans la salle était ouvert, ET si il y a eu une modif sur le nombre de joueurs
+	if (
+		_PAGE_JOUEURS 
+		&& 
+		(_LAST_NOMBRE_ALLIES != -1 && _LAST_NOMBRE_ALLIES != nbrAllies 
+			|| 
+		_LAST_NOMBRE_ENNEMIS != -1 && _LAST_NOMBRE_ENNEMIS != nbrEnnemis)
+		)
+	{
+		//  on le ferme et rouvre
+		supprimerPageJoueurs();
+		afficherPageJoueurs();
+	}
 	// update variables 
 	_LAST_NOMBRE_ALLIES = nbrAllies;
 	_LAST_NOMBRE_ENNEMIS = nbrEnnemis;
 	_LAST_NOMBRE_ZOMBIES = nbrZombies;
+
+
 }
 
 function majEventsPictoPerso(currentPerso)
@@ -5293,6 +5308,7 @@ socket.on('ACTION_ATTAQUE_GOULE_SC', function (goulesTues, degatsSubis, nbrGoule
  */ 
 socket.on('INFO_CASE_ALLIES_SC', function (listeAllies)
 {
+	alert("longueur liste alliés : " + listeAllies.length);
 	var msgAction = "";
 	var codeAction = 0;
 	var decoup=8;
@@ -5623,6 +5639,8 @@ function majConteneurPersoListeAllies(tab, conteneur, pageEnCours)
  */ 
 socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn1, listeEnn2, equipe)
 {
+	alert("Equipe = " + " - longueur liste 1 : " + listeEnn1.length + " longueur liste 2 : " + listeEnn2.length);
+
 	var msgAction = "";
 	var codeAction = 0;
 	var decoup=8;

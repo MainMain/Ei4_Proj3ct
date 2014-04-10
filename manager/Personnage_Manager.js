@@ -934,33 +934,36 @@ Personnage_Manager.GetPersonnagesDansSalle = function(idCase)
 Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 {
 	var a = { "AGI"	: new Array(), "QSF" : new Array(), "INNO" : new Array()};
+	// pour chaque personnage dans la liste des perso...
 	for(var i in this.listePersonnages)
 	{
-		if(this.GetIdCase(idUser) == this.GetIdCase(i))
+		// si l'user en cours est dans la même salle que l'user qui demande l'info
+		if(this.GetIdCase(i) == this.GetIdCase(idUser))
 		{
-			if(oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
+			// si le perso en cours est dans l'équipe 1
+			if(oUtilisateur_Manager.GetNumEquipe(i) == 1)
 			{
 				if(i != idUser)
 				{
 					a.AGI.push(this.getPersonnageToDisplay(i));
 				}
 			}
-			else if(oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
+			else if(oUtilisateur_Manager.GetNumEquipe(i) == 2)
 			{
 				if(i != idUser)
 				{
 					a.QSF.push(this.getPersonnageToDisplay(i));
 				}
 			}
-			else if(oUtilisateur_Manager.GetNumEquipe(idUser) == 3)
+			else if(oUtilisateur_Manager.GetNumEquipe(i) == 3)
 			{
 				if(i != idUser)
 				{
 					a.INNO.push(this.getPersonnageToDisplay(i));
 				}
 			}
-		}
-	}
+		} // fin si meme salle
+	} // fin parcours liste des perso
 	return a;
 
 	/*
