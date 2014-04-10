@@ -210,11 +210,11 @@ function restrict(req, res, next)
 
 function restrictAdmin(req, res, next)
 {
-	if(	   req.session.username == "a" 
-		|| req.session.username == "Brendiche" 
-		|| req.session.username == "MainMain" 
-		|| req.session.username == "Flow" 
-		|| req.session.username == "BibiBibouch" 
+	if(	   req.session.username == "a"
+		|| req.session.username == "Brendiche"
+		|| req.session.username == "MainMain"
+		|| req.session.username == "Flow"
+		|| req.session.username == "BibiBibouch"
 		|| req.session.username == "papa")
 	{
 		next();
@@ -230,14 +230,14 @@ function restrictAdmin(req, res, next)
  * CONFIGURATION DES ROUTES
  */
 
-app.get('/', function fonctionIndex(req, res)
+app.get('/', restrict, function fonctionIndex(req, res)
 {
 	var s = req.session;
 	
 	optionAccueil.username = s.username;
 	optionAccueil.sessionID = s.idUser;
 	
-	res.render('accueil', optionAccueil);
+	res.render('accueil-connecte', optionAccueil);
 	
 	optionAccueil.username = null;
 	optionAccueil.sessionID = null;
@@ -529,6 +529,7 @@ getDonnesPageJeu = function(idUser, userName)
 		
 	return options;
 },
+
 callbackConnexion = function(reponseConnexion, req, res)
 {
 	var b = req.body;
@@ -544,7 +545,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 		optionAccueil.username = s.username;
 		optionAccueil.sessionID = s.idUser;
 		
-		res.render("accueil", optionAccueil);
+		res.render("accueil-connecte", optionAccueil);
 		
 		optionAccueil.sessionID = null;
 		optionAccueil.username = null;
