@@ -1,284 +1,220 @@
-<!DOCTYPE html>
-<!-- Consider specifying the language of your content by adding the `lang` attribute to <html> -->
-<!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js">
-	<!--<![endif]-->
-	<head>
+	<!DOCTYPE html>
 
-		<meta charset="utf-8">
+	<html>
+		<head>
+			<meta charset="utf-8">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-		<!-- Always force latest IE rendering engine & Chrome Frame -->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+			<link href="../public/bootstrap/css/bootstrap.css" rel="stylesheet">
+			<title>Zomb'IstiA - Règles du jeu</title>
+		</head>
+		<body >
 
-		<!-- Put your title here! -->
-		<title>Zomb'IstiA - Règles du jeu</title>
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+	        	<div class="navbar-header">
+	         		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		            	<span class="sr-only">Toggle navigation</span>
+		            	<span class="icon-bar"></span>
+		            	<span class="icon-bar"></span>
+		            	<span class="icon-bar"></span>
+	          		</button>
+	          		<a class="navbar-brand" href="#">Notre beau logo</a>	
+	        	</div>
+	        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	          		<ul class="nav navbar-nav pull-right navb">
+	            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
+	            		<li class="navbar-text" >Prochaine attaque dans : 00:54:35 </li>
+	            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button></form>
+	          		</ul>
+	        	</div><!--/.nav-collapse -->
+	     	</div>	
+	    </nav>
+	    <div class="container-fluid">
+	    	<div class="row">
+	    	<div class="col-md-2 sidebar" >
+	    		<ul class="nav nav-sidebar nav-pills nav-stacked ">
+	    			<li><a href="/">Accueil</a></li>
+	    		
+					<li class="divider"><hr/></li>
+	    			
+	    			<li class="nav-sidebar active"><a href="#">Règles</a></li>
+	    			<li><a href="#">Tutoriel</a></li>
+	    		
+	    			<li class="divider"><hr/></li>
+	    			<li><a href="/jeu">Plateau de jeu</a></li>
+	    			<li><a href="#">Chats</a></li>
+	    		
+	    			<li class="divider"><hr/></li>
+	    			<li><a href="#">Classement</a></li>
+	    		</ul>
 
-		<meta name="description" content="">
+	    	</div>
+	    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
+	    		<div style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 4%;padding-right:2%;padding-top:2%;padding-bottom:2%;margin-bottom:1%;margin-top:1% ;border-radius:15px; ">
+	    		<h1 class="entry-title" align=center> Règles de jeu </h1>
 
-		<!-- Mobile viewport optimized: h5bp.com/viewport -->
-		<meta name="viewport" content="width=device-width">
-
-		<link href="/public/stylesheets/style.css" rel="stylesheet">
-
-		<!-- Load Open Sans and Merriweather from Google Fonts
-		For optimal performance, customize it to load the styles you need:
-		http://goo.gl/QufgJ
-		-->
-		<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
-
-		<!-- All JavaScript at the bottom, except for Modernizr
-		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
-		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-		<script src="/view/js/modernizr-2.6.1.min.js"></script>
-	</head>
-
-	<body>
-
-		<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
-		<!--[if lt IE 8]>
-		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
-		<![endif]-->
-
-		<header id="master-header" class="clearfix" role="banner">
-
-			<hgroup>
-				<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
-				<h2 id="site-description">Prends connaissance des règles !</h2>
-			</hgroup>
-
-		</header>
-		<!-- #master-header -->
-
-		<div id="main" class="row clearfix">
-
-			<!-- Main navigation -->
-			<nav class="main-navigation clearfix span12" role="navigation">
-				<h3 class="assistive-text">Menu principal</h3>
-				<ul>
-					<li class="span2">
-						<a href="/">Accueil</a>
-					</li>
-					<li class="current span2">
-						<a href="regles">But du jeu</a>
-						<ul class="sub-menu">
-							<li><a href="tutoriel">Tutoriel</a></li>
-						</ul>
-					</li>
-					<li class="span2">
-						<a href="jeu">Jeu</a>
-						<ul class="sub-menu">
-							<li>
-								<li><a href="chat-equipe">Chat de l'équipe</a></li>
-							</li>
-						</ul>
-					</li>
-					<li class="span2">
-						<a href="classement">Classement</a>
-					</li>
-					<li class="span2">
-						<a href="chat-general">Chat</a>
-					</li>
-				</ul>
-			</nav>
-			<!-- #main-navigation -->
-
-			<div id="content" role="main" class="span12" align="justify">
-
-				<h1 class="entry-title" align=center> Règles de jeu </h1>
-				
-				<!-- Règles -->
-				<!-- ***************** PRESENTATION DU JEU ************** -->
-				<h1>Présentation du jeu</h1>
-				<p>
-					Zomb’IstiA est un jeu collaboratif par navigateur où trois équipes s’affrontent sur des sessions de quelques jours
-					dans un gigantesque complexe abandonné : l’IstiA. Le travail d’équipe est maître si chacun veut espérer s’en sortir
-					vivant et prendre le dessus sur les autres équipes. Partant chacun de leur zone sûre,les joueurs devront explorer 
-					et se battre pour leur survie…<br>
-					<div align="center">
-					<img align="center" src ="public/images/chance.jpg" />
-					</div>
-				</p>
-				<!-- Colonne de gauche -->
-				<div style="width:50%; float:left; padding:10px;">
-					<h3>But du jeu</h3>
-					<p>
-						A la fin de la session, l’équipe qui aura remporté le plus de points gagne la partie. 
-						Il y a deux façons de gagner des points :
-						<br>•	Soit en accumulant des objets de défenses nécessaires à la fortification de la zone sûre.
-						<br>•	Soit en mettant K-O les membres de l’équipe adversaire, afin de leurs voler des points.
-					</p>
-					<h3>Principe de déplacement</h3>
-					<p>
-						Les déplacements se font de case en case, et chacun coûte un point de déplacement. 
-						Chaque case peut accueillir un nombre illimité de joueurs et contiennent également un «inventaire», 
-						qui est l’ensemble des items dans la salle (qui peuvent être ramassées par les joueurs).
-
-					</p>
-					<h3>Inventaire</h3>
-					<p>
-						Chaque joueur possède un inventaire, limité par un poids maximum (chaque objet étant plus ou moins lourd). 
-						De cet inventaire, il peut s’équiper d’une arme et / ou d’une armure, et consommer certains objets, 
-						augmentant un des points de personnage énoncé plus haut.
-					</p>
-				</div>
-
-				<!-- Colonne de droite -->
-				<div style="width:50%; float:left; padding:10px;">
-					<h3>Points de personnage</h3>
-					<p>
-						Chaque personnage du jeu dispose d’un quota de points par jour. Ils sont non cumulables de jour en jour.
-						<br>•	Les points de vie : chaque attaque portée sur le joueur (ou riposte) diminue les points de vie du joueur.
-						 S’ils descendent à zéro, le joueur tombe dans le coma. Il perdra alors une partie de son inventaire et sera automatiquement rapatrié
-						  à sa zone sûre.
-						<br>•	Les points de déplacement : chaque déplacement coûte un point de déplacement. Dès que ceux-ci sont égaux à 
-						zéro, le joueur ne peut plus se déplacer.
-						<br>•	Les points d’actions : ils conditions le nombre d’actions que le joueur peut effectuer, certaines sont 
-						plus coûteuses que d’autres. Si le joueur n'en a plus, il ne pourra effectuer aucune action.
-						<br>•	Les points de faim : en dessous de 10, les différents points énoncés ci-desss en seront affectés : le joueur sera plus faible, 
-						et ses limites de points diminueront proportionnellement. Si cette barre tombe à zéro, le joueur tombe dans le coma.
-						<br> <br> Les points d’action et de déplacement ont la particularité de se remplir chaque jour, à minuit.
-					</p>
-				</div>
-				<!--  ********** ACTION DE JEU ************-->
-				<hr>
-				<h1>Actions actives</h1>
-					<p> Les actions se font instantanément, en l’échange de quelques points d’actions.</p>
-				<!-- Colonne de gauche -->
-				<div style="width:50%; float:left; padding:10px;">
-					<h3>Ramasser / Déposer</h3>
-					<p>
-						Il est possible de ramasser les objets au sol, à condition que le personnage puisse le porter dans son sac ! 
-						Le poids total du sac ne dois pas excéder le poids maximum que le personnage peut porter, 
-						donc si son sac est trop lourd, il peut passer dans sa zone sûre afin de se décharger. 
-						Notez que le fait d’être équipé ou non d’une arme / armure ne modifie pas le poids total de tous les objets du sac. 
-						Le joueur peut aussi déposer des objets dans une salle, quand il veut. Il n’y a pas de limite de place dans une salle.
-					</p>
-					<h3>Fouille rapide</h3>
-					<p>
-						Afin de trouver de nouveaux consommables et diversifier ses armes, le joueur pourra à tout moment effectuer une fouille rapide de la case, 
-						qui consommera des points d’actions. Ainsi, il aura une probabilité de découvrir un nouvel objet, qui ira directement se stocker dans son sac 
-						s’il y reste de la place ou dans la case sinon.
-					</p>
-					<h3>Tuer des zombies</h3>
-					<p>
-						Les salles seront souvent remplies de zombies errants, qui pourront empêcher les joueurs de progresser ou de faire certaines actions (cf. partie sur les zombies). 
-						Dans ce cas, le joueur sera obliger de tuer un certain nombre de zombies ! Même à mains nues, le joueur tuera forcément un zombie, et si il est chanceux, 
-						il peut en tuer deux en un seul coup.
-					</p>
-				</div>
-				
-				<!-- Colonne de droite -->
-				<div style="width:50%; float:left; padding:10px;">
-					<h3>S’équiper / Se déséquiper</h3>
-					<p>
-						Pour se défendre contre les ennemis et les zombies présents sur la carte, le joueur peut s’équiper d’une arme, 
-						qui augmentera ses points d’attaque et d’une armure, qui augmentera ses points de défenses. 
-						Il faut faire attention car les meilleurs armures sont souvent les plus lourdes, 
-						et il peut arriver qu’une fois une arme et une armure équipée, le joueur ne puisse plus porter d’autres objets. 
-					</p>
-					<h3>Consommer</h3>
-					<p>
-						Pour aider le joueur dans son aventure, il pourra trouver tout au long du jeu des potions, destinées à restaurer ses points de santé,
-						d’action, de mouvement ou encore de la nourriture pour remonter sa jauge de faim. Il ne peut consommer ces objets qu’une seule fois, 
-						mais il n’y a pas de limites de consommation, mais il ne faut pas oublier de jouer collectif ! 
-						De plus, si la jauge de faim du personnage descend à zéro, celui-ci tombe dans le coma, et est rapatrié automatiquement dans sa zone sûre.
-					</p>
-					<h3>Attaquer</h3>
-					<p>
-						Il est possible, pour chaque joueur, d’attaquer à tout moment un autre joueur présent dans la même case. 
-						Mais le joueur doit être vigilant : l’adversaire peut riposter, et il se peut également que l’adversaire soit préparé au combat (cf. partie sur le mode défense).
-						<br><br>
-					</p>
-				</div>
-				<!-- ********** ACTIONS PASSIVES *************** -->
-				<hr>
-				<h1>Actions passives</h1>
-				<p> A tout moment, le joueur peut choisir de passer dans un mode passif. Le mode fouille permet de trouver un objet toutes les heures, 
-					selon la probabilité de fouille de la case. Le mode cache permet au joueur de se cacher quelque part dans la case où il se trouve 
-					et a une chance de ne pas se faire découvrir par les ennemis selon la probabilité de cache de la salle. Le mode défense permet au 
-					joueur de se préparer au combat et d’augmenter ses points d’attaque et de défense.
-				</p>
-				<hr>
-				<!-- Colonne de gauche -->
-				<div style="width:82%; float:left; padding:10px;">
-				<h1>Les zombies</h1>
-				<p> Les zombies sont des morts-vivants, ils errent dans le bâtiment de l’IstiA, mais également en dehors. 
-					Ils débarquent de plus en plus nombreux chaque jour. Leurs rôles dans le jeu sont multiples :
-				</p>
-				</div>
-				<!-- Colonne de droite -->
-				<div style="width:18%; float:left; padding:10px;">
-					<div align="center">
-						<img align="center" src ="public/images/zombie.png" />
-					</div>
-				</div>
-				<br>
-					<br>•	Interception :
-					<br>Ces êtres sans âmes ni cerveaux opérationnels peuvent intercepter les actions du joueur c’est à dire que ce dernier a une chance 
-					de se faire blesser par un ou plusieurs zombies avant d’effectuer son action, et a une petite chance de la rater. En toute logique, 
-					plus le nombre de goules dans une case est important, plus le joueur à de chances de subir des dégats et de rater son action. 
-					Cependant, il y a une exception : l’attaque de zombie ne peut rater !
 					
-					<br>•	Bloquage :
-					<br>Tout mouvement sera impossible si, dans la case, le nombre de zombies est trop important pour le joueur (ce nombre dépend de sa compétence). 
-					Il a quand même une chance de s’échapper vivant, car le seul mouvement qu’il pourra faire est celui du demi-tour. 
-					Cependant, lorsqu’il y a des membres de son équipe dans la même case que lui, moins de zombies l'empêcheront d’effectuer son mouvement. 
-					<br>Par exemple: supposons que le nombre de zombie maximum qu’il peut gérer soit 3 :
-					<br> - cas n°1: le joueur est seul (sans alliés) dans une case, il peut effectuer un mouvement seulement s’il y a moins de 3 zombies dans la case. 
-					<br> - cas n°2: le joueur n’est pas seul (présence de 2 alliés) dans une case, il peut effectuer une action seulement s’il y a moins de 5 (3+2) zombies dans la salle.
-				<hr>
-				<h1>L’attaque de la nuit </h1>
-				<p> Chaque nuit, les zombies deviennent enragés, incontrôlables et destructeurs. <br>
-					C’est-à-dire qu’ils attaquent tous les joueurs hors de la zone sûre qui ne sont pas cachés !
-				</p>
+					
+					<!-- Règles -->
+					<!-- ***************** PRESENTATION DU JEU ************** -->
+					<h1>Présentation du jeu</h1>
+					<p>
+						Zomb’IstiA est un jeu collaboratif par navigateur où trois équipes s’affrontent sur des sessions de quelques jours
+						dans un gigantesque complexe abandonné : l’IstiA. Le travail d’équipe est maître si chacun veut espérer s’en sortir
+						vivant et prendre le dessus sur les autres équipes. Partant chacun de leur zone sûre,les joueurs devront explorer 
+						et se battre pour leur survie…
 
-				<hr>
-				<h1>Le classement</h1>
-				<p>
-					Les points sont marqué selon différents événements:
-						<br>•	Lorsque le joueur dépose un objet de défense dans sa zone sûre, les points marqués dépendent de la valeur le cet objet.
-						<br>•	Plus 5 points lorsque le joueur met K-O un ennemi.
-						<br>•	Moins 3 points lorsque le joueur est mit K-O par un ennemi.
-						<br>•	Moins 2 points si le joueur est mit K-O par un zombie.
-						<br>•	Moins 1 point si le joueur meurt de faim.
-					<br><br>
-					Il est également possible de voir, sur la page classement,  le nombre de zombies tué par chaque joueur.
+					</p>
+					<!-- Colonne de gauche -->
+					<div style="width:50%;opacity:1; float:left; padding:10px;">
+						<h3>But du jeu</h3>
+						<p>
+							A la fin de la session, l’équipe qui aura remporté le plus de points gagne la partie. 
+							Il y a deux façons de gagner des points :
+							<br>•	Soit en accumulant des objets de défenses nécessaires à la fortification de la zone sûre.
+							<br>•	Soit en mettant K-O les membres de l’équipe adversaire, afin de leurs voler des points.
+						</p>
+						<h3>Principe de déplacement</h3>
+						<p>
+							Les déplacements se font de case en case, et chacun coûte un point de déplacement. 
+							Chaque case peut accueillir un nombre illimité de joueurs et contiennent également un «inventaire», 
+							qui est l’ensemble des items dans la salle (qui peuvent être ramassées par les joueurs).
 
-				</p>
-					<!-- #Règles -->
-			</div>
-			<!-- #content -->
+						</p>
+						<h3>Inventaire</h3>
+						<p>
+							Chaque joueur possède un inventaire, limité par un poids maximum (chaque objet étant plus ou moins lourd). 
+							De cet inventaire, il peut s’équiper d’une arme et / ou d’une armure, et consommer certains objets, 
+							augmentant un des points de personnage énoncé plus haut.
+						</p>
+					</div>
 
-		</div>
-		<!-- #main -->
+					<!-- Colonne de droite -->
+					<div style="width:50%; float:left; padding:10px;">
+						<h3>Points de personnage</h3>
+						<p>
+							Chaque personnage du jeu dispose d’un quota de points par jour. Ils sont non cumulables de jour en jour.
+							<br>•	Les points de vie : chaque attaque portée sur le joueur (ou riposte) diminue les points de vie du joueur.
+							 S’ils descendent à zéro, le joueur tombe dans le coma. Il perdra alors une partie de son inventaire et sera automatiquement rapatrié
+							  à sa zone sûre.
+							<br>•	Les points de déplacement : chaque déplacement coûte un point de déplacement. Dès que ceux-ci sont égaux à 
+							zéro, le joueur ne peut plus se déplacer.
+							<br>•	Les points d’actions : ils conditions le nombre d’actions que le joueur peut effectuer, certaines sont 
+							plus coûteuses que d’autres. Si le joueur n'en a plus, il ne pourra effectuer aucune action.
+							<br>•	Les points de faim : en dessous de 10, les différents points énoncés ci-desss en seront affectés : le joueur sera plus faible, 
+							et ses limites de points diminueront proportionnellement. Si cette barre tombe à zéro, le joueur tombe dans le coma.
+							<br> <br> Les points d’action et de déplacement ont la particularité de se remplir chaque jour, à minuit.
+						</p>
+					</div>
+					<!--  ********** ACTION DE JEU ************-->
+					<hr>
+					<h1>Actions actives</h1>
+						<p> Les actions se font instantanément, en l’échange de quelques points d’actions.</p>
+					<!-- Colonne de gauche -->
+					<div style="width:50%; float:left; padding:10px;">
+						<h3>Ramasser / Déposer</h3>
+						<p>
+							Il est possible de ramasser les objets au sol, à condition que le personnage puisse le porter dans son sac ! 
+							Le poids total du sac ne dois pas excéder le poids maximum que le personnage peut porter, 
+							donc si son sac est trop lourd, il peut passer dans sa zone sûre afin de se décharger. 
+							Notez que le fait d’être équipé ou non d’une arme / armure ne modifie pas le poids total de tous les objets du sac. 
+							Le joueur peut aussi déposer des objets dans une salle, quand il veut. Il n’y a pas de limite de place dans une salle.
+						</p>
+						<h3>Fouille rapide</h3>
+						<p>
+							Afin de trouver de nouveaux consommables et diversifier ses armes, le joueur pourra à tout moment effectuer une fouille rapide de la case, 
+							qui consommera des points d’actions. Ainsi, il aura une probabilité de découvrir un nouvel objet, qui ira directement se stocker dans son sac 
+							s’il y reste de la place ou dans la case sinon.
+						</p>
+						<h3>Tuer des zombies</h3>
+						<p>
+							Les salles seront souvent remplies de zombies errants, qui pourront empêcher les joueurs de progresser ou de faire certaines actions (cf. partie sur les zombies). 
+							Dans ce cas, le joueur sera obliger de tuer un certain nombre de zombies ! Même à mains nues, le joueur tuera forcément un zombie, et si il est chanceux, 
+							il peut en tuer deux en un seul coup.
+						</p>
+					</div>
+					
+					<!-- Colonne de droite -->
+					<div style="width:50%; float:left; padding:10px;">
+						<h3>S’équiper / Se déséquiper</h3>
+						<p>
+							Pour se défendre contre les ennemis et les zombies présents sur la carte, le joueur peut s’équiper d’une arme, 
+							qui augmentera ses points d’attaque et d’une armure, qui augmentera ses points de défenses. 
+							Il faut faire attention car les meilleurs armures sont souvent les plus lourdes, 
+							et il peut arriver qu’une fois une arme et une armure équipée, le joueur ne puisse plus porter d’autres objets. 
+						</p>
+						<h3>Consommer</h3>
+						<p>
+							Pour aider le joueur dans son aventure, il pourra trouver tout au long du jeu des potions, destinées à restaurer ses points de santé,
+							d’action, de mouvement ou encore de la nourriture pour remonter sa jauge de faim. Il ne peut consommer ces objets qu’une seule fois, 
+							mais il n’y a pas de limites de consommation, mais il ne faut pas oublier de jouer collectif ! 
+							De plus, si la jauge de faim du personnage descend à zéro, celui-ci tombe dans le coma, et est rapatrié automatiquement dans sa zone sûre.
+						</p>
+						<h3>Attaquer</h3>
+						<p>
+							Il est possible, pour chaque joueur, d’attaquer à tout moment un autre joueur présent dans la même case. 
+							Mais le joueur doit être vigilant : l’adversaire peut riposter, et il se peut également que l’adversaire soit préparé au combat (cf. partie sur le mode défense).
+							<br><br>
+						</p>
+					</div>
+					<!-- ********** ACTIONS PASSIVES *************** -->
+					<hr>
+					<h1>Actions passives</h1>
+					<p> A tout moment, le joueur peut choisir de passer dans un mode passif. Le mode fouille permet de trouver un objet toutes les heures, 
+						selon la probabilité de fouille de la case. Le mode cache permet au joueur de se cacher quelque part dans la case où il se trouve 
+						et a une chance de ne pas se faire découvrir par les ennemis selon la probabilité de cache de la salle. Le mode défense permet au 
+						joueur de se préparer au combat et d’augmenter ses points d’attaque et de défense.
+					</p>
+					<hr>
+					<h1>Les zombies</h1>
+					<p> Les zombies sont des morts-vivants, ils errent dans le bâtiment de l’IstiA, mais également en dehors. 
+						Ils débarquent de plus en plus nombreux chaque jour. Leurs rôles dans le jeu sont multiples :
+						<br>•	Interception :
+						<br>Ces êtres sans âmes ni cerveaux opérationnels peuvent intercepter les actions du joueur c’est à dire que ce dernier a une chance 
+						de se faire blesser par un ou plusieurs zombies avant d’effectuer son action, et a une petite chance de la rater. En toute logique, 
+						plus le nombre de goules dans une case est important, plus le joueur à de chances de subir des dégats et de rater son action. 
+						Cependant, il y a une exception : l’attaque de zombie ne peut rater !
+						
+						<br>•	Bloquage :
+						<br>Tout mouvement sera impossible si, dans la case, le nombre de zombies est trop important pour le joueur (ce nombre dépend de sa compétence). 
+						Il a quand même une chance de s’échapper vivant, car le seul mouvement qu’il pourra faire est celui du demi-tour. 
+						Cependant, lorsqu’il y a des membres de son équipe dans la même case que lui, moins de zombies l'empêcheront d’effectuer son mouvement. 
+						<br>Par exemple: supposons que le nombre de zombie maximum qu’il peut gérer soit 3 :
+						<br> - cas n°1: le joueur est seul (sans alliés) dans une case, il peut effectuer un mouvement seulement s’il y a moins de 3 zombies dans la case. 
+						<br> - cas n°2: le joueur n’est pas seul (présence de 2 alliés) dans une case, il peut effectuer une action seulement s’il y a moins de 5 (3+2) zombies dans la salle.
+					</p>
+					<hr>
+					<h1>L’attaque de la nuit </h1>
+					<p> Chaque nuit, les zombies deviennent enragés, incontrôlables et destructeurs. C’est-à-dire qu’ils attaquent tous les joueurs hors de la zone sûre qui ne sont pas cachés !
+					</p>
 
-		<footer id="footer">
+					<hr>
+					<h1>Le classement</h1>
+					<p>
+						Les points sont marqué selon différents événements:
+							<br>•	Lorsque le joueur dépose un objet de défense dans sa zone sûre, les points marqués dépendent de la valeur le cet objet.
+							<br>•	Plus 5 points lorsque le joueur met K-O un ennemi.
+							<br>•	Moins 3 points lorsque le joueur est mit K-O par un ennemi.
+							<br>•	Moins 2 points si le joueur est mit K-O par un zombie.
+							<br>•	Moins 1 point si le joueur meurt de faim.
+						<br><br>
+						Il est également possible de voir, sur la page classement,  le nombre de zombies tué par chaque joueur.
 
-		</footer>
-		<!-- #footer -->
-
-		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-		<script>
-			window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')
-		</script>
-
-		<!-- Script nécessaires pour le serveur -->
-		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-
-		<script>
-			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			var socket = io.connect('http://localhost:25536');
+					</p>
+						<!-- #Règles -->
+				</div>
 			
-			$( document ).ready(function()
-			{
-				socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', "regles");
-			});
-		
-		</script>
-	</body>
-</html>
+			</div>	<!-- #content -->
+
+			</div>
+			<!-- #main -->
+	    	</div>
+	    	</div>
+	    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
+<script src="../public/bootstrap/js/bootstrap.min.js"></script>
+		</body>
+	</html>

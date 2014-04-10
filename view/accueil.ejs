@@ -1,189 +1,28 @@
 <!DOCTYPE html>
-<!-- Consider specifying the language of your content by adding the `lang` attribute to <html> -->
-<!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<head>
+<html class="no-js">
+	<head>
+		<title>Zomb'IstiA - Accueil</title>
 
-	<meta charset="utf-8">
+	    <meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<!-- Always force latest IE rendering engine & Chrome Frame -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<link href="../public/bootstrap/css/bootstrap-modal-bs3patch.css" rel="stylesheet">
+		<link href="../public/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../public/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+		<link href="../public/bootstrap/css/bootstrap-modal.css" rel="stylesheet">
 
-	<!-- Put your title here! -->
-	<title>Zomb'IstiA - Accueil</title>
+	</head>
 
-	<meta name="description" content="">
-
-	 <!-- Mobile viewport optimized: h5bp.com/viewport -->
-	<meta name="viewport" content="width=device-width">
-
-	<link href="/public/stylesheets/style.css" rel="stylesheet">
-
-	<!-- Load Open Sans and Merriweather from Google Fonts
-		For optimal performance, customize it to load the styles you need:
-		http://goo.gl/QufgJ
-	-->
-	<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
-
-	<!-- All JavaScript at the bottom, except for Modernizr
-		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
-		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-	<script src="/view/js/modernizr-2.6.1.min.js"></script>
-</head>
-
-<body>
-
-	<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
-	<!--[if lt IE 8]>
-		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
-	<![endif]-->
-
-	<header id="master-header" class="clearfix" role="banner">
-
-		<hgroup>
-			<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
-			<h2 id="site-description">Seras-tu assez fort pour survivre ?!</h2>
-		</hgroup>
-
-	</header> <!-- #master-header -->
-
-<div id="main" class="row clearfix">
-
-	<!-- Main navigation -->
-	<nav class="main-navigation clearfix span12" role="navigation">
-		<h3 class="assistive-text">Menu principal</h3>
-		<ul>
-			<li class="current span2"><a href="/">Accueil</a></li>
-			<li class="span2">
-				<a href="regles">But du jeu</a>
-				<ul class="sub-menu">
-					<li><a href="tutoriel">Tutoriel</a></li>
-				</ul>
-			</li>
-			<li class="span2">
-				<a href="jeu">Jeu</a>
-				<ul class="sub-menu">
-					<li><a href="chat-equipe">Chat de l'équipe</a></li>
-				</ul>
-			</li>
-			<li class="span2"><a href="classement">Classement</a></li>
-			<li class="span2"><a href="chat-general">Chat</a></li>
-		</ul>
-	</nav> <!-- #main-navigation -->
-	<!-- Login form -->
-	<% if (username == null) { %>
-		<form id="LoginForm" name="LoginForm" class="loginform" method="POST" action="/">
-			Connectez vous : <input type="text" id="PseudoLogin" name="username" placeholder="Entrez votre Pseudo" value="" required="">
-			Mot de passe : <input type="password" id="PasswordLogin" name="password" placeholder="Entrez votre Mot de passe" value="" required="">
-			<input type="submit" id="SubmitLogin" name="Submit" value="Encore vivant ?!">
-		</form>
-	<% } else { %>
-		<form id="LogoutForm" class="logoutform" action="/" method=POST>
-			<input type="hidden"name="_method" value="delete"/>
-			<div> Bonjour <%= username %> Survivrez-vous à la prochaine nuit ?</div>
-			<input type="submit" value="Retour chez les vivants ?!" align=right>
-		</form>
-	<% } %>
-	
-	<% if (errorLogin != null) { %>
-		<div class="alert alert-error">
-			<%= errorLogin %>
-		</div>
-	<% } %>
-	
-<div id="content" role="main" class="span7">
-
-	<!--<article class="post hentry">-->
-
-
-		<header class="entry-header">
-			<h1 class="entry-title">
-				Un pas en enfer...
-			</h1>
-		</header> <!-- .entry-header -->
-
-		<div class="entry-content" align="justify">
-			<p>
-				Nous sommes dans un univers parallèle apocalyptique, dans lequel nous sommes envahis par des zombies affamés.<br>
-				Du coup, seule ta survie et celle de ton équipe compte !
-				<br><br>
-				A l’IstiA, trois grandes équipes se sont formées, tu devras donc choisir dans quel camp tu te situes : 
-				AGI, INNO ou QSF (et si tu as choisi d'arrêter tes études, c’est pareil).
-				
-				<br><br>
-				Une fois la partie lancée, tu as plusieurs pour ramasser un maximum d’objets pour construire ta zone sûre. 
-				Tu vas errer au détour des couloirs de l’IstiA mais attention aux zombies qui rodent. Méfies toi aussi des autres 
-				équipes qui peuvent t’attaquer et te dépouiller de tes biens.
-				<br><br>Les clés de la victoire seront le travail d’équipe et la communication, sans ça, dis adieu à la vie !
-			</p>
-		</div> <!-- .entry-content -->
-
-		<!--<footer class="entry-meta">
-			Posté le <time class="entry-date" datetime="22-02-2013" pubdate>22 Février 2013</time>
-			par <span class="author vcard">Admin</span>
-		</footer>-->
-
-
-	<!--</article> -->
-<!-- .post.hentry -->
-</div> <!-- #content -->
-
-<div id="sidebar" role="complementary" class="span4">
-	
-	<% if (username == null) { %>
-		<% if (InfoInscription != null) { %>
-			<div id="subscribtionAlert" class="alert-error" style="font-size: 16px;">
-			<% if 	(InfoInscription == "Login_nonConforme") { %> Echec : Login non conforme ! <br/>4 caractères obligatoires !
-			<% } else if 	(InfoInscription == "Pass_nonConforme")  { %> Echec : Mot de passe non conforme ! <br/>6 caractères obligatoires ! 	
-			<% } else if 	(InfoInscription == "Mail_nonConforme") { %> Echec : Email non conforme ! <br/>Mail de l'université d'Angers obligatoire !
-			<% } else 										 { %> <%=InfoInscription %> déjà utilisé ! <% } %>
-			</div>
-		<% } %>
-		
-		<% if (usernameInscription != null) { %>
-			<div id="subscribtionAlert" class="alert-success" style="font-size: 16px;">
-				Bienvenue en enfer <%= usernameInscription %>. 
-				<br/>Tu viens de recevoir un mail de validation avec un lien pour activer ton compte !
-			</div>
-		<% } else { %>
-			<!-- Subscription form -->
-			<form id="SubscribeForm" name="SubscribeForm" class="subscribeform" method="POST" action="/">
-				<input type="hidden" name="_method" value="PUT">
-				<h2 align=center>Pas encore inscrit ?<br>Viens creuser ta tombe !</h2>
-				<input type="text" id="PseudoSubscribe" placeholder="Pseudo" name="username"value="" required="">
-				<input type="password" id="PasswordSubscribe" placeholder="Mot de passe" name="password" value="" required="">
-				<input type="email" id="EmailSubscribe" placeholder="E-mail" name="email" value="" required="">
-				<input type="submit" id="SubmitSubscribe" value="Inscription">
-			</form>
-		<% } %>
-	<% } else { %>
-		
-	<% } %>
-</div> <!-- #sidebar -->
-
-</div> <!-- #main -->
-
-	<footer id="footer">
-	
-	</footer> <!-- #footer -->
-	<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
-		
-	<!-- Script nécessaires pour le serveur -->
-	<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
 	<script src="/socket.io/socket.io.js"></script>
-	
-	<form style="display:none;" id="LogoutForm" class="logoutform" action="/" method=POST>
-		<input type="hidden"name="_method" value="delete"/>
-		<input type="submit" value="Retour chez les vivants ?!" align=right>
-	</form>
-	
+	<script src="../public/bootstrap/js/bootstrap.min.js"></script>
+
 	<script>
-		/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-		//var socket = io.connect('http://192.168.0.24:25536');
+		/*********** EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+
 		var socket = io.connect('http://localhost:25536');
 		
 		<% if(sessionID) { %>
@@ -203,5 +42,108 @@
 		});
 		
 	</script>
-</body>
+
+	<body>
+		<div class="col-md-5">
+		<a class="navbar-brand" href="#">LOGO</a>
+		</div>
+		<nav class="navbar navbar-inverse col-md-7" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+					<form class="navbar-form navbar-left" action="/" method="post">
+						<div class="form-group">
+					 		<input name="username" type="text" class="form-control" placeholder="Login"/>
+					 		<input name="password" type="password" class="form-control" placeholder="Mot de passe"/>
+						</div>
+						<input name="submit" type="submit" value="Connexion" class="btn btn-success"/>
+					</form>
+					<a href="#responsive" data-toggle="modal" class="navbar-text navbar-right navbar-link" style="color:#0000FF; text-decoration:underline;">Rejoignez-nous</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			<!-- Example row of columns -->
+			<div class="row">
+				<div class="row" style="background-color: rgba(160, 160, 160, 0.4);padding: 2% 2% 2% 2%;margin: 10% 5% 1% 5%; min-height: 250px">
+					<div id="mid-zone-content" class="col-md-10">
+						<h2>Heading</h2>
+						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+					</div>
+					<div class="col-md-2">
+						<ul class="nav nav-sidebar nav-pills nav-stacked" style="">
+							<li class="active"><a href="#">Home</a></li>
+							<li><a href="#">Profile</a></li>
+							<hr width="75%" size="500px" color="red" noshade/>
+							<li><a href="#">Messages</a></li>
+						</ul>
+					</div>
+				</div>
+				    <div id="responsive" class="modal fade" tabindex="-1" data-width="760" style="display: none;">
+				    	<form action="/" method="POST">
+					 		<input name="_method" type="hidden" value="PUT"/>
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+								<h4 align="center" class="modal-title">Rejoignez-nous !</h4>
+							</div>
+							<div class="modal-body">
+						 		<input style="margin-top:2%;" class="form-control" name="username" placeholder="Login" type="text" style="padding: 10px 10px 10px 10px;" align="center">
+						 		<input style="margin-top:2%;" class="form-control" name="password" placeholder="Mot de passe" type="password">
+						 		<input style="margin-top:2%;" class="form-control" name="email" 	placeholder="E-mail" type="text">
+							</div>
+							<div class="modal-footer">
+								<button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
+								<input  type="submit" class="btn btn-primary" value="S'inscrire" />
+							</div>
+				    	</form>
+					</div>
+			</div>
+
+			<hr>
+
+			<footer>
+			<p>&copy; Company 2014</p>
+			</footer>
+		</div> <!-- /container -->
+
+		<script>
+		/*
+			var $modal = $('#ajax-modal');
+    
+		    $('.ajax .demo').on('click', function(){
+			    // create the backdrop and wait for next modal to be triggered
+			    $('body').modalmanager('loading');
+			     
+			    setTimeout(function(){
+				    $modal.load('modal_ajax_test.html', '', function(){
+				    	$modal.modal();
+				    });
+			    }, 1000);
+		    });
+		     
+		    $modal.on('click', '.update', function(){
+			    $modal.modal('loading');
+			    setTimeout(function(){
+			    	$modal
+			    		.modal('loading')
+			    		.find('.modal-body')
+			    		.prepend('<div class="alert alert-info fade in">' +
+			    		'Updated!<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+			    		'</div>');
+		   		}, 1000);
+		    });
+		*/
+		</script>
+	</body>
 </html>

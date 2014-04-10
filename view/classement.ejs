@@ -1,101 +1,67 @@
-<!DOCTYPE html>
-<!-- Consider specifying the language of your content by adding the `lang` attribute to <html> -->
-<!--[if lt IE 7]> <html class="no-js ie6"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-<head>
+	<!DOCTYPE html>
 
-	<meta charset="utf-8">
+	<html>
+		<head>
+			<meta charset="utf-8">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<!-- Always force latest IE rendering engine & Chrome Frame -->
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+			<link href="../public/bootstrap/css/bootstrap.css" rel="stylesheet">
+			<title>Zomb'IstiA - Classement</title>
+		</head>
+		<body >
 
-	<!-- Put your title here! -->
-	<title>Zomb'IstiA - Classement</title>
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+	        	<div class="navbar-header">
+	         		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		            	<span class="sr-only">Toggle navigation</span>
+		            	<span class="icon-bar"></span>
+		            	<span class="icon-bar"></span>
+		            	<span class="icon-bar"></span>
+	          		</button>
+	          		<a class="navbar-brand" href="#">Notre beau logo</a>	
+	        	</div>
+	        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	          		<ul class="nav navbar-nav pull-right navb">
+	            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
+	            		<li class="navbar-text" >Prochaine attaque dans : 00:54:35 </li>
+	            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button></form>
+	          		</ul>
+	        	</div><!--/.nav-collapse -->
+	     	</div>
+	    </nav>
+	    <div class="container-fluid">
+	    	<div class="row">
+	    	<div class="col-md-2 sidebar" >
+	    		<ul class="nav nav-sidebar nav-pills nav-stacked ">
+	    			<li><a href="/">Accueil</a></li>
+	    		
+					<li class="divider"><hr/></li>
+	    			
+	    			<li ><a href="#">Règles</a></li>
+	    			<li><a href="#">Tutoriel</a></li>
+	    		
+	    			<li class="divider"><hr/></li>
+	    			<li><a href="/jeu">Plateau de jeu</a></li>
+	    			<li><a href="#">Chats</a></li>
+	    		
+	    			<li class="divider"><hr/></li>
+	    			<li class="nav-sidebar active"><a href="#">Classement</a></li>
+	    		</ul>
 
-	<meta name="description" content="">
+	    	</div>
+	    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
+	    		<div style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 4%;padding-right:2%;padding-top:2%;padding-bottom:2%;margin-bottom:1%;margin-top:1% ;border-radius:15px; ">
 
-	 <!-- Mobile viewport optimized: h5bp.com/viewport -->
-	<meta name="viewport" content="width=device-width">
-
-	<link href="/public/stylesheets/style.css" rel="stylesheet">
-
-	<!-- Load Open Sans and Merriweather from Google Fonts
-		For optimal performance, customize it to load the styles you need:
-		http://goo.gl/QufgJ
-	-->
-	<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
-
-	<!-- All JavaScript at the bottom, except for Modernizr
-		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
-		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-	<script src="/view/js/modernizr-2.6.1.min.js"></script>
-</head>
-
-<body>
-
-	<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
-	<!--[if lt IE 8]>
-		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
-	<![endif]-->
-
-	<header id="master-header" class="clearfix" role="banner">
-
-		<hgroup>
-			<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
-			<h2 id="site-description">C'est qui les meilleurs ?!</h2>
-		</hgroup>
-
-	</header> <!-- #master-header -->
-
-<div id="main" class="row clearfix">
-
-	<!-- Main navigation -->
-	<nav class="main-navigation clearfix span12" role="navigation">
-		<h3 class="assistive-text">Menu principal</h3>
-		<ul>
-			<li class="span2"><a href="/">Accueil</a></li>
-			<li class="span2">
-				<a href="regles">But du jeu</a>
-				<ul class="sub-menu">
-					<li><a href="tutoriel">Tutoriel</a></li>
-				</ul>
-			</li>
-			<li class="span2">
-				<a href="/jeu">Jeu</a>
-				<ul class="sub-menu">
-					<li><a href="/chat-equipe">Chat de l'équipe</a></li>
-				</ul>
-			</li>
-			<li class="current span2"><a href="/classement">Classement</a></li>
-			<li class="span2"><a href="/chat-general">Chat</a></li>
-		</ul>
-	</nav> <!-- #main-navigation -->
-	
-	<form id="LogoutForm" class="logoutform" action="/" method=POST>
-		<input type=hidden name="_method" value="delete"/>
-		<div> Bonjour <%= username %></div>
-		<input type="submit" value="Retourner chez les vivants ?" align=right>
-	</form>
-
-<div id="content" role="main" class="span12">
-
-	<h1 class="entry-title" align=center>
-		Classement des joueurs
-	</h1>
-	
-	<!-- Classement -->
-		<div class="span12">
-			<table class="row">
-				<thead class="classementHead">
+			<table class="tabe table-bordered table-hover">
+				<thead >
 					 <tr>
-						<th><a href="/classement/0">Joueurs</a></th>
-						<th><a href="/classement/1">Nombre de meurtres</a></th>
-						<th><a href="/classement/2">Nombre de fois tués</a></th>
-						<th><a href="/classement/3">Nombre de goules tuées</a></th>
-						<th><a href="/classement/4">Score par meurtres</a></th>
-						<th><a href="/classement/5">Score par ODD</a></th>
+						<th><a href="/classement/0"><p>Joueurs</p></a></th>
+						<th><a href="/classement/1"><p>Nombre de meurtres</p></a></th>
+						<th><a href="/classement/2"><p>Nombre de fois tués</p></a></th>
+						<th><a href="/classement/3"><p>Nombre de goules tuées</p></a></th>
+						<th><a href="/classement/4"><p>Score par meurtres</p></a></th>
+						<th><a href="/classement/5"><p>Score par ODD</p></a></th>
 					</tr>
 				</thead>
 				<tbody class="classement" id="listUsers">
@@ -103,18 +69,12 @@
 				</tbody>
 			</table>
 		</div>
-	
-	<!-- #Classement -->
-</div> <!-- #content -->
+	    		</div>
+	    	</div>
+	    	</div>
+	    </div>
 
-</div> <!-- #main -->
-
-	<footer id="footer">
-	
-	</footer> <!-- #footer -->
-
-		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	    		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script>
 			window.jQuery || document.write('<script src="view/js/jquery-1.7.2.min.js"><\/script>')
 		</script>
@@ -159,5 +119,5 @@
 				});
 			});
 		</script>
-</body>
-</html>
+	</body>
+	</html>

@@ -1,37 +1,24 @@
-<!DOCTYPE html>
-<!-- Consider specifying the language of your content by adding the `lang` attribute to <html> -->
-<!--[if lt IE 7]>
-<html class="no-js ie6">
-<![endif]-->
-<!--[if IE 7]>
-<html class="no-js ie7">
-<![endif]-->
-<!--[if IE 8]>
-<html class="no-js ie8">
-<![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js">
-	<!--<![endif]-->
-	<head>
-		<meta charset="utf-8">
-		<!-- Always force latest IE rendering engine & Chrome Frame -->
-		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-		<!-- Put your title here! -->
-		<title>Zomb'IstiA - Plateau de jeu</title>
-		<meta name="description" content="">
-		<!-- Mobile viewport optimized: h5bp.com/viewport -->
-		<meta name="viewport" content="width=device-width">
-		<link href="/public/stylesheets/style.css" rel="stylesheet">
-		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+	<!DOCTYPE html>
+
+	<html class="no-js">
+		<head>
+			<meta charset="utf-8">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+			<link href="../public/bootstrap/css/bootstrap.css" rel="stylesheet">
+			<title>Zomb'IstiA - Plateau de jeu</title>
+
+			<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<!-- Script nécessaires pour le serveur -->
 		<!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<script src="/socket.io/socket.io.js"></script>
 		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
-		<!--><script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
+		<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
 
 		<script>
 			var createjs = window;
 			var socket = io.connect('http://localhost:25536');
+			socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
 		</script>
 		<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
 		<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
@@ -55,7 +42,7 @@
 		<script type="text/javascript" src="../src/easeljs/display/Text.js"></script>
 		<script type="text/javascript" src="../src/easeljs/display/DOMElement.js"></script>
 		<script type="text/javascript" src="../src/easeljs/events/MouseEvent.js"></script>
-		<script type="text/javascript" src="../src/easeljs/filters/Filter.js"></script>
+		<script type="text/javascript" scriptrc="../src/easeljs/filters/Filter.js"></script>
 		<script type="text/javascript" src="../src/easeljs/ui/ButtonHelper.js"></script>
 		<script type="text/javascript" src="../src/easeljs/ui/Touch.js"></script>
 		<script type="text/javascript" src="../src/easeljs/utils/SpriteSheetUtils.js"></script>
@@ -69,424 +56,328 @@
 		<script type="text/javascript" src="../src/preloadjs/XHRLoader.js"></script>
 		<script type="text/javascript" src="/view/js/HeureLocale.js"></script>
 		<script type="text/javascript" src="/view/canvas.js"></script>
+		</head>
+		<body >
+				<!-- habillage -->
+		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container-fluid">
+	        	<div class="navbar-header">
+	         		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+		            	<span class="sr-only">Toggle navigation</span>
+		            	<span class="icon-bar"></span>
+		            	<span class="icon-bar"></span>
+		            	<span class="icon-bar"></span>
+	          		</button>
+	          		<a class="navbar-brand" href="#">Notre beau logo</a>	
+	        	</div>
+	        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+	          		<ul class="nav navbar-nav pull-right navb">
+	            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
+	            		<li class="navbar-text" >Prochaine attaque dans : </li>
+	            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button></form>
+	          		</ul>
+	        	</div><!--/.nav-collapse -->
+	     	</div>
+	    </nav>
+	    <div class="container-fluid">
+	    	<div class="row">
+	    	<div class="col-md-2 sidebar" >
+	    		<ul class="nav nav-sidebar nav-pills nav-stacked ">
+	    			<li><a href="#">Accueil</a></li>
+	    		
+					<li class="divider"><hr/></li>
+	    		
 
-		<!-- Load Open Sans and Merriweather from Google Fonts
-		For optimal performance, customize it to load the styles you need:
-		http://goo.gl/QufgJ
-		-->
-		<link href="//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700|Merriweather:400,700,900" rel="stylesheet">
-		<!-- All JavaScript at the bottom, except for Modernizr
-		Modernizr enables HTML5 elements & feature detects; It includes Respond, a polyfill for min/max-width CSS3 Media Queries
-		For optimal performance, use a custom Modernizr build: www.modernizr.com/download/ -->
-		<script src="/view/js/modernizr-2.6.1.min.js"></script>
-	</head>
-	<body>
-		<!-- Prompt IE 6 and 7 users to install Chrome Frame:		chromium.org/developers/how-tos/chrome-frame-getting-started -->
-		<!--[if lt IE 8]>
-		<p class="chromeframe alert alert-warning">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
-		<![endif]-->
-		<header id="master-header" class="clearfix" role="banner">
-			<hgroup>
-				<h1 id="site-title"><a href="/" title="">Zomb'IstiA</a></h1>
-				<h2 id="site-description">L'action se déroule ici !</h2>
-			</hgroup>
-		</header>
-		<!-- #master-header -->
-		<div id="main" class="row clearfix">
-			<!-- Main navigation -->
-			<nav class="main-navigation clearfix span12" role="navigation">
-				<h3 class="assistive-text">Menu principal</h3>
-				<ul>
-					<li class="span2">
-						<a href="/">Accueil</a>
-					</li>
-					<li class="current span2">
-						<a href="regles">But du jeu</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="tutoriel">Tutoriel</a>
-							</li>
-						</ul>
-					</li>
-					<li class="current span2">
-						<a href="jeu">Jeu</a>
-						<ul class="sub-menu">
-							<li>
-								<a href="chat-equipe">Chat de l'équipe</a>
-							</li>
-						</ul>
-					</li>
-					<li class="span2">
-						<a href="classement">Classement</a>
-					</li>
-					<li class="span2">
-						<a href="chat-general">Chat</a>
-					</li>
-				</ul>
-			</nav>
-			<!-- #main-navigation -->
-			<form id="LogoutForm" class="logoutform" action="/" method=POST>
-				<input type=hidden name="_method" value="delete"/>
-				<div>
-					Bonjour <%= username %>
-				</div>
-				<input type="submit" value="Retourner chez les vivants ?" align=right>
-			</form>
-			<div id="content" role="main" class="span12">
-				<% if(idEquipe == 0 || !isUpToDate) { %>
-				<h1>Aux portes de l'enfer...</h1>
-				<% if(!isUpToDate && idEquipe != 0) { %>
-				<!-- -->
-				<div class="alert-error" style="font-size: 20px;">
-					<b>Une nouvelle session a commencé depuis votre dernière connexion !</b>
-					<br>
-				</div>
+	    			
+	    			<li ><a href="#">Règles</a></li>
+	    			<li><a href="#">Tutoriel</a></li>
+	    		
+	    			<li class="divider"><hr/></li>
+	    			<li class="nav-sidebar active"><a href="#">Plateau de jeu</a></li>
+	    			<li><a href="#">Chats</a></li>
+	    		
+	    			<li class="divider"><hr/></li>
+	    			<li><a href="#">Classement</a></li>
+	    		</ul>
 
-				<!-- *************** RESUME DES SCORES DE LA DERNIERE SESSION ******************** -->
-				<% if (bilanScores["lastIdSession"] != -1 ) { %>
-				<h2> Résumé de des scores de votre dernière session : (session n°<%= bilanScores["lastIdSession"]%>)</h2>
-				<b>Session commencée le <%= dateLastSession["dateDebut"].toLocaleString() %> et achevée le <%= dateLastSession["dateFin"].toLocaleString() %></b>
-				<% } //fin if %>
-				<table>
-					<td width=50%><b>Scores globaux : </b>
-					<br>
-					<br>
-					<table>
-						<tr>
-							<td><b>Equipe</b></td>
-							<td><b>Participants</b></td>
-							<td><b>Score par meurtres</b></td>
-							<td><b>Score par objets</b></td>
-							<td><b>Total</b></td>
-						</tr>
-						<tr>
-							<td>AGI</td>
-							<td> <%= bilanScores_last["nbrAGI"]%> </td>
-							<td> <%= bilanScores_last["scoreAGI_meurtre"]%> point(s)</td>
-							<td> <%= bilanScores_last["scoreAGI_odd"]%> point(s)</td>
-							<td><b><%= bilanScores_last["scoreAGI"]%> point(s)</b></td>
-						</tr>
-						<tr>
-							<td>INNO</td>
-							<td><%= bilanScores_last["nbrINNO"]%> </td>
-							<td><%= bilanScores_last["scoreINNO_meurtre"]%> point(s)</td>
-							<td><%= bilanScores_last["scoreINNO_odd"]%> point(s)</td>
-							<td><b><%= bilanScores_last["scoreINNO"]%> point(s)</b></td>
-						</tr>
-						<tr>
-							<td>QSF</td>
-							<td><%= bilanScores_last["nbrQSF"]%> </td>
-							<td><%= bilanScores_last["scoreQSF_meurtre"]%> point(s)</td>
-							<td><%= bilanScores_last["scoreQSF_odd"]%> point(s)</td>
-							<td><b><%= bilanScores_last["scoreQSF"]%> point(s)</b></td>
-						</tr>
-					</table>
-					<br>
-					</td>
-					<td width=50%><b>Vos scores :</b>
-					<br>
-					<br>
-					<table>
-						<tr>
-							<td><b>Type</b></td>
-							<td><b>Nombre</b></td>
-							<td><b>Gain en points</b></td>
-						</tr>
-						<tr>
-							<td>Objets de défenses ramenés</td>
-							<td>Aucune info</td>
-							<td><%= bilanScores_last["scoreODD"]%> point(s)</td>
-						</tr>
-						<tr>
-							<td>Nombre par meurtres</td>
-							<td><%= bilanScores_last["nbrMeurtres"]%></td>
-							<td><%= bilanScores_last["scoreMeurtre"]%> point(s)</td>
-						</tr>
-						<tr>
-							<td>Nombre de fois tués</td>
-							<td><%= bilanScores_last["nbrFoisTue"]%></td>
-							<td>0 point</td>
-						</tr>
-						<tr>
-							<td>Nombre de zombies tués</td>
-							<td><%= bilanScores_last["nbrGoulesTues"]%></td>
-							<td>Pas de point</td>
-						</tr>
-						<tr>
-							<td>TOTAL</td>
-							<td> X</td>
-							<td><%= bilanScores_last["total"]%> point(s)</td>
-						</tr>
-					</table>
-					<br>
-					</td>
-				</table>
-				Etes vous prêt à retenter l'aventure ? ...
-				<% } %>
+	    	</div>
 
-				<!-- *************** CHOIX D'EQUIPE ******************** -->
+	    	<!-- core de la page -->
 
-				<h2> Entrée en enfer </h2>
-				<p>
-					Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spéciale de votre personnage.
-					<br>
-					Vous avez le choix entre trois compétences :
-					<ul>
-						<li>
-							Vous pouvez être <b>UNE BRUTE</b>: Vous êtes là pour <b>protéger vos alliés</b> et <b>mener des assaults sur vos ennemis</b>, car vos attaques sont plus
-							destructrices et vous suportez mieux les coups. En revanche, vous trouverez assez difficilement des objets pendant les fouilles et 
-							vous aurez de fortes chances d'être découvert pendant une fouille ennemi.
-							<br>
-						</li>
-						<li>
-							Vous pouvez être <b>UN EXPLORATEUR</b>: Vous êtes un éclaireur, spécialement dédié à <b>l'exploration de l'immense complexe</b>. Vous avez peu de chance d'être découvert
-							durant une fouille ennemi et vous pourrez effectuer bien plus de mouvements que vos alliés. Cependant, faites attention à ne pas vous faire attaquer car vos points 
-							de défense sont relativement faibles.
-							<br>
-						</li>
-						<li>
-							Vous pouvez être <b>UN CHERCHEUR</b>: Vous êtes fait pour <b>fouiller les alentours</b> afin de trouver les objets nécessaires à votre victoire, car 
-							vos fouilles seront bien plus souvent fructueuses. Bien entendu cela a un coût, car vos attaques sont faibles et vos caches rarement fiables.
-							<br>
-						</li>
-					</ul>
-				</p>
-				<b>Préparation...</b>
-				<br>
+	    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
+	    		<div  style="background-color: rgba(161, 161, 161, 0.4); ;padding-left : 2%;padding-right : 2%;padding-top:2%;padding-bottom:2%;margin-bottom:1%;margin-top:1% ;border-radius:15px; min-height:850px; ">
 
-				<form class="choixEquipeform" name="formInitPerso" method="POST" action="/jeu">
-					<input type="hidden" name="_method" value="PUT">
-					Choisissez votre équipe :
-					<select width: 10% name="equipe">
-							<option value="1">AGI <%= bilanScores["nbrAGI_sessionEnCours"]%> joueur(s)</option>
-							<option value="2">INNO <%= bilanScores["nbrINNO_sessionEnCours"]%> joueur(s)</option>
-							<option value="3">QSF <%= bilanScores["nbrQSF_sessionEnCours"]%> joueur(s)</option>
-					</select>
-					Choisissez votre compétence :
-					<select name="competence">
-							<option value="brute">Brute</option>
-							<option value="explorateur">Explorateur</option>
-							<option value="chercheur">Chercheur</option>
-					</select>
-							<input type="submit" value="Tuer du zombie !" name="submitChoixDepart" />
-				</form>
-				<% } else { %>
-				<h1 class="entry-title" align=center> Plateau de jeu </h1>
+	    			<nav class="navbar navbar-inverse" role="navigation">
+	    				<ul class="nav navbar-nav">
+  					
+	    					<li class=""><a href="#les_scores">Scores</a></li>
+	    					<li class="divider"><hr/></li>
+	    					<li class=""><a href="#les_infos">Info Sessions</a></li>
+	    					<li class="divider"><hr/></li>
+	    					<li class=""><a href="#le_jeu">Plateau de jeu</a></li>		
+	    				</ul>
 
-				<A href="#plateauDeJeu"><i>Cliquer ici pour centrer directement sur le jeu</i></a>
-				<!-- *************** INFOS SUR LA SESSION EN COURS ******************** -->
-				<h2>Information sur la session en cours</h2>
-				<table border="0">
-					<td width=50%><!--<b>Répartition des équipes</b>
-					<br>
-					<table>
-					<tr> <br> </tr>
-					<tr>
-					<td><b>AGI</b></td>
-					<td><b>INNO</b></td>
-					<td><b>QSF</b></td>
-					<td><b>TOTAL</b></td>
-					</tr>
-					<tr>
-					<td><%= bilanScores["nbrAGI"]%></td>
-					<td><%= bilanScores["nbrINNO"]%></td>
-					<td><%= bilanScores["nbrQSF"]%></td>
-					<td><%= bilanScores["nbrTotal"]%></td>
-					</tr>
-					</table>-->
-					<table>
-						<b>Dates clés</b>
-						<tr>
-							<br>
-						</tr>
+	    			</nav>
+	    			<div >
+	    				<article>
+		    			
+		    				<span id="le_jeu" class="hide"></span> 
+		    				<div class="displayable">
+		    					<div class="col-md-12 col-sm-12 col-xs-12" >
+				    				<canvas id="myCanvas" style="display:block;  border:1px solid #000000;"  width="1100" height="620" ></canvas>
+								
+
+
+								
+									<textarea readonly id="msgs" rows="2" name="msgTextAreaRapide"  class="col-md-12 col-sm-12 col-xs-12 " > </textarea>
+									
+									<input class="col-md-10 col-sm-10 col-xs-10 " type="text" placeholder="Votre message" id="msgTextBox"/>
+									
+									<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgSubmit"/>
+								</div>
+							</div>
+						</article>
+						<article>
+							<span id="les_scores" class="hide"></span>
+							<div class="displayable">
+								<div class="col-md-12 col-sm-12  ">
+							<% if (bilanScores["lastIdSession"] != -1 ) { %>
+								<h2> Résumé de des scores de votre dernière session : (session n°<%= bilanScores["lastIdSession"]%>)</h2>
+					<b><h3>Session commencée le <%= dateLastSession["dateDebut"] %> et achevée le <%= dateLastSession["dateFin"] %></h3></b>
+					<% } %>
+					<table class="table">
+						<td width=50%><b><h4>Scores globaux : </h4></b>
 						<br>
-						<tr>
-							<td width=50%><b>Numéro de session : </b></td>
-							<td><%= sessionInfo["id"]%></td>
-						</tr>
-						<tr>
-							<td><b>Date de début : </b></td>
-							<td><%= sessionInfo["dateDebut"].toLocaleDateString()  %></td>
-						</tr>
-						<tr>
-							<td><b>Date de fin : </b></td>
-							<td><%= sessionInfo["dateFin"].toLocaleDateString() %></td>
-						</tr>
-					</table></td>
-					<td width=50%>
-					<table>
-						<b>Paramètres des attaques</b>
 						<br>
-						<tr>
-							<br>
-						</tr>
-						<tr>
-							<td width=50%><b>Heure de la prochaine attaque : </b></td>
-							<td><%= heureAttaque %></td>
-						</tr>
-						<tr>
-							<td><b>Heure locale : </b></td>
-							<td><span id="HeureLocale"></span>
-							<script type="text/javascript">
-								HeureLocale('HeureLocale');
-							</script></td>
-						</tr>
-						<tr>
-							<td><b>Fréquence des attaques : </b></td>
-							<td><%= dureeCycle %> heure(s)</td>
-						</tr>
-					</table></td>
-
-				</table>
-
-				<!-- *************** INFOS SUR LES SCORES PROVISIOIRES ******************** -->
-				<h2>Scores provisoires</h2>
-				<table text-align:center>
-					<tr>
-						<td width="20%"><b>Type</b></td>
-						<td width="20%"><b>AGI <i>(<%= bilanScores["nbrAGI"]%> joueur(s))</i></b></td>
-						<td width="20%"><b>INNO <i>(<%= bilanScores["nbrINNO"]%> joueur(s))</i></b></b></td>
-						<td width="20%"><b>QSF <i>(<%= bilanScores["nbrQSF"]%> joueur(s))</i></b></b></td>
-						<td width="20%"><b>Vous</b></td>
-					</tr>
-					<tr>
-						<td width="20%"><b>Défenses ramenées</b></td>
-						<td width="20%"><%= bilanScores["scoreAGI_odd"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["scoreINNO_odd"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["scoreQSF_odd"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["scoreODD"]%> point(s)</td>
-					</tr>
-					<tr>
-						<td width="20%"><b>Combats à morts</b></td>
-						<td width="20%"><%= bilanScores["scoreAGI_meurtre"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["scoreINNO_meurtre"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["scoreQSF_meurtre"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["scoreMeurtre"]%> point(s)</td>
-					</tr>
-					<tr>
-						<td width="20%"><b><i> -> Assassinats</i></b></td>
-						<td width="20%"><i>(<%= bilanScores["AGI_meurtres"]%> meurtres)</i></td>
-						<td width="20%"><i>(<%= bilanScores["INNO_meurtres"]%> meurtres)</i></td>
-						<td width="20%"><i>(<%= bilanScores["QSF_meurtres"]%> meurtres)</i></td>
-						<td width="20%"><i>(<%= bilanScores["nbrMeurtres"]%> meurtres)</i></td>
-					</tr>
-					<tr>
-						<td width="20%"><b><i> -> Pertes</i></b></td>
-						<td width="20%"><i><%= bilanScores["AGI_tués"]%> tués</i></td>
-						<td width="20%"><i><%= bilanScores["INNO_tués"]%> tués</i></td>
-						<td width="20%"><i><%= bilanScores["QSF_tués"]%> tués</i></td>
-						<td width="20%"><i><%= bilanScores["nbrFoisTue"]%> fois</i></td>
-					</tr>
-					<tr>
-						<td width="20%"><b>Zombies tués</b></td>
-						<td width="20%"><%= bilanScores["AGI_zombies"]%> zombie(s)</td>
-						<td width="20%"><%= bilanScores["INNO_zombies"]%> zombie(s)</td>
-						<td width="20%"><%= bilanScores["QSF_zombies"]%> zombie(s)</td>
-						<td width="20%"><%= bilanScores["nbrGoulesTues"]%> zombie(s)</td>
-					</tr>
-					<tr>
-						<td width="20%"><b>TOTAL</b></td>
-						<td width="20%"><%= bilanScores["scoreAGI"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["scoreINNO"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["scoreQSF"]%> point(s)</td>
-						<td width="20%"><%= bilanScores["total"]%> point(s)</td>
-					</tr>
-				</table>
-
-				<!-- *************** TCHAT RAPIDE ******************** -->
-				<h2>Plateau de jeu</h2>
-					<a name="plateauDeJeu"><i>Tchat rapide</i>	</a>
-				<!-- ancre-->
-		
-				
-				<table border="0">
-					<tr>
-						<!-- messages recus -->
-						<td>
-							<textarea readonly id="msgs" rows="4" name="msgTextAreaRapide"></textarea>
+						<table>
+							<tr>
+								<td><b><p>Equipe</p></b></td>
+								<td><b><p>Participants</p></b></td>
+								<td><b><p>Score par meurtres</p></b></td>
+								<td><b><p>Score par objets</p></b></td>
+								<td><b><p>Total</p></b></td>
+							</tr>
+							<tr>
+								<td><p>AGI</p></td>
+								<td><p><%= bilanScores_last["nbrAGI"]%> </p></td>
+								<td><p><%= bilanScores_last["scoreAGI_meurtre"]%> point(s)</p></td>
+								<td><p><%= bilanScores_last["scoreAGI_odd"]%> point(s)</p></td>
+								<td><b><p><%= bilanScores_last["scoreAGI"]%> point(s)</p></b></td>
+							</tr>
+							<tr>
+								<td><p>INNO</p></td>
+								<td><p><%= bilanScores_last["nbrINNO"]%> </p></td>
+								<td><p><%= bilanScores_last["scoreINNO_meurtre"]%> point(s)</p></td>
+								<td><p><%= bilanScores_last["scoreINNO_odd"]%> point(s)</p></td>
+								<td><b><p><%= bilanScores_last["scoreINNO"]%> point(s)</p></b></td>
+							</tr>
+							<tr>
+								<td><p>QSF</p></td>
+								<td><p><%= bilanScores_last["nbrQSF"]%> </p></td>
+								<td><p><%= bilanScores_last["scoreQSF_meurtre"]%> point(s)</p></td>
+								<td><p><%= bilanScores_last["scoreQSF_odd"]%> point(s)</p></td>
+								<td><b><p><%= bilanScores_last["scoreQSF"]%> point(s)</p></b></td>
+							</tr>
+						</table>
+						<br>
 						</td>
-					</tr>
-				</table>
-				<table>
-					<tr>
-						<td width="80%">
-							<input type="text" placeholder="Votre message" id="msgTextBox"/>
+						<td width=50%><b><h4>Vos scores :</h4></b>
+						<br>
+						<br>
+						<table>
+							<tr>
+								<td><b><p>Type</p></b></td>
+								<td><b><p>Nombre</p></b></td>
+								<td><b><p>Gain en points</p></b></td>
+							</tr>
+							<tr>
+								<td><p>Objets de défenses ramenés</p></td>
+								<td><p>Aucune info</p></td>
+								<td><p><%= bilanScores_last["scoreODD"]%> point(s)</p></td>
+							</tr>
+							<tr>
+								<td><p>Nombre par meurtres</p></td>
+								<td><p><%= bilanScores_last["nbrMeurtres"]%></p></td>
+								<td><p><%= bilanScores_last["scoreMeurtre"]%> point(s)</p></td>
+							</tr>
+							<tr>
+								<td><p>Nombre de fois tués</p></td>
+								<td><p><%= bilanScores_last["nbrFoisTue"]%></p></td>
+								<td><p>0 point</p></td>
+							</tr>
+							<tr>
+								<td><p>Nombre de zombies tués</p></td>
+								<td><p><%= bilanScores_last["nbrGoulesTues"]%></p></td>
+								<td><p>Pas de point</p></td>
+							</tr>
+							<tr>
+								<td><p>TOTAL</p></td>
+								<td><p>X</p></td>
+								<td><p><%= bilanScores_last["total"]%> point(s)</p></td>
+							</tr>
+						</table>
+						<br>
 						</td>
-						<td width="20%">
-							<input type="submit" value="Envoyer !" id="msgSubmit"/>
-						</td>
-					</tr>
-				</table>
+					</table>
 
-				<br>
-				<!-- *************** CANVAS ******************** -->
-				<!-- Canvas -->
-				<canvas id="myCanvas" style="display:block; margin:-25px; border:1px solid #FFFFFF;" width="1100" height="620"></canvas>
-				<% } %>
+					<!-- *************** INFOS SUR LES SCORES PROVISIOIRES ******************** -->
+								<h2>Scores provisoires</h2>
+								<table text-align:center>
+									<tr>
+										<td width="20%"><b>Type</b></td>
+										<td width="20%"><b>AGI <i>(<%= bilanScores["nbrAGI"]%> joueur(s))</i></b></td>
+										<td width="20%"><b>INNO <i>(<%= bilanScores["nbrINNO"]%> joueur(s))</i></b></b></td>
+										<td width="20%"><b>QSF <i>(<%= bilanScores["nbrQSF"]%> joueur(s))</i></b></b></td>
+										<td width="20%"><b>Vous</b></td>
+									</tr>
+									<tr>
+										<td width="20%"><b>Défenses ramenées</b></td>
+										<td width="20%"><%= bilanScores["scoreAGI_odd"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["scoreINNO_odd"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["scoreQSF_odd"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["scoreODD"]%> point(s)</td>
+									</tr>
+									<tr>
+										<td width="20%"><b>Combats à morts</b></td>
+										<td width="20%"><%= bilanScores["scoreAGI_meurtre"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["scoreINNO_meurtre"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["scoreQSF_meurtre"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["scoreMeurtre"]%> point(s)</td>
+									</tr>
+									<tr>
+										<td width="20%"><b><i> -> Assassinats</i></b></td>
+										<td width="20%"><i>(<%= bilanScores["AGI_meurtres"]%> meurtres)</i></td>
+										<td width="20%"><i>(<%= bilanScores["INNO_meurtres"]%> meurtres)</i></td>
+										<td width="20%"><i>(<%= bilanScores["QSF_meurtres"]%> meurtres)</i></td>
+										<td width="20%"><i>(<%= bilanScores["nbrMeurtres"]%> meurtres)</i></td>
+									</tr>
+									<tr>
+										<td width="20%"><b><i> -> Pertes</i></b></td>
+										<td width="20%"><i><%= bilanScores["AGI_tués"]%> tués</i></td>
+										<td width="20%"><i><%= bilanScores["INNO_tués"]%> tués</i></td>
+										<td width="20%"><i><%= bilanScores["QSF_tués"]%> tués</i></td>
+										<td width="20%"><i><%= bilanScores["nbrFoisTue"]%> fois</i></td>
+									</tr>
+									<tr>
+										<td width="20%"><b>Zombies tués</b></td>
+										<td width="20%"><%= bilanScores["AGI_zombies"]%> zombie(s)</td>
+										<td width="20%"><%= bilanScores["INNO_zombies"]%> zombie(s)</td>
+										<td width="20%"><%= bilanScores["QSF_zombies"]%> zombie(s)</td>
+										<td width="20%"><%= bilanScores["nbrGoulesTues"]%> zombie(s)</td>
+									</tr>
+									<tr>
+										<td width="20%"><b>TOTAL</b></td>
+										<td width="20%"><%= bilanScores["scoreAGI"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["scoreINNO"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["scoreQSF"]%> point(s)</td>
+										<td width="20%"><%= bilanScores["total"]%> point(s)</td>
+									</tr>
+								</table>
+				</div>
+				</div>
+					</article>
+					<article>
+						<span id="les_infos" class="hide"></span>
+						<div class="displayable">
+							<div class="col-md-12 col-sm-12  ">
+								<h2>Information sur la session en cours</h2>
+								<table border="0">
+									<td width=50%><!--<b>Répartition des équipes</b>
+									<br>
+									<table>
+									<tr> <br> </tr>
+									<tr>
+									<td><b>AGI</b></td>
+									<td><b>INNO</b></td>
+									<td><b>QSF</b></td>
+									<td><b>TOTAL</b></td>
+									</tr>
+									<tr>
+									<td><%= bilanScores["nbrAGI"]%></td>
+									<td><%= bilanScores["nbrINNO"]%></td>
+									<td><%= bilanScores["nbrQSF"]%></td>
+									<td><%= bilanScores["nbrTotal"]%></td>
+									</tr>
+									</table>-->
+									<table>
+										<b>Dates clés</b>
+										<tr>
+											<br>
+										</tr>
+										<br>
+										<tr>
+											<td width=50%><b>Numéro de session : </b></td>
+											<td><%= sessionInfo["id"]%></td>
+										</tr>
+										<tr>
+											<td><b>Date de début : </b></td>
+											<td><%= sessionInfo["dateDebut"].toLocaleDateString()  %></td>
+										</tr>
+										<tr>
+											<td><b>Date de fin : </b></td>
+											<td><%= sessionInfo["dateFin"].toLocaleDateString() %></td>
+										</tr>
+									</table></td>
+									<td width=50%>
+									<table>
+										<b>Paramètres des attaques</b>
+										<br>
+										<tr>
+											<br>
+										</tr>
+										<tr>
+											<td width=50%><b>Heure de la prochaine attaque : </b></td>
+											<td><%= heureAttaque %></td>
+										</tr>
+										<tr>
+											<td><b>Heure locale : </b></td>
+											<td><span id="HeureLocale"></span>
+											<script type="text/javascript">
+												HeureLocale('HeureLocale');
+											</script></td>
+										</tr>
+										<tr>
+											<td><b>Fréquence des attaques : </b></td>
+											<td><%= dureeCycle %> heure(s)</td>
+										</tr>
+									</table></td>
 
-				<!-- *************** SCRIPTS ******************** -->
-				<script>
-					window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')
+								</table>
+
+								
+							</div>
+						</div>
 					
-					createjs.Ticker.setInterval(1000);
-					createjs.Ticker.addEventListener("tick", function()
-					{
-						var canvas = document.getElementById("myCanvas");
-					});
-					
-					/*********** EVENEMENTS LORS DE RECEPTION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-					var socket = io.connect('http://localhost:25536');
 
-					$(document).ready(function() 
-					{
-						// pour le tchat
-						socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
-						socket.emit('INFO_USER_CHAT_CS', '<%= sessionID %>', '<%= username %>', "jeu");
-					});
+					</article>
 
-					// clic sur le bouton d'envoi du message
-					$("#msgSubmit").click(function() 
-					{
-						sendMessage();
-					});
+					</div>
 
-					// envoi d'un message
-					sendMessage = function() 
-					{
-						var message = $("#msgTextBox").val();
-						if (message != "") 
-						{
-							socket.emit("USER_MESSAGE_CS", '<%= sessionID %>','<%= username %>', message);
-						}
-						$("#msgTextBox").val("");
-					},
+	    		</div>
+	    	</div>
 
-					// réception d'un message
-					socket.on('USER_MESSAGE_SC', function(user, message)
-					{
-						$("#msgs").append(user + " : " + message +"\n");
-					});
-					
-					// deconnexion
-					socket.on("DECONEXION_SC", function(msg) 
-					{
-						alert(msg);
-						$.post("/", 
-						{
-							_method : "delete"
-						}, function() 
-						{
-							document.location = "/";
-						});
-					});
 
-				</script>
 
-			</div>
-			<!-- #content -->
-		</div>
-		<!-- #main -->
-		<footer id="footer"></footer>
-		<!-- #footer -->
-	</body>
-</html>
+
+
+
+
+	    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+			<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
+			<script type="text/javascript">
+			/*var canvas = $('#myCanvas');
+			var c = $('#containerCanvas');
+
+			$(window).resize(changeCanvas);
+
+			function changeCanvas(){
+				canvas.attr("width",$(c).width());
+				canvas.attr("height",canvas.width()/1.75);
+			}
+
+			$(document).ready(changeCanvas);
+
+			changeCanvas();*/ 
+			</script> 
+		</body>
+	</html> 
