@@ -81,6 +81,19 @@
 		</nav>
 
 		<div class="container">
+			<!--  Si la connexion a raté !  -->
+			<% if(errorLogin != null) { %>
+				<h1 align="center"><%= errorLogin %></h1>
+			<% } %>
+			<!--  Si l'inscription a raté !  -->
+			<% if(InfoInscription != null) { %>
+				<h1 align="center"><%= InfoInscription %></h1>
+			<% } %>
+
+			<!--  Si l'inscription a réussi !  -->
+			<% if(usernameInscription != null) { %>
+				<h1 align="center">Bienvenue <%= usernameInscription %>. Un e-mail vient de vous être envoyer afin de valider votre compte.</h1>
+			<% } %>
 			<!-- Example row of columns -->
 			<div class="row">
 				<div class="row" style="background-color: rgba(160, 160, 160, 0.4);padding: 2% 2% 2% 2%;margin: 10% 5% 1% 5%; min-height: 250px">

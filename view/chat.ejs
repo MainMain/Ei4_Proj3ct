@@ -25,7 +25,10 @@
 		          		<ul class="nav navbar-nav pull-right navb">
 		            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
 		            		<li class="navbar-text" >Prochaine attaque dans : 00:54:35 </li>
-		            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button></form>
+		            		<form action="/" method="post" class="btn">
+		            			<input type="hidden" name="_method" value="delete"/>
+		            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button>
+		            		</form>
 		          		</ul>
 		        	</div><!--/.nav-collapse -->
 		     	</div>
@@ -53,22 +56,22 @@
 
 			    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
 			    		<div style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 4%;padding-right:2%;padding-top:2%;padding-bottom:2%;margin-bottom:1%;margin-top:1% ;border-radius:15px; ">
-			    			<div class="row"><h1 align=center >Chat des joueurs</h1>
+			    			<div class="row"><h1 align=center >Chat des équipes</h1>
 			    			</div>
 			    			<div class="row">
 								<div class="col-md-8">
 									<h2 >Messages :</h2>
 									<div class="msgTextArea" id="msgs">
-										<textarea readonly id="msgs" rows="8" name="msgTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " > </textarea>
+										<textarea readonly id="msgsEquipe" rows="8" name="msgTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " > </textarea>
 									
-										<input class="col-md-9 col-sm-9 col-xs-9 " type="text" placeholder="Votre message" id="msgTextBox" style="margin-top:1px;"/>
+										<input class="col-md-9 col-sm-9 col-xs-9 " type="text" placeholder="Votre message" id="msgEquipeTextBox" style="margin-top:1px;"/>
 									
-										<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgSubmit"/>
+										<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgEquipeSubmit"/>
 									</div>
 								</div>	
-								<div calss="col-md-2">
+								<div class="col-md-2">
 										<h2 >Utilisateurs connectés :</h2>
-										<ul id="listUsers" style="color:#000000;">
+										<ul id="listEquipeUsers" style="color:#000000;">
 										</ul>
 									</div>
 								</div>
@@ -78,17 +81,17 @@
 			    			<div class="row">
 			    				<div class="col-md-8">
 									<h2 >Messages :</h2>
-									<div class="msgTextArea" id="msgs">
-										<textarea readonly id="msgs" rows="8" name="msgTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " > </textarea>
+									<div class="msgGeneralTextArea" id="msgs">
+										<textarea readonly id="msgsGeneral" rows="8" name="msgGeneTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " > </textarea>
 									
-										<input class="col-md-9 col-sm-9 col-xs-9 " type="text" placeholder="Votre message" id="msgTextBox" style="margin-top:1px;"/>
+										<input class="col-md-9 col-sm-9 col-xs-9 " type="text" placeholder="Votre message" id="msgGeneralTextBox" style="margin-top:1px;"/>
 									
-										<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgSubmit"/>
+										<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgGeneralSubmit"/>
 									</div>
 								</div>	
-								<div calss="col-md-2">
+								<div class="col-md-2">
 										<h2 >Utilisateurs connectés :</h2>
-										<ul id="listUsers" style="color:#000000;">
+										<ul id="listGeneralUsers" style="color:#000000;">
 										</ul>
 								</div>
 							</div>
@@ -97,6 +100,125 @@
 			    	</div>
 		    	</div>
 	    	</div>
+			<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+			<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+			<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
+				
+				<!-- Script nécessaires pour le serveur -->
+				<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+				<script src="/socket.io/socket.io.js"></script>
+
+
+				<script name="scriptChatEquipe">
+					/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+					//var chat = io.connect('http://192.168.0.24:25536/chat-general');
+					var chatEquipe = io.connect('http://localhost:25536/chat-equipe');
+					
+					$( document ).ready(function()
+					{
+						chatEquipe.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
+					});
+					
+					chatEquipe.on('USER_CONNECTED_SC', function(users)
+					{
+						$("#listEquipeUsers").html("");
+						for(var i in users)
+						{
+							$("#listEquipeUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
+						}
+					});
+					
+					chatEquipe.on('USER_MESSAGE_SC', function(user, message)
+					{
+						$("#msgsEquipe").append("<div>" + user + " : " + message + "</div>");
+					});
+					
+					$("#msgEquipeSubmit").click(function()
+					{
+						sendMessage();
+					});
+					
+					$('#msgEquipeTextBox').keydown(function (e){
+					if(e.keyCode == 13){
+						sendMessage();
+					}
+					});
+					
+					sendMessage = function()
+					{
+						var message = $("#msgEquipeTextBox").val();
+						if(message != "")
+						{
+							chatEquipe.emit("USER_MESSAGE_CS", '<%= username %>', message);
+						}
+						$("#msgEquipeTextBox").val("");
+					}
+					
+					socket.on("DECONEXION_SC", function(msg)
+					{
+						alert(msg);
+						$.post("/", { _method: "delete" }, function()
+						{
+							document.location = "/";
+						});
+					});
+				</script>
+
+
+				<script name="scriptChatGeneral">
+					/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+					//var chat = io.connect('http://192.168.0.24:25536/chat-general');
+					var chatGeneral = io.connect('http://localhost:25536/chat-general');
+					
+					$( document ).ready(function()
+					{
+						chatGeneral.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
+					});
+					
+					chatGeneral.on('USER_CONNECTED_SC', function(users)
+					{
+						$("#listGeneralUsers").html("");
+						for(var i in users)
+						{
+							$("#listGeneralUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
+						}
+					});
+					
+					chatGeneral.on('USER_MESSAGE_SC', function(user, message)
+					{
+						$("#msgsGeneral").append("<div>" + user + " : " + message + "</div>");
+					});
+					
+					$("#msgGeneralSubmit").click(function()
+					{
+						sendMessage();
+					});
+					
+					$('#msgGeneralTextBox').keydown(function (e){
+					if(e.keyCode == 13){
+						sendMessage();
+					}
+					});
+					
+					sendMessage = function()
+					{
+						var message = $("#msgGeneralTextBox").val();
+						if(message != "")
+						{
+							chatGeneral.emit("USER_MESSAGE_CS", '<%= username %>', message);
+						}
+						$("#msgGeneralTextBox").val("");
+					}
+					
+					socket.on("DECONEXION_SC", function(msg)
+					{
+						alert(msg);
+						$.post("/", { _method: "delete" }, function()
+						{
+							document.location = "/";
+						});
+					});
+				</script>
 		</body>
 	</html>
 	

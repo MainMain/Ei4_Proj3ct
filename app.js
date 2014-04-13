@@ -230,17 +230,24 @@ function restrictAdmin(req, res, next)
  * CONFIGURATION DES ROUTES
  */
 
-app.get('/', restrict, function fonctionIndex(req, res)
+app.get('/', function fonctionIndex(req, res)
 {
 	var s = req.session;
 	
-	optionAccueil.username = s.username;
-	optionAccueil.sessionID = s.idUser;
-	
-	res.render('accueil-connecte', optionAccueil);
-	
-	optionAccueil.username = null;
-	optionAccueil.sessionID = null;
+	if(s.username)
+	{
+		optionAccueil.username = s.username;
+		optionAccueil.sessionID = s.idUser;
+		
+		res.render('accueil-connecte', optionAccueil);
+		
+		optionAccueil.username = null;
+		optionAccueil.sessionID = null;
+	}
+	else
+	{
+		res.render('accueil', optionAccueil);
+	}
 });
 
 app.get('/admin', restrictAdmin, function fonctionAdmin(req, res)
@@ -500,11 +507,11 @@ app.get('/confirmerCompte/:idInscription', function fonctionIndex(req, res)
 			"reponse": reponse,
 			"sessionID" : req.session.idUser 
 		};
-
 		res.render('confirmerCompte', options);
 	});
 });
-app.post("/", function (req, res)
+
+app.post('/', function (req, res)
 {
 	var b = req.body;
 	
@@ -534,7 +541,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 {
 	var b = req.body;
 	var s = req.session;
-	// Si bon couple, on recoi l'id de l'user
+	// Si bon couple, on recoit l'id de l'user
 	if (typeof reponseConnexion === 'string')
 	{
 		EventLog.log("REPONSE CONNEXION =" + reponseConnexion);
@@ -600,6 +607,8 @@ app.put('/', function (req, res)
 	}
 	// si test nok, on renvoi la page d'accueil
 	if (!testsOk) res.render("accueil", optionAccueil);
+	
+
 	
 });
 	
