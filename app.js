@@ -173,6 +173,8 @@ var options = {
 	"sessionID": null,
 	"dateFinSession": null};
 
+var optionAccueil;
+
 function restrict(req, res, next)
 {
 	var idSession = oSession_Manager.getIdSessionEnCours();
@@ -240,7 +242,7 @@ app.get('/', function fonctionIndex(req, res)
 		optionAccueil.username = s.username;
 		optionAccueil.sessionID = s.idUser;
 	
-		ajouterInfosHeures(options);
+		ajouterInfosHeures(optionAccueil);
 		res.render('accueil-connecte', optionAccueil);
 		
 		optionAccueil.username = null;
