@@ -5669,50 +5669,76 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 	var largeur = 0;
 	var espacementPictos = 15;
 	var miseAechelle = 0.75;
+	var startPosition = 5;
 
 	y += 90;
-	x += 90;
+	x += 130;
+	hauteur = 7*espacementPictos + 3;
+
+	// conteneur : Attention à bien respecter l'ordre d'affichage,
+	// d'abord conteneur, fond, et ensuite les images
+	contDescriptionPerso = new createjs.Container();
+	contDescriptionPerso.x = x;
+	contDescriptionPerso.y = y;
+	contDescriptionPerso.width = 32;
+	contDescriptionPerso.height = hauteur;
+	contListe.addChild(contDescriptionPerso);
+
+	// dessine le fond du conteneur
+ 	fondConteneurDescriptionPerso = new createjs.Shape();
+	
+
+	// test si ca dépasse pas du canvas
+	if(contDescriptionPerso.x + largeur > _CANVAS_LARGEUR)
+	{
+		contDescriptionPerso.x = _CANVAS_LARGEUR - largeur - 7;
+	} 
+
+	// ajout du fond au conteneur
+	contDescriptionPerso.addChild(fondConteneurDescriptionPerso);
 
 	// Déclaration des pictogrammes
-	var imgPseudo = new createjs.Bitmap("public/pictos/pseudo.png");
-	imgPseudo.x=5;
-	imgPseudo.y=-5;
-	imgPseudo.scaleX=miseAechelle;
-	imgPseudo.scaleY=miseAechelle;
+	var imgArme, imgArmure, imgPseudo;
 
 	var imgCompetence = new createjs.Bitmap("public/pictos/competence.png");
-	imgCompetence.x=imgPseudo.x;
-	imgCompetence.y=imgPseudo.y+espacementPictos;
+	imgCompetence.x=startPosition;
+	imgCompetence.y=-startPosition+espacementPictos;
 	imgCompetence.scaleX=miseAechelle;
 	imgCompetence.scaleY=miseAechelle;
 
 	var imgMode = new createjs.Bitmap("public/pictos/mode.png");
-	imgMode.x=imgPseudo.x;
-	imgMode.y=imgPseudo.y+espacementPictos*2;
+	imgMode.x=startPosition;
+	imgMode.y=-startPosition+espacementPictos*2;
 	imgMode.scaleX=miseAechelle;
 	imgMode.scaleY=miseAechelle;
 
 	var imgSante = new createjs.Bitmap("public/pictos/ptsVie.png");
-	imgSante.x=imgPseudo.x;
-	imgSante.y=imgPseudo.y+espacementPictos*3;
+	imgSante.x=startPosition;
+	imgSante.y=-startPosition+espacementPictos*3;
 	imgSante.scaleX=miseAechelle;
 	imgSante.scaleY=miseAechelle;
 
 	var imgSac = new createjs.Bitmap("public/pictos/poidsSac.png");
-	imgSac.x=imgPseudo.x;
-	imgSac.y=imgPseudo.y+espacementPictos*4;
+	imgSac.x=startPosition;
+	imgSac.y=-startPosition+espacementPictos*4;
 	imgSac.scaleX=miseAechelle;
 	imgSac.scaleY=miseAechelle;
 
 	// Déclaration du label de description
 	var labelDescribePerso = contListe.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
 	labelDescribePerso.x = 35 ;
-	labelDescribePerso.y = imgPseudo.y + 5;
+	labelDescribePerso.y = -startPosition + 5;
 
 	// si c'est une description d'allié
 	if (allie)
 	{
-		hauteur = 7*espacementPictos;
+		// Ajout du picto pseudo
+		imgPseudo = new createjs.Bitmap("public/pictos/pseudo.png");
+		imgPseudo.x=startPosition;
+		imgPseudo.y=-startPosition;
+		imgPseudo.scaleX=miseAechelle;
+		imgPseudo.scaleY=miseAechelle;
+
 		// défini les caractéristiques du personnage
 		// Option 1
 		var ligne0 = "Pseudo : " + currentPerso.listeMsgAtt;
@@ -5732,7 +5758,7 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 		if(currentPerso.armeEquipee!=null)
 		{
 			var ligne5 = currentPerso.armeEquipee.nom + " - Valeur : " + currentPerso.armeEquipee.valeur;
-			var imgArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
+			imgArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
 			imgArme.x=imgPseudo.x;
 			imgArme.y=imgPseudo.y+espacementPictos*5;
 			imgArme.scaleX=miseAechelle;
@@ -5747,7 +5773,7 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 		if(currentPerso.armureEquipee!=null)
 		{
 			var ligne6 = currentPerso.armureEquipee.nom + " - Valeur : " + currentPerso.armureEquipee.valeur;
-			var imgArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
+			imgArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
 			imgArmure.x=imgPseudo.x;
 			imgArmure.y=imgPseudo.y+espacementPictos*6;
 			imgArmure.scaleX=miseAechelle;
@@ -5767,11 +5793,12 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 
 		// définition de la couleur de fond
 		coul = createjs.Graphics.getRGB(0,0,250, 0.6);
+
+		fondConteneurDescriptionPerso.graphics.beginFill(coul).drawRect(0, 0, largeur, hauteur).endFill();
 	}
 	// si c'est une description d'ennemi
 	else
 	{
-		hauteur = 6*32;
 		// défini les caractéristiques du personnage
 		// Option 1
 		var ligne1 = "Compétence : " + currentPerso.competence;
@@ -5789,9 +5816,11 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 		if(currentPerso.armeEquipee!=null)
 		{
 			var ligne5 = currentPerso.armeEquipee.nom;
-			var imgArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
-			imgArme.x=imgPseudo.x;
-			imgArme.y=imgPseudo.y+32*5;
+			imgArme = new createjs.Bitmap(currentPerso.armeEquipee.imageName);
+			imgArme.x=startPosition;
+			imgArme.y=-startPosition+espacementPictos*5;
+			imgArme.scaleX=miseAechelle;
+			imgArme.scaleY=miseAechelle;
 			contDescriptionPerso.addChild(imgArme);
 		}
 		else
@@ -5802,9 +5831,11 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 		if(currentPerso.armureEquipee!=null)
 		{
 			var ligne6 = currentPerso.armureEquipee.nom;
-			var imgArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
-			imgArmure.x=imgPseudo.x;
-			imgArmure.y=imgPseudo.y+32*6;
+			imgArmure = new createjs.Bitmap(currentPerso.armureEquipee.imageName);
+			imgArmure.x=startPosition;
+			imgArmure.y=-startPosition+espacementPictos*6;
+			imgArmure.scaleX=miseAechelle;
+			imgArmure.scaleY=miseAechelle;
 			contDescriptionPerso.addChild(imgArmure);
 		}
 		else
@@ -5813,37 +5844,20 @@ function afficherTooltipPersoListe(x, y, currentPerso, modePerso, allie, Descrip
 		}
 		
 		// Construction du label avec toutes les lignes
-		labelDescribePerso.text = ligne0 +"\n\n" +ligne1 +"\n\n" + ligne2 + "\n\n" + ligne3 + "\n\n" +ligne4 +"\n\n" + ligne5 + "\n\n" + ligne6;
+		labelDescribePerso.text = "\n" + ligne1 + "\n" + ligne2 + "\n" + ligne3 + "\n" +ligne4 +"\n" + ligne5 + "\n" + ligne6;
 
 		// calcul de la largeur du conteneur
-		largeur = (Math.max(ligne1.length,ligne2.length, ligne0.length, ligne3.length, ligne4.length, ligne5.length, ligne6.length)) *7 + 80;
+		largeur = (Math.max(ligne1.length,ligne2.length, ligne3.length, ligne4.length, ligne5.length, ligne6.length)) *7 + 80;
 
 		// définition de la couleur de fond
 		coul = createjs.Graphics.getRGB(150,0,0, 0.8);
+
+		fondConteneurDescriptionPerso.graphics.beginFill(coul).drawRect(0, 0, largeur, hauteur).endFill();
 	}
 
-	// conteneur
-	contDescriptionPerso = new createjs.Container();
-	contDescriptionPerso.x = x;
-	contDescriptionPerso.y = y;
-	contDescriptionPerso.width = 32;
-	contDescriptionPerso.height = hauteur;
-	contListe.addChild(contDescriptionPerso);
-
-	// dessine le fond du conteneur
- 	fondConteneurDescriptionPerso = new createjs.Shape();
-	fondConteneurDescriptionPerso.graphics.beginFill(coul).drawRect(0, 0, largeur, hauteur).endFill();
-
-	// test si ca dépasse pas du canvas
-	if(contDescriptionPerso.x + largeur > _CANVAS_LARGEUR)
-	{
-		contDescriptionPerso.x = _CANVAS_LARGEUR - largeur - 7;
-	} 
-
-	// ajout du fond et label au conteneur
-	contDescriptionPerso.addChild(fondConteneurDescriptionPerso);
+	// Ajout du label au conteneur
 	contDescriptionPerso.addChild(labelDescribePerso);
-
+	
 	// Ajout des images dans le conteneur
 	contDescriptionPerso.addChild(imgPseudo);
 	contDescriptionPerso.addChild(imgCompetence);
@@ -5964,7 +5978,7 @@ function majConteneurPersoListeAllies(tab, conteneur, pageEnCours)
  */ 
 socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn1, listeEnn2, equipe)
 {
-	alert("Equipe = " + " - longueur liste 1 : " + listeEnn1.length + " longueur liste 2 : " + listeEnn2.length);
+	//alert("Equipe = " + " - longueur liste 1 : " + listeEnn1.length + " longueur liste 2 : " + listeEnn2.length);
 
 	var msgAction = "";
 	var codeAction = 0;
@@ -5975,7 +5989,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn1, listeEnn2, equipe)
 
 	var Select;
 
-	this.listePersoEnnemis = new Array();
+	//this.listePersoEnnemis = new Array();
 	contListeEnnemis1.removeAllChildren();
 	contListeEnnemis2.removeAllChildren();
 
@@ -5985,15 +5999,20 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn1, listeEnn2, equipe)
 
 	var nbrPages1 = Math.ceil(listeEnn1.length / 10);
 	var TailleFinListe1 =(listeEnn1.length % 10);
+	//alert("nbrPages1 : " + nbrPages1);
+	//alert("TailleFinListe1 : " + TailleFinListe1);
 
 	var nbrPages2 = Math.ceil(listeEnn2.length / 10);
 	var TailleFinListe2 =(listeEnn2.length % 10);
+	//alert("nbrPages2 : " + nbrPages2);
+	//alert("TailleFinListe2 : " + TailleFinListe2);
 
 	majFlechesListesPersoEnnemis(nbrPages1, nbrPages2);
 
 	// VERIFIER QUE LES LISTES CONTIENNENT BIEN DES ITEMS !
 	if(listeEnn1.length!=0)
 	{
+		//alert("if 1");
 		// Découpage des listes
 		decouperListes(listeEnn1, TabListe1, nbrPages1, TailleFinListe1, decoup);
 		majConteneurPersoListeEnnemi(TabListe1, contListeEnnemis1, _PAGE_PERSO_ENN_1);
@@ -6001,6 +6020,7 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn1, listeEnn2, equipe)
 
 	if(listeEnn2.length!=0)
 	{
+		//alert("if 2");
 		// Découpage des listes
 		decouperListes(listeEnn2, TabListe2, nbrPages2, TailleFinListe2, decoup);
 		majConteneurPersoListeEnnemi(TabListe2, contListeEnnemis2, _PAGE_PERSO_ENN_2);
@@ -6135,11 +6155,11 @@ function majFlechesListesPersoEnnemis(nbPagesEquipe1, nbPagesEquipe2)
 
 function majConteneurPersoListeEnnemi(tab, conteneur, pageEnCours)
 {
+	alert("Page en cours : " + pageEnCours);
 	//conteneur.removeAllChildren();
 	var imgPersoEnnemi;
-	try 
-	{
-		// instructions à essayer
+	
+	var iPositionPersoInConteneur=0;
 		for (var i = 0; i < tab[pageEnCours].length ; i++) 
 		{
 			var persoE=tab[pageEnCours][i];
@@ -6419,8 +6439,6 @@ function majConteneurPersoListeEnnemi(tab, conteneur, pageEnCours)
 			// position de l'item dans le conteneur
 			iPositionPersoInConteneur++;
 		}
-	}
-	catch(e){}
 }
 
 socket.on('ATTAQUE_NUIT_SC', function ()
