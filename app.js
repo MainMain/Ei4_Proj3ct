@@ -250,7 +250,7 @@ app.get('/', function fonctionIndex(req, res)
 	}
 	else
 	{
-		res.render('accueil', optionAccueil);
+		res.render('accueil', options);
 	}
 });
 
