@@ -284,7 +284,7 @@ Case_Manager.GetIdZoneSureEnnemi = function(numEquipe)
 		var tab = [GameRules.idZoneSure_2(), GameRules.idZoneSure_3()] ;
 		return tab;
 	}
-	else if ((numEquipe == 1))
+	else if ((numEquipe == 2))
 	{
 		var tab = [GameRules.idZoneSure_1(), GameRules.idZoneSure_3()] ;
 		return tab;

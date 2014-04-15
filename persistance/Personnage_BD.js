@@ -81,7 +81,7 @@ Personnage_BD.SetPersonnage = function (personnageToSave, callbackSetPersonnage)
                     dernierMvt : 		personnageToSave.dernierMvt,
             		listeMsgAtt : 		personnageToSave.listeMsgAtt,
             		nbrNvMsg : 			personnageToSave.nbrNvMsg,
-                    etage :             personnageToSave.etage,
+                   // etage :             personnageToSave.etage,
                 },
                 function (err) 
                 {
@@ -157,7 +157,7 @@ Personnage_BD.GetPersonnageByIdUser = function (idUtilisateur, callbackGetPerson
                         perso[0].multiPtsAttaque,  	perso[0].multiPtsDefense,  	perso[0].multiProbaCache,  
                         perso[0].multiProbaFouille, arme,						armure,
                         perso[0].sacADos,			perso[0].dernierMvt,		perso[0].listeMsgAtt,
-                        perso[0].nbrNvMsg,          perso[0].etage));
+                        perso[0].nbrNvMsg/*,          perso[0].etage*/));
                 }
             });
         }
@@ -247,7 +247,7 @@ Personnage_BD.Creation = function (id)
     Perso.dernierMvt 		= nvPerso.dernierMvt;
     Perso.listeMsgAtt 		= nvPerso.listeMsgAtt;
     Perso.nbrNvMsg			= nvPerso.nbrNvMsg;
-    Perso.etage             = nvPerso.etage;
+   // Perso.etage             = nvPerso.etage;
     
    // EventLog.log("----------------> sdsdfsf : " +   nvPerso.mode);
 

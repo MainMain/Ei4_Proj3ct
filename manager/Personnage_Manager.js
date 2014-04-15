@@ -1175,12 +1175,12 @@ Personnage_Manager.nouvelleJournee = function()
 				}
 				else
 				{
-					this.AddMessage(idUser, "Vous avez été attaqué durant la nuit ! Vous avez subi : " + degatSubisParGoules + " par " + nbrGoules + " zombies !" );
+					this.AddMessage(idUser, "Attaque de nuit ! Vous avez subi : " + degatSubisParGoules + " points de dégâts par " + nbrGoules + " zombies !" );
 				}
 			}
 			else
 			{
-				this.AddMessage(idUser, "Grâce à votre cachette, vous avez échappé à l'attaque de la nuit !");
+				this.AddMessage(idUser, "Grâce à votre cachette, vous avez échappé à l'attaque de nuit !");
 			}
 		}
 	}

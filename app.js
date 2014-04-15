@@ -165,13 +165,15 @@ app.use(function(req, res, next)
  * *************************** 4 - CONFIGURATION DES ROUTES ***************************
  */
 
-var optionAccueil = {
+var options = {
 	"username": null,
 	"errorLogin": null,
 	"InfoInscription": null,
 	"usernameInscription": null,
 	"sessionID": null,
 	"dateFinSession": null};
+
+var optionAccueil;
 
 function restrict(req, res, next)
 {
@@ -185,26 +187,27 @@ function restrict(req, res, next)
 	{
 		if(!req.session.username)
 		{
-			optionAccueil.errorLogin = 'Veuillez vous connectez !';
+			options.errorLogin = 'Veuillez vous connectez !';
 		}
 		else
 		{
-			optionAccueil.username = req.session.username;
+			options.username = req.session.username;
 		}
 		
 		if(idSession < 0)
 		{
-			optionAccueil.errorLogin = 'Aucune session en cours !';
+			options.errorLogin = 'Aucune session en cours !';
 		}
 		else
 		{
-			optionAccueil.dateFinSession = req.session.username;
+			options.dateFinSession = req.session.username;
 		}
 		
-		res.render('accueil', optionAccueil);
+		ajouterInfosHeures(options);
+		res.render('accueil', options);
 		
-		optionAccueil.username = null;
-		optionAccueil.errorLogin = null;
+		options.username = null;
+		options.errorLogin = null;
 	}
 }
 
@@ -230,17 +233,25 @@ function restrictAdmin(req, res, next)
  * CONFIGURATION DES ROUTES
  */
 
-app.get('/', restrict, function fonctionIndex(req, res)
+app.get('/', function fonctionIndex(req, res)
 {
 	var s = req.session;
 	
-	optionAccueil.username = s.username;
-	optionAccueil.sessionID = s.idUser;
+	if(s.username)
+	{
+		optionAccueil.username = s.username;
+		optionAccueil.sessionID = s.idUser;
 	
-	res.render('accueil-connecte', optionAccueil);
-	
-	optionAccueil.username = null;
-	optionAccueil.sessionID = null;
+		ajouterInfosHeures(optionAccueil);
+		res.render('accueil-connecte', optionAccueil);
+		
+		optionAccueil.username = null;
+		optionAccueil.sessionID = null;
+	}
+	else
+	{
+		res.render('accueil', optionAccueil);
+	}
 });
 
 app.get('/admin', restrictAdmin, function fonctionAdmin(req, res)
@@ -254,6 +265,7 @@ app.get('/admin', restrictAdmin, function fonctionAdmin(req, res)
 		options.dateFin = oSession_Manager.getDateFin().toLocaleString();
 		options.idSession = oSession_Manager.getIdSessionEnCours();
 	}
+	ajouterInfosHeures(options);
 	res.render('admin', options);
 }
 );
@@ -280,7 +292,7 @@ app.post('/admin', restrictAdmin, function fonctionAdmin(req, res)
 			usersOnline[idUser].sockets[i].emit("DECONEXION_SC", "Un administrateur a supprimé votre compte ! Vous allez être déconnecté.");
 		}
 	}
-	
+	ajouterInfosHeures(options);
 	res.render('admin', options);
 });
 
@@ -317,6 +329,7 @@ app.put('/admin', restrictAdmin, function fonctionAdmin(req, res)
 			oCase_Manager.RemplirCases();
 			break;
 	}
+	ajouterInfosHeures(options);
 	res.render('admin', options);
 });
 
@@ -341,12 +354,14 @@ app.get('/jeu', restrict, function fonctionIndex(req, res)
 			// attribution des dates
 			options["dateLastSession"] = dates;
 			// renvoi de la page
+			ajouterInfosHeures(options);
 			res.render('game', options);
 		});
 	}
 	else
 	{
 		// renvoi de la page
+		ajouterInfosHeures(options);
 		res.render('game', options);
 	}
 });
@@ -392,6 +407,7 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 				res.render('game', options);
 			});*/
 			options = getDonnesPageJeu(s.idUser, s.username);
+			ajouterInfosHeures(options);
 			res.render('game', options);
 		});
 	}
@@ -410,6 +426,7 @@ app.get('/tutoriel', function fonctionIndex(req, res)
 		"sessionID" : s.idUser 
 		};
 	
+	ajouterInfosHeures(options);
 	res.render('tutoriel', options);
 });
 
@@ -421,6 +438,7 @@ app.get('/regles', function fonctionIndex(req, res)
 		"sessionID" : s.idUser 
 		};
 	
+	ajouterInfosHeures(options);
 	res.render('regles', options);
 });
 
@@ -442,11 +460,13 @@ app.get('/chat-equipe', restrict, function fonctionIndex(req, res)
 				// attribution des dates
 				options["dateLastSession"] = dates;
 				// renvoi de la page
+				ajouterInfosHeures(options);
 				res.render('game', options);
 			});
 		}
 		else
 		{
+			ajouterInfosHeures(options);
 			// renvoi de la page
 			res.render('chat-equipe', options);
 		}
@@ -461,6 +481,7 @@ app.get('/classement', restrict, function fonctionIndex(req, res)
 		"order" : 0 
 		};
 	
+	ajouterInfosHeures(options);
 	res.render('classement', options);
 });
 
@@ -476,6 +497,7 @@ app.get('/classement/:order([0-9])', restrict, function fonctionIndex(req, res)
 	
 	EventLog.log("order = " + order);
 	
+	ajouterInfosHeures(options);
 	res.render('classement', options);
 });
 
@@ -486,6 +508,8 @@ app.get('/chat-general', restrict, function fonctionIndex(req, res)
 		"username": s.username, 
 		"sessionID" : s.idUser 
 		};
+
+	ajouterInfosHeures(options);
 	res.render('chat', options);
 });
 
@@ -500,17 +524,24 @@ app.get('/confirmerCompte/:idInscription', function fonctionIndex(req, res)
 			"reponse": reponse,
 			"sessionID" : req.session.idUser 
 		};
-
+		
+		ajouterInfosHeures(options);
 		res.render('confirmerCompte', options);
 	});
 });
-app.post("/", function (req, res)
+
+app.post('/', function (req, res)
 {
 	var b = req.body;
 	
 	oUtilisateur_BD.Connexion(b.username, b.password, req, res, callbackConnexion);
 });
 
+ajouterInfosHeures = function(options)
+{
+	options["heureAttaque"] = new Date(0, 0, 0, GameRules.heure_attaque(), GameRules.minute_attaque(), 0, 0);
+	options["heureLocale"] = new Date();
+}
 getDonnesPageJeu = function(idUser, userName)
 {
 	var options = 
@@ -534,7 +565,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 {
 	var b = req.body;
 	var s = req.session;
-	// Si bon couple, on recoi l'id de l'user
+	// Si bon couple, on recoit l'id de l'user
 	if (typeof reponseConnexion === 'string')
 	{
 		EventLog.log("REPONSE CONNEXION =" + reponseConnexion);
@@ -542,40 +573,40 @@ callbackConnexion = function(reponseConnexion, req, res)
 		s.username = b.username;
 		s.idUser = reponseConnexion;
 		
-		optionAccueil.username = s.username;
-		optionAccueil.sessionID = s.idUser;
+		options.username = s.username;
+		options.sessionID = s.idUser;
 		
-		res.render("accueil-connecte", optionAccueil);
+		res.render("accueil-connecte", options);
 		
-		optionAccueil.sessionID = null;
-		optionAccueil.username = null;
+		options.sessionID = null;
+		options.username = null;
 		
 	}
 	else if(reponseConnexion == -1)
 	{
-		optionAccueil.errorLogin = "Couple login/mot de passe incorrect.";
+		options.errorLogin = "Couple login/mot de passe incorrect.";
 		
-		res.render("accueil", optionAccueil);
+		res.render("accueil", options);
 		
-		optionAccueil.errorLogin = null;
+		options.errorLogin = null;
 	}
 	else if(reponseConnexion == -2)
 	{
-		optionAccueil.errorLogin = "Compte non validé. Veuillez confirmer votre compte en cliquant sur le lien envoyé par mail " +
+		options.errorLogin = "Compte non validé. Veuillez confirmer votre compte en cliquant sur le lien envoyé par mail " +
 				"lors de votre inscription !";
 		
-		res.render("accueil", optionAccueil);
+		res.render("accueil", options);
 		
-		optionAccueil.errorLogin = null;
+		options.errorLogin = null;
 	}
 	
 	else
 	{
-		optionAccueil.errorLogin = "Erreur Interne";
+		options.errorLogin = "Erreur Interne";
 		
-		res.render("accueil", optionAccueil);
+		res.render("accueil", options);
 		
-		optionAccueil.errorLogin = null;
+		options.errorLogin = null;
 	}
 },
 
@@ -589,9 +620,9 @@ app.put('/', function (req, res)
 	// test si c'est en bonne forme
 	//if
 	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regTestMailAngers.test(b.email) );
-	if		(b.username.length < 4 && b.username.length > 10)		optionAccueil.InfoInscription = "Login_nonConforme";
-	else if (b.password.length < 6) 			optionAccueil.InfoInscription = "Pass_nonConforme";
-	//else if (!regTestMailAngers.test(b.email)) 	optionAccueil.InfoInscription = "Mail_nonConforme";
+	if		(b.username.length < 4 && b.username.length > 10)		options.InfoInscription = "Login_nonConforme";
+	else if (b.password.length < 6) 			options.InfoInscription = "Pass_nonConforme";
+	//else if (!regTestMailAngers.test(b.email)) 	options.InfoInscription = "Mail_nonConforme";
 	else
 	{
 		// si ok
@@ -599,7 +630,9 @@ app.put('/', function (req, res)
 		testsOk = true;
 	}
 	// si test nok, on renvoi la page d'accueil
-	if (!testsOk) res.render("accueil", optionAccueil);
+	if (!testsOk) res.render("accueil", options);
+	
+
 	
 });
 	
@@ -608,19 +641,19 @@ callbackInscription = function(reponseInscription, req, res, idInscription)
 	var b = req.body;
 	if (reponseInscription == -1)
 	{
-		optionAccueil.InfoInscription = "Login";
+		options.InfoInscription = "Login";
 		
-		res.render("accueil", optionAccueil);
+		res.render("accueil", options);
 		
-		optionAccueil.InfoInscription = null;
+		options.InfoInscription = null;
 	}
 	else if(reponseInscription == -2)
 	{
-		optionAccueil.InfoInscription = "Email";
+		options.InfoInscription = "Email";
 		
-		res.render("accueil", optionAccueil);
+		res.render("accueil", options);
 		
-		optionAccueil.InfoInscription = null;
+		options.InfoInscription = null;
 	}
 	else
 	{
@@ -651,16 +684,16 @@ callbackInscription = function(reponseInscription, req, res, idInscription)
     	}
 	});
 
-		optionAccueil.usernameInscription = b.username;
+		options.usernameInscription = b.username;
 		
 		oUtilisateur_Manager.LoadUser(reponseInscription);
 		oPersonnage_Manager.LoadUser(reponseInscription);
 		// ajout de l'objet score pour la session de jeu en cours
 		//oScore_Manager.nouveauJoueur(reponseInscription, oSession_Manager.getIdSessionEnCours());
 		
-		res.render("accueil", optionAccueil);
+		res.render("accueil", options);
 		
-		optionAccueil.usernameInscription = null;
+		options.usernameInscription = null;
 	}
 },
 
@@ -668,7 +701,7 @@ app.delete("/", function (req, res)
 {
 	EventLog.log("OH : Deconnexion de " + req.session.username);
 	req.session.destroy();
-	res.render('accueil', optionAccueil);
+	res.render('accueil', options);
 });
 
 

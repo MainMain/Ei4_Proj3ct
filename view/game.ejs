@@ -18,7 +18,53 @@
 		<script>
 			var createjs = window;
 			var socket = io.connect('http://localhost:25536');
-			socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
+			socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', 'game');
+		</script>
+
+		<script name="scriptChatEquipe">
+			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+			//var chat = io.connect('http://192.168.0.24:25536/chat-general');
+			var chatEquipe = io.connect('http://localhost:25536/chat-equipe');
+			
+			$( document ).ready(function()
+			{
+				chatEquipe.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
+			});
+			
+			chatEquipe.on('USER_MESSAGE_SC', function(user, message)
+			{
+				$("#msgs").append("<div>" + user + " : " + message + "</div>");
+			});
+			
+			$("#msgSubmit").click(function()
+			{
+				sendMessage();
+			});
+			
+			$('#msgTextBox').keydown(function (e){
+			if(e.keyCode == 13){
+				sendMessage();
+			}
+			});
+			
+			sendMessage = function()
+			{
+				var message = $("#msgTextBox").val();
+				if(message != "")
+				{
+					chatEquipe.emit("USER_MESSAGE_CS", '<%= username %>', message);
+				}
+				$("#msgTextBox").val("");
+			}
+			
+			socket.on("DECONEXION_SC", function(msg)
+			{
+				alert(msg);
+				$.post("/", { _method: "delete" }, function()
+				{
+					document.location = "/";
+				});
+			});
 		</script>
 		<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
 		<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
@@ -74,7 +120,11 @@
 	          		<ul class="nav navbar-nav pull-right navb">
 	            		<li class="navbar-text"  >Heure du serveur :<span id="HeureLocale"></span></li>
 	            		<li class="navbar-text" >Prochaine attaque dans : </li>
-	            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!"  style="margin-top:0px;">Retour chez les vivants</button></form>
+
+	            		<form action="/" method="post" class="btn">
+	            			<input type="hidden" name="_method" value="delete"/>
+	            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button>
+	            		</form>
 	          		</ul>
 	        	</div><!--/.nav-collapse -->
 	     	</div>
@@ -103,7 +153,149 @@
 
 	    	<!-- core de la page -->
 
+	    	<% if(idEquipe == 0 || !isUpToDate) { %>
+	    		<h1>Aux portes de l'enfer...</h1>
+	    		
+	    		<!-- si différente session que l'actuelle -->
+	    		<% if(!isUpToDate && idEquipe != 0) { %>
+	    			<!-- -->
+	    			<div class="alert-error" style="font-size: 20px;">
+	    			<b>Une nouvelle session a commencé depuis votre dernière connexion !</b>
+	    			<br>
+	    			</div>
 
+	    			<!-- *************** RESUME DES SCORES DE LA DERNIERE SESSION ******************** -->
+	    			<% if (bilanScores["lastIdSession"] != -1 ) { %>
+	    			<h2> Résumé de des scores de votre dernière session : (session n°<%= bilanScores["lastIdSession"]%>)</h2>
+	    			<b>Session commencée le <%= dateLastSession["dateDebut"].toLocaleString() %> et achevée le <%= dateLastSession["dateFin"].toLocaleString() %></b>
+	    			<% } //fin if %>
+
+	    		<table>
+	    		<td width=50%><b>Scores globaux : </b>
+	    		<br>
+	    		<br>
+	    		<table>
+	    		<tr>
+	    		<td><b>Equipe</b></td>
+	    		<td><b>Participants</b></td>
+	    		<td><b>Score par meurtres</b></td>
+	    		<td><b>Score par objets</b></td>
+	    		<td><b>Total</b></td>
+	    		</tr>
+	    		<tr>
+	    		<td>AGI</td>
+	    		<td> <%= bilanScores_last["nbrAGI"]%> </td>
+	    		<td> <%= bilanScores_last["scoreAGI_meurtre"]%> point(s)</td>
+	    		<td> <%= bilanScores_last["scoreAGI_odd"]%> point(s)</td>
+	    		<td><b><%= bilanScores_last["scoreAGI"]%> point(s)</b></td>
+	    		</tr>
+	    		<tr>
+	    		<td>INNO</td>
+	    		<td><%= bilanScores_last["nbrINNO"]%> </td>
+	    		<td><%= bilanScores_last["scoreINNO_meurtre"]%> point(s)</td>
+	    		<td><%= bilanScores_last["scoreINNO_odd"]%> point(s)</td>
+	    		<td><b><%= bilanScores_last["scoreINNO"]%> point(s)</b></td>
+	    		</tr>
+	    		<tr>
+	    		<td>QSF</td>
+	    		<td><%= bilanScores_last["nbrQSF"]%> </td>
+	    		<td><%= bilanScores_last["scoreQSF_meurtre"]%> point(s)</td>
+	    		<td><%= bilanScores_last["scoreQSF_odd"]%> point(s)</td>
+	    		<td><b><%= bilanScores_last["scoreQSF"]%> point(s)</b></td>
+	    		</tr>
+	    		</table>
+	    		<br>
+	    		</td>
+	    		<td width=50%><b>Vos scores :</b>
+	    		<br>
+	    		<br>
+	    		<table>
+	    		<tr>
+	    		<td><b>Type</b></td>
+	    		<td><b>Nombre</b></td>
+	    		<td><b>Gain en points</b></td>
+	    		</tr>
+	    		<tr>
+	    		<td>Objets de défenses ramenés</td>
+	    		<td>Aucune info</td>
+	    		<td><%= bilanScores_last["scoreODD"]%> point(s)</td>
+	    		</tr>
+	    		<tr>
+	    		<td>Nombre par meurtres</td>
+	    		<td><%= bilanScores_last["nbrMeurtres"]%></td>
+	    		<td><%= bilanScores_last["scoreMeurtre"]%> point(s)</td>
+	    		</tr>
+	    		<tr>
+	    		<td>Nombre de fois tués</td>
+	    		<td><%= bilanScores_last["nbrFoisTue"]%></td>
+	    		<td>0 point</td>
+	    		</tr>
+	    		<tr>
+	    		<td>Nombre de zombies tués</td>
+	    		<td><%= bilanScores_last["nbrGoulesTues"]%></td>
+	    		<td>Pas de point</td>
+	    		</tr>
+	    		<tr>
+	    		<td>TOTAL</td>
+	    		<td> X</td>
+	    		<td><%= bilanScores_last["total"]%> point(s)</td>
+	    		</tr>
+	    		</table>
+	    		<br>
+	    		</td>
+	    		</table>
+	    	Etes vous prêt à retenter l'aventure ? ...
+	    	<% } %>
+
+	    	<!-- *************** CHOIX D'EQUIPE ******************** -->
+
+	    	<h2> Entrée en enfer </h2>
+	    	<p>
+	    	Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spéciale de votre personnage.
+	    	<br>
+	    	Vous avez le choix entre trois compétences :
+	    	<ul>
+	    	<li>
+	    	Vous pouvez être <b>UNE BRUTE</b>: Vous êtes là pour <b>protéger vos alliés</b> et <b>mener des assaults sur vos ennemis</b>, car vos attaques sont plus
+	    	destructrices et vous suportez mieux les coups. En revanche, vous trouverez assez difficilement des objets pendant les fouilles et
+	    	vous aurez de fortes chances d'être découvert pendant une fouille ennemi.
+	    	<br>
+	    	</li>
+	    	<li>
+	    	Vous pouvez être <b>UN EXPLORATEUR</b>: Vous êtes un éclaireur, spécialement dédié à <b>l'exploration de l'immense complexe</b>. Vous avez peu de chance d'être découvert
+	    	durant une fouille ennemi et vous pourrez effectuer bien plus de mouvements que vos alliés. Cependant, faites attention à ne pas vous faire attaquer car vos points
+	    	de défense sont relativement faibles.
+	    	<br>
+	    	</li>
+	    	<li>
+	    	Vous pouvez être <b>UN CHERCHEUR</b>: Vous êtes fait pour <b>fouiller les alentours</b> afin de trouver les objets nécessaires à votre victoire, car
+	    	vos fouilles seront bien plus souvent fructueuses. Bien entendu cela a un coût, car vos attaques sont faibles et vos caches rarement fiables.
+	    	<br>
+	    	</li>
+	    	</ul>
+	    	</p>
+	    	<b>Préparation...</b>
+	    	<br>
+
+	    	<form class="choixEquipeform" name="formInitPerso" method="POST" action="/jeu">
+	    	<input type="hidden" name="_method" value="PUT">
+	    	Choisissez votre équipe :
+	    	<select width: 10% name="equipe">
+	    	<option value="1">AGI <%= bilanScores["nbrAGI_sessionEnCours"]%> joueur(s)</option>
+	    	<option value="2">INNO <%= bilanScores["nbrINNO_sessionEnCours"]%> joueur(s)</option>
+	    	<option value="3">QSF <%= bilanScores["nbrQSF_sessionEnCours"]%> joueur(s)</option>
+	    	</select>
+	    	Choisissez votre compétence :
+	    	<select name="competence">
+	    	<option value="brute">Brute</option>
+	    	<option value="explorateur">Explorateur</option>
+	    	<option value="chercheur">Chercheur</option>
+	    	</select>
+	    	<input type="submit" value="Tuer du zombie !" name="submitChoixDepart" />
+	    	</form>
+	    	<% }  else 	 { %>
+<!-- FIN AJOUT MAIMAIN -->	    
+	    	
 	    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
 
 	    		<nav class="navbar " role="navigation" style="margin-bottom: -1px;margin-top:1%;margin-left:-1px;margin-right:-1px;">
@@ -127,16 +319,68 @@
 		    				<span id="le_jeu" class="hide"></span> 
 		    				<div class="displayable">
 		    					<div class="col-md-12 col-sm-12 col-xs-12" >
-				    				<canvas id="myCanvas" style="display:block;  border:1px solid #000000;"  width="1100" height="620" ></canvas>
-								
+		    						<% if (idEquipe == 0 || !isUpToDate) { %>
 
+		    						<% if(!isUpToDate && idEquipe != 0) { %>
+		    							<!-- Une Nouvelle session a été lancé ! -->
+		    							<h1> Une Nouvelle session a été lancé ! </h1>
+		    						<% } %>
+									<!-- *************** CHOIX D'EQUIPE ******************** -->
 
-								
-									<textarea readonly id="msgs" rows="2" name="msgTextAreaRapide"  class="col-md-12 col-sm-12 col-xs-12 " > </textarea>
-									
-									<input class="col-md-10 col-sm-10 col-xs-10 " type="text" placeholder="Votre message" id="msgTextBox"/>
-									
-									<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgSubmit"/>
+									<h2> Entrée en enfer </h2>
+									<p>
+										Avant de pouvoir vous lancer dans l'aventure, vous devez encore choisir votre équipe et la compétence spéciale de votre personnage.
+										<br>
+										Vous avez le choix entre trois compétences :
+										<ul>
+											<li>
+												Vous pouvez être <b>UNE BRUTE</b>: Vous êtes là pour <b>protéger vos alliés</b> et <b>mener des assaults sur vos ennemis</b>, car vos attaques sont plus
+												destructrices et vous suportez mieux les coups. En revanche, vous trouverez assez difficilement des objets pendant les fouilles et 
+												vous aurez de fortes chances d'être découvert pendant une fouille ennemi.
+												<br>
+											</li>
+											<li>
+												Vous pouvez être <b>UN EXPLORATEUR</b>: Vous êtes un éclaireur, spécialement dédié à <b>l'exploration de l'immense complexe</b>. Vous avez peu de chance d'être découvert
+												durant une fouille ennemi et vous pourrez effectuer bien plus de mouvements que vos alliés. Cependant, faites attention à ne pas vous faire attaquer car vos points 
+												de défense sont relativement faibles.
+												<br>
+											</li>
+											<li>
+												Vous pouvez être <b>UN CHERCHEUR</b>: Vous êtes fait pour <b>fouiller les alentours</b> afin de trouver les objets nécessaires à votre victoire, car 
+												vos fouilles seront bien plus souvent fructueuses. Bien entendu cela a un coût, car vos attaques sont faibles et vos caches rarement fiables.
+												<br>
+											</li>
+										</ul>
+									</p>
+									<b>Préparation...</b>
+									<br>
+
+									<form class="choixEquipeform" name="formInitPerso" method="POST" action="/jeu">
+										<input type="hidden" name="_method" value="PUT">
+										Choisissez votre équipe :
+										<select width: 10% name="equipe">
+												<option value="1">AGI <%= bilanScores["nbrAGI_sessionEnCours"]%> joueur(s)</option>
+												<option value="2">INNO <%= bilanScores["nbrINNO_sessionEnCours"]%> joueur(s)</option>
+												<option value="3">QSF <%= bilanScores["nbrQSF_sessionEnCours"]%> joueur(s)</option>
+										</select>
+										Choisissez votre compétence :
+										<select name="competence">
+												<option value="brute">Brute</option>
+												<option value="explorateur">Explorateur</option>
+												<option value="chercheur">Chercheur</option>
+										</select>
+												<input type="submit" value="Tuer du zombie !" name="submitChoixDepart" />
+									</form>
+									<% } else { %>
+					    				<canvas id="myCanvas" style="display:block;  border:1px solid #000000;"  width="1100" height="620" ></canvas>
+
+										<textarea readonly id="msgs" rows="2" name="msgTextAreaRapide"  class="col-md-12 col-sm-12 col-xs-12 " > </textarea>
+										
+										<input class="col-md-10 col-sm-10 col-xs-10 " type="text" placeholder="Votre message" id="msgTextBox"/>
+										
+										<input class="col-md-2 col-sm-2 col-xs-2" type="submit" value="Envoyer !" id="msgSubmit"/>
+
+									<% } %>
 								</div>
 							</div>
 						</article>
@@ -222,7 +466,6 @@
 						<br>
 						</td>
 					</table>
-
 					<!-- *************** INFOS SUR LES SCORES PROVISIOIRES ******************** -->
 								<h2>Scores provisoires</h2>
 								<table text-align:center>
@@ -351,7 +594,9 @@
 							</div>
 						</div>
 					
-
+<!-- DEBUT AJOUT MAIMAIN -->	
+<% } %>
+<!-- FIN AJOUT MAIMAIN -->	
 					</article>
 
 					</div>
