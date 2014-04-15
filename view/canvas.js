@@ -4329,14 +4329,14 @@ function majEventsPictoPerso(currentPerso)
 	imgMouvement.addEventListener('mouseover', function(event)  		
 	{ 
 		y = contPictoBarres.y + imgMouvement.y;
-		txt = "Mouvement : " + currentPerso.ptDeplacement+"/"+currentPerso.ptDeplacementMax;
+		txt = "Déplacement : " + currentPerso.ptDeplacement+"/"+currentPerso.ptDeplacementMax;
 		afficherTooltipItem(x, y, txt, false); 
 	});
 	imgMouvement.addEventListener('mouseout', function(event)  	{ supprimerTooltipItem(); });
 	imgMouvement.addEventListener('touchstart', function(event) 		
 	{ 
 		y = contPictoBarres.y + imgMouvement.y;
-		txt = "Mouvement : " + currentPerso.ptDeplacement+"/"+currentPerso.ptDeplacementMax;
+		txt = "Déplacement : " + currentPerso.ptDeplacement+"/"+currentPerso.ptDeplacementMax;
 		afficherTooltipItem(x, y, txt, false); 
 	});
 	imgMouvement.addEventListener('touchend', function(event)   { supprimerTooltipItem(); });
