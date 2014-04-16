@@ -1291,7 +1291,7 @@ io.sockets.on('connection', function (socket)
 		//try
 		//{
 			var monPerso = oPersonnage_Manager.GetCopiePerso(idUser);
-			socket.emit('INFO_PERSONNAGE_SC', monPerso);
+			socket.emit('INFO_PERSONNAGE_SC', monPerso, oUtilisateur_Manager.GetNumEquipe(idUser));
 			//}
 			//catch(err)
 			//{
@@ -1893,7 +1893,7 @@ io.sockets.on('connection', function (socket)
 				// on envoi sur ttes les sockets
 				for(var j in usersOnline[id].sockets)
 				{
-					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
+					usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id), oUtilisateur_Manager.GetNumEquipe(id));
 					usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, idSousCase);
 				}
 			}
@@ -1916,7 +1916,7 @@ function ActualiserAllGlobal(idCase)
 			var res = oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
 			for(var j in usersOnline[id].sockets)
 			{
-				usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
+				usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id), oUtilisateur_Manager.GetNumEquipe(id));
 				usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(idCase), res.nbrAllies, res.nbrEnnemis, oPersonnage_Manager.GetIdSousCase(id));
 			}
 		}
@@ -1955,7 +1955,7 @@ function SauvegardeGlobale()
 			//oPersonnage_Manager.AddMessage(i 	d, "FLAAAAAAAAAAAAAAAAAAAAAAAAAAAASH ! ");
 			var res 		= oPersonnage_Manager.GetNbrAlliesEnemisDansSalle(id);
 			var idSousSalle = oPersonnage_Manager.GetIdSousCase(id);
-			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id));
+			usersOnline[id].sockets[j].emit('INFO_PERSONNAGE_SC', oPersonnage_Manager.GetCopiePerso(id), oUtilisateur_Manager.GetNumEquipe(id));
 			//usersOnline[id].sockets[j].emit('INFO_CASE_SC', oCase_Manager.GetCopieCase(oPersonnage_Manager.GetIdCase(id)), res.nbrAllies, res.nbrEnnemis, idSousSalle, true);
 			// prévenir les joueurs de l'attaque de la nuit
 			usersOnline[id].sockets[j].emit('ATTAQUE_NUIT_SC');
