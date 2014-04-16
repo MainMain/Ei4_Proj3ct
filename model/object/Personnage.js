@@ -37,7 +37,7 @@ var Personnage = (function() {
 	Personnage.dernierMvt;
 	Personnage.listeMsgAtt;
 	Personnage.nbrNvMsg;
-	Personnage.etage;
+	//Personnage.etage;
 
 	// --- ENUMERATIONS DE CLASSE ---
 	Personnage.DIRECTIONS = [ 'NORD', 'SUD', 'EST', 'OUEST' ];
@@ -49,7 +49,7 @@ var Personnage = (function() {
 	function Personnage(id, ptSante, ptSanteMax, ptAction, ptActionMax,
 			ptDeplacement, ptDeplacementMax, ptFaim, ptFaimMax, poidsMax, goulesMax, competence, idSalleEnCours, mode,
 			multiPtsAttaque, multiPtsDefense, multiProbaCache, multiProbaFouille, 
-			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg, etage) 
+			armeEquipee, armureEquipee, sacADos, dernierMvt, listeMsgAtt, nbrNvMsg/*, etage*/) 
 	{
 		// --- Attributs d'instance
 		this.id 				= id;
@@ -76,7 +76,7 @@ var Personnage = (function() {
 		this.dernierMvt 		= dernierMvt;
 		this.listeMsgAtt 		= listeMsgAtt;
 		this.nbrNvMsg			= nbrNvMsg;
-		this.etage				= etage;
+		//this.etage				= etage;
 	}
 
 	// --- METHODES D'INSTANCE
