@@ -315,7 +315,7 @@ var labelEnnemisListe1, labelEnnemisListe2;
 
 var contArme, contArmure, contMap, contPerso, contBtnModes, contPictoCase,
 contBtnsListes, contDead, contBtnsInvPerso, contBtnsInvCase, contBtnsInvCaseBis, contListe,
-contListeAllies, contListeEnnemis1, contListeEnnemis2, contZoneMessage, contMessage;
+contListeAllies, contListeEnnemis1, contListeEnnemis2, contZoneMessage, contMessage, contDetailPerso;
 
 //-------------- Déclaration des contours----------------------------------------------
 
@@ -3027,6 +3027,7 @@ function majInventairePerso(currentPerso)
 		// évenement click
 		imgItemArme.addEventListener("click", function (event) 
 		{
+
 			//var currentItem = event.target.name;
 			afficherSelecteurItemEquip(event.target.x, 0, 1);
 			_SELECTED_ITEM_EQUIP=currentPerso.armeEquipee.id;
@@ -3952,7 +3953,7 @@ function majBarreGeneric(pts, ptsMax, last, objetBarre, objetLabel, id_timer)
 		clearInterval(id_timer);
 	}, _DUREE_AFFICHAGE);	
 }
-function majFichePersoSimple(currentPerso)
+function majFichePersoSimple(currentPerso, equipe)
 {
 	var classe;
 
@@ -3982,6 +3983,14 @@ function majFichePersoSimple(currentPerso)
 	imgPerso.scaleY=1.5;*/
 	imgPerso.x = 0;
 	imgPerso.y = 450;
+	imgPerso.addEventListener('mouseover', function(event)
+	{
+		afficherTooltipDetailPerso(imgPerso.x, imgPerso.y, currentPerso, equipe);
+	},false);
+	imgPerso.addEventListener('mouseout', function(event)
+	{
+		supprimerTooltipDetailPerso();
+	},false);
 	stage.addChild(imgPerso);
 
 		// ********* AFFICHAGE CARACTERISTIQUES PROPRES A LA COMPETENCE *********/
@@ -4726,6 +4735,77 @@ function supprimerTooltipItem()
 	stage.removeChild(_CONTENEUR_TOOLTIP);
 }
 
+function afficherTooltipDetailPerso(x,y, currentPerso, equipe)
+{
+	stage.removeChild(contDetailPerso);
+	var hauteur = 0;
+	var coul= createjs.Graphics.getRGB(0,0,0, 1);
+	y += 40;
+	x += 100;
+	var hauteur = 7*16;
+	//alert("equipe : " + equipe);
+	// défini les caractéristiques de l'objet
+	/*if(epuipe==1)
+	{
+		var ligne0 = "Equipe : AGI";
+	}
+	else if(equipe==2)
+	{
+		var ligne0 = "Equipe : INNO";
+	}
+	else if(equipe==3)
+	{
+		var ligne0 = "Equipe : QSF";
+	}*/
+	var ligne1 = "Compétence : " + currentPerso.competence;
+	var ligne2 = "Nombre de zombies max : " + currentPerso.goulesMax;
+	var ligne3 = "Multiplicateur de points d'attaque : " + currentPerso.multiPtsAttaque;
+	var ligne4 = "Multiplicateur de points de défense : " + currentPerso.multiPtsDefense;
+	var ligne5 = "Multiplicateur de probabilité de fouille : " + currentPerso.multiProbaFouille;
+	var ligne6 = "Multiplicateur de probabilité de cache : " + currentPerso.multiProbaCache;
+	if(currentPerso.dernierMvt!=null)
+	{
+		var ligne7 = "Dernier déplacement : " + currentPerso.dernierMvt;
+	}
+	else
+	{
+		var ligne7 = "";
+	}
+
+	var labelDetailPerso;
+	_LABEL_DESCRIPTION.text = ligne1 +"\n" + ligne2 + "\n" + ligne3 +"\n" + ligne4 +"\n" + ligne5 +"\n" + ligne6 + "\n" + ligne7;
+
+	// défini la taille du conteneur
+	var tailleDetailPerso = (Math.max(ligne1.length, ligne2.length, ligne3.length, ligne4.length, ligne5.length, ligne6.length, ligne7.length)) * 7 + 10;
+
+	 // conteneur
+	contDetailPerso		= new createjs.Container();
+	contDetailPerso.x 	= x;
+	contDetailPerso.y 	= y;
+
+	// dessine le fond du conteneur
+ 	var _FOND_TOOLTIP = new createjs.Shape();
+	_FOND_TOOLTIP.graphics.beginFill(coul).drawRect(0, 0, tailleDetailPerso, hauteur).endFill();
+
+	// test si ca dépasse pas du canvas
+	if(contDetailPerso.x + tailleDetailPerso > _CANVAS_LARGEUR)
+	{
+		contDetailPerso.x = _CANVAS_LARGEUR - tailleDetailPerso - 7;
+	} 
+
+	// ajout du fond et label au conteneur
+	contDetailPerso.addChild(_FOND_TOOLTIP);
+	contDetailPerso.addChild(_LABEL_DESCRIPTION);
+
+	// ajout du conteneur au stage
+	stage.addChild(contDetailPerso);
+}
+
+function supprimerTooltipDetailPerso()
+{
+	stage.removeChild(contDetailPerso);
+}
+
 function afficherSelecteurItemPerso(x, y, typeItem)
 {
 	// Détermine dans quel conteneur se trouve l'item selectionné
@@ -4791,32 +4871,24 @@ function afficherSelecteurItemCase(x, y, typeItem)
 
 function afficherSelecteurItemEquip(x, y, typeItem)
 {
-	
-	// Détermine dans quel conteneur se trouve l'item selectionné
-	if(typeItem==1)
-	{
-		contArme.removeChild(_IMG_ITEM_SELECTED);
-		// affichage fond
+	contArme.removeChild(_IMG_ITEM_SELECTED);
+	contArmure.removeChild(_IMG_ITEM_SELECTED);
+
+	// affichage fond
 		_IMG_ITEM_SELECTED = new createjs.Shape();
 		_IMG_ITEM_SELECTED.graphics.beginFill(createjs.Graphics.getRGB(255,0,0, 0.5)).drawRect(0, 0, 10, 10).endFill();
 		_IMG_ITEM_SELECTED.x = x+5;
 		_IMG_ITEM_SELECTED.y = y+25;
 
+	// Détermine dans quel conteneur se trouve l'item selectionné
+	if(typeItem==1)
+	{
 		Select   = contArme.addChild(_IMG_ITEM_SELECTED);
 	}
 	else if(typeItem==2)
 	{
-		contArmure.removeChild(_IMG_ITEM_SELECTED);
-		// affichage fond
-		_IMG_ITEM_SELECTED = new createjs.Shape();
-		_IMG_ITEM_SELECTED.graphics.beginFill(createjs.Graphics.getRGB(255,0,0, 0.5)).drawRect(0, 0, 10, 10).endFill();
-		_IMG_ITEM_SELECTED.x = x+5;
-		_IMG_ITEM_SELECTED.y = y+25;
-
 		Select   = contArmure.addChild(_IMG_ITEM_SELECTED);
 	}
-	//Select.x = x;
-	//Select.y = 0;
 }
 
 function afficherSelecteurPersoAttaque(x, y, equipe)
@@ -5315,9 +5387,9 @@ socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCas
 /************************************************************************************************************
  * RECEPTION DES INFORMATIONS SUR LE PERSONNAGE
  */
-socket.on('INFO_PERSONNAGE_SC', function(currentPerso) 
+socket.on('INFO_PERSONNAGE_SC', function(currentPerso, equipe) 
 {
-	//alert('INFO_PERSO');
+	//alert("equipe : " + equipe);
 	// retien le goule max poru choix de la couleur du nombre de goules
 	_LAST_GOULES_MAX = currentPerso.goulesMax;
 
@@ -5330,7 +5402,7 @@ socket.on('INFO_PERSONNAGE_SC', function(currentPerso)
 	// à ne faire qu'une seule fois au démarage 
 	if(imgPerso==null || _START==false)
 	{
-		majFichePersoSimple(currentPerso);
+		majFichePersoSimple(currentPerso, equipe);
 		_START=true;
 	}
 
