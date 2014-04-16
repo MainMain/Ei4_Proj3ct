@@ -5164,7 +5164,7 @@ a.list-group-item-danger.active:focus {
   font-size: 21px;
   font-weight: bold;
   line-height: 1;
-  color: #000;
+  color: #FFFFFF;
   text-shadow: 0 1px 0 #fff;
   filter: alpha(opacity=20);
   opacity: .2;
@@ -5258,6 +5258,7 @@ button.close {
 .modal-title {
   margin: 0;
   line-height: 1.42857143;
+  color: #757575;
 }
 .modal-body {
   position: relative;
