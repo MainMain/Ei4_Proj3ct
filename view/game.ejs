@@ -10,8 +10,7 @@
 
 			<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<!-- Script nécessaires pour le serveur -->
-		<!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
 		<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
 
@@ -19,52 +18,6 @@
 			var createjs = window;
 			var socket = io.connect('http://localhost:25536');
 			socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', 'game');
-		</script>
-
-		<script name="scriptChatEquipe">
-			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			//var chat = io.connect('http://192.168.0.24:25536/chat-general');
-			var chatEquipe = io.connect('http://localhost:25536/chat-equipe');
-			
-			$( document ).ready(function()
-			{
-				chatEquipe.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
-			});
-			
-			chatEquipe.on('USER_MESSAGE_SC', function(user, message)
-			{
-				$("#msgs").append("<div>" + user + " : " + message + "</div>");
-			});
-			
-			$("#msgSubmit").click(function()
-			{
-				sendMessage();
-			});
-			
-			$('#msgTextBox').keydown(function (e){
-			if(e.keyCode == 13){
-				sendMessage();
-			}
-			});
-			
-			sendMessage = function()
-			{
-				var message = $("#msgTextBox").val();
-				if(message != "")
-				{
-					chatEquipe.emit("USER_MESSAGE_CS", '<%= username %>', message);
-				}
-				$("#msgTextBox").val("");
-			}
-			
-			socket.on("DECONEXION_SC", function(msg)
-			{
-				alert(msg);
-				$.post("/", { _method: "delete" }, function()
-				{
-					document.location = "/";
-				});
-			});
 		</script>
 		<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
 		<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
@@ -104,7 +57,7 @@
 		<script type="text/javascript" src="/view/canvas.js"></script>
 		</head>
 		<body >
-				<!-- habillage -->
+		<!-- habillage -->
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 			<div class="container-fluid">
 	        	<div class="navbar-header">
@@ -118,8 +71,10 @@
 	        	</div>
 	        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
 	          		<ul class="nav navbar-nav pull-right navb">
-	            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
-	            		<li class="navbar-text" >Prochaine attaque dans : </li>
+
+		            		<li class="navbar-text" id="HeureServeur" > </li>
+		            		<li class="navbar-text" > Prochaine attaque à : <%= heureAttaque.toLocaleTimeString() %> </li>
+
 	            		<form action="/" method="post" class="btn">
 	            			<input type="hidden" name="_method" value="delete"/>
 	            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button>
@@ -141,7 +96,7 @@
 	    			<li><a href="/tutoriel">Tutoriel</a></li>
 	    		
 	    			<li class="divider"><hr/></li>
-	    			<li class="nav-sidebar active"><a href="/jeu#les_scores">Plateau de jeu</a></li>
+	    			<li class="nav-sidebar active"><a href="/jeu#les_scores">Jeu</a></li>
 	    			<li><a href="/chat-general">Chats</a></li>
 	    		
 	    			<li class="divider"><hr/></li>
@@ -151,7 +106,6 @@
 	    	</div>
 
 	    	<!-- core de la page -->
-
 
 	    	<% if(idEquipe == 0 || !isUpToDate) { %>
 	    		<h1>Aux portes de l'enfer...</h1>
@@ -296,21 +250,23 @@
 	    	<% }  else 	 { %>
 <!-- FIN AJOUT MAIMAIN -->	    
 	    	
-
 	    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
-	    		<div  style="background-color: rgba(161, 161, 161, 0.4); ;padding-left : 2%;padding-right : 2%;padding-top:2%;padding-bottom:2%;margin-bottom:1%;margin-top:1% ;border-radius:15px; min-height:850px; ">
 
-	    			<nav class="navbar navbar-inverse" role="navigation">
-	    				<ul class="nav navbar-nav">
+	    		<nav class="navbar " role="navigation" style="margin-bottom: -1px;margin-top:1%;margin-left:-1px;margin-right:-1px;">
+	    				<ul class="nav navbar-nav col-md-12 " style="padding-right:0px;">
   					
-	    					<li class=""><a href="#les_scores">Scores</a></li>
+	    					<li class="onglet col-md-4 "  ><a href="#les_scores"><b>Scores</b></a></li>
 	    					<li class="divider"><hr/></li>
-	    					<li class=""><a href="#les_infos">Info Sessions</a></li>
+	    					<li class="onglet col-md-4" ><a href="#les_infos"><b>Info Sessions</b></a></li>
 	    					<li class="divider"><hr/></li>
-	    					<li class=""><a href="#le_jeu">Plateau de jeu</a></li>		
+	    					<li class="onglet col-md-4"><a href="#le_jeu"><b>Plateau de jeu</b></a></li>		
 	    				</ul>
+	    		</nav>
+	    		<div  style="background-color: rgba(161, 161, 161, 0.4); ;padding-left : 2%;padding-right : 2%;padding-bottom:2%;padding-top:4%;margin-bottom:1%;border-bottom-left-radius:15px;border-bottom-right-radius:15px; min-height:850px; ">
 
-	    			</nav>
+	    			
+
+	    			
 	    			<div >
 	    				<article>
 		    			
@@ -503,18 +459,18 @@
 										<td width="20%"><i><p><%= bilanScores["nbrFoisTue"]%> fois</p></i></td>
 									</tr>
 									<tr>
-										<td width="20%"><b>Zombies tués</b></td>
-										<td width="20%"><%= bilanScores["AGI_zombies"]%> zombie(s)</td>
-										<td width="20%"><%= bilanScores["INNO_zombies"]%> zombie(s)</td>
-										<td width="20%"><%= bilanScores["QSF_zombies"]%> zombie(s)</td>
-										<td width="20%"><%= bilanScores["nbrGoulesTues"]%> zombie(s)</td>
+										<td width="20%"><b><p>Zombies tués</p></b></td>
+										<td width="20%"><p><%= bilanScores["AGI_zombies"]%> zombie(s)</p></td>
+										<td width="20%"><p><%= bilanScores["INNO_zombies"]%> zombie(s)</p></td>
+										<td width="20%"><p><%= bilanScores["QSF_zombies"]%> zombie(s)</p></td>
+										<td width="20%"><p><%= bilanScores["nbrGoulesTues"]%> zombie(s)</p></td>
 									</tr>
 									<tr>
-										<td width="20%"><b>TOTAL</b></td>
-										<td width="20%"><%= bilanScores["scoreAGI"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["scoreINNO"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["scoreQSF"]%> point(s)</td>
-										<td width="20%"><%= bilanScores["total"]%> point(s)</td>
+										<td width="20%"><b><p>TOTAL</p></b></td>
+										<td width="20%"><p><%= bilanScores["scoreAGI"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["scoreINNO"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["scoreQSF"]%> point(s)</p></td>
+										<td width="20%"><p><%= bilanScores["total"]%> point(s)</p></td>
 									</tr>
 								</table>
 				</div>
@@ -544,87 +500,121 @@
 									</tr>
 									</table>-->
 									<table>
-										<b>Dates clés</b>
+										<b><p>Dates clés</p></b>
 										<tr>
 											<br>
 										</tr>
 										<br>
 										<tr>
-											<td width=50%><b>Numéro de session : </b></td>
-											<td><%= sessionInfo["id"]%></td>
+											<td width=50%><b><p>Numéro de session : </p></b></td>
+											<td><p><%= sessionInfo["id"]%></p></td>
 										</tr>
 										<tr>
-											<td><b>Date de début : </b></td>
-											<td><%= sessionInfo["dateDebut"].toLocaleDateString()  %></td>
+											<td><b><p>Date de début : </p></b></td>
+											<td><p><%= sessionInfo["dateDebut"].toLocaleDateString()  %></p></td>
 										</tr>
 										<tr>
-											<td><b>Date de fin : </b></td>
-											<td><%= sessionInfo["dateFin"].toLocaleDateString() %></td>
+											<td><b><p>Date de fin : </p></b></td>
+											<td><p><%= sessionInfo["dateFin"].toLocaleDateString() %></p></td>
 										</tr>
 									</table></td>
 									<td width=50%>
 									<table>
-										<b>Paramètres des attaques</b>
+										<b><p>Paramètres des attaques</p></b>
 										<br>
 										<tr>
 											<br>
 										</tr>
 										<tr>
-											<td width=50%><b>Heure de la prochaine attaque : </b></td>
-											<td><%= heureAttaque %></td>
+											<td width=50%><p><b>Heure de la prochaine attaque : </p></b></td>
+											<td><p><%= heureAttaque %></p></td>
 										</tr>
 										<tr>
+
 											<td><b>Heure locale : </b></td>
-											<td><span id="HeureLocale"></span>
-											<script type="text/javascript">
-												HeureLocale('HeureLocale');
-											</script></td>
+											<td><span id="HeureLocale"></span></td>
+
 										</tr>
 										<tr>
-											<td><b>Fréquence des attaques : </b></td>
-											<td><%= dureeCycle %> heure(s)</td>
+											<td><b><p>Fréquence des attaques : </p></b></td>
+											<td><p><%= dureeCycle %> heure(s)</p></td>
 										</tr>
 									</table></td>
 
 								</table>
-
-								
 							</div>
-						</div>
-					
-<!-- DEBUT AJOUT MAIMAIN -->	
-<% } %>
-<!-- FIN AJOUT MAIMAIN -->	
+						</div>					
+						<!-- DEBUT AJOUT MAIMAIN -->	
+						<% } %>
+						<!-- FIN AJOUT MAIMAIN -->
 					</article>
-
 					</div>
-
 	    		</div>
 	    	</div>
 
-
-
-
-
-
-
 	    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 			<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
-			<script type="text/javascript">
-			/*var canvas = $('#myCanvas');
-			var c = $('#containerCanvas');
 
-			$(window).resize(changeCanvas);
+			<script name="scriptChatEquipe">
+				/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+				//var chat = io.connect('http://192.168.0.24:25536/chat-general');
+				var chatEquipe = io.connect('http://localhost:25536/chat-equipe');
+				
+				$( document ).ready(function()
+				{
+					chatEquipe.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
+				});
+				
+				chatEquipe.on('USER_MESSAGE_SC', function(user, message)
+				{
+					$("#msgs").append("" + user + " : " + message + "\n");
+				});
+				
+				$("#msgSubmit").click(function()
+				{
+					sendMessage();
+				});
+				
+				$('#msgTextBox').keydown(function (e){
+				if(e.keyCode == 13){
+					sendMessage();
+				}
+				});
+				
+				sendMessage = function()
+				{
+					var message = $("#msgTextBox").val();
+					if(message != "")
+					{
+						chatEquipe.emit("USER_MESSAGE_CS", '<%= username %>', message);
+					}
+					$("#msgTextBox").val("");
+				}
+				
+				socket.on("DECONEXION_SC", function(msg)
+				{
+					alert(msg);
+					$.post("/", { _method: "delete" }, function()
+					{
+						document.location = "/";
+					});
+				});
+			</script>
 
-			function changeCanvas(){
-				canvas.attr("width",$(c).width());
-				canvas.attr("height",canvas.width()/1.75);
-			}
+			<script name="MajHeureLocale">
 
-			$(document).ready(changeCanvas);
+				var date = new Date("<%= heureLocale %>");
+				$("#HeureLocale").text(date.toLocaleTimeString());
+				$("#HeureServeur").text("Heure du serveur : " + date.toLocaleTimeString());
 
-			changeCanvas();*/ 
-			</script> 
+				setInterval(function ()
+				{
+					date.setSeconds(date.getSeconds() + 1);
+					$("#HeureLocale").text(date.toLocaleTimeString());
+					$("#HeureServeur").text("Heure du serveur : " + date.toLocaleTimeString());
+				}, 1000);
+
+			</script>
 		</body>
 	</html> 
 

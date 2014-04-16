@@ -10,13 +10,11 @@
 		<link href="../public/bootstrap/css/bootstrap-modal-bs3patch.css" rel="stylesheet">
 
 		<link href="../public/bootstrap/css/bootstrap.css" rel="stylesheet">
-
-		
-
 		<link href="../public/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 		<link href="../public/bootstrap/css/bootstrap-modal.css" rel="stylesheet">
 
 	</head>
+
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
@@ -44,13 +42,13 @@
 				document.location = "/";
 			});
 		});
-		
+	
 	</script>
 
 	<body>
 		<div class="col-md-5">
 
-		<a class="navbar-brand navbar-fixed-top  col-md-2" href="#" ><img src="../public/images/LOGO3.png" width="200" height="200" ></a>
+		<a class="navbar-brand navbar-fixed-top  col-md-2" href="#image_test" ><img src="../public/images/LOGO.png" width="200" height="200" ></a>
 		</div>
 		<nav style="border-bottom-left-radius: 50px" class="navbar navbar-inverse col-md-offset-5 col-md-7 navbar-fixed-top" role="navigation">
 
@@ -63,6 +61,7 @@
 						<span class="icon-bar"></span>
 					</button>
 				</div>
+
 				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
 					<form class="navbar-form navbar-left" action="/" method="post" style="margin-left:5%;">
@@ -71,7 +70,7 @@
 					 		<input name="username" type="text" class="form-control" placeholder="Login"/>
 					 		<input name="password" type="password" class="form-control" placeholder="Mot de passe"/>
 						</div>
-						<input name="submit" type="submit" value="Connexion" class="btn btn-success"/>
+						<input name="submit" type="submit" value="Connexion" class="btn btn-danger"/>
 					</form>
 
 					<a href="#responsive" data-toggle="modal" class="navbar-text navbar-right navbar-link" style="color:#FF0000; text-decoration:underline;">Rejoignez-nous</a>
@@ -95,27 +94,70 @@
 				<h1 align="center">Bienvenue <%= usernameInscription %>. Un e-mail vient de vous être envoyer afin de valider votre compte.</h1>
 			<% } %>
 			<!-- Example row of columns -->
-			<div class="row">
-				<div class="row" style="background-color: rgba(160, 160, 160, 1);margin: 10% 15% 1% 15%; ">
-					<div id="mid-zone-content" class="col-md-10" style="min-height:300px ;">
-						<h2>Heading</h2>
-						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-						<p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermen</p>
-					</div>
-					<div class="col-md-2" style="padding: 0px 0px 0px 0px;">
-						<ul class="nav nav-sidebar nav-pills nav-stacked" style="background-color:#000000;min-height:300px ; margin:0px 0px 0px 0px; padding-top:15%;">
-							<li><a href="#">Home</a></li>
-							<li><a href="#">Profile</a></li>
-							
-							<li><a href="#">Messages</a></li>
-							<li><a href="#">un truc </a></li>
-							<li><a href="#">un autre truc </a></li>
-						</ul>
+
+				<div calss="row " style="margin-top:10%;">
+					<div style="background-color: rgba(161, 161, 161, 0.4); ;padding-left : 2%;padding-right : 2%;padding-bottom:2%;padding-top:4%;margin-bottom:1%;border-bottom-left-radius:15px;border-bottom-right-radius:15px;  ">
+						<div class="col-md-9" >
+							<article>
+								<span id="image_test" class="hide"></span>
+									<div class="displayable"> 
+										<div  style="min-height:300px;float:right;margin-right:-15px;">
+											<img  src="../public/images/attaqueNuit.png" height="370"  width="650">
+										</div>
+									</div>
+							</article>
+
+							<article>
+								<span id="image_test1" class="hide"></span>
+								<div class="displayable"> 
+										<div  style="min-height:300px;float:right;margin-right:-15px;">
+											<img  src="../public/images/team.png" height="370"  width="650">
+										</div>
+									</div>
+							</article>
+
+							<article>
+								<span id="image_test2" class="hide"></span>
+								<div class="displayable"> 
+										<div  style="min-height:300px;float:right;margin-right:-15px;">
+											<img  src="../public/images/exploration2.png" height="370"  width="650">
+										</div>
+									</div>
+							</article>
+
+							<article>
+								<span id="image_test3" class="hide"></span>
+								<div class="displayable"> 
+										<div  style="min-height:300px;float:right;margin-right:-15px;">
+											<img  src="../public/images/invasion.png" height="370"  width="650">
+										</div>
+									</div>
+							</article>
+
+							<article>
+								<span id="image_test4" class="hide"></span>
+								<div class="displayable"> 
+										<div  style="min-height:300px;float:right;margin-right:-15px;">
+											<img  src="../public/images/swords_zomb.png" height="370"  width="650">
+										</div>
+									</div>
+							</article>
+						</div>
+
+						<div class="col-md-2 " style="padding: 0px 0px 0px 0px;">
+							<ul class="nav nav-sidebar nav-pills nav-stacked" style="background-color:#000000;min-height:370px ; margin:0px 0px 0px 0px;">
+								<li  style="margin-top:15%;"><a href="#image_test"><b>image </b></a></li>
+								<li  style="margin-top:7%;"><a href="#image_test1"><b>image 1</b></a></li>
+								<li  style="margin-top:7%;"><a href="#image_test2"><b>image 2</b></a></li>
+								<li  style="margin-top:7%;"><a href="#image_test3"><b>image 3</b></a></li>
+								<li  style="margin-top:7%;margin-bottom:7%;"><a href="#image_test4"><b>image 4 </b></a></li>
+							</ul>
+						</div>	
 					</div>
 				</div>
-				    <div id="responsive" class="modal fade" tabindex="-1" data-width="760"  style="display: none;max-height:47%">
+
+
+				    <div id="responsive" class="modal fade" tabindex="-1" data-width="760"  style="display: none;height:47%;background-color: #000000;">
 				    	<form action="/" method="POST">
 					 		<input name="_method" type="hidden" value="PUT"/>
 							<div class="modal-header">
@@ -129,46 +171,23 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" data-dismiss="modal" class="btn btn-default">Annuler</button>
-								<input  type="submit" class="btn btn-primary" value="S'inscrire" />
+								<input  type="submit" class="btn btn-danger" value="S'inscrire" />
 							</div>
 				    	</form>
 					</div>
 			</div>
 
-			<hr>
+			<hr style="margin-left:10%;margin-right:10%;">
 
-			<footer>
+			<footer style="margin-left:15%;">
 			<p>&copy; Company 2014</p>
 			</footer>
 		</div> <!-- /container -->
 
-		<script>
-		/*
-			var $modal = $('#ajax-modal');
-    
-		    $('.ajax .demo').on('click', function(){
-			    // create the backdrop and wait for next modal to be triggered
-			    $('body').modalmanager('loading');
-			     
-			    setTimeout(function(){
-				    $modal.load('modal_ajax_test.html', '', function(){
-				    	$modal.modal();
-				    });
-			    }, 1000);
-		    });
-		     
-		    $modal.on('click', '.update', function(){
-			    $modal.modal('loading');
-			    setTimeout(function(){
-			    	$modal
-			    		.modal('loading')
-			    		.find('.modal-body')
-			    		.prepend('<div class="alert alert-info fade in">' +
-			    		'Updated!<button type="button" class="close" data-dismiss="alert">&times;</button>' +
-			    		'</div>');
-		   		}, 1000);
-		    });
-		*/
+			<script type="text/javascript">
+				$(document).ready(function(){
+					document.location.href="/#image_test";
+				});
 		</script>
 	</body>
 </html>

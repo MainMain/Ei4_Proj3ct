@@ -299,7 +299,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Trebuchet MS","Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
@@ -3487,11 +3487,6 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   margin-left: -1px;
 }
 
-
-
-
-
-
 .sidebar {
   display: none;
 }
@@ -3511,16 +3506,23 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 
-.small-sidebar{
-    margin-top: 3%;
-    z-index: 1000;
-    display: block;
-    padding: 20px;
-    overflow-x: hidden;
-    overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
-    background-color: #0B0A0A;
-    border-radius: 6px;
 
+.onglet{
+  
+   display: :block;
+   text-align: center;
+   border-top-left-radius:20px;
+   border-top-right-radius:20px;
+   background-color:rgba(161, 161, 161, 0.4);
+
+}
+.onglet > a{
+  color: #000000;
+}
+
+.onglet >a:hover,
+.onglet >a:focus{
+  background-color:rgba(161, 161, 161, 0) !important;
 }
 
 /* Sidebar navigation */
@@ -3558,11 +3560,11 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   display: block;
   padding: 10px 15px;
 }
-.nav > li > a:hover,
-.nav > li > a:focus {
-  text-decoration: none;
-  background-color: #000000;
-}
+  .nav > li > a:hover,
+  .nav > li > a:focus {
+    text-decoration: none;
+    background-color: #000000;
+  }
 .nav > li.disabled > a {
   color: #999;
 }
@@ -5162,7 +5164,7 @@ a.list-group-item-danger.active:focus {
   font-size: 21px;
   font-weight: bold;
   line-height: 1;
-  color: #000;
+  color: #FFFFFF;
   text-shadow: 0 1px 0 #fff;
   filter: alpha(opacity=20);
   opacity: .2;
@@ -5256,6 +5258,7 @@ button.close {
 .modal-title {
   margin: 0;
   line-height: 1.42857143;
+  color: #757575;
 }
 .modal-body {
   position: relative;
