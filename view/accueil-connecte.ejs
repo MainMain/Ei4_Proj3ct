@@ -6,6 +6,16 @@
 			<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
 			<link href="../public/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+		    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+			<script>
+				window.jQuery || document.write('<script src="view/js/jquery-1.7.2.min.js"><\/script>')
+			</script>
+
+			<!-- Script nécessaires pour le serveur -->
+			<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+			<script src="/socket.io/socket.io.js"></script>
+
 			<title>Zomb'IstiA - Accueil</title>
 		</head>
 		<body >
@@ -23,8 +33,8 @@
 		        	</div>
 		        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 		          		<ul class="nav navbar-nav pull-right navb">
-		            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
-		            		<li class="navbar-text" >Prochaine attaque dans : 00:54:35 </li>
+		            		<li class="navbar-text" id="HeureServeur" > </li>
+		            		<li class="navbar-text" > Prochaine attaque à : <%= heureAttaque.toLocaleTimeString() %> </li>
 		            		<form action="/" method="post" class="btn">
 		            			<input type="hidden" name="_method" value="delete"/>
 		            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" >Retour chez les vivants</button>
@@ -81,6 +91,21 @@
 		    			</div>
 			    </div>
 			</div>
+
+			<script name="MajHeureLocale">
+
+				var date = new Date("<%= heureLocale %>");
+				$("#HeureLocale").text(date.toLocaleTimeString());
+				$("#HeureServeur").text("Heure du serveur : " + date.toLocaleTimeString());
+
+				setInterval(function ()
+				{
+					date.setSeconds(date.getSeconds() + 1);
+					$("#HeureLocale").text(date.toLocaleTimeString());
+					$("#HeureServeur").text("Heure du serveur : " + date.toLocaleTimeString());
+				}, 1000);
+
+			</script>
 
 		</body>
 

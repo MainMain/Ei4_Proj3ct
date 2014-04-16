@@ -171,7 +171,9 @@ var options = {
 	"InfoInscription": null,
 	"usernameInscription": null,
 	"sessionID": null,
-	"dateFinSession": null};
+	"dateFinSession": null,
+	"heureLocale": null,
+	"heureAttaque": null};
 
 function restrict(req, res, next)
 {
@@ -237,18 +239,18 @@ app.get('/', function fonctionIndex(req, res)
 	
 	if(s.username)
 	{
-		optionAccueil.username = s.username;
-		optionAccueil.sessionID = s.idUser;
+		options.username = s.username;
+		options.sessionID = s.idUser;
 	
 		ajouterInfosHeures(options);
-		res.render('accueil-connecte', optionAccueil);
+		res.render('accueil-connecte', options);
 		
-		optionAccueil.username = null;
-		optionAccueil.sessionID = null;
+		options.username = null;
+		options.sessionID = null;
 	}
 	else
 	{
-		res.render('accueil', optionAccueil);
+		res.render('accueil', options);
 	}
 });
 
@@ -574,6 +576,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 		options.username = s.username;
 		options.sessionID = s.idUser;
 		
+		ajouterInfosHeures(options);
 		res.render("accueil-connecte", options);
 		
 		options.sessionID = null;
@@ -732,18 +735,20 @@ var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 	
 	socket.on('INFO_USER_CS', function(userID, user)
 	{
+		id = userID;
 		onChatEquipe_INFO_USER(userID, user, socket);
 	});
 	
 	// Reception d'un message
-	socket.on('USER_MESSAGE_CS', function(id, user, message)
+	socket.on('USER_MESSAGE_CS', function(user, message)
 	{
 		onChatEquipe_USER_MESSAGE(id, user, message);
 	});
 	
 	socket.on('disconnect', function()
 	{
-		onChatEquipe_DISCONNECT(socket);
+		onChatEquipe_DISCONNECT(id, socket);
+		id = "";
 	});
 });
 
@@ -775,6 +780,8 @@ onChatEquipe_INFO_USER = function(id, user, socket)
 			newUser = true;
 		}
 		
+		
+		console.log("User " + user + " is newUser = " + newUser);
 		// on défini les propriétés de l'userTchat
 		usersInTeamChat[id].username = user;
 		usersInTeamChat[id].sockets.push(socket);
@@ -865,7 +872,9 @@ onChatEquipe_DISCONNECT = function(id, socket)
 	
 	if(oUtilisateur_Manager.exist(id))
 	{
+		console.log("Deconnexion " + id + " TEST");
 		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
+		user = usersInTeamChat[id].username;
 		if(usersInTeamChat[id])
 		{
 			usersInTeamChat[id].sockets.splice(usersInTeamChat[id].sockets.indexOf(socket), 1);
@@ -877,33 +886,12 @@ onChatEquipe_DISCONNECT = function(id, socket)
 					{
 						for(var k in usersInTeamChat[i].sockets)
 						{
-							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInTeamChat[id].username);
+							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Déconnexion d'un utilisateur ", user);
 						}
 					}
 				}
-				EventLog.log("Déconnexion de " + usersInTeamChat[id].username + " du chat");
+				EventLog.log("Déconnexion de " + user + " du chat");
 				delete usersInTeamChat[id];
-			}
-			
-			for(var i in usersInTeamChat)
-			{
-				if(usersInTeamChat[i].numEquipe == numEquipe)
-				{
-					users[j] = usersInTeamChat[i].username;
-					j++;			
-				}
-			}
-			
-			for(var i in usersInTeamChat)
-			{
-				if(usersInTeamChat[i].numEquipe == numEquipe)
-				{
-					for(var k in usersInTeamChat[i].sockets)
-					{
-						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
-						usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', users);
-					}
-				}
 			}
 		}
 	}
@@ -915,7 +903,7 @@ onChatEquipe_DISCONNECT = function(id, socket)
 var chat = io.of('/chat-general').on('connection', function (socket)
 {
 	var id = "";
-	socket.on('INFO_USER_CHAT_CS', function(userID, user)
+	socket.on('INFO_USER_CS', function(userID, user)
 	{
 		var users = new Array();
 		var j = 0;
@@ -929,6 +917,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 			usersInGeneralChat[id].sockets = new Array();
 			newUser = true;
 		}
+		
 		usersInGeneralChat[id].username = user;
 		usersInGeneralChat[id].sockets.push(socket);
 	
@@ -940,7 +929,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 		if(newUser)
 		{
 			EventLog.log("L'utilisateur " + user + " s'est connecté au chat.");
-			chat.emit("USER_MESSAGE_SC", "Utilisateur connecté", user);
+			chat.emit("USER_MESSAGE_SC", "Connexion d'un utilisateur ", user);
 		}
 		
 		chat.emit('USER_CONNECTED_SC', users);
@@ -962,7 +951,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 			usersInGeneralChat[id].sockets.splice(usersInGeneralChat[id].sockets.indexOf(socket), 1);
 			if(usersInGeneralChat[id].sockets.length == 0)
 			{
-				chat.emit("USER_MESSAGE_SC", "Utilisateur deconnecté", usersInGeneralChat[id].username);
+				chat.emit("USER_MESSAGE_SC", "Déconnexion d'un utilisateur ", usersInGeneralChat[id].username);
 				EventLog.log("Déconnexion de " + usersInGeneralChat[id].username + " du chat");
 				delete usersInGeneralChat[id];
 			}
