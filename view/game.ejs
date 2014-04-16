@@ -10,8 +10,7 @@
 
 			<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 		<!-- Script nécessaires pour le serveur -->
-		<!--<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
+		<script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
 		<!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
 		<!--<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script> -->
 
@@ -19,52 +18,6 @@
 			var createjs = window;
 			var socket = io.connect('http://localhost:25536');
 			socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', 'game');
-		</script>
-
-		<script name="scriptChatEquipe">
-			/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
-			//var chat = io.connect('http://192.168.0.24:25536/chat-general');
-			var chatEquipe = io.connect('http://localhost:25536/chat-equipe');
-			
-			$( document ).ready(function()
-			{
-				chatEquipe.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
-			});
-			
-			chatEquipe.on('USER_MESSAGE_SC', function(user, message)
-			{
-				$("#msgs").append("<div>" + user + " : " + message + "</div>");
-			});
-			
-			$("#msgSubmit").click(function()
-			{
-				sendMessage();
-			});
-			
-			$('#msgTextBox').keydown(function (e){
-			if(e.keyCode == 13){
-				sendMessage();
-			}
-			});
-			
-			sendMessage = function()
-			{
-				var message = $("#msgTextBox").val();
-				if(message != "")
-				{
-					chatEquipe.emit("USER_MESSAGE_CS", '<%= username %>', message);
-				}
-				$("#msgTextBox").val("");
-			}
-			
-			socket.on("DECONEXION_SC", function(msg)
-			{
-				alert(msg);
-				$.post("/", { _method: "delete" }, function()
-				{
-					document.location = "/";
-				});
-			});
 		</script>
 		<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
 		<script type="text/javascript" src="../src/createjs/events/EventDispatcher.js"></script>
@@ -104,7 +57,7 @@
 		<script type="text/javascript" src="/view/canvas.js"></script>
 		</head>
 		<body >
-				<!-- habillage -->
+		<!-- habillage -->
 		<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 			<div class="container-fluid">
 	        	<div class="navbar-header">
@@ -118,8 +71,9 @@
 	        	</div>
 	        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
 	          		<ul class="nav navbar-nav pull-right navb">
-	            		<li class="navbar-text"  >Heure du serveur :<span id="HeureLocale"></span></li>
-	            		<li class="navbar-text" >Prochaine attaque dans : </li>
+
+		            		<li class="navbar-text" id="HeureServeur" > </li>
+		            		<li class="navbar-text" > Prochaine attaque à : <%= heureAttaque.toLocaleTimeString() %> </li>
 
 	            		<form action="/" method="post" class="btn">
 	            			<input type="hidden" name="_method" value="delete"/>
@@ -576,11 +530,10 @@
 											<td><p><%= heureAttaque %></p></td>
 										</tr>
 										<tr>
-											<td><b><p>Heure locale : </p></b></td>
-											<td><p><span id="HeureLocale"></span>
-											<script type="text/javascript">
-												HeureLocale('HeureLocale');
-											</script></p></td>
+
+											<td><b>Heure locale : </b></td>
+											<td><span id="HeureLocale"></span></td>
+
 										</tr>
 										<tr>
 											<td><b><p>Fréquence des attaques : </p></b></td>
@@ -589,44 +542,79 @@
 									</table></td>
 
 								</table>
-
-								
 							</div>
-						</div>
-					
-<!-- DEBUT AJOUT MAIMAIN -->	
-<% } %>
-<!-- FIN AJOUT MAIMAIN -->	
+						</div>					
+						<!-- DEBUT AJOUT MAIMAIN -->	
+						<% } %>
+						<!-- FIN AJOUT MAIMAIN -->
 					</article>
-
 					</div>
-
 	    		</div>
 	    	</div>
 
-
-
-
-
-
-
 	    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 			<script>window.jQuery || document.write('<script src="/view/js/jquery-1.7.2.min.js"><\/script>')</script>
-			<script type="text/javascript">
-			/*var canvas = $('#myCanvas');
-			var c = $('#containerCanvas');
 
-			$(window).resize(changeCanvas);
+			<script name="scriptChatEquipe">
+				/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
+				//var chat = io.connect('http://192.168.0.24:25536/chat-general');
+				var chatEquipe = io.connect('http://localhost:25536/chat-equipe');
+				
+				$( document ).ready(function()
+				{
+					chatEquipe.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
+				});
+				
+				chatEquipe.on('USER_MESSAGE_SC', function(user, message)
+				{
+					$("#msgs").append("" + user + " : " + message + "\n");
+				});
+				
+				$("#msgSubmit").click(function()
+				{
+					sendMessage();
+				});
+				
+				$('#msgTextBox').keydown(function (e){
+				if(e.keyCode == 13){
+					sendMessage();
+				}
+				});
+				
+				sendMessage = function()
+				{
+					var message = $("#msgTextBox").val();
+					if(message != "")
+					{
+						chatEquipe.emit("USER_MESSAGE_CS", '<%= username %>', message);
+					}
+					$("#msgTextBox").val("");
+				}
+				
+				socket.on("DECONEXION_SC", function(msg)
+				{
+					alert(msg);
+					$.post("/", { _method: "delete" }, function()
+					{
+						document.location = "/";
+					});
+				});
+			</script>
 
-			function changeCanvas(){
-				canvas.attr("width",$(c).width());
-				canvas.attr("height",canvas.width()/1.75);
-			}
+			<script name="MajHeureLocale">
 
-			$(document).ready(changeCanvas);
+				var date = new Date("<%= heureLocale %>");
+				$("#HeureLocale").text(date.toLocaleTimeString());
+				$("#HeureServeur").text("Heure du serveur : " + date.toLocaleTimeString());
 
-			changeCanvas();*/ 
-			</script> 
+				setInterval(function ()
+				{
+					date.setSeconds(date.getSeconds() + 1);
+					$("#HeureLocale").text(date.toLocaleTimeString());
+					$("#HeureServeur").text("Heure du serveur : " + date.toLocaleTimeString());
+				}, 1000);
+
+			</script>
 		</body>
 	</html> 
 

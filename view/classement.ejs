@@ -25,8 +25,8 @@
 	        	</div>
 	        	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 	          		<ul class="nav navbar-nav pull-right navb">
-	            		<li class="navbar-text"  >Heure du serveur : 15:45:13</li>
-	            		<li class="navbar-text" >Prochaine attaque dans : 00:54:35 </li>
+		            		<li class="navbar-text" id="HeureServeur" > </li>
+		            		<li class="navbar-text" > Prochaine attaque à : <%= heureAttaque.toLocaleTimeString() %> </li>
 
 <!--
 	            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" style="margin-top:0px;">Retour chez les vivants</button></form>
@@ -88,7 +88,7 @@
 	    	</div>
 	    </div>
 
-	    		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script>
 			window.jQuery || document.write('<script src="view/js/jquery-1.7.2.min.js"><\/script>')
 		</script>
@@ -132,6 +132,21 @@
 					document.location = "/";
 				});
 			});
+		</script>
+
+		<script name="MajHeureLocale">
+
+			var date = new Date("<%= heureLocale %>");
+			$("#HeureLocale").text(date.toLocaleTimeString());
+			$("#HeureServeur").text("Heure du serveur : " + date.toLocaleTimeString());
+
+			setInterval(function ()
+			{
+				date.setSeconds(date.getSeconds() + 1);
+				$("#HeureLocale").text(date.toLocaleTimeString());
+				$("#HeureServeur").text("Heure du serveur : " + date.toLocaleTimeString());
+			}, 1000);
+
 		</script>
 	</body>
 	</html>

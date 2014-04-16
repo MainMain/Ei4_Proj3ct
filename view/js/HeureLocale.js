@@ -1,8 +1,5 @@
-function HeureLocale(id)
+function HeureLocale(date)
 {
-	date = new Date();
 	heure = date.toLocaleTimeString();
-	document.getElementById(id).innerHTML = heure;
-	setTimeout('HeureLocale("'+id+'");','1000');
-	return true;
+	document.getElementById(id).innerHTML = "Heure du serveur : " + heure;
 }
