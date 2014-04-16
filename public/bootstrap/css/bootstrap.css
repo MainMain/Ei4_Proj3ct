@@ -299,7 +299,7 @@ html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Trebuchet MS","Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
@@ -3517,7 +3517,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 
 }
 .onglet > a{
-  color: #FF0000;
+  color: #000000;
 }
 
 .onglet >a:hover,
