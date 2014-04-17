@@ -244,14 +244,12 @@ Score_Manager.getScoreCurrentSession = function(param)
 		for(var i in this.listeScores)
 		{
 			EventLog.log("idUser : " + i);
-			/*
 			if(this.listeScores[i][this.idSessionEnCours])
 			{
 				myArray.push(this.listeScores[i][this.idSessionEnCours]);
 				myArray[j].pseudo = oUtilisateur_Manager.getPseudo(i);
 				j++;
 			}
-			*/
 		}
 		switch(param)
 		{

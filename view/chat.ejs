@@ -74,8 +74,7 @@
 								</div>	
 								<div class="col-md-2">
 										<h2 >Utilisateurs connectés :</h2>
-										<ul id="listEquipeUsers" style="color:#000000;">
-										</ul>
+										<ul id="listEquipeUsers" style="color:#000000; list-style-type:none;"></ul>
 									</div>
 								</div>
 							<div class="divider"><hr/></div>
@@ -94,8 +93,7 @@
 								</div>	
 								<div class="col-md-2">
 										<h2 >Utilisateurs connectés :</h2>
-										<ul id="listGeneralUsers" style="color:#000000;">
-										</ul>
+										<ul id="listGeneralUsers" style="color:#000000; list-style-type:none;"></ul>
 								</div>
 							</div>
 							</div>
@@ -116,18 +114,27 @@
 					/*********** EVENEMENTS LORS DE RECEPETION D'UNE COMMUNICATION SERVEUR -> CLIENT **************/
 					//var chat = io.connect('http://192.168.0.24:25536/chat-general');
 					var chatEquipe = io.connect('http://localhost:25536/chat-equipe');
-					
+
 					$( document ).ready(function()
 					{
 						chatEquipe.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
 					});
-					
-					chatEquipe.on('USER_CONNECTED_SC', function(users)
+
+					chatEquipe.on('USER_CONNECTED_SC', function(usernames, connections)
 					{
 						$("#listEquipeUsers").html("");
-						for(var i in users)
+						for(var i in usernames)
 						{
-							$("#listEquipeUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
+							$("#listEquipeUsers").append("<li id=team-user-" + usernames[i] + " >");
+							if(connections[i])
+							{
+								$("#team-user-" + usernames[i]).append('<img src="/public/images/green.png" width=15px height=15px>');
+							}
+							else
+							{
+								$("#team-user-" + usernames[i]).append('<img src="/public/images/red.png" width=15px height=15px>');
+							}
+							$("#team-user-" + usernames[i]).append("&nbsp;&nbsp;&nbsp;&nbsp;" + usernames[i]);
 						}
 					});
 					
@@ -178,12 +185,21 @@
 						chatGeneral.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>');
 					});
 					
-					chatGeneral.on('USER_CONNECTED_SC', function(users)
+					chatGeneral.on('USER_CONNECTED_SC', function(usernames, connections)
 					{
 						$("#listGeneralUsers").html("");
-						for(var i in users)
+						for(var i in usernames)
 						{
-							$("#listGeneralUsers").append("<li id='user-" + users[i] + "'>" + users[i] + "</li>");
+							$("#listGeneralUsers").append("<li id=general-user-" + usernames[i] + " >");
+							if(connections[i])
+							{
+								$("#general-user-" + usernames[i]).append('<img src="/public/images/green.png" width=15px height=15px>');
+							}
+							else
+							{
+								$("#general-user-" + usernames[i]).append('<img src="/public/images/red.png" width=15px height=15px>');
+							}
+							$("#general-user-" + usernames[i]).append("&nbsp;&nbsp;&nbsp;&nbsp;" + usernames[i]);
 						}
 					});
 					

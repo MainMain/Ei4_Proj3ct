@@ -97,8 +97,18 @@ oDatabase.Initialiser();
 // FLORIAN : DEFINITION DE LA DIMENSION DE LA CARTE
 oCarte.Initialiser(28, 17);
 
+var usersTestTab = new Array();
+
 // Chargement des utilisateurs en mémoire
-oUtilisateur_Manager.Load();
+oUtilisateur_Manager.Load(function(id, reponse){
+	usersTestTab[id] = new Object;
+	usersTestTab[id].username = reponse.getPseudo();
+	usersTestTab[id].numEquipe = reponse.getNumEquipe();
+	usersTestTab[id].socketsTeamChat = new Array();
+	usersTestTab[id].socketsGeneralChat = new Array();
+	usersTestTab[id].connectedToTeamChat = false;
+	usersTestTab[id].connectedToGeneralChat = false;
+});
 
 // Chargement de la liste des items en mémoire
 oItem_Manager.Load();
@@ -110,7 +120,7 @@ oSession_Manager.Load(function(idSession)
 	
 	//Chargement des personnages en mémoire
 	//le callback est réservé pour la fin des fouilles...
-	//... et rafraichi l'affichage
+	//... et rafraichir l'affichage
 	oPersonnage_Manager.Load(callbackFinFouille);
 });
 
@@ -720,11 +730,10 @@ var io = require('socket.io').listen(server, { log: false });
 /*
  * *************************** 6 - CONFIGURATION DES TCHATS ***************************
  */
- 
+
 var usersInTeamChat = new Array();
 var usersInGeneralChat = new Array();
- 
- 
+
 //Client Connecté au chat d'équipe
 var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 {
@@ -750,74 +759,46 @@ var chatEquipe = io.of('/chat-equipe').on('connection', function (socket)
 	});
 });
 
-var chatEquipeOnGame = io.of('/jeu').on('connection', function (socket)
-{
-	
-});
- 
 onChatEquipe_INFO_USER = function(id, user, socket)
 {
-	console.log("APP - CONNEXION D'UN UTILISATEUR A UN TCHAT EQUIPE : " + user);
-	var alliesConnected = new Array();
 	var j = 0;
 	var newUser = false;
-	var numEquipe;
+	var tabUsername = new Array();
+	var tabConnected = new Array();
+	
+	console.log("APP - CONNEXION D'UN UTILISATEUR A UN TCHAT EQUIPE : " + user);
 	
 	// si l'id de l'user existe
 	if(oUtilisateur_Manager.exist(id))
 	{
-		// get le num d'équipe
-		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
+		console.log("connectedToTeamChat = " + usersTestTab[id].connectedToTeamChat);
+		newUser = !usersTestTab[id].connectedToTeamChat;
 		
-		// si l'utilisateur n'est pas dans la liste des user connectés au tchat
-		if(!usersInTeamChat[id])
+		usersTestTab[id].socketsTeamChat.push(socket);
+		usersTestTab[id].connectedToTeamChat = true;
+		
+		for(var i in usersTestTab)
 		{
-			// on crée l'espace pour accueil l'user
-			usersInTeamChat[id] 		= new Object();
-			usersInTeamChat[id].sockets = new Array();
-			newUser = true;
-		}
-		
-		
-		console.log("User " + user + " is newUser = " + newUser);
-		// on défini les propriétés de l'userTchat
-		usersInTeamChat[id].username = user;
-		usersInTeamChat[id].sockets.push(socket);
-		usersInTeamChat[id].numEquipe = numEquipe;
-	
-		//console.log(usersInTeamChat[id]);
-		// Remplissage de la liste contenant les alliés connectés
-		// pour chaque utilisateur connecté au tchat d'équipe
-		for(var i in usersInTeamChat)
-		{
-			// s'il appartient à la meme équipe
-			if(usersInTeamChat[i].numEquipe == numEquipe)
+			if(oUtilisateur_Manager.MemeEquipe(i, id))
 			{
-				alliesConnected[j] = usersInTeamChat[i].username;
-				j++;			
+				tabUsername[j] = usersTestTab[i].username;
+				tabConnected[j] = usersTestTab[i].connectedToTeamChat;
+				j++;
 			}
 		}
-		//console.log(usersInTeamChat);
-		// si l'utilisateur vient d'arriver
-		if(newUser)
+		
+		//Pour chaque utilisateurs
+		for(var i in usersTestTab)
 		{
-			// log
-			EventLog.log("L'utilisateur " + user + " s'est connecté au chat d'equipe n° : " + usersInTeamChat[i].numEquipe);
-			// pour chaque utilisateur connecté au tchat d'équipe
-			for(var i in usersInTeamChat)
+			// s'il appartient à la meme équipe 
+			if(oUtilisateur_Manager.MemeEquipe(i, id))
 			{
-				EventLog.log("> PARCOURS DES ALLIES CONNECTED : " + usersInTeamChat[i].username);
-				// s'il appartient à la meme équipe 
-				if(usersInTeamChat[i].numEquipe == numEquipe)
+				EventLog.log("> ENVOI MESSAGE POUR AVERTIR NV USER");
+				// on l'informe sur sa socket
+				for(var k in usersTestTab[i].socketsTeamChat)
 				{
-					EventLog.log("> ENVOI MESSAGE POUR AVERTIR NV USER");
-					// on l'informe sur sa socket
-					for(var k in usersInTeamChat[i].sockets)
-					{
-						EventLog.log(">> ENVOI MESSAGE POUR AVERTIR NV USER : BOUCLE SOCKET ");
-						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Connexion d'un utilisateur ", user);
-						usersInTeamChat[i].sockets[k].emit('USER_CONNECTED_SC', alliesConnected);
-					}
+					EventLog.log(">> ENVOI MESSAGE POUR AVERTIR NV USER : BOUCLE SOCKET ");
+					usersTestTab[i].socketsTeamChat[k].emit('USER_CONNECTED_SC', tabUsername, tabConnected);
 				}
 			}
 		}
@@ -827,30 +808,26 @@ onChatEquipe_INFO_USER = function(id, user, socket)
 onChatEquipe_USER_MESSAGE = function(id, user, message)
 {
 	EventLog.log("> APP : RECEPTION MSG. id : " + id +" - user : " + user + " message : "+message);
-	var numEquipe;
 	// si l'utilisateur qui envoi existe bien
 	if(oUtilisateur_Manager.exist(id))
 	{
 		EventLog.log("> UTILISATEUR EXISTE ! ");
-		// get le num d'équipe
-		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
 		//log
-		EventLog.log(usersInTeamChat);
+		EventLog.log(usersTestTab);
 		// pour chaque utilisateur connecté au tchat d'équipe
-		for(var i in usersInTeamChat)
+		for(var i in usersTestTab)
 		{
-			EventLog.log("> PARCOURS DE BOUCLE DES USER TEAM. CURRENT USER : " + usersInTeamChat[i].username);
+			EventLog.log("> PARCOURS DE BOUCLE DES USER TEAM. CURRENT USER : " + usersTestTab[i].username);
 			// s'il appartient à la meme équipe 
-			if(usersInTeamChat[i].numEquipe == numEquipe)
+			if(oUtilisateur_Manager.MemeEquipe(i, id))
 			{
-				EventLog.log(">> USER MEME EQUIPE : " + usersInTeamChat[i].username);
 				// on l'informe sur ses sockets
-				for(var k in usersInTeamChat[i].sockets)
+				for(var k in usersTestTab[i].socketsTeamChat)
 				{
-					EventLog.log(">>> ENVOI MESSAGE SUR SOCKET DE USER " + usersInTeamChat[i].username);
+					EventLog.log(">>> ENVOI MESSAGE SUR SOCKET DE USER " + usersTestTab[i].username);
 					try
 					{
-						usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", user, message);
+						usersTestTab[i].socketsTeamChat[k].emit("USER_MESSAGE_SC", user, message);
 					}catch(err)
 					{
 						EventLog.error(">>> - onChatEquipe_USER_MESSAGE() " + err);
@@ -859,108 +836,125 @@ onChatEquipe_USER_MESSAGE = function(id, user, message)
 			}
 		}
 	}
-	else { EventLog.log("> UTILISATEUR N'EXISTE PAS ! ");}
 },
 
 onChatEquipe_DISCONNECT = function(id, socket)
 {
-	var users = new Array();
 	var j = 0;
-	var numEquipe;
+	var tabUsername = new Array();
+	var tabConnected = new Array();
 	
-	if(oUtilisateur_Manager.exist(id))
+	if(usersTestTab[id])
 	{
-		console.log("Deconnexion " + id + " TEST");
-		numEquipe = oUtilisateur_Manager.GetNumEquipe(id);
-		user = usersInTeamChat[id].username;
-		if(usersInTeamChat[id])
+		console.log("ID = " + id);
+		console.log("usersTestTab[id].sockets.length = " + usersTestTab[id].socketsTeamChat.length);
+		
+		usersTestTab[id].socketsTeamChat.splice(usersTestTab[id].socketsTeamChat.indexOf(socket), 1);
+			
+		console.log("ID = " + id);
+		console.log("usersTestTab[id].sockets.length = " + usersTestTab[id].socketsTeamChat.length);
+		
+		// Si dernière socket déconnectée
+		if(usersTestTab[id].socketsTeamChat.length == 0)
 		{
-			usersInTeamChat[id].sockets.splice(usersInTeamChat[id].sockets.indexOf(socket), 1);
-			if(usersInTeamChat[id].sockets.length == 0)
-			{				
-				for(var i in usersInTeamChat)
-				{
-					if(usersInTeamChat[i].numEquipe == numEquipe)
-					{
-						for(var k in usersInTeamChat[i].sockets)
-						{
-							usersInTeamChat[i].sockets[k].emit("USER_MESSAGE_SC", "Déconnexion d'un utilisateur ", user);
-						}
-					}
-				}
-				EventLog.log("Déconnexion de " + user + " du chat");
-				delete usersInTeamChat[id];
+			usersTestTab[id].connectedToTeamChat = false;
+		}
+		
+		for(var i in usersTestTab)
+		{
+			if(oUtilisateur_Manager.MemeEquipe(i, id))
+			{
+				tabUsername[j] = usersTestTab[i].username;
+				tabConnected[j] = usersTestTab[i].connectedToTeamChat;
+				j++;
 			}
 		}
+		
+		for(var i in usersTestTab)
+		{
+			if(oUtilisateur_Manager.MemeEquipe(i, id))
+			{
+				for(var k in usersTestTab[i].socketsTeamChat)
+				{
+					usersTestTab[i].socketsTeamChat[k].emit('USER_CONNECTED_SC', tabUsername, tabConnected);
+				}
+			}
+		}
+		
+		EventLog.log("Déconnexion de " + usersTestTab[id].username + " du chat");
 	}
 };
- 
-
 
  //Client Connecté au chat général
 var chat = io.of('/chat-general').on('connection', function (socket)
 {
 	var id = "";
+	
 	socket.on('INFO_USER_CS', function(userID, user)
 	{
-		var users = new Array();
 		var j = 0;
-		var newUser = false;
+		var tabUsername = new Array();
+		var tabConnected = new Array();
 		
 		id = userID;
 		
-		if(!usersInGeneralChat[id])
-		{
-			usersInGeneralChat[id] = new Object();
-			usersInGeneralChat[id].sockets = new Array();
-			newUser = true;
-		}
+		usersTestTab[id].socketsGeneralChat.push(socket);
+		usersTestTab[id].connectedToGeneralChat = true;
 		
-		usersInGeneralChat[id].username = user;
-		usersInGeneralChat[id].sockets.push(socket);
-	
-		for(var i in usersInGeneralChat)
+		for(var i in usersTestTab)
 		{
-			users[j] = usersInGeneralChat[i].username;
+			tabUsername[j] = usersTestTab[i].username;
+			tabConnected[j] = usersTestTab[i].connectedToGeneralChat;
 			j++;
 		}
-		if(newUser)
-		{
-			EventLog.log("L'utilisateur " + user + " s'est connecté au chat.");
-			chat.emit("USER_MESSAGE_SC", "Connexion d'un utilisateur ", user);
-		}
 		
-		chat.emit('USER_CONNECTED_SC', users);
+		chat.emit('USER_CONNECTED_SC', tabUsername, tabConnected);
 	});
 	
 	socket.on('USER_MESSAGE_CS', function(user, message)
 	{
+		switch(usersTestTab[id].numEquipe)
+		{
+			case 1:
+			user = user + " (AGI)";
+			break;
+			case 2:
+			user = user + " (QSF)";
+			break;
+			case 3:
+			user = user + " (INNO)";
+			break;
+			default:
+			user = user + " (Neutre)";
+			break;
+		}
 		chat.emit("USER_MESSAGE_SC", user, message);
 	});
 	
 	
 	socket.on('disconnect', function()
 	{
-		var users = new Array();
 		var j = 0;
+		var tabUsername = new Array();
+		var tabConnected = new Array();
 		
-		if(usersInGeneralChat[id])
+		if(usersTestTab[id])
 		{
-			usersInGeneralChat[id].sockets.splice(usersInGeneralChat[id].sockets.indexOf(socket), 1);
-			if(usersInGeneralChat[id].sockets.length == 0)
-			{
-				chat.emit("USER_MESSAGE_SC", "Déconnexion d'un utilisateur ", usersInGeneralChat[id].username);
-				EventLog.log("Déconnexion de " + usersInGeneralChat[id].username + " du chat");
-				delete usersInGeneralChat[id];
-			}
+			usersTestTab[id].socketsGeneralChat.splice(usersTestTab[id].socketsGeneralChat.indexOf(socket), 1);
 			
-			for(var i in usersInGeneralChat)
+			if(usersTestTab[id].socketsGeneralChat.length == 0)
 			{
-				users[j] = usersInGeneralChat[i].username;
-				EventLog.log("User :" + usersInGeneralChat[i].username);
-				j++;
+				usersTestTab[id].connectedToGeneralChat = false;
+		
+				for(var i in usersTestTab)
+				{
+					tabUsername[j] = usersTestTab[i].username;
+					tabConnected[j] = usersTestTab[i].connectedToGeneralChat;
+					j++;
+				}
+				
+				chat.emit('USER_CONNECTED_SC', tabUsername, tabConnected);
 			}
-			chat.emit("USER_CONNECTED_SC", users);
 		}
 	});
 });
@@ -1020,6 +1014,7 @@ io.sockets.on('connection', function (socket)
 		
 		if(page == "classement")
 		{
+			console.log("param = " + param);
 			scores = oScore_Manager.getScoreCurrentSession(param);
 			socket.emit('CLASSEMENT_SC', scores);
 		}

@@ -15,7 +15,7 @@ function Utilisateur_Manager(){}
 
 // --- METHODES D'INSTANCE
 
-Utilisateur_Manager.Load = function()
+Utilisateur_Manager.Load = function(callbackLoad)
 {
 	var context = Utilisateur_Manager;
 	
@@ -37,6 +37,7 @@ Utilisateur_Manager.Load = function()
 				{
 					//EventLog.log("UTILISATEUR_MANAGER : user loaded : " + id);
 					context.listeUtilisateurs[id] = reponse;
+					callbackLoad(id, reponse);
 				}
 			});
 		}
@@ -138,12 +139,17 @@ Utilisateur_Manager.findIdUser = function(idPersonnage)
 	return -1;
 },
 
+Utilisateur_Manager.getListeUtilisateurs = function()
+{
+	return this.listeUtilisateurs;
+},
+
 Utilisateur_Manager.getUsers = function()
 {
 	var users = new Array();
 	for(var i in this.listeUtilisateurs)
 	{
-		users.push(this.listeUtilisateurs[i].getUser());
+		users[i] = (this.listeUtilisateurs[i].getUser());
 	}
 	return users;
 },
