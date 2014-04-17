@@ -44,7 +44,7 @@ Utilisateur_Manager.Load = function(callbackLoad)
 	});
 },
 
-Utilisateur_Manager.LoadUser = function(idUser)
+Utilisateur_Manager.LoadUser = function(idUser, callbackLoad)
 {
 	var context = this;
 	oUtilisateur_BD.GetUtilisateur(idUser, function(IdReponse, userReponse)
@@ -59,7 +59,7 @@ Utilisateur_Manager.LoadUser = function(idUser)
 			EventLog.log("IdReponse = " + IdReponse);
 			EventLog.log("userReponse = " + userReponse);
 			context.listeUtilisateurs[IdReponse] = userReponse;
-			
+			callbackLoad(IdReponse, userReponse);
 		}
 	});
 },
@@ -235,6 +235,12 @@ Utilisateur_Manager.confirmerCompte = function(idInscription, callbackConfirmerC
 			}
 		});
 	});
+},
+
+
+Utilisateur_Manager.isCompteConfirme = function(idUser)
+{
+	return this.listeUtilisateurs[idUser].getCompteConfirme();
 },
 
 Utilisateur_Manager.getIdPersonnage = function(idUser)

@@ -392,6 +392,8 @@ app.put('/jeu', restrict, function fonctionJeu(req, res)
 		// on attribut le num d'équipe à l'utilisateur
 		oUtilisateur_Manager.SetNumEquipe(s.idUser, b.equipe, idSession);
 		
+		usersTestTab[s.idUser].numEquipe = b.equipe;
+		
 		// on attribut la compétence au personnage de l'utilisateur
 		oPersonnage_Manager.nvPersonnageEnJeu(s.idUser, b.competence, b.equipe);
 		
@@ -695,8 +697,17 @@ callbackInscription = function(reponseInscription, req, res, idInscription)
 
 		options.usernameInscription = b.username;
 		
-		oUtilisateur_Manager.LoadUser(reponseInscription);
+		oUtilisateur_Manager.LoadUser(reponseInscription, function(id, reponse) {
+			usersTestTab[id] = new Object;
+			usersTestTab[id].username = reponse.getPseudo();
+			usersTestTab[id].numEquipe = reponse.getNumEquipe();
+			usersTestTab[id].socketsTeamChat = new Array();
+			usersTestTab[id].socketsGeneralChat = new Array();
+			usersTestTab[id].connectedToTeamChat = false;
+			usersTestTab[id].connectedToGeneralChat = false;
+		});
 		oPersonnage_Manager.LoadUser(reponseInscription);
+		
 		// ajout de l'objet score pour la session de jeu en cours
 		//oScore_Manager.nouveauJoueur(reponseInscription, oSession_Manager.getIdSessionEnCours());
 		
@@ -772,7 +783,6 @@ onChatEquipe_INFO_USER = function(id, user, socket)
 	if(oUtilisateur_Manager.exist(id))
 	{
 		console.log("connectedToTeamChat = " + usersTestTab[id].connectedToTeamChat);
-		newUser = !usersTestTab[id].connectedToTeamChat;
 		
 		usersTestTab[id].socketsTeamChat.push(socket);
 		usersTestTab[id].connectedToTeamChat = true;
@@ -903,9 +913,14 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 		
 		for(var i in usersTestTab)
 		{
-			tabUsername[j] = usersTestTab[i].username;
-			tabConnected[j] = usersTestTab[i].connectedToGeneralChat;
-			j++;
+			console.log("i = " + i);
+			console.log("oUtilisateur_Manager.isCompteConfirme(i) = " + oUtilisateur_Manager.isCompteConfirme(i));
+			if(oUtilisateur_Manager.isCompteConfirme(i))
+			{
+				tabUsername[j] = usersTestTab[i].username;
+				tabConnected[j] = usersTestTab[i].connectedToGeneralChat;
+				j++;
+			}
 		}
 		
 		chat.emit('USER_CONNECTED_SC', tabUsername, tabConnected);
