@@ -1129,6 +1129,11 @@ io.sockets.on('connection', function (socket)
 		
 		
     });
+
+	socket.on('GET_SCORES_CS', function()
+	{
+		socket.emit('GET_SCORE_SC', getDonnesPageJeu(idUser, oUtilisateur_Manager.getPseudo(idUser)));
+	});
     /*
      * 
      *
