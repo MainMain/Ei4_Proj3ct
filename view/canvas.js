@@ -2102,7 +2102,7 @@ function pageMortPersonnage(currentPerso)
 	}
 	else if(date[0]!=null && date[0] == "F")
 	{
-		causeDeLaMort="Ne pas avoir mangé depuis desjours vous a rendu vulnérable !";
+		causeDeLaMort="Ne pas avoir mangé depuis des jours vous a rendu vulnérable !";
 	}
 	else if(date[0]!=null && date[0]!="Z" && date[0]!="N" && date[0]!="F")
 	{
