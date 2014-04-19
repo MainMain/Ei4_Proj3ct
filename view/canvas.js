@@ -2078,8 +2078,8 @@ function pageMortPersonnage(currentPerso)
 	});
 
 	var labelDeadByWho = contDead.addChild(new createjs.Text("", _POLICE_MORT, _COULEUR_LABELS_MORT));
-	labelDeadByWho.x=225;
-	labelDeadByWho.y=74;
+	labelDeadByWho.x=123;
+	labelDeadByWho.y=85;
 	
 	var labelDeadHour = contDead.addChild(new createjs.Text("", _POLICE_MORT, _COULEUR_LABELS_HEURE_MORT));
 	labelDeadHour.x = 450 ;
@@ -2094,19 +2094,19 @@ function pageMortPersonnage(currentPerso)
 	//labelDeadHour.text=date[1];	
 	if (date[0]!=null && date[0] == "Z")
 	{
-		causeDeLaMort="Un zombie rôdant dans la salle vous a dévoré !";
+		causeDeLaMort="Un zombie rôdant dans la salle vous profondément mordu !";
 	}
 	else if(date[0]!=null && date[0] == "N")
 	{
-		causeDeLaMort="Un zombie vous a dévoré durant l'attaque de nuit !";
+		causeDeLaMort="Un zombie vous a profondément mordu durant l'attaque de nuit !";
 	}
 	else if(date[0]!=null && date[0] == "F")
 	{
-		causeDeLaMort="Vous êtes mort de faim !";
+		causeDeLaMort="Ne pas avoir mangé depuis desjours vous a rendu vulnérable !";
 	}
 	else if(date[0]!=null && date[0]!="Z" && date[0]!="N" && date[0]!="F")
 	{
-		causeDeLaMort=(date[0]+" vous a mis K-O !");
+		causeDeLaMort=(date[0]+" vous a gravement blessé lors d'un duel !");
 	}
 	else
 	{
