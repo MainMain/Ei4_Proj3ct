@@ -3318,9 +3318,6 @@ function majConteneurItemCase(tab)
 			{
 				var currentItem = tab[page][event.target.name];
 				afficherTooltipItem(contTousItems.x + TAB_CONT_ITEMS[numCont].x + event.target.x, contTousItems.y + TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem, true);
-				//var descriptionItem=currentItem.description;
-				//labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
-				//afficherDescItem(descriptionItem);
 			},false);
 
 			imgItem.addEventListener('mouseout', function(event)
@@ -3340,20 +3337,7 @@ function majConteneurItemCase(tab)
 				_SELECTED_ITEM_CASE=currentItem.id;
 
 				// maj des boutons
-				majBtnRamasser();
-
-				/*if (Select!=null)
-				{
-					TAB_CONT_ITEMS[numCont].removeChild(Select);
-				}
-				var num=event.target.x;
-				var currentItem = tab[_PAGE_ITEM_CASE][event.target.name];
-				_SELECTED_ITEM_CASE=currentItem.id;
-				Select = TAB_CONT_ITEMS[3].addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-				Select.x=(num);
-				Select.y=0;
-				*/
-				
+				majBtnRamasser();			
 			});
 				
 			imgItem.addEventListener("touchstart", function(event)
@@ -3369,22 +3353,6 @@ function majConteneurItemCase(tab)
 
 				// maj des boutons
 				majBtnRamasser();
-				/*
-				var currentItem = tab[page][event.target.name];
-				var descriptionItem=currentItem.description;
-				labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
-				afficherDescItem(descriptionItem);
-				if (Select!=null)
-				{
-					TAB_CONT_ITEMS[3].removeChild(Select);
-				}
-				var num=event.target.x;
-				var currentItem = tab[page][event.target.name];
-				_SELECTED_ITEM_CASE=currentItem.id;
-				Select = TAB_CONT_ITEMS[numCont].addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-				Select.x=(num);
-				Select.y=0;
-				*/
 			});
 		}
 	}
@@ -3900,7 +3868,7 @@ function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
 function majEventsPictoPerso(currentPerso)
 {
 	var x,y,txt;
-	x = contPictoBarres.x;
+	x = contPictoBarres.x - 40;
 	/// VIE ////
 	imgVie.addEventListener('mouseover', function(event) 		
 	{ 
@@ -4043,7 +4011,7 @@ function majEventsPictoPerso(currentPerso)
 function majEventsPictoProbas(pourcentFouille, pourcentCache)
 {
 	var x,y,txt;
-	x = contPictoBarres.x;
+	x = contPictoBarres.x - 40;
 
 		/// FOUILLE ////
 	imgFouille.addEventListener('mouseover', function(event) 			
