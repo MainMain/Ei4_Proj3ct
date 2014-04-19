@@ -120,7 +120,7 @@ var _COULEUR_LABELSBonus = "#008000";
 // Police du label de la page de mort
 var _POLICE_MORT="22px Fstein";
 var _COULEUR_LABELS_MORT="#DDDDDD";
-var _COULEUR_LABELS_HEURE_MORT="#000000";
+var _COULEUR_LABELS_HEURE_MORT="#444444";
 
 // Pour centrer les flèches de la map
 var _centrageBpMap = 50;
@@ -2372,7 +2372,7 @@ function majBtnAttaquer(x,y)
 			{
 				socket.emit('ACTION_ATTAQUE_CS', _SELECTED_PERSO);
 				_SELECTED_PERSO = -1;
-				pagePersonnages();
+				//pagePersonnages();
 			}
 		});
 		BtnAttaquerListe.addEventListener('touchstart', function(event) {
@@ -2383,7 +2383,7 @@ function majBtnAttaquer(x,y)
 			{
 				socket.emit('ACTION_ATTAQUE_CS', _SELECTED_PERSO);
 				_SELECTED_PERSO = -1;
-				pagePersonnages();
+				//pagePersonnages();
 			}
 		});
 		BtnAttaquerListe.cursor="pointer";
@@ -5638,48 +5638,46 @@ socket.on('ACTION_FOUILLE_RAPIDE_SC', function (reponse, item, degatsInfliges, a
  */
 socket.on('ACTION_ATTAQUE_SC', function (codeRetour, degatsI, degatsRecusE, degatsRecusG, nbrGoulesA)
 {
+	// actualise les infos
+	pagePersonnages()
+
+	if (nbrGoulesA > 0)
+	{
+		animationAttaqueZombie(nbrGoulesA);
+	}
 	var msgAction = "";
 	var codeAction = 0;
 	switch(codeRetour)
 	{
 	case 0: 
-		labelAction.text=("Erreur interne");
+		msgAction = ("Erreur interne");
 		break;
 	case 1:
-		labelAction.text=("Attaque réussie !");
-		if(degatsI!=0)
-		{
-			labelAction.text+=("L'ennemi a perdu : " + degatsI + "points de vies");
-		}
-		if(degatsRecusE!=0)
-		{
-			labelAction.text+=("L'ennemi a riposté : -" + degatsRecusE + " points de vies");
-			socket.emit('INFO_PERSONNAGE_CS');
-		}
+		msgAction = ("Attaque réussie : dégats infligés : " +degatsI+ " - dégats reçus : " + degatsRecusE);
+		codeAction = 1;
+		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -1:
-		labelAction.text=("L'ennemi n'est plus ici !");
+		msgAction = ("Attaque ratée : l'ennemi vient juste de quitter la salle !");
+		codeAction = 2;
 		break;
 	case -5:
-		labelAction.text=("Attaque ratée !");
-		if(degatsInfliges!=0)
-		{
-			labelAction.text +=(" Et blessé (" + degatsRecusG + ")"); 
-		}
-		if(nbrGoulesA==1)
-		{
-			labelAction.text +=(" par " + nbrGoulesA + " zombie !");
-		}
-		else if(nbrGoulesA>1)
-		{
-			labelAction.text +=(" par " + nbrGoulesA + " zombies !");
-		}
+		msgAction = ("Attaque ratée : intercepté par les zombies !");
+		codeAction = 3;
 		socket.emit('INFO_PERSONNAGE_CS');
 		break;
 	case -10:
-		labelAction.text=("Points d'action insuffisants");
+		msgAction =("Attaque impossible : vous n'avez pas assez de points d'action !");
+		codeAction = 3;
 		break;
 	}
+	if (degatsRecusG > 0)
+	{
+		msgAction += (" - dégats reçus par les zombies : " + degatsRecusG);
+	}
+
+	afficherMessageRetour(msgAction, codeAction);
+
 });
 
 /******************************************************************************************************************

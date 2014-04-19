@@ -573,6 +573,9 @@
 				chatEquipe.on('USER_MESSAGE_SC', function(user, message)
 				{
 					$("#msgs").append("" + user + " : " + message + "\n");
+
+					// scroll automatique tout en bas du texte area
+					document.getElementById("msgs").scrollTop =    document.getElementById("msgs").scrollHeight
 				});
 				
 				$("#msgSubmit").click(function()

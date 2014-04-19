@@ -862,6 +862,7 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 	{
 		if(this.GetIdCase(idUser) == this.GetIdCase(i))
 		{
+			// si même équipe
 			if(oUtilisateur_Manager.GetNumEquipe(idUser) == oUtilisateur_Manager.GetNumEquipe(i))
 			{
 				a.nbrAllies += 1;
