@@ -2049,6 +2049,7 @@ function pageMortPersonnage(currentPerso)
 		_LAST_NOMBRE_ZOMBIES = -1;
 
 		setPlateau();
+		defineCadreMap();
 	});
 	BtnCancelDead.addEventListener('touchstart', function (event) {
 		socket.emit('ACCUSE_LECTURE_MSG_CS');
@@ -2061,6 +2062,7 @@ function pageMortPersonnage(currentPerso)
 		_LAST_NOMBRE_ZOMBIES = -1;
 
 		setPlateau();
+		defineCadreMap();
 	});
 
 
@@ -3543,6 +3545,7 @@ function majBarreGeneric(pts, ptsMax, last, objetBarre, objetLabel, id_timer)
 		clearInterval(id_timer);
 	}, _DUREE_AFFICHAGE);	
 }
+
 function majFichePersoSimple(currentPerso, equipe)
 {
 	var classe;
@@ -3818,51 +3821,61 @@ function majBoutonsMode(currentPerso)
 
 function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
 {
-	_LABEL_NB_ALLIES.text = nbrAllies;
-	_LABEL_NB_ENNEMIS.text = nbrEnnemis;
+	if(!_ECRAN_MORT)
+	{
+		_LABEL_NB_ALLIES.text = nbrAllies;
+		_LABEL_NB_ENNEMIS.text = nbrEnnemis;
 
-	stage.removeChild(_LABEL_NB_GOULES);
-	if (nbrZombies > _LAST_GOULES_MAX)
-	{
-		_LABEL_NB_GOULES = new createjs.Text("", _POLICE_LABEL, "#FF0000");
-		_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
-		_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23;
-	}
-	else if (nbrZombies == 0)
-	{
-		_LABEL_NB_GOULES = new createjs.Text("", _POLICE_LABEL, "#00FF00");
-		_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
-		_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23;
+		stage.removeChild(_LABEL_NB_GOULES);
+		if (nbrZombies > _LAST_GOULES_MAX)
+		{
+			_LABEL_NB_GOULES = new createjs.Text("", _POLICE_LABEL, "#FF0000");
+			_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
+			_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23;
+		}
+		else if (nbrZombies == 0)
+		{
+			_LABEL_NB_GOULES = new createjs.Text("", _POLICE_LABEL, "#00FF00");
+			_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
+			_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23;
+		}
+		else
+		{
+			_LABEL_NB_GOULES = new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS);
+			_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
+			_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23;
+		}
+		_LABEL_NB_GOULES.text = nbrZombies;
+		stage.addChild(_LABEL_NB_GOULES);
+
+		// animation correspondante
+		animationModificationForces(nbrAllies, nbrEnnemis, nbrZombies)	
+
+		// si le panneau des joueurs dans la salle était ouvert, ET si il y a eu une modif sur le nombre de joueurs
+		if (
+			_PAGE_JOUEURS 
+			&& 
+			(_LAST_NOMBRE_ALLIES != -1 && _LAST_NOMBRE_ALLIES != nbrAllies 
+				|| 
+			_LAST_NOMBRE_ENNEMIS != -1 && _LAST_NOMBRE_ENNEMIS != nbrEnnemis)
+			)
+		{
+			//  on le ferme et rouvre
+			supprimerPageJoueurs();
+			afficherPageJoueurs();
+		}
+		// update variables 
+		_LAST_NOMBRE_ALLIES = nbrAllies;
+		_LAST_NOMBRE_ENNEMIS = nbrEnnemis;
+		_LAST_NOMBRE_ZOMBIES = nbrZombies;
 	}
 	else
 	{
-		_LABEL_NB_GOULES = new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS);
-		_LABEL_NB_GOULES.x = _LABEL_NB_ALLIES.x;
-		_LABEL_NB_GOULES.y = _LABEL_NB_ALLIES.y+25*2+23;
-	}
-	_LABEL_NB_GOULES.text = nbrZombies;
-	stage.addChild(_LABEL_NB_GOULES);
+		_LABEL_NB_ALLIES.text = "";
+		_LABEL_NB_ENNEMIS.text = "";
+		_LABEL_NB_GOULES.text = "";
 
-	// animation correspondante
-	animationModificationForces(nbrAllies, nbrEnnemis, nbrZombies)	
-
-	// si le panneau des joueurs dans la salle était ouvert, ET si il y a eu une modif sur le nombre de joueurs
-	if (
-		_PAGE_JOUEURS 
-		&& 
-		(_LAST_NOMBRE_ALLIES != -1 && _LAST_NOMBRE_ALLIES != nbrAllies 
-			|| 
-		_LAST_NOMBRE_ENNEMIS != -1 && _LAST_NOMBRE_ENNEMIS != nbrEnnemis)
-		)
-	{
-		//  on le ferme et rouvre
-		supprimerPageJoueurs();
-		afficherPageJoueurs();
 	}
-	// update variables 
-	_LAST_NOMBRE_ALLIES = nbrAllies;
-	_LAST_NOMBRE_ENNEMIS = nbrEnnemis;
-	_LAST_NOMBRE_ZOMBIES = nbrZombies;
 }
 
 function majEventsPictoPerso(currentPerso)
@@ -4892,7 +4905,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG, it
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase)
 {
-	alert(nbrAllies + " - " + nbrEnnemis);
+	//alert(nbrAllies + " - " + nbrEnnemis);
 	if (currentCase == "ERREUR_CASE")
 	{
 		var msgAction = "";
