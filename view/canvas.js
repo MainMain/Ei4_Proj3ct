@@ -4954,6 +4954,7 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG, it
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase)
 {
+	alert(nbrAllies + " - " + nbrEnnemis);
 	if (currentCase == "ERREUR_CASE")
 	{
 		var msgAction = "";
@@ -5767,8 +5768,8 @@ socket.on('INFO_CASE_ENNEMIS_SC', function (listeEnn1, listeEnn2, equipe)
 	// Ecriture du nom des équipes selon l'équipe actuelle :
 	if(equipe==1)
 	{
-		labelEnnemisListe1.text="Liste des Ennemis QSF :";
-		labelEnnemisListe2.text="Liste des Ennemis INNO :";
+		labelEnnemisListe1.text="Liste des Ennemis INNO :";
+		labelEnnemisListe2.text="Liste des Ennemis QSF :";
 	}
 	else if(equipe==2)
 	{
