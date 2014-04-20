@@ -36,11 +36,12 @@
 
 		            		<li class="navbar-text" id="HeureServeur" > </li>
 		            		<li class="navbar-text" > Prochaine attaque à : <%= heureAttaque.toLocaleTimeString() %> </li>
-
-		            		<form action="/" method="post" class="btn">
-		            			<input type="hidden" name="_method" value="delete"/>
-		            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" style="margin-top:0px;">Retour chez les vivants</button>
-		            		</form>
+		            		<li>
+			            		<form action="/" method="post" class="btn">
+			            			<input type="hidden" name="_method" value="delete"/>
+			            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" style="margin-top:0px;">Retour chez les vivants</button>
+			            		</form>
+		            		</li>
 		          		</ul>
 		        	</div><!--/.nav-collapse -->
 		     	</div>
@@ -71,7 +72,7 @@
 		    					<h1 align="center" style="margin-top:0px;">Un pas en enfer...  !</h1>
 						
 							<br>
-							<div class="row" style="border:1px solid #FF0000;width:76%;margin-left:17%;">
+							<div class="row" style="border:1px solid #FF0000;	">
 								<div class="col-md-10" style="padding-left:0px;">
 									<article>
 										<span id="image_test" class="hide"></span>
@@ -130,7 +131,7 @@
 								</div>	
 							</div>	
 
-							<div class="col-md-9 col-md-offset-2" >
+							<div class="col-md-9 "  style="margin-left: 10%">
 								<br>
 								<p align="justify">Nous sommes dans un univers parallèle apocalyptique, dans lequel nous sommes envahis par des zombies affamés.
 
