@@ -867,6 +867,7 @@ Personnage_Manager.GetNbrAlliesEnemisDansSalle = function(idUser)
 			{
 				a.nbrAllies += 1;
 			}
+			// si équipe différente ET pas caché
 			else if(this.listePersonnages[i].GetMode() != 2)
 			{
 				a.nbrEnnemis += 1;
@@ -953,14 +954,14 @@ Personnage_Manager.GetAlliesEnnemisDansSalleToDisplay = function(idUser)
 			{
 				if(i != idUser)
 				{
-					a.QSF.push(this.getPersonnageToDisplay(i));
+					a.INNO.push(this.getPersonnageToDisplay(i));
 				}
 			}
 			else if(oUtilisateur_Manager.GetNumEquipe(i) == 3)
 			{
 				if(i != idUser)
 				{
-					a.INNO.push(this.getPersonnageToDisplay(i));
+					a.QSF.push(this.getPersonnageToDisplay(i));
 				}
 			}
 		} // fin si meme salle

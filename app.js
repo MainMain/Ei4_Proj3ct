@@ -1702,11 +1702,11 @@ io.sockets.on('connection', function (socket)
 		//try
 		//{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
-		console.log(" 1 = " + liste.AGI.length + " 2 = " + liste.INNO.length +" 3 = " + liste.QSF.length);
+		console.log(" lg agi = " + liste.AGI.length + " lg inno = " + liste.INNO.length +" lg qsf = " + liste.QSF.length);
 
     	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
     	{
-    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.QSF, liste.INNO, 1);
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.INNO, liste.QSF, 1);
     		return;
     	}
     	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
