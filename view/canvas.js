@@ -4892,7 +4892,6 @@ socket.on('INV_CASE_SC', function (type, codeRetour, id_item, DegatsG, RestG, it
  */
 socket.on('INFO_CASE_SC', function(currentCase, nbrAllies, nbrEnnemis, idSousCase)
 {
-	alert(nbrAllies + " - " + nbrEnnemis);
 	if (currentCase == "ERREUR_CASE")
 	{
 		var msgAction = "";
