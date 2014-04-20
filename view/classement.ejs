@@ -31,10 +31,12 @@
 <!--
 	            		<form action="/" method="post" class="btn"><button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" style="margin-top:0px;">Retour chez les vivants</button></form>
 -->
-	            		<form action="/" method="post" class="btn">
-	            			<input type="hidden" name="_method" value="delete"/>
-	            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" style="margin-top:0px;" >Retour chez les vivants</button>
-	            		</form>
+	            			<li>
+			            		<form action="/" method="post" class="btn">
+			            			<input type="hidden" name="_method" value="delete"/>
+			            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" style="margin-top:0px;">Retour chez les vivants</button>
+			            		</form>
+		            		</li>
 
 
 	          		</ul>
@@ -65,6 +67,9 @@
 	    	</div>
 	    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
 	    		<div style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 4%;padding-right:2%;padding-top:2%;padding-bottom:2%;margin-bottom:1%;margin-top:1% ;border-radius:15px; ">
+	    			<h1 align="center">Classement</h1>
+	    			
+	    			<br>
 
 			<table class="tabe table-bordered table-hover">
 				<thead >
@@ -113,12 +118,12 @@
 				for(var i in listScore)
 				{
 					var maChaine = "<tr>";
-					maChaine += "<td>" + listScore[i].pseudo + "</td>";
-					maChaine += "<td>" + listScore[i].nbrMeurtres + "</td>";
-					maChaine += "<td>" + listScore[i].nbrFoisTue + "</td>";
-					maChaine += "<td>" + listScore[i].nbrGoulesTues + "</td>";
-					maChaine += "<td>" + listScore[i].scoreByMeutre + "</td>";
-					maChaine += "<td>" + listScore[i].scoreByODD + "</td>";
+					maChaine += "<td><p>" + listScore[i].pseudo + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].nbrMeurtres + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].nbrFoisTue + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].nbrGoulesTues + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].scoreByMeutre + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].scoreByODD + "</p></td>";
 					maChaine += "</tr>";
 					$("#listUsers").prepend(maChaine);
 				}
