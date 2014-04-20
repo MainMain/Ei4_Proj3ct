@@ -118,12 +118,12 @@
 				for(var i in listScore)
 				{
 					var maChaine = "<tr>";
-					maChaine += "<td>" + listScore[i].pseudo + "</td>";
-					maChaine += "<td>" + listScore[i].nbrMeurtres + "</td>";
-					maChaine += "<td>" + listScore[i].nbrFoisTue + "</td>";
-					maChaine += "<td>" + listScore[i].nbrGoulesTues + "</td>";
-					maChaine += "<td>" + listScore[i].scoreByMeutre + "</td>";
-					maChaine += "<td>" + listScore[i].scoreByODD + "</td>";
+					maChaine += "<td><p>" + listScore[i].pseudo + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].nbrMeurtres + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].nbrFoisTue + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].nbrGoulesTues + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].scoreByMeutre + "</p></td>";
+					maChaine += "<td><p>" + listScore[i].scoreByODD + "</p></td>";
 					maChaine += "</tr>";
 					$("#listUsers").prepend(maChaine);
 				}
