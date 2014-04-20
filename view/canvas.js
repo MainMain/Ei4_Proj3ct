@@ -2005,14 +2005,14 @@ function pageMortPersonnage(currentPerso)
 	labelDeadHour.text="";
 	
 	var labelItemsRestants = contDead.addChild(new createjs.Text("", _POLICE_LABEL, _COULEUR_LABELS));
-	labelItemsRestants.x=60;
-	labelItemsRestants.y=contItemPersoDead.y+5;
+	labelItemsRestants.x=contItemPersoDead.x;
+	labelItemsRestants.y=contItemPersoDead.y - 30;
 	
 	var date = _listeMessages[0].split(" :");
 	//labelDeadHour.text=date[1];	
 	if (date[0]!=null && date[0] == "Z")
 	{
-		causeDeLaMort="Un zombie rôdant dans la salle vous profondément mordu !";
+		causeDeLaMort="Un zombie rôdant dans la salle vous a profondément mordu !";
 	}
 	else if(date[0]!=null && date[0] == "N")
 	{
@@ -2103,52 +2103,22 @@ function pageMortPersonnage(currentPerso)
 	
 	if(currentPerso.sacADos[0]!=null)
 	{
-		labelItemsRestants.text="Items restants dans le sac :";
+		var decoup = 10;
+		labelItemsRestants.text="Items restants dans votre sac :";
 		// tableau qui contient toutes les listes d'objets
-		var TabListe=new Array();
-		var TailleFinListe =(currentPerso.sacADos.length % 10);
+		var TabPersoDeadAvecPage=new Array();
+		var TailleDeadFin =(currentPerso.sacADos.length % decoup);
+		var nbPagesPersoDead = (currentPerso.sacADos.length / decoup);
+
+		decouperListes(currentPerso.sacADos, TabPersoDeadAvecPage, nbPagesPersoDead, TailleDeadFin, decoup);
 
 		var iPositionItemInConteneur=0;
 
-		for (var j=0; j<Taille; j++)
-		{
-			var NewListe=new Array();
-
-			if(j==Taille-1 && TailleFinListe!=0)
-			{
-				//Boucle des items liste incomplète
-				for (var i=j*10; i<j*10+TailleFinListe; i++)
-				{
-					// mise de l'item dans une variable
-					var item = currentPerso.sacADos[i];
-
-					// ajout de l'item à la nouvelle liste
-					NewListe.push(item);
-				}
-				// ajout de la nouvelle liste au tableau de listes
-				TabListe.push(NewListe);  
-			}
-			else
-			{
-				//Boucle normale : creation nouvelle liste de 10 items max
-				for (var i=j*10; i<(j*10+10); i++)
-				{
-
-					// mise de l'item dans une variable
-					var item = currentPerso.sacADos[i];
-
-					// mise de l'item dans une variable
-					NewListe.push(item);
-				}
-				TabListe.push(NewListe);
-			}
-		}
-
 		try 
 		{
-			for (var i = 0; i < TabListe[_PAGE_ITEM_PERSO_DEAD].length ; i++) 
+			for (var i = 0; i < TabPersoDeadAvecPage[_PAGE_ITEM_PERSO_DEAD].length ; i++) 
 			{
-				var Obj=TabListe[_PAGE_ITEM_PERSO_DEAD][i];
+				var Obj=TabPersoDeadAvecPage[_PAGE_ITEM_PERSO_DEAD][i];
 
 				// Ajout de l'image à l'ihm
 				var imgItem = new createjs.Bitmap(Obj.imageName);
@@ -3348,9 +3318,6 @@ function majConteneurItemCase(tab)
 			{
 				var currentItem = tab[page][event.target.name];
 				afficherTooltipItem(contTousItems.x + TAB_CONT_ITEMS[numCont].x + event.target.x, contTousItems.y + TAB_CONT_ITEMS[numCont].y + event.target.y, currentItem, true);
-				//var descriptionItem=currentItem.description;
-				//labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
-				//afficherDescItem(descriptionItem);
 			},false);
 
 			imgItem.addEventListener('mouseout', function(event)
@@ -3370,20 +3337,7 @@ function majConteneurItemCase(tab)
 				_SELECTED_ITEM_CASE=currentItem.id;
 
 				// maj des boutons
-				majBtnRamasser();
-
-				/*if (Select!=null)
-				{
-					TAB_CONT_ITEMS[numCont].removeChild(Select);
-				}
-				var num=event.target.x;
-				var currentItem = tab[_PAGE_ITEM_CASE][event.target.name];
-				_SELECTED_ITEM_CASE=currentItem.id;
-				Select = TAB_CONT_ITEMS[3].addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-				Select.x=(num);
-				Select.y=0;
-				*/
-				
+				majBtnRamasser();			
 			});
 				
 			imgItem.addEventListener("touchstart", function(event)
@@ -3399,22 +3353,6 @@ function majConteneurItemCase(tab)
 
 				// maj des boutons
 				majBtnRamasser();
-				/*
-				var currentItem = tab[page][event.target.name];
-				var descriptionItem=currentItem.description;
-				labelDescriptionItem.text=(currentItem.nom + " (+" + currentItem.valeur + ") " + "Poids : " + currentItem.poids + "\n");
-				afficherDescItem(descriptionItem);
-				if (Select!=null)
-				{
-					TAB_CONT_ITEMS[3].removeChild(Select);
-				}
-				var num=event.target.x;
-				var currentItem = tab[page][event.target.name];
-				_SELECTED_ITEM_CASE=currentItem.id;
-				Select = TAB_CONT_ITEMS[numCont].addChild(new createjs.Bitmap("public/Boutons/Select.png"));
-				Select.x=(num);
-				Select.y=0;
-				*/
 			});
 		}
 	}
@@ -3930,7 +3868,7 @@ function majForceEnPresence(nbrAllies, nbrEnnemis, nbrZombies)
 function majEventsPictoPerso(currentPerso)
 {
 	var x,y,txt;
-	x = contPictoBarres.x;
+	x = contPictoBarres.x - 40;
 	/// VIE ////
 	imgVie.addEventListener('mouseover', function(event) 		
 	{ 
@@ -4073,7 +4011,7 @@ function majEventsPictoPerso(currentPerso)
 function majEventsPictoProbas(pourcentFouille, pourcentCache)
 {
 	var x,y,txt;
-	x = contPictoBarres.x;
+	x = contPictoBarres.x - 40;
 
 		/// FOUILLE ////
 	imgFouille.addEventListener('mouseover', function(event) 			
