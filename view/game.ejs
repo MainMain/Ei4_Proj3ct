@@ -124,7 +124,7 @@
 	    			<% if (bilanScores["lastIdSession"] != -1 ) { %>
 	    			<h2> Résumé de des scores de votre dernière session : (session n°<%= bilanScores["lastIdSession"]%>)</h2>
 	    			<b>Session commencée le <%= dateLastSession["dateDebut"].toLocaleString() %> et achevée le <%= dateLastSession["dateFin"].toLocaleString() %></b>
-	    			<% } //fin if %>
+	    			<% } %> <!-- //fin if -->
 
 	    		<table>
 	    		<td width=50%><b>Scores globaux : </b>
@@ -537,7 +537,7 @@
 										<tr>
 
 											<td><b><p>Heure locale : </p></b></td>
-											<td><p><span id="HeureLocale"></span></p>	</td>
+											<td><p><span id="HeureLocale"></span></p></td>
 
 										</tr>
 										<tr>
