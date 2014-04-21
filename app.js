@@ -350,7 +350,6 @@ app.get('/jeu', restrict, function fonctionIndex(req, res)
 	
 	var options = getDonnesPageJeu(s.idUser, s.username);
 	
-	console.log(">>>>> TEST DONNES PAGES JEU "+options["bilanScores"]);
 	// si l'utilisateur n'est pas dans la bonne session
 	console.log('options["isUpToDate"] = ' + options["isUpToDate"]);
 	

@@ -1507,6 +1507,7 @@ th {
 .table-striped > tbody > tr:nth-child(odd) > td,
 .table-striped > tbody > tr:nth-child(odd) > th {
   background-color: #9B9B9B;
+  /*text-align: center;*/
 }
 .table-hover > tbody > tr:hover > td,
 .table-hover > tbody > tr:hover > th {

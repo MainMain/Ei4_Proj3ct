@@ -111,7 +111,7 @@
 
 	    	<% if(idEquipe == 0 || !isUpToDate) { %>
 	    	<div class="col-md-10 col-md-offset-2 col-sm-offset-2" >
-	    		<div  style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 2%;padding-right : 2%;padding-bottom:2%;padding-top:4%;margin-bottom:1%;border-radius:15px;min-height:850px; ">
+	    		<div  style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 2%;padding-right : 2%;padding-bottom:2%;padding-top:4%;margin-bottom:1%;border-radius:15px;min-height:650px; ">
 	    		<h1>Aux portes de l'enfer...</h1>
 	    		
 	    		<!-- si différente session que l'actuelle -->
@@ -124,13 +124,10 @@
 
 	    			<!-- *************** RESUME DES SCORES DE LA DERNIERE SESSION ******************** -->
 	    			<% if (bilanScores["lastIdSession"] != -1 ) { %>
-<<<<<<< HEAD
 	    			<h2> Résumé de des scores de votre dernière session : (session n°<%= bilanScores["lastIdSession"]%>)</h2>
 	    			<b><p>Session commencée le <i><%= dateLastSession["dateDebut"].toLocaleDateString() %> à <%= dateLastSession["dateDebut"].toLocaleTimeString() %></i>
 	    			 et achevée le <i><%= dateLastSession["dateFin"].toLocaleDateString() %> à <%= dateLastSession["dateFin"].toLocaleTimeString() %></i></p></b>
-=======
-	    			<b><p>Session commencée le <%= dateLastSession["dateDebut"].toLocaleString() %> et achevée le <%= dateLastSession["dateFin"].toLocaleString() %></p></b>
->>>>>>> 4258e2cb62bfc05237f8b14e8a6d8236f0133b15
+	    			<!-- <b><p>Session commencée le <%= dateLastSession["dateDebut"].toLocaleString() %> et achevée le <%= dateLastSession["dateFin"].toLocaleString() %></p></b>  -->
 	    			<% } //fin if %>
 	    				<br>
 						<table class="table table-striped" style="width:48%;float:left;">
@@ -269,12 +266,12 @@
   					
 	    					<li class="onglet col-md-4 "  ><a href="#les_scores"><b>Scores</b></a></li>
 	    					<li class="divider"><hr/></li>
-	    					<li class="onglet col-md-4" ><a href="#les_infos"><b>Info Sessions</b></a></li>
-	    					<li class="divider"><hr/></li>
+	    					<!-- <li class="onglet col-md-4" ><a href="#les_infos"><b>Info Sessions</b></a></li>
+	    					<li class="divider"><hr/></li> -->
 	    					<li class="onglet col-md-4"><a href="#le_jeu"><b>Plateau de jeu</b></a></li>		
 	    				</ul>
 	    		</nav>
-	    		<div  style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 2%;padding-right : 2%;padding-bottom:2%;padding-top:4%;margin-bottom:1%;border-bottom-left-radius:15px;border-bottom-right-radius:15px; min-height:850px; ">
+	    		<div  style="background-color: rgba(161, 161, 161, 0.6); ;padding-left : 2%;padding-right : 2%;padding-bottom:2%;padding-top:4%;margin-bottom:1%;border-bottom-left-radius:15px;border-bottom-right-radius:15px; min-height:750px; ">
 
 	    			
 
@@ -357,22 +354,22 @@
 								<div class="col-md-12 col-sm-12  ">
 									<form action="" method="post" class="btn" style="float:right;">
 			            			<input type="hidden" name="_method" value="delete"/>
-			            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" style="margin-top:0px;">Rafairchir les scores</button>
+			            			<button type="submit" class="navbar-btn btn btn-danger"  value="Retour chez les vivants ?!" style="margin-top:0px;">Rafraichir les scores</button>
 			            		</form>
 
 							<% if (bilanScores["lastIdSession"] != -1 ) { %>
-								<h2> Résumé des scores de la session n°<%= bilanScores["lastIdSession"]%> :</h2>
+								<h2>Résumé des scores de la session en cours ( n°<%= bilanScores["lastIdSession"]%> )</h2>
 
 								
-								<b><h3>Session commencée le <%= dateLastSession["dateDebut"] %> et achevée le <%= dateLastSession["dateFin"] %></h3></b>
+								<b><h4>Session commencée le <i><%= sessionInfo["dateDebut"].toLocaleDateString() %> à <%= sessionInfo["dateDebut"].toLocaleTimeString() %></i> et prendra fin le <i><%= sessionInfo["dateFin"].toLocaleDateString() %> à <%= sessionInfo["dateFin"].toLocaleTimeString() %></i></h4></b>
 							<% } %>
 
 							
 							
-							<table class="table table-striped" style="width:48%;float:left;">
+		<!-- 					<table class="table table-striped" style="width:48%;float:left;">
 								<thead>
 									<!-- <th colspan="2" style="width:100%;"><h4><b>Scores globaux : </b></h4></th> -->
-									<th colspan="3"><h4><b>Scores globaux par équipes : </b></h4></th>
+		<!-- 								<th colspan="3"><h4><b>Scores globaux par équipes : </b></h4></th>
 								</thead>
 								<tr>
 									<td height="60"><b><p>Equipe</p></b></td>
@@ -441,19 +438,19 @@
 								<td height="40"><p><%= bilanScores["total"]%> point(s)</p></td>
 							</tr>
 						</table>
-					</div>
+					</div> -->
 						
 						
 								<!-- *************** INFOS SUR LES SCORES PROVISIOIRES ******************** -->
 						<div class="col-md-12 col-sm-12">
 							<h2>Scores provisoires</h2>
-							<br>
 
-									<table text-align:center class="table table-striped">
+									<table  class="table table-striped">
 										<thead class="thead">
 										<tr>
 											<th width="20%"><b><p>Type</p></b></td>
-											<th width="20%"><b><p>AGI <i>(<%= bilanScores["nbrAGI"]%> joueur(s))</i></p></b></td>
+											<th width="20%"><b><p>
+												<%if (bilanScores["idEquipe"] == 1) { %>*AGI<%}else{%>AGI<%}%> <i>(<%= bilanScores["nbrAGI"]%> joueur(s))</i></p></b></td>
 											<th width="20%"><b><p>INNO <i>(<%= bilanScores["nbrINNO"]%> joueur(s))</i></p></b></b></td>
 											<th width="20%"><b><p>QSF <i>(<%= bilanScores["nbrQSF"]%> joueur(s))</i></p></b></b></td>
 											<th width="20%"><b><p>Vous</p></b></td>
@@ -468,25 +465,25 @@
 											<td width="20%"><p><%= bilanScores["scoreODD"]%> point(s)</p></td>
 										</tr>
 										<tr>
-											<td width="20%"><b><p>Combats à morts</p></b></td>
+											<td width="20%"><b><p>Duels</p></b></td>
 											<td width="20%"><p><%= bilanScores["scoreAGI_meurtre"]%> point(s)</p></td>
 											<td width="20%"><p><%= bilanScores["scoreINNO_meurtre"]%> point(s)</p></td>
 											<td width="20%"><p><%= bilanScores["scoreQSF_meurtre"]%> point(s)</p></td>
 											<td width="20%"><p><%= bilanScores["scoreMeurtre"]%> point(s)</p></td>
 										</tr>
 										<tr>
-											<td width="20%"><b><p><i> -> Assassinats</i></p></b></td>
-											<td width="20%"><i><p>(<%= bilanScores["AGI_meurtres"]%> meurtres)</p></i></td>
-											<td width="20%"><i><p>(<%= bilanScores["INNO_meurtres"]%> meurtres)</p></i></td>
-											<td width="20%"><i><p>(<%= bilanScores["QSF_meurtres"]%> meurtres)</p></i></td>
-											<td width="20%"><i><p>(<%= bilanScores["nbrMeurtres"]%> meurtres)</p></i></td>
+											<td width="20%"><b><p><i> -> Blessures infligées</i></p></b></td>
+											<td width="20%"><i><p>(<%= bilanScores["AGI_meurtres"]%> blessures)</p></i></td>
+											<td width="20%"><i><p>(<%= bilanScores["INNO_meurtres"]%> blessures)</p></i></td>
+											<td width="20%"><i><p>(<%= bilanScores["QSF_meurtres"]%> blessures)</p></i></td>
+											<td width="20%"><i><p>(<%= bilanScores["nbrMeurtres"]%> blessures)</p></i></td>
 										</tr>
 										<tr>
-											<td width="20%"><b><p><i> -> Pertes</i></p></b></td>
-											<td width="20%"><i><p><%= bilanScores["AGI_tués"]%> tués</p></i></td>
-											<td width="20%"><i><p><%= bilanScores["INNO_tués"]%> tués</p></i></td>
-											<td width="20%"><i><p><%= bilanScores["QSF_tués"]%> tués</p></i></td>
-											<td width="20%"><i><p><%= bilanScores["nbrFoisTue"]%> fois</p></i></td>
+											<td width="20%"><b><p><i> -> Blessures subies</i></p></b></td>
+											<td width="20%"><i><p><%= bilanScores["AGI_tués"]%> blessures</p></i></td>
+											<td width="20%"><i><p><%= bilanScores["INNO_tués"]%> blessures</p></i></td>
+											<td width="20%"><i><p><%= bilanScores["QSF_tués"]%> blessures</p></i></td>
+											<td width="20%"><i><p><%= bilanScores["nbrFoisTue"]%> blessures</p></i></td>
 										</tr>
 										<tr>
 											<td width="20%"><b><p>Zombies tués</p></b></td>
@@ -536,7 +533,7 @@
 									</table>
 
 									
-									<table class = "table table-striped"  style="width:48%;float:right;">
+									<!-- <table class = "table table-striped"  style="width:48%;float:right;">
 										<thead>
 											<tr>
 											<th><b><p>Paramètres des attaques</p></b></th>
@@ -558,7 +555,7 @@
 												<td height="50"><p><%= dureeCycle %> heure(s)</p></td>
 											</tr>
 										</tbody>
-									</table></td>
+									</table></td> -->
 
 								</table>
 							</div>
