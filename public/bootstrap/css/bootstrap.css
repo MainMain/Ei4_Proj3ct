@@ -3515,7 +3515,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
    text-align: center;
    border-top-left-radius:20px;
    border-top-right-radius:20px;
-   background-color:rgba(161, 161, 161, 0.4);
+   background-color:rgba(161, 161, 161, 0.6);
 
 }
 .onglet > a{
@@ -5887,5 +5887,7 @@ button.close {
   .hidden-print {
     display: none !important;
   }
+
+
 }
 /*# sourceMappingURL=bootstrap.css.map */
