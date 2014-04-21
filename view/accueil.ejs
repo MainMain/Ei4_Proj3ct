@@ -46,10 +46,10 @@
 	</script>
 
 	<body>
-		<div class="col-md-5">
+		
+		<a class="navbar  col-md-2" href="#image_test" style="margin-top:-7%;margin-left:-2%;" ><img src="../public/images/LOGO.png" width="150" height="150" ></a>
 
-		<a class="navbar-brand navbar-fixed-top  col-md-2" href="#image_test" style="margin-top:-3%;margin-left:-2%;" ><img src="../public/images/LOGO.png" width="200" height="200" ></a>
-		</div>
+		
 		<nav style="border-bottom-left-radius: 50px" class="navbar navbar-inverse col-md-offset-5 col-md-7 navbar-fixed-top" role="navigation">
 
 			<div class="container-fluid">
@@ -77,32 +77,36 @@
 
 				</div>
 			</div>
+			<div>
+				<!--  Si la connexion a raté !  -->
+				<% if(errorLogin != null) { %>
+					<h6 style="color:#FF0000;margin-left:8%;"><i><%= errorLogin %></i></h6>
+				<% } %>
+				<!--  Si l'inscription a raté !  -->
+				<% if(InfoInscription != null) { %>
+					<h6 style="color:#FF0000;margin-left:8%;"><i><%= InfoInscription %></i></h6>
+				<% } %>
+
+				<!--  Si l'inscription a réussi !  -->
+				<% if(usernameInscription != null) { %>
+					<h6 style="color:#FF0000;margin-left:8%;"><i>Bienvenue <%= usernameInscription %>. Un e-mail vient de vous être envoyer afin de valider votre compte.</i></h6>
+				<% } %>
+			</div>
 		</nav>
 
 		<div class="container">
 			<!--  Si la connexion a raté !  -->
-			<% if(errorLogin != null) { %>
-				<h1 align="center"><%= errorLogin %></h1>
-			<% } %>
-			<!--  Si l'inscription a raté !  -->
-			<% if(InfoInscription != null) { %>
-				<h1 align="center"><%= InfoInscription %></h1>
-			<% } %>
 
-			<!--  Si l'inscription a réussi !  -->
-			<% if(usernameInscription != null) { %>
-				<h1 align="center">Bienvenue <%= usernameInscription %>. Un e-mail vient de vous être envoyer afin de valider votre compte.</h1>
-			<% } %>
 			<!-- Example row of columns -->
 
 				<div calss="row " style="margin-top:5%;">	
 					
-						<div class="col-md-12 " style="background-color: rgba(161, 161, 161, 0.4); ;padding-left : 2%;padding-right : 2%;padding-bottom:2%;padding-top:2%;margin-left:5%;margin-bottom:1%;border-radius:15px;">
+						<div class="col-md-12 " style="background-color: rgba(161, 161, 161, 0.3); ;padding-left : 2%;padding-right : 2%;padding-bottom:2%;padding-top:2%;margin-bottom:1%;border-radius:15px;">
 							
 							<h1 align="center" style="margin-top:0px;"><b>Un pas en enfer...  !</b></h1>
 						
 							<br>
-							<div class="row" style="border:1px solid #FF0000;width:71.4%;margin-left:17%;">
+							<div class="row" style="border:1px solid #FF0000;width:71.5%;margin-left:14%;">
 								<div class="col-md-10" style="padding-left:0px;">
 									<article>
 										<span id="image_test" class="hide"></span>
@@ -160,9 +164,9 @@
 									</ul>
 								</div>	
 							</div>
-							<div class="col-md-9 col-md-offset-2" >
+							<div class="col-md-9 " style="margin-left:12%;" >
 								<br>
-								<p align="justify">Nous sommes dans un univers parallèle apocalyptique, dans lequel nous sommes envahis par des zombies affamés.
+								<b><p align="justify">Nous sommes dans un univers parallèle apocalyptique, dans lequel nous sommes envahis par des zombies affamés.
 
 									<br>
 										Du coup, seule ta survie et celle de ton équipe compte !
@@ -175,7 +179,7 @@
 										Tu vas errer au détour des couloirs de l’IstiA mais attention aux zombies qui rodent. Méfies toi aussi des autres 
 										équipes qui peuvent t’attaquer et te dépouiller de tes biens.
 									<br><br>Les clés de la victoire seront le travail d’équipe et la communication, sans ça, dis adieu à la vie !
-								</p>
+								</p></b>
 							</div>
 						</div>
 					

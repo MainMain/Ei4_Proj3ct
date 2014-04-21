@@ -1132,6 +1132,11 @@ io.sockets.on('connection', function (socket)
 		
 		
     });
+
+	socket.on('GET_SCORES_CS', function()
+	{
+		socket.emit('GET_SCORE_SC', getDonnesPageJeu(idUser, oUtilisateur_Manager.getPseudo(idUser)));
+	});
     /*
      * 
      *
@@ -1381,6 +1386,7 @@ io.sockets.on('connection', function (socket)
 		
 		// information avec message
 		if (mode == 1) InformerAllInCase("commence à fouiller la salle");
+		if (mode == 2) { InformerAllInCase("vient de se cacher"); ActualiserAllInCase(); }
 		if (mode == 3) InformerAllInCase("se prépare au combat !");
 		
 
@@ -1520,7 +1526,7 @@ io.sockets.on('connection', function (socket)
 		ActualiserAllInCase();
 		
 		// information des autres joueurs avec message
-		InformerAllInCase("vient d'attaquer un autre joueur ! ");
+		InformerAllAttaque(idCase, idUser, idCible);
 		
 		EventLog.log("SERVER : idPersonnageCible attaqué : " + idPersonnageCible);
 		//}
@@ -1618,6 +1624,9 @@ io.sockets.on('connection', function (socket)
         	
     		// retablissement de la sante et transfert en zone sure
     		oPersonnage_Manager.SeRetablir(idUser);
+
+    		// maj interface des gens co
+    		ActualiserAllInCase(oPersonnage_Manager.GetIdCase(idUser));
     	}
     	//}
     	//catch(err)
@@ -1696,11 +1705,11 @@ io.sockets.on('connection', function (socket)
 		//try
 		//{
     	var liste = oPersonnage_Manager.GetAlliesEnnemisDansSalleToDisplay(idUser, true);
-		console.log(" 1 = " + liste.AGI.length + " 2 = " + liste.INNO.length +" 3 = " + liste.QSF.length);
+		console.log(" lg agi = " + liste.AGI.length + " lg inno = " + liste.INNO.length +" lg qsf = " + liste.QSF.length);
 
     	if (oUtilisateur_Manager.GetNumEquipe(idUser) == 1)
     	{
-    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.QSF, liste.INNO, 1);
+    		socket.emit('INFO_CASE_ENNEMIS_SC', liste.INNO, liste.QSF, 1);
     		return;
     	}
     	else if (oUtilisateur_Manager.GetNumEquipe(idUser) == 2)
@@ -1858,6 +1867,57 @@ io.sockets.on('connection', function (socket)
     	ActualiserAllInCase(idCase);
     }
 	
+	 /******************************************************************************************************************
+     * FONCTION POUR INFORMER LES AUTRES JOUEURS DE D'UNE ATTAQUE SUR UN AUTRE JOUEUR
+     */
+    function InformerAllAttaque(idCase, idAttaquant, idAttaque)
+    {
+    	var liste;
+    	var idCaseCurrentPerso;
+		liste = oPersonnage_Manager.GetPersonnagesDansSalle(idCase);
+    	
+    	var pseudoAttaquant = oUtilisateur_Manager.getPseudo(idAttaquant);
+    	var pseudoAttaque 	= oUtilisateur_Manager.getPseudo(idAttaque);
+    	var equipeAttaquant = oUtilisateur_Manager.GetNumEquipe(idAttaquant);
+    	var equipeAttaque 	= oUtilisateur_Manager.GetNumEquipe(idAttaque);
+
+    	var numEquipe = ["un AGI", "un INNO", "un QSF"];
+
+    	var equipeCurrent;
+		// pour chaque perso....
+    	for(var i in liste) 
+    	{
+    		// on récupère son id
+			var id = liste[i];
+			
+			// et son num d'équipe
+			equipeCurrent = oUtilisateur_Manager.GetNumEquipe(id);
+
+
+			/* si ce n'est pas l'attaquant (pas besoin de le prévenir)
+			 * et que le joueur n'est pas mort
+			 * */
+			if (id != idAttaquant && id != idAttaque && ! oPersonnage_Manager.estMort(id))
+			{
+				if (equipeCurrent == equipeAttaquant)
+				{
+					oPersonnage_Manager.AddMessage(id, "Affrontement entre " + pseudoAttaquant + " et " + numEquipe[equipeAttaque]);
+				}
+				else if (equipeCurrent == equipeAttaque)
+				{
+					oPersonnage_Manager.AddMessage(id, "Affrontement entre " + numEquipe[equipeAttaquant] + " et " + pseudoAttaque);
+				}
+				else
+				{
+					oPersonnage_Manager.AddMessage(id, "Affrontement entre " + numEquipe[equipeAttaquant] + " et " + numEquipe[equipeAttaque]);
+				}
+					
+			}
+		}
+    	
+    	// pour ceux qui sont en ligne, on les informe instantanément (refresh dernier message)
+    	ActualiserAllInCase(idCase);
+    }
     function ActualiserAllInCase(idCase)
     {
     	// on récupère l'id de la case

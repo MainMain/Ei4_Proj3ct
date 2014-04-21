@@ -168,7 +168,11 @@ Case_Manager.AttaqueDeGoules = function(idCase, nbrAllies)
 	nbrGoulesAttaquantes -= parseInt(nbrAllies);
 	
 	// si aucune goule n'attaque, on quitte
-	if (nbrGoulesAttaquantes <= 0) return a;
+	if (nbrGoulesAttaquantes <= 0)
+	{
+		EventLog.log("CASE_MANAGER : AttaqueDeGoules () - nbrGoulesAttaquantes : 0");
+		return a;
+	} 
 	
 	// génère la puissance des goules
 	var degatsGoules = GameRules.goules_GetPtsAttaque();
@@ -268,12 +272,12 @@ Case_Manager.GetNombreGoules = function(idCase)
 Case_Manager.getZoneSure = function(numEquipe)
 {
 	console.log(">>>>>> GET ZONE SURE " + numEquipe);
-	switch(numEquipe)
+	switch(parseInt(numEquipe))
 	{
 		case 1 : return GameRules.idZoneSure_1(); break;
 		case 2 : return GameRules.idZoneSure_2(); break;
 		case 3 : return GameRules.idZoneSure_3(); break;
-		default : return 34;
+		default : EventLog.error("CASE_MANAGER : GetZoneSure() : return default ! (numEquipe = " + numEquipe); return 0;
 	}
 },
 
