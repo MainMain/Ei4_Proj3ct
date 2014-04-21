@@ -83,7 +83,7 @@
 							<div class="divider" style="margin-bottom:-50px; " ><hr/></div>
 							<div class="row"><h1 align=center >Tchat général</h1>
 			    			</div>
-			    			<p>Envie de narguer vos ennemis, ou forger une allience secrète ? Ce tchat est là pour vous !</p>
+			    			<p>Envie de narguer vos ennemis, ou forger une alliance secrète ? Ce tchat est là pour vous !</p>
 			    			<br>
 			    			<div class="row">
 			    				<div class="col-md-8">
@@ -158,6 +158,8 @@
 						if(e.keyCode == 13){
 							sendMessageEquipe();
 						}
+						// scroll automatique tout en bas du texte area
+					document.getElementById("msgsEquipe").scrollTop =    document.getElementById("msgs").scrollHeight
 					});
 					
 					sendMessageEquipe = function()
@@ -206,6 +208,7 @@
 								$("#general-user-" + usernames[i]).append('<img src="/public/images/red.png" width=15px height=15px>');
 							}
 							$("#general-user-" + usernames[i]).append("&nbsp;&nbsp;&nbsp;&nbsp;" + usernames[i]);
+
 						}
 					});
 					
@@ -224,6 +227,8 @@
 					if(e.keyCode == 13){
 						sendMessageGeneral();
 					}
+					// scroll automatique tout en bas du texte area
+					document.getElementById("msgsGeneral").scrollTop =    document.getElementById("msgs").scrollHeight
 					});
 					
 					sendMessageGeneral = function()
