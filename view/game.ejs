@@ -124,11 +124,14 @@
 
 	    			<!-- *************** RESUME DES SCORES DE LA DERNIERE SESSION ******************** -->
 	    			<% if (bilanScores["lastIdSession"] != -1 ) { %>
+<<<<<<< HEAD
 	    			<h2> Résumé de des scores de votre dernière session : (session n°<%= bilanScores["lastIdSession"]%>)</h2>
 	    			<b><p>Session commencée le <i><%= dateLastSession["dateDebut"].toLocaleDateString() %> à <%= dateLastSession["dateDebut"].toLocaleTimeString() %></i>
 	    			 et achevée le <i><%= dateLastSession["dateFin"].toLocaleDateString() %> à <%= dateLastSession["dateFin"].toLocaleTimeString() %></i></p></b>
+=======
+	    			<b><p>Session commencée le <%= dateLastSession["dateDebut"].toLocaleString() %> et achevée le <%= dateLastSession["dateFin"].toLocaleString() %></p></b>
+>>>>>>> 4258e2cb62bfc05237f8b14e8a6d8236f0133b15
 	    			<% } //fin if %>
-
 	    				<br>
 						<table class="table table-striped" style="width:48%;float:left;">
 								<thead>

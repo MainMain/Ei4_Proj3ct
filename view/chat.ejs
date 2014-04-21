@@ -66,7 +66,7 @@
 			    			<div class="row">
 								<div class="col-md-8">
 									<div class="msgTextArea" id="msgs">
-										<textarea readonly style="border-radius:5px;color: #005C04;background-color : rgba(255,255,255,0.4);" id="msgsEquipe" rows="8" name="msgTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " > </textarea>
+										<textarea readonly style="border-radius:5px;color: #005C04;background-color : rgba(255,255,255,0.4);" id="msgsEquipe" rows="8" name="msgTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " ></textarea>
 									
 										<input class="col-md-9 col-sm-9 col-xs-9 " type="text" placeholder="Votre message" id="msgEquipeTextBox" style="margin-top:1px;"/>
 									
@@ -85,7 +85,7 @@
 			    				<div class="col-md-8">
 
 									<div class="msgGeneralTextArea" id="msgs">
-										<textarea  style="border-radius:5px; color: #860004;background-color : rgba(255,255,255,0.4);" readonly id="msgsGeneral" rows="8" name="msgGeneTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " > </textarea>
+										<textarea  style="border-radius:5px; color: #860004;background-color : rgba(255,255,255,0.4);" readonly id="msgsGeneral" rows="8" name="msgGeneTextAreaRapide"  class="col-md-11 col-sm-11 col-xs-11 " ></textarea>
 									
 										<input class="col-md-9 col-sm-9 col-xs-9 " type="text" placeholder="Votre message" id="msgGeneralTextBox" style="margin-top:1px;"/>
 									
@@ -141,7 +141,8 @@
 					
 					chatEquipe.on('USER_MESSAGE_SC', function(user, message)
 					{
-						$("#msgsEquipe").append("" + user + " : " + message + "\n");
+						heure = new Date();
+						$("#msgsEquipe").append("[" + heure.getHours() + ":" + heure.getMinutes() + "]  " + user + " : " + message + "\n");
 					});
 					
 					$("#msgEquipeSubmit").click(function()
@@ -150,9 +151,9 @@
 					});
 					
 					$('#msgEquipeTextBox').keydown(function (e){
-					if(e.keyCode == 13){
-						sendMessageEquipe();
-					}
+						if(e.keyCode == 13){
+							sendMessageEquipe();
+						}
 					});
 					
 					sendMessageEquipe = function()
@@ -206,7 +207,8 @@
 					
 					chatGeneral.on('USER_MESSAGE_SC', function(user, message)
 					{
-						$("#msgsGeneral").append("" + user + " : " + message + "\n");
+						heure = new Date();
+						$("#msgsGeneral").append("[" + heure.getHours() + ":" + heure.getMinutes() + "]  " + user + " : " + message + "\n");
 					});
 					
 					$("#msgGeneralSubmit").click(function()
