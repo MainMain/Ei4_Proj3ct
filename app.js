@@ -791,7 +791,7 @@ onChatEquipe_INFO_USER = function(id, user, socket)
 		
 		for(var i in usersChatTab)
 		{
-			if(oUtilisateur_Manager.MemeEquipe(i, id))
+			if(oUtilisateur_Manager.MemeEquipe(i, id) && oUtilisateur_Manager.MemeSession(i,id))
 			{
 				tabUsername[j] = usersChatTab[i].username;
 				tabConnected[j] = usersChatTab[i].connectedToTeamChat;
@@ -874,7 +874,7 @@ onChatEquipe_DISCONNECT = function(id, socket)
 		
 		for(var i in usersChatTab)
 		{
-			if(oUtilisateur_Manager.MemeEquipe(i, id))
+			if(oUtilisateur_Manager.MemeEquipe(i, id)  && oUtilisateur_Manager.MemeSession(i,id))
 			{
 				tabUsername[j] = usersChatTab[i].username;
 				tabConnected[j] = usersChatTab[i].connectedToTeamChat;
