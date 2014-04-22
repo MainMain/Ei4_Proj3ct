@@ -150,7 +150,7 @@ function callbackFinFouille(idUser)
  */
 
 
-app.set('port', process.env.PORT || 25536);
+app.set('port', process.env.PORT || 443);
 
 app.set('views', __dirname + '/view');
 app.set('view engine', 'ejs');
@@ -679,7 +679,7 @@ callbackInscription = function(reponseInscription, req, res, idInscription)
     		//text: "Hello world ✔", // plaintext body
     		html: "Bonjour " + b.username + "," // html body
     			+ "<br>Votre inscription a été prise en compte. Pour la confirmer, veuillez cliquer sur le lien ci contre : "
-    			+ " <a href=\"http://localhost:25536/confirmerCompte/" + idInscription+"\">Confirmer mon compte </a>"
+    			+ " <a href=\"http://localhost:443/confirmerCompte/" + idInscription+"\">Confirmer mon compte </a>"
     			+ "<br>Ensuite, nous t'invitons a lire le tutoriel afin de mieux comprendre les mécanismes du jeu. Une fois prêt, "
     			+ "choisissez votre équipe, et lancez vous dans l'aventure !"
     			+" <br>Préparez vous, vous n'en sorterez pas indemme..."
