@@ -633,8 +633,8 @@ app.put('/', function (req, res)
 	// test si c'est en bonne forme
 	//if
 	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regTestMailAngers.test(b.email) );
-	if		(b.username.length < 4 && b.username.length > 10)		options.InfoInscription = "Login_nonConforme";
-	else if (b.password.length < 6) 			options.InfoInscription = "Pass_nonConforme";
+	if		(b.username.length < 4 && b.username.length > 14)		options.InfoInscription = "Login non conforme. Le nombre de lettre doit être comprise entre 4 et 14 caractères.";
+	else if (b.password.length < 6) 			options.InfoInscription = "Mot de passe non conforme. 6 caractères minimun.";
 	//else if (!regTestMailAngers.test(b.email)) 	options.InfoInscription = "Mail_nonConforme";
 	else
 	{
