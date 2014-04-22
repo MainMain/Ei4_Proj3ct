@@ -16,7 +16,7 @@
 
 		<script>
 			var createjs = window;
-			var socket = io.connect('http://localhost:25536');
+			var socket = io.connect('http://localhost:443');
 			socket.emit('INFO_USER_CS', '<%= sessionID %>', '<%= username %>', 'game');
 		</script>
 		<script type="text/javascript" src="../src/createjs/events/Event.js"></script>
