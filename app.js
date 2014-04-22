@@ -545,8 +545,14 @@ app.get('/confirmerCompte/:idInscription', function fonctionIndex(req, res)
 app.post('/', function (req, res)
 {
 	var b = req.body;
-	
-	oUtilisateur_BD.Connexion(b.username, b.password, req, res, callbackConnexion);
+	if (b.username != null && b.password != null)
+	{
+		oUtilisateur_BD.Connexion(b.username, b.password, req, res, callbackConnexion);
+	}
+	else
+	{
+		callbackConnexion(-4, req, res);
+	}
 });
 
 ajouterInfosHeures = function(options)
@@ -597,6 +603,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 	}
 	else if(reponseConnexion == -1)
 	{
+		EventLog.log("APP : couple pseudo/pass incorrect");
 		options.errorLogin = "Couple login/mot de passe incorrect.";
 		
 		res.render("accueil", options);
@@ -615,7 +622,7 @@ callbackConnexion = function(reponseConnexion, req, res)
 	
 	else
 	{
-		options.errorLogin = "Erreur Interne";
+		options.errorLogin = "";
 		
 		res.render("accueil", options);
 		
@@ -629,13 +636,13 @@ app.put('/', function (req, res)
 	var testsOk = false;
 	// regex test email
 	var regTestMailAngers = /.@etud.univ-angers.fr/;
-
+	var regMail = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}/;
 	// test si c'est en bonne forme
 	//if
-	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regTestMailAngers.test(b.email) );
-	if		(b.username.length < 4 && b.username.length > 14)		options.InfoInscription = "Login non conforme. Le nombre de lettre doit être comprise entre 4 et 14 caractères.";
+	console.log(">>> TEST EMAIL : "+ b.email+" -> : " + regMail.test(b.email) );
+	if		(b.username.length < 4 || b.username.length > 10)		options.InfoInscription = "Login non conforme. Le nombre de lettre doit être comprise entre 4 et 10 caractères.";
 	else if (b.password.length < 6) 			options.InfoInscription = "Mot de passe non conforme. 6 caractères minimun.";
-	//else if (!regTestMailAngers.test(b.email)) 	options.InfoInscription = "Mail_nonConforme";
+	else if (!regMail.test(b.email)) 	options.InfoInscription = "Adresse email non conforme.";
 	else
 	{
 		// si ok
