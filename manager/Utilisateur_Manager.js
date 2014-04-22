@@ -126,6 +126,11 @@ Utilisateur_Manager.MemeEquipe = function(idUser1, idUser2)
 	return Utilisateur_Manager.GetNumEquipe(idUser1) == Utilisateur_Manager.GetNumEquipe(idUser2);
 },
 
+Utilisateur_Manager.MemeSession = function(idUser1, idUser2)
+{
+	return Utilisateur_Manager.getIdSession(idUser1) == Utilisateur_Manager.getIdSession(idUser2);
+},
+
 Utilisateur_Manager.findIdUser = function(idPersonnage)
 {
 	for(var i in this.listeUtilisateurs)
