@@ -59,9 +59,9 @@ GameRules.jeu_diffMaxEntreEquipes = function() 				{ return 3; },
 // temps de fouilles
 GameRules.jeu_duree_fouille = function() 					{ return 1000 *5*60 * 60 ; }, // 1 heure
 // Gain de score quand meurtre
-GameRules.jeu_score_gain_meurtre = function() 				{ return 5; }, 
+GameRules.jeu_score_gain_meurtre = function() 				{ return 50; }, 
 // Perte score quand tué
-GameRules.jeu_score_perte_tue = function() 					{ return 3; }, 
+GameRules.jeu_score_perte_tue = function() 					{ return 30; }, 
 // en dessous de 10 pt de faim, le malus = ptFaim / ce nombre
 GameRules.faim_malus = function()							{ return 10; },
 // multiplicateur minimal de malus
