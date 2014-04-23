@@ -2,7 +2,7 @@
 100-Epee rouillee-Une petite epee completement rouillee-5-1-5-/public/spritesheets/arme/100.png
 101-Epee de fer-Une epee standard-10-1-8-/public/spritesheets/arme/101.png
 102-Epee en argent-Une grande epee en argent-20-1-15-/public/spritesheets/arme/102.png
-103-Epee en or-Une epee bling bling-50-1-20-/public/spritesheets/arme/103.png
+103-Epee des milles vérités-Dedicace Anthony Josseaume !-50-1-20-/public/spritesheets/arme/103.png
 104-Bout de bois-Une arme primitive et fragile-1-1-1-/public/spritesheets/arme/104.png
 105-Hache de bucheron-Elle est ratique pour couper du bois-8-1-6-/public/spritesheets/arme/105.png
 106-Double hache-Elle inflige deux fois plus de degats-14-1-12-/public/spritesheets/arme/106.png
