@@ -75,9 +75,9 @@ GameRules.pt_deplacementMax_min = function()				{ return 3;},
 // duree entre chaque attaque / save
 GameRules.dureeCycle = function()							{ return 1000 * 60 * 1000; },
 // heure de l'attaque
-GameRules.heure_attaque = function()						{ return 21; },
+GameRules.heure_attaque = function()						{ return 22; },
 // minutes de l'attaque
-GameRules.minute_attaque = function()						{ return 54; },
+GameRules.minute_attaque = function()						{ return 5; },
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },
