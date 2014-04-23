@@ -77,7 +77,7 @@ GameRules.dureeCycle = function()							{ return 1000 * 60 * 1000; },
 // heure de l'attaque
 GameRules.heure_attaque = function()						{ return 22; },
 // minutes de l'attaque
-GameRules.minute_attaque = function()						{ return 5; },
+GameRules.minute_attaque = function()						{ return 28; },
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },
