@@ -306,7 +306,7 @@ body {
   font-size: 14px;
   line-height: 1.42857143;
   color: #333;
-  background: url(../../images/Fond.jpg)no-repeat fixed;
+  background: url(../../images/Fond.jpg) fixed;
 }
 input,
 button,
