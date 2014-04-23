@@ -37,9 +37,9 @@ GameRules.combat_proba_perdreItem = function() 				{ return (Math.floor(Math.ran
 
 // ********** CONFIGURATION DES GOULES **********
 //minimun de goules qui spawn dans chaque case par jour
-GameRules.goules_RespawnMin = function() 					{ return 10; }, 
+GameRules.goules_RespawnMin = function() 					{ return 4; }, 
 //maximun de goules qui spawn dans chaque case par jour
-GameRules.goules_RespawnMax = function() 					{ return 25; }, 
+GameRules.goules_RespawnMax = function() 					{ return 15; }, 
 // calcul un nbr aléatoire de nombre de goule
 GameRules.goules_nbrNouvellesGoules = function()			{ return (Math.floor(Math.random() * (3-0) + 0 ));},
 //minimun de pts d'attaque par goules
