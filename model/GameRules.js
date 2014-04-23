@@ -37,15 +37,15 @@ GameRules.combat_proba_perdreItem = function() 				{ return (Math.floor(Math.ran
 
 // ********** CONFIGURATION DES GOULES **********
 //minimun de goules qui spawn dans chaque case par jour
-GameRules.goules_RespawnMin = function() 					{ return 0; }, 
+GameRules.goules_RespawnMin = function() 					{ return 10; }, 
 //maximun de goules qui spawn dans chaque case par jour
-GameRules.goules_RespawnMax = function() 					{ return 3; }, 
+GameRules.goules_RespawnMax = function() 					{ return 25; }, 
 // calcul un nbr aléatoire de nombre de goule
 GameRules.goules_nbrNouvellesGoules = function()			{ return (Math.floor(Math.random() * (3-0) + 0 ));},
 //minimun de pts d'attaque par goules
-GameRules.goules_PtsAttaqueMin = function() 				{ return 2; },
+GameRules.goules_PtsAttaqueMin = function() 				{ return 3; },
 //maximun de pts d'attaque par goules
-GameRules.goules_PtsAttaqueMax = function() 				{ return 6; }, 
+GameRules.goules_PtsAttaqueMax = function() 				{ return 12; }, 
 // donne un nombre de dégat de goules aléatoire
 GameRules.goules_GetPtsAttaque = function() 				{ return (Math.floor(Math.random() * (6-2) + 2 )); },
 //Proba que une goule fasse rater l'action
@@ -75,9 +75,9 @@ GameRules.pt_deplacementMax_min = function()				{ return 3;},
 // duree entre chaque attaque / save
 GameRules.dureeCycle = function()							{ return 1000 * 60 * 1000; },
 // heure de l'attaque
-GameRules.heure_attaque = function()						{ return 3; },
+GameRules.heure_attaque = function()						{ return 21; },
 // minutes de l'attaque
-GameRules.minute_attaque = function()						{ return 0; },
+GameRules.minute_attaque = function()						{ return 54; },
 
 //********** INITIALISATION DU PERSONNAGE **********
 GameRules.init_faimMax = function()							{ return 20; },
