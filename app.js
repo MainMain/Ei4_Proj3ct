@@ -810,7 +810,7 @@ onChatEquipe_INFO_USER = function(id, user, socket)
 		for(var i in usersChatTab)
 		{
 			// s'il appartient à la meme équipe 
-			if(oUtilisateur_Manager.MemeEquipe(i, id))
+			if(oUtilisateur_Manager.MemeEquipe(i, id) && oUtilisateur_Manager.MemeSession(i,id))
 			{
 				EventLog.log("> ENVOI MESSAGE POUR AVERTIR NV USER");
 				// on l'informe sur sa socket
@@ -838,7 +838,7 @@ onChatEquipe_USER_MESSAGE = function(id, user, message)
 		{
 			EventLog.log("> PARCOURS DE BOUCLE DES USER TEAM. CURRENT USER : " + usersChatTab[i].username);
 			// s'il appartient à la meme équipe 
-			if(oUtilisateur_Manager.MemeEquipe(i, id))
+			if(oUtilisateur_Manager.MemeEquipe(i, id) && oUtilisateur_Manager.MemeSession(i,id))
 			{
 				// on l'informe sur ses sockets
 				for(var k in usersChatTab[i].socketsTeamChat)
@@ -891,7 +891,7 @@ onChatEquipe_DISCONNECT = function(id, socket)
 		
 		for(var i in usersChatTab)
 		{
-			if(oUtilisateur_Manager.MemeEquipe(i, id))
+			if(oUtilisateur_Manager.MemeEquipe(i, id) && oUtilisateur_Manager.MemeSession(i,id))
 			{
 				for(var k in usersChatTab[i].socketsTeamChat)
 				{
@@ -924,7 +924,7 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 		{
 			console.log("i = " + i);
 			console.log("oUtilisateur_Manager.isCompteConfirme(i) = " + oUtilisateur_Manager.isCompteConfirme(i));
-			if(oUtilisateur_Manager.isCompteConfirme(i))
+			if(oUtilisateur_Manager.isCompteConfirme(i) && oUtilisateur_Manager.MemeSession(i,id))
 			{
 				tabUsername[j] = usersChatTab[i].username;
 				tabConnected[j] = usersChatTab[i].connectedToGeneralChat;
@@ -944,10 +944,10 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 			user = user + "  (AGI)";
 			break;
 			case 2:
-			user = user + "  (QSF)";
+			user = user + "  (INNO)";
 			break;
 			case 3:
-			user = user + "  (INNO)";
+			user = user + "  (QSF)";
 			break;
 			default:
 			user = user + "  (Neutre)";
@@ -973,9 +973,12 @@ var chat = io.of('/chat-general').on('connection', function (socket)
 		
 				for(var i in usersChatTab)
 				{
-					tabUsername[j] = usersChatTab[i].username;
-					tabConnected[j] = usersChatTab[i].connectedToGeneralChat;
-					j++;
+					if(oUtilisateur_Manager.isCompteConfirme(i) && oUtilisateur_Manager.MemeSession(i,id))
+					{
+						tabUsername[j] = usersChatTab[i].username;
+						tabConnected[j] = usersChatTab[i].connectedToGeneralChat;
+						j++;
+					}
 				}
 				
 				chat.emit('USER_CONNECTED_SC', tabUsername, tabConnected);
